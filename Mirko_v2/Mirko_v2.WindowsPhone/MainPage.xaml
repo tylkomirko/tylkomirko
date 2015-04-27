@@ -1,0 +1,304 @@
+﻿<Page
+    x:Class="Mirko_v2.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Mirko_v2.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <Grid x:Name="PivotPageGrid" 
+          Margin="0,25.6,0,-24">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Popup x:Name="NewMirkoEntriesPopup"
+               VerticalOffset="103.5">
+            <Popup.Resources>
+                <Storyboard x:Name="PopupFadeIn">
+                    <DoubleAnimation Storyboard.TargetName="PopupGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="{ThemeResource AppHeaderOpacity}"
+                                     Duration="0:0:0.2" />
+                </Storyboard>
+
+                <Storyboard x:Name="PopupFadeOut">
+                    <DoubleAnimation Storyboard.TargetName="PopupGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0.0"
+                                     Duration="0:0:0.2"/>
+                </Storyboard>
+
+            </Popup.Resources>
+
+            <Grid x:Name="PopupGrid"
+                  Opacity="{StaticResource AppHeaderOpacity}"
+                  Background="#67a7d2"
+                  Height="49">
+
+                <TextBlock x:Name="PopupTB"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           FontSize="18"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           Text="{Binding MirkoNewEntries.Count, Converter={StaticResource NewEntriesNumeral}}">
+                </TextBlock>
+            </Grid>
+        </Popup>
+
+        <Popup x:Name="HotEntriesPopup"
+               VerticalOffset="108">
+
+            <Popup.Resources>
+                <Storyboard x:Name="HotPopupFadeIn">
+                    <DoubleAnimation Storyboard.TargetName="HotPopupGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="{StaticResource AppHeaderOpacity}"
+                                     Duration="0:0:0.2" />
+                </Storyboard>
+
+                <Storyboard x:Name="HotPopupFadeOut">
+                    <DoubleAnimation Storyboard.TargetName="HotPopupGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0.0"
+                                     Duration="0:0:0.2"/>
+                </Storyboard>
+            </Popup.Resources>
+
+            <Grid x:Name="HotPopupGrid"
+                  Background="Transparent"
+                  Opacity="{StaticResource AppHeaderOpacity}"
+                  Height="49">
+                <ComboBox Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="z ostatniej godziny"
+                                  Tag="1" />
+                    <ComboBoxItem Content="z ostatnich 3 godzin"
+                                  Tag="3" />
+                    <ComboBoxItem Content="z ostatnich 6 godzin"
+                                  Tag="6" />
+                    <ComboBoxItem Content="z ostatnich 12 godzin"
+                                  Tag="12"/>
+                </ComboBox>
+            </Grid>
+        </Popup>
+
+        <controls:AppHeader x:Name="AppHeader"
+                            Margin="0,0,0,0"
+                            Grid.Row="0"
+                            Canvas.ZIndex="1"
+                            NavigateTo="Entry_NavigateTo"
+                            Background="{ThemeResource AppHeaderBackground}"/>
+
+        <Pivot x:Name="pivot" 
+               Grid.Row="1"
+               Margin="0,-132.5,0,0"
+               HorizontalAlignment="Stretch"
+			   Style="{StaticResource CustomPivotStyle}" 
+               BorderBrush="{ThemeResource PivotHeaderBackground}">
+
+            <Pivot.Transitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Right" />
+                </TransitionCollection>
+            </Pivot.Transitions>
+
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               Margin="0,17,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="18"/>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+
+            <!--Pivot item one-->
+            <PivotItem
+                x:Uid="MirkoPivotItem"
+                Margin="10,-140,0,0"
+                Header="first"
+                Tag="0">
+                <ListView x:Name="MirkoListView"
+                          ItemsSource="{Binding MirkoEntries}"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                          IsItemClickEnabled="False">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Entry NavigateTo="Entry_NavigateTo" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Transitions>
+                        <TransitionCollection>
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </ListView.Transitions>
+
+                    <ListView.Header>
+                        <Rectangle Height="135"
+                                       Fill="Transparent" />
+                    </ListView.Header>
+
+                    <ListView.Footer>
+                        <Rectangle Height="92"
+                                   Fill="Transparent" />
+                    </ListView.Footer>
+
+                </ListView>
+            </PivotItem>
+
+            <!--Pivot item two-->
+            <PivotItem
+                x:Uid="HotPivotItem"
+                Margin="10,-140,0,0"
+                Header="second"
+                Tag="1">
+                <ListView x:Name="HotListView"
+                          ItemsSource="{Binding HotEntries}"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                          IsItemClickEnabled="False">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Entry NavigateTo="Entry_NavigateTo"
+                                            IsHot="True" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Header>
+                        <Rectangle Height="185"
+                                   Fill="Transparent" />
+                    </ListView.Header>
+
+                    <ListView.Footer>
+                        <Rectangle Height="92"
+                                   Fill="Transparent" />
+                    </ListView.Footer>
+
+                </ListView>
+
+            </PivotItem>
+
+            <!--Pivot item three-->
+            <PivotItem
+                x:Uid="FavPivotItem"
+                Margin="10,-140,0,0"
+                Header="third"
+                Tag="2">
+                <ListView x:Name="FavListView"
+                          ItemsSource="{Binding FavEntries}"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                          IsItemClickEnabled="False">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Entry NavigateTo="Entry_NavigateTo" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Header>
+                        <Rectangle Height="135"
+                                   Fill="Transparent" />
+                    </ListView.Header>
+
+                    <ListView.Footer>
+                        <Rectangle Height="92"
+                                   Fill="Transparent" />
+                    </ListView.Footer>
+
+                </ListView>
+            </PivotItem>
+
+
+            <!--Pivot item four-->
+            <PivotItem
+                x:Uid="MyPivotItem"
+                Margin="10,-140,0,0"
+                Header="fourth"
+                Tag="3">
+                <ListView x:Name="MyListView"
+                          ItemsSource="{Binding MyEntries}"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                          IsItemClickEnabled="False">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Entry NavigateTo="Entry_NavigateTo" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                    <ListView.Header>
+                        <Rectangle Height="135"
+                                   Fill="Transparent" />
+                    </ListView.Header>
+
+                    <ListView.Footer>
+                        <Rectangle Height="92"
+                                   Fill="Transparent" />
+                    </ListView.Footer>
+
+                </ListView>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="appbar"
+                    Opacity="{StaticResource AppBarOpacity}"
+                    ClosedDisplayMode="Compact">
+
+            <CommandBar.Resources>
+                <Storyboard x:Name="AppBarAnimation">
+                    <DoubleAnimation Storyboard.TargetName="appbar"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="0.0"
+                                     To="{StaticResource AppBarOpacity}"
+                                     Duration="0:0:0.5" />
+                </Storyboard>
+            </CommandBar.Resources>
+
+            <!--
+            <AppBarButton x:Uid="RefreshAppBarButton" 
+                          x:Name="RefreshAppBarButton" 
+                          Label="refresh" 
+                          Click="RefreshAppBarButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/refresh.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+
+            <AppBarButton x:Uid="AddAppBarButton" 
+                          x:Name="AddAppBarButton" 
+                          Label="add"
+                          Icon="Add" 
+                          Click="AddAppBarButton_Click" />
+            <AppBarButton x:Uid="ScrollUpAppBarButton" 
+                          x:Name="ScrollUpAppBarButton" 
+                          Label="up" 
+                          Icon="Up" 
+                          Click="ScrollUpAppBarButton_Click" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="ForceRefreshButton" 
+                              x:Name="ForceRefreshButton" 
+                              Label="force refresh"
+                              Click="ForceRefreshButton_Click"/>
+                <AppBarButton x:Name="SettingsButton" 
+                              Label="ustawienia"
+                              Click="SettingsButton_Click"/>
+                <AppBarButton Label="czarnolisto"
+                              Click="BlacklistButton_Click"/>
+                <AppBarButton Label="wyloguj się"
+                              Click="LogoutButton_Click"/>
+            </CommandBar.SecondaryCommands>
+            -->
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

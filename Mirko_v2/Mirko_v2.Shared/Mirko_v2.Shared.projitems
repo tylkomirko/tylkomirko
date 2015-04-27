@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9f32d069-f886-48d6-8200-f81dc356af12</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Mirko_v2</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\DateConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FontSizeScaler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\GroupToColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntriesNumeral.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NotificationsCountToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PMDirectionToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PMStatusToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVoteConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\VotersConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\IncrementalLoadingCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuFlyoutUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\PageNavigationEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusBarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
+  </ItemGroup>
+</Project>

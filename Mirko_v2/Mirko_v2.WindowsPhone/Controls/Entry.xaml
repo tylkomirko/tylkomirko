@@ -1,0 +1,184 @@
+﻿<UserControl
+    x:Class="Mirko_v2.Controls.Entry"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:Mirko_v2.Common"
+    xmlns:controls="using:Mirko_v2.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <!--
+    <UserControl.Resources>
+        <MenuFlyout x:Name="HashtagFlyout">
+            <MenuFlyoutItem Text="przeglądaj" Click="BrowseTag_Click"/>
+            <MenuFlyoutItem Text="obserwuj" Click="ObserveTag_Click" Tag="observeTag" />
+            <MenuFlyoutItem Text="nie obserwuj" Click="UnobserveTag_Click" Tag="unobserveTag" Visibility="Collapsed" />
+            <MenuFlyoutItem Text="czarnolisto" Click="BlacklistTag_Click" Tag="blacklistTag" />
+            <MenuFlyoutItem Text="usuń z czarnolisto" Click="UnblacklistTag_Click" Tag="unblacklistTag" Visibility="Collapsed" />
+        </MenuFlyout>
+
+        <MenuFlyout x:Key="UserFlyout">
+            <MenuFlyoutItem Text="odpowiedz" Click="ReplyFlyoutItem_Click" />
+            <MenuFlyoutItem Text="obserwuj" Click="ObserveUser_Click" />
+            <MenuFlyoutItem Text="napisz wiadomość" Click="SendPM_Click" />
+            <MenuFlyoutItem Text="czarnolisto" Click="BlacklistUser_Click" />
+        </MenuFlyout>
+    </UserControl.Resources>
+    -->
+
+    <Grid x:Name="EntryGrid"
+          VerticalAlignment="Top">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <FlyoutBase.AttachedFlyout>
+            <MenuFlyout>
+                <!--
+                <MenuFlyoutItem x:Uid="PlusFlyoutItem"
+                                Click="PlusFlyoutItem_Click" />
+                <MenuFlyoutItem x:Uid="ReplyFlyoutItem"  
+                                Click="ReplyFlyoutItem_Click"/>
+                <MenuFlyoutItem x:Uid="FavouriteFlyoutItem"
+                                Click="FavouriteFlyoutItem_Click"/>
+                <MenuFlyoutItem x:Uid="UnfavouriteFlyoutItem"
+                                Click="FavouriteFlyoutItem_Click"
+                                Visibility="Collapsed"/>
+
+                <MenuFlyoutItem Foreground="{ThemeResource MenuFlyoutSeparator}"
+                                Text="separator :)"/>
+
+                <MenuFlyoutItem x:Uid="RefreshFlyoutItem"
+                                Click="RefreshFlyoutItem_Click"/>
+                <MenuFlyoutItem x:Uid="EditFlyoutItem"
+                                Click="EditFlyoutItem_Click"
+                                Visibility="Collapsed"/>
+                <MenuFlyoutItem x:Uid="DeleteFlyoutItem"
+                                Click="DeleteFlyoutItem_Click"
+                                Visibility="Collapsed"/>
+                -->
+            </MenuFlyout>
+        </FlyoutBase.AttachedFlyout>
+
+        <Grid x:Name="LeftSpacer"
+              Grid.Column="0"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Background="Transparent" />
+
+        <StackPanel Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    Orientation="Horizontal"
+                    Background="Transparent"
+                    x:Name="FirstRowStackPanel">
+
+            <TextBlock x:Name="AuthorSexTB"
+                               Margin="6,0,2,0"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+
+                               Text="{Binding author_sex, Converter={StaticResource SexToText}}"
+                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=AuthorSexFontSize}"
+                               Foreground="{Binding author_sex, Converter={StaticResource SexToColor}}" />
+
+            <TextBlock x:Name="AuthorTB"
+                               Margin="0,2.5,0,0"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               
+                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=AuthorFontSize}"
+                               Text="{Binding author}"
+                               Foreground="{Binding author_group, Converter={StaticResource GroupToColor}}" />
+
+            <TextBlock x:Name="DateTB"
+                               Margin="4,4,0,0"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Left"
+                               
+                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=DateFontSize}"
+                               Text="{Binding date, Converter={StaticResource DateConverter}}"
+                               Foreground="Gray"/>
+        </StackPanel>
+
+        <TextBlock x:Name="VoteTB"
+                       Grid.Column="2"
+                       Grid.Row="0"
+                       Margin="0,0,0,0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"
+                       
+                       FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=VoteFontSize}"
+                       Foreground="{Binding user_vote, Converter={StaticResource UserVotedToBrush}}"
+                       Visibility="{Binding vote_count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                <Run Text="+"/><Run Text="{Binding vote_count}" />
+        </TextBlock>
+
+        <RichTextBlock x:Name="BodyRTB"
+                           Grid.Column="1"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="1"
+                           Margin="6,-2,0,0"
+                           FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=EntryFontSize}"
+                           IsTextSelectionEnabled="False"
+                           IsTapEnabled="True"
+                           IsTextScaleFactorEnabled="False"
+                           IsDoubleTapEnabled="True"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Stretch"
+                           common:Properties.Html="{Binding body}"/>
+
+        <Grid x:Name="EmbedPreviewGrid"
+              Grid.Column="1"
+              Grid.ColumnSpan="2"
+              Grid.Row="2"
+              
+              Margin="5,0,0,0"
+              HorizontalAlignment="Stretch"
+              Background="Transparent"
+              Visibility="{Binding Converter={StaticResource NullToVisibility}}">
+            
+            <controls:EntryEmbed x:Name="EmbedPreview"
+                                 HorizontalAlignment="Left"
+                                 NavigateTo="Embed_NavigateTo"
+                                 DataContext="{Binding embed}"/>
+        </Grid>
+
+        <Grid x:Name="RightSpacer"
+              Grid.Column="3"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Width="10"
+              Background="Transparent">
+
+            <Rectangle x:Name="AuthorIndicator"
+                       Visibility="Collapsed"
+                       Width="2.5"
+                       Margin="2,2,0,2"
+                       HorizontalAlignment="Right"
+                       Fill="{ThemeResource AuthorCommentRectangleFill}" />
+        </Grid>
+
+    </Grid>
+</UserControl>
