@@ -369,13 +369,23 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return null;
 
-            var URL = "stream/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            if (UserInfo != null)
+            {
+                var URL = "stream/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-            var result = await deserialize<List<Entry>>(URL);
-            if (result != null)
-                return result.Where(x => !x.Blacklisted);
+                var result = await deserialize<List<Entry>>(URL);
+                if (result != null)
+                    return result.Where(x => !x.Blacklisted);
+                else
+                    return null;
+            }
             else
-                return null;
+            {
+                var URL = "stream/index/appkey," + this.APPKEY + ",page," + pageIndex;
+
+                var result = await deserialize<List<Entry>>(URL);
+                return result;
+            }
         }
 
         public async Task<IEnumerable<Entry>> getEntries(uint id, uint pageIndex)
@@ -456,7 +466,7 @@ namespace WykopAPI
 
         public async Task<string> addEntry(NewEntry newEntry)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "entries/add";
@@ -642,12 +652,11 @@ namespace WykopAPI
         }
         #endregion
 
-
         #region Notifications
 
         public async Task<List<Notification>> getNotifications(uint page)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/notifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + page;
@@ -657,7 +666,7 @@ namespace WykopAPI
 
         public async Task<NotificationsCount> getNotificationsCount()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/notificationscount/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -667,7 +676,7 @@ namespace WykopAPI
 
         public async Task<List<Notification>> getHashtagNotifications(uint page)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/hashtagsnotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + page;
@@ -677,7 +686,7 @@ namespace WykopAPI
 
         public async Task<NotificationsCount> getHashtagNotificationsCount()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/hashtagsnotificationscount/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -687,7 +696,7 @@ namespace WykopAPI
 
         public async Task<bool> readNotifications()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return false;
 
             string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -698,7 +707,7 @@ namespace WykopAPI
 
         public async Task<bool> readHashtagNotifications()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return false;
 
             string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -709,7 +718,7 @@ namespace WykopAPI
 
         public async Task<bool> markAsReadNotification(uint id)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return false;
 
             string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -775,7 +784,6 @@ namespace WykopAPI
             return result[0];
         }
         #endregion
-
 
         #region Blacklist
         public async Task<bool> blockTag(string tag)

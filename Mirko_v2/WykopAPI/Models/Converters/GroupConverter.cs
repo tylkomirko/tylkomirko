@@ -29,7 +29,7 @@ namespace WykopAPI.Models
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var enumInt = (int)reader.Value;
+            var enumInt = Convert.ToUInt32(reader.Value);
             UserGroup? g = null;
 
             switch (enumInt)

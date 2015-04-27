@@ -21,12 +21,10 @@
                    IsColorFontEnabled="False">
             
             <Run Text="&#x1f4ce;" 
-                 Foreground="Gray" 
-                 FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=EmbedSymbolFontSize}" />
+                 Foreground="Gray" />
             
             <Run Text="" 
-                 Foreground="{ThemeResource AttachmentNameForeground}"
-                 FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=AttachmentFontSize}" />
+                 Foreground="{ThemeResource AttachmentNameForeground}" />
         </TextBlock>
 
     </Grid>

@@ -96,7 +96,6 @@
                                VerticalAlignment="Center"
 
                                Text="{Binding author_sex, Converter={StaticResource SexToText}}"
-                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=AuthorSexFontSize}"
                                Foreground="{Binding author_sex, Converter={StaticResource SexToColor}}" />
 
             <TextBlock x:Name="AuthorTB"
@@ -106,8 +105,7 @@
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis"
                                
-                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=AuthorFontSize}"
-                               Text="{Binding author}"
+                               Text="{Binding AuthorName}"
                                Foreground="{Binding author_group, Converter={StaticResource GroupToColor}}" />
 
             <TextBlock x:Name="DateTB"
@@ -116,7 +114,6 @@
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Left"
                                
-                               FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=DateFontSize}"
                                Text="{Binding date, Converter={StaticResource DateConverter}}"
                                Foreground="Gray"/>
         </StackPanel>
@@ -129,7 +126,6 @@
                        VerticalAlignment="Center"
                        FontWeight="SemiBold"
                        
-                       FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=VoteFontSize}"
                        Foreground="{Binding user_vote, Converter={StaticResource UserVotedToBrush}}"
                        Visibility="{Binding vote_count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                 <Run Text="+"/><Run Text="{Binding vote_count}" />
@@ -140,7 +136,6 @@
                            Grid.ColumnSpan="2"
                            Grid.Row="1"
                            Margin="6,-2,0,0"
-                           FontSize="{Binding Source={Binding Fonts, Mode=OneWay, Source={StaticResource Locator}}, Path=EntryFontSize}"
                            IsTextSelectionEnabled="False"
                            IsTapEnabled="True"
                            IsTextScaleFactorEnabled="False"
