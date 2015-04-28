@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -110,6 +111,7 @@ namespace Mirko_v2
 
             Frame rootFrame = Window.Current.Content as Frame;
             DispatcherHelper.Initialize();
+            SimpleIoc.Default.GetInstance<SettingsViewModel>().Load();
 
             // expand window size 
             var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
@@ -211,6 +213,9 @@ namespace Mirko_v2
             var deferral = e.SuspendingOperation.GetDeferral();
 
             // TODO: Save application state and stop any background activity
+
+            SimpleIoc.Default.GetInstance<SettingsViewModel>().Save();
+
             deferral.Complete();
         }
     }

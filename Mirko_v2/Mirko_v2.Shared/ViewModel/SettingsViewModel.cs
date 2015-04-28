@@ -16,7 +16,12 @@ namespace Mirko_v2.ViewModel
 
     public class SettingsViewModel : ViewModelBase
     {
-        public WykopAPI.UserInfo UserInfo { get; set; }
+        private WykopAPI.UserInfo _userInfo = null;
+        public WykopAPI.UserInfo UserInfo
+        {
+            get { return _userInfo; }
+            set { Set(() => UserInfo, ref _userInfo, value); }
+        }
 
         public bool FirstRun { get; set; }
         public bool NightMode { get; set; }
@@ -30,6 +35,11 @@ namespace Mirko_v2.ViewModel
         public int HotTimeSpan { get; set; }
 
         public YoutubeApp YTApp { get; set; }
+
+        public SettingsViewModel()
+        {
+            Windows.Storage.ApplicationData.Current.DataChanged += (s, o) => Load();
+        }
 
         public int YTtoInt()
         {
@@ -71,62 +81,62 @@ namespace Mirko_v2.ViewModel
 
         public void Load()
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var localValues = localSettings.Values;
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            var roamingValues = roamingSettings.Values;
 
-            if (localValues.ContainsKey("FirstRun"))
-                FirstRun = (bool)localValues["FirstRun"];
+            if (roamingValues.ContainsKey("FirstRun"))
+                FirstRun = (bool)roamingValues["FirstRun"];
             else
                 FirstRun = true;
 
-            if (localValues.ContainsKey("NightMode"))
-                NightMode = (bool)localValues["NightMode"];
+            if (roamingValues.ContainsKey("NightMode"))
+                NightMode = (bool)roamingValues["NightMode"];
             else
                 NightMode = true;
 
-            if (localValues.ContainsKey("FontScaleFactor"))
-                FontScaleFactor = (double)localValues["FontScaleFactor"];
+            if (roamingValues.ContainsKey("FontScaleFactor"))
+                FontScaleFactor = (double)roamingValues["FontScaleFactor"];
             else
                 FontScaleFactor = 1.0;
 
-            if (localValues.ContainsKey("ShowAvatars"))
-                ShowAvatars = (bool)localValues["ShowAvatars"];
+            if (roamingValues.ContainsKey("ShowAvatars"))
+                ShowAvatars = (bool)roamingValues["ShowAvatars"];
             else
                 ShowAvatars = false;
 
-            if (localValues.ContainsKey("OnlyWIFIDownload"))
-                OnlyWIFIDownload = (bool)localValues["OnlyWIFIDownload"];
+            if (roamingValues.ContainsKey("OnlyWIFIDownload"))
+                OnlyWIFIDownload = (bool)roamingValues["OnlyWIFIDownload"];
             else
                 OnlyWIFIDownload = true;
 
-            if (localValues.ContainsKey("TransparentTile"))
-                TransparentTile = (bool)localValues["TransparentTile"];
+            if (roamingValues.ContainsKey("TransparentTile"))
+                TransparentTile = (bool)roamingValues["TransparentTile"];
             else
                 TransparentTile = true;
 
-            if (localValues.ContainsKey("IsBlacklistEnabled"))
-                IsBlacklistEnabled = (bool)localValues["IsBlacklistEnabled"];
+            if (roamingValues.ContainsKey("IsBlacklistEnabled"))
+                IsBlacklistEnabled = (bool)roamingValues["IsBlacklistEnabled"];
             else
                 IsBlacklistEnabled = true;
 
-            if (localValues.ContainsKey("HotTimeSpan"))
-                HotTimeSpan = (int)localValues["HotTimeSpan"];
+            if (roamingValues.ContainsKey("HotTimeSpan"))
+                HotTimeSpan = (int)roamingValues["HotTimeSpan"];
             else
                 HotTimeSpan = 24;
 
-            if (localValues.ContainsKey("ShowPlus18"))
-                ShowPlus18 = (bool)localValues["ShowPlus18"];
+            if (roamingValues.ContainsKey("ShowPlus18"))
+                ShowPlus18 = (bool)roamingValues["ShowPlus18"];
             else
                 ShowPlus18 = false;
 
-            if (localValues.ContainsKey("YTApp"))
-                YTApp = IntToYT((int)localValues["YTApp"]);
+            if (roamingValues.ContainsKey("YTApp"))
+                YTApp = IntToYT((int)roamingValues["YTApp"]);
             else
                 YTApp = YoutubeApp.NONE;
 
-            if (localSettings.Containers.ContainsKey("UserInfo"))
+            if (roamingSettings.Containers.ContainsKey("UserInfo"))
             {
-                var values = localSettings.Containers["UserInfo"].Values;
+                var values = roamingSettings.Containers["UserInfo"].Values;
                 UserInfo = new WykopAPI.UserInfo();
 
                 UserInfo.AccountKey = (string)values["AccountKey"];
@@ -141,29 +151,33 @@ namespace Mirko_v2.ViewModel
                 UserInfo.PMNotificationsCount = (int)values["PMNotificationsCount"];
 
                 UserInfo.LastToastDate = DateTime.Parse((string)values["LastToastDate"], null, System.Globalization.DateTimeStyles.RoundtripKind);
-
-                App.ApiService.UserInfo = UserInfo;
             }
+            else
+            {
+                UserInfo = null;
+            }
+
+            App.ApiService.UserInfo = UserInfo;
         }
 
         public void Save()
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var localValues = localSettings.Values;
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            var roamingValues = roamingSettings.Values;
 
-            localValues["FirstRun"] = FirstRun;
-            localValues["NightMode"] = NightMode;
-            localValues["FontScaleFactor"] = FontScaleFactor;
-            localValues["ShowAvatars"] = ShowAvatars;
-            localValues["OnlyWIFIDownload"] = OnlyWIFIDownload;
-            localValues["TransparentTile"] = TransparentTile;
+            roamingValues["FirstRun"] = FirstRun;
+            roamingValues["NightMode"] = NightMode;
+            roamingValues["FontScaleFactor"] = FontScaleFactor;
+            roamingValues["ShowAvatars"] = ShowAvatars;
+            roamingValues["OnlyWIFIDownload"] = OnlyWIFIDownload;
+            roamingValues["TransparentTile"] = TransparentTile;
 
-            localValues["IsBlacklistEnabled"] = IsBlacklistEnabled;
+            roamingValues["IsBlacklistEnabled"] = IsBlacklistEnabled;
 
-            localValues["HotTimeSpan"] = HotTimeSpan;
-            localValues["ShowPlus18"] = ShowPlus18;
+            roamingValues["HotTimeSpan"] = HotTimeSpan;
+            roamingValues["ShowPlus18"] = ShowPlus18;
 
-            localValues["YTApp"] = YTtoInt();
+            roamingValues["YTApp"] = YTtoInt();
 
             if (UserInfo != null)
             {
@@ -172,7 +186,7 @@ namespace Mirko_v2.ViewModel
                 //UserInfo.AtNotificationsCount = App.NotificationsViewModel.AtNotificationsCount;
                 //UserInfo.PMNotificationsCount = App.NotificationsViewModel.PMNotificationsCount;
 
-                var container = localSettings.CreateContainer("UserInfo", Windows.Storage.ApplicationDataCreateDisposition.Always);
+                var container = roamingSettings.CreateContainer("UserInfo", Windows.Storage.ApplicationDataCreateDisposition.Always);
                 var values = container.Values;
 
                 values["AccountKey"] = UserInfo.AccountKey;
@@ -192,12 +206,14 @@ namespace Mirko_v2.ViewModel
 
         public void Delete()
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var localValues = localSettings.Values;
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            var roamingValues = roamingSettings.Values;
 
-            localSettings.DeleteContainer("UserInfo");
-            localValues.Clear();
-            Load();
+            roamingSettings.DeleteContainer("UserInfo");
+            roamingValues.Clear();
+
+            UserInfo = null;
+            App.ApiService.UserInfo = null;
         }
     }
 }

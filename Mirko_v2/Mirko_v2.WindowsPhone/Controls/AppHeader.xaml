@@ -112,7 +112,9 @@
                     Grid.Row="0"
                     Margin="0,0,0,4"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Visibility="{Binding Source={StaticResource Locator}, Mode=OneWay, Path=Settings.UserInfo,
+                                 Converter={StaticResource NullToVisibility}}">
             
             <StackPanel.RenderTransform>
                 <TranslateTransform X="0" Y="0" />

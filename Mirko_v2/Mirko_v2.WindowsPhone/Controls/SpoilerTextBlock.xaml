@@ -24,8 +24,7 @@
         <StackPanel>
             <TextBlock x:Name="HiddenTextBlock"
                        Foreground="{ThemeResource SpoilerForeground}"
-                       x:Uid="ShowSpoilerString"
-                       Text="dupa"
+                       Text="pokaż spoiler"
                        Margin="8,4,8,4"
                        FontFamily="Monospace"
                        TextWrapping="Wrap"
@@ -41,7 +40,6 @@
                            FontSize="{Binding Source={StaticResource SpoilerFontSize},
                                               Converter={StaticResource FontSizeScaler},
                                               Mode=OneWay}">
-
             </RichTextBlock>
 
         </StackPanel>
