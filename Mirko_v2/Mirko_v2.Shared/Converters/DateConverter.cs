@@ -12,12 +12,11 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string str)
         {
-            var s = value as string;
-            if (s == null) 
-                return string.Empty;
+            if (value == null)
+                return "";
 
             DateTime now = DateTime.Now;
-            DateTime entryTime = DateTime.Parse(s, null, DateTimeStyles.RoundtripKind);
+            DateTime entryTime = (DateTime)value;
             string result = string.Empty;
 
             var diff = now - entryTime;

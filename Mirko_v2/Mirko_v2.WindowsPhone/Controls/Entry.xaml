@@ -5,8 +5,10 @@
     xmlns:local="using:Mirko_v2.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:common="using:Mirko_v2.Common"
+    xmlns:utils="using:Mirko_v2.Utils"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -30,6 +32,12 @@
     </UserControl.Resources>
     -->
 
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Holding">
+            <utils:OpenEntryMenuFlyout />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+
     <Grid x:Name="EntryGrid"
           VerticalAlignment="Top">
 
@@ -48,29 +56,37 @@
 
         <FlyoutBase.AttachedFlyout>
             <MenuFlyout>
-                <!--
-                <MenuFlyoutItem x:Uid="PlusFlyoutItem"
-                                Click="PlusFlyoutItem_Click" />
-                <MenuFlyoutItem x:Uid="ReplyFlyoutItem"  
-                                Click="ReplyFlyoutItem_Click"/>
-                <MenuFlyoutItem x:Uid="FavouriteFlyoutItem"
-                                Click="FavouriteFlyoutItem_Click"/>
-                <MenuFlyoutItem x:Uid="UnfavouriteFlyoutItem"
-                                Click="FavouriteFlyoutItem_Click"
+                <MenuFlyoutItem Text="daj plusa"
+                                Tag="plus"
+                                Command="{Binding VoteCommand}" />                
+                <MenuFlyoutItem Text="cofnij plusa"
+                                Tag="unplus"
+                                Command="{Binding VoteCommand}"
+                                Visibility="Collapsed"/>
+                
+                <MenuFlyoutItem Text="odpowiedz"
+                                Tag="reply"
+                                Command="{Binding ReplyCommand}"/>
+                
+                <MenuFlyoutItem Text="dodaj do ulubionych"
+                                Tag="favourite"
+                                Command="{Binding FavouriteCommand}"/>
+                <MenuFlyoutItem Text="usuń z ulubionych"
+                                Tag="unfavourite"
+                                Command="{Binding FavouriteCommand}"
                                 Visibility="Collapsed"/>
 
                 <MenuFlyoutItem Foreground="{ThemeResource MenuFlyoutSeparator}"
                                 Text="separator :)"/>
 
-                <MenuFlyoutItem x:Uid="RefreshFlyoutItem"
-                                Click="RefreshFlyoutItem_Click"/>
-                <MenuFlyoutItem x:Uid="EditFlyoutItem"
-                                Click="EditFlyoutItem_Click"
+                <MenuFlyoutItem Text="edytuj"
+                                Tag="edit"
+                                Command="{Binding EditCommand}"
                                 Visibility="Collapsed"/>
-                <MenuFlyoutItem x:Uid="DeleteFlyoutItem"
-                                Click="DeleteFlyoutItem_Click"
+                <MenuFlyoutItem Text="usuń"
+                                Tag="delete"
+                                Command="{Binding DeleteCommand}"
                                 Visibility="Collapsed"/>
-                -->
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
 
@@ -90,59 +106,64 @@
                     x:Name="FirstRowStackPanel">
 
             <TextBlock x:Name="AuthorSexTB"
-                               Margin="6,0,2,0"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-
-                               Text="{Binding author_sex, Converter={StaticResource SexToText}}"
-                               Foreground="{Binding author_sex, Converter={StaticResource SexToColor}}" />
+                       Margin="6,0,2,0"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       
+                       FontSize="18.0"
+                       Text="{Binding EntryData.AuthorSex, Converter={StaticResource SexToText}}"
+                       Foreground="{Binding EntryData.AuthorSex, Converter={StaticResource SexToColor}}" />
 
             <TextBlock x:Name="AuthorTB"
-                               Margin="0,2.5,0,0"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               
-                               Text="{Binding AuthorName}"
-                               Foreground="{Binding author_group, Converter={StaticResource GroupToColor}}" />
+                       Margin="0,2.5,0,0"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       
+                       FontSize="15.0"
+                       Text="{Binding EntryData.AuthorName}"
+                       Foreground="{Binding EntryData.AuthorGroup, Converter={StaticResource GroupToColor}}" />
 
             <TextBlock x:Name="DateTB"
-                               Margin="4,4,0,0"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               HorizontalAlignment="Left"
-                               
-                               Text="{Binding date, Converter={StaticResource DateConverter}}"
-                               Foreground="Gray"/>
+                       Margin="4,4,0,0"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       HorizontalAlignment="Left"
+                       
+                       FontSize="12.0"
+                       Text="{Binding EntryData.Date, Converter={StaticResource DateConverter}}"
+                       Foreground="Gray"/>
         </StackPanel>
 
         <TextBlock x:Name="VoteTB"
-                       Grid.Column="2"
-                       Grid.Row="0"
-                       Margin="0,0,0,0"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontWeight="SemiBold"
-                       
-                       Foreground="{Binding user_vote, Converter={StaticResource UserVotedToBrush}}"
-                       Visibility="{Binding vote_count, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                <Run Text="+"/><Run Text="{Binding vote_count}" />
+                   Grid.Column="2"
+                   Grid.Row="0"
+                   Margin="0,0,0,0"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold"
+                   
+                   FontSize="15.0"
+                   Foreground="{Binding EntryData.Voted, Converter={StaticResource UserVotedToBrush}}"
+                   Visibility="{Binding EntryData.VoteCount, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                <Run Text="+"/><Run Text="{Binding EntryData.VoteCount}" />
         </TextBlock>
 
         <RichTextBlock x:Name="BodyRTB"
-                           Grid.Column="1"
-                           Grid.ColumnSpan="2"
-                           Grid.Row="1"
-                           Margin="6,-2,0,0"
-                           IsTextSelectionEnabled="False"
-                           IsTapEnabled="True"
-                           IsTextScaleFactorEnabled="False"
-                           IsDoubleTapEnabled="True"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Stretch"
-                           common:Properties.Html="{Binding body}"/>
+                       Grid.Column="1"
+                       Grid.ColumnSpan="2"
+                       Grid.Row="1"
+                       Margin="6,-2,0,0"
+                       IsTextSelectionEnabled="False"
+                       IsTapEnabled="True"
+                       IsTextScaleFactorEnabled="False"
+                       IsDoubleTapEnabled="True"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Stretch"
+                       FontSize="14.0"
+                       utils:Properties.Html="{Binding EntryData.Text}"/>
 
         <Grid x:Name="EmbedPreviewGrid"
               Grid.Column="1"
@@ -152,12 +173,12 @@
               Margin="5,0,0,0"
               HorizontalAlignment="Stretch"
               Background="Transparent"
-              Visibility="{Binding Converter={StaticResource NullToVisibility}}">
+              Visibility="{Binding Path=EntryData.Embed, Converter={StaticResource NullToVisibility}}">
             
             <controls:EntryEmbed x:Name="EmbedPreview"
                                  HorizontalAlignment="Left"
                                  NavigateTo="Embed_NavigateTo"
-                                 DataContext="{Binding embed}"/>
+                                 DataContext="{Binding EntryData.Embed}"/>
         </Grid>
 
         <Grid x:Name="RightSpacer"

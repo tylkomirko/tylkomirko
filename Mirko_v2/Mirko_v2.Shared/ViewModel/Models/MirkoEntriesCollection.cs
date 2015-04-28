@@ -9,14 +9,13 @@ using Mirko_v2.Utils;
 
 namespace Mirko_v2.ViewModel
 {
-    public class MirkoEntrySource : IIncrementalSource<Entry>
+    public class MirkoEntrySource : IIncrementalSource<EntryViewModel>
     {
         private List<Entry> cache = new List<Entry>(50);
 
-        public async Task<IEnumerable<Entry>> GetPagedItems(int pageIndex, int pageSize)
+        public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageIndex, int pageSize)
         {
-            //StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
-            // FIXME
+            await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
             var entriesToReturn = new List<Entry>(pageSize);
             int entriesInCache = cache.Count();
@@ -105,10 +104,13 @@ namespace Mirko_v2.ViewModel
                 entries.Clear();
             }
 
-            // FIXME
-            //StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgress();
 
-            return entriesToReturn;
+            var VMs = new List<EntryViewModel>(entriesToReturn.Count);
+            foreach(var entry in entriesToReturn)
+                VMs.Add(new EntryViewModel(entry));
+
+            return VMs;
         }
     }
 }

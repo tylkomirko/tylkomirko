@@ -8,7 +8,7 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string str)
         {
-            int? count = (int?)value;
+            var count = (uint?)value;
             if (count > 0)
                 return Visibility.Visible;
             else

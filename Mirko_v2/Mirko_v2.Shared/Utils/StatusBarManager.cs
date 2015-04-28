@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
@@ -19,7 +21,7 @@ namespace Mirko_v2.Utils
 
         private static Action<StatusBarProgressIndicator> ShowProgressIndicator = new Action<StatusBarProgressIndicator>(async prog =>
         {
-            await prog.ShowAsync();
+            await DispatcherHelper.RunAsync(async () => await prog.ShowAsync());
         });
 
         private static Action<StatusBarProgressIndicator> HideProgressIndicator = new Action<StatusBarProgressIndicator>(async prog =>
@@ -47,66 +49,91 @@ namespace Mirko_v2.Utils
             ShowProgressIndicator(statusBar.ProgressIndicator);
         }
 
-        public static void ShowText(string txt)
+        public static async Task ShowText(string txt)
         {
-            var statusBar = StatusBar.GetForCurrentView();
-
-            statusBar.ProgressIndicator.Text = txt;
-            statusBar.ProgressIndicator.ProgressValue = 0.0;
-
-            if (Timer.IsEnabled)
+            await DispatcherHelper.RunAsync(() =>
             {
-                Timer.Stop();
-                Timer.Start();
+                var statusBar = StatusBar.GetForCurrentView();
 
-                Timer.Tick += Timer_Tick;
-            }
-            else
+                statusBar.ProgressIndicator.Text = txt;
+                statusBar.ProgressIndicator.ProgressValue = 0.0;
+
+                if (Timer.IsEnabled)
+                {
+                    Timer.Stop();
+                    Timer.Start();
+
+                    Timer.Tick += Timer_Tick;
+                }
+                else
+                {
+                    Timer.Start();
+                    Timer.Tick += Timer_Tick;
+                }
+            });            
+        }
+
+        public static async Task<string> GetText()
+        {
+            string text = null;
+
+            await DispatcherHelper.RunAsync(() =>
             {
-                Timer.Start();
-                Timer.Tick += Timer_Tick;
-            }
+                var statusBar = StatusBar.GetForCurrentView();
+                text = statusBar.ProgressIndicator.Text;
+            });
+
+            return text;
         }
 
-        public static string GetText()
+        public static async Task ShowTextAndProgress(string txt)
         {
-            var statusBar = StatusBar.GetForCurrentView();
-            return statusBar.ProgressIndicator.Text;
+            await DispatcherHelper.RunAsync(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                
+                statusBar.BackgroundOpacity = 0.9;
+                statusBar.ProgressIndicator.Text = txt;
+                statusBar.ProgressIndicator.ProgressValue = null;
+            });
         }
 
-        public static void ShowTextAndProgress(string txt)
+        public static async Task HideStatusBar()
         {
-            var statusBar = StatusBar.GetForCurrentView();
-
-            statusBar.BackgroundOpacity = 0.9;
-            statusBar.ProgressIndicator.Text = txt;
-            statusBar.ProgressIndicator.ProgressValue = null;
+            await DispatcherHelper.RunAsync(async () => 
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                await statusBar.HideAsync();
+            });
         }
 
-        public static void HideStatusBar()
+        public static async Task ShowStatusBar()
         {
-            var statusBar = StatusBar.GetForCurrentView();
-            HideSB(statusBar);
+            await DispatcherHelper.RunAsync(async () =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                await statusBar.ShowAsync();
+            });
         }
 
-        public static void ShowStatusBar()
+        public static async Task ShowProgress()
         {
-            var statusBar = StatusBar.GetForCurrentView();
-            ShowSB(statusBar);
+            await DispatcherHelper.RunAsync(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                statusBar.ProgressIndicator.Text = " ";
+                statusBar.ProgressIndicator.ProgressValue = null;
+            });
         }
 
-        public static void ShowProgress()
+        public static async Task HideProgress()
         {
-            var statusBar = StatusBar.GetForCurrentView();
-            statusBar.ProgressIndicator.Text = " ";
-            statusBar.ProgressIndicator.ProgressValue = null;
-        }
-
-        public static void HideProgress()
-        {
-            var statusBar = StatusBar.GetForCurrentView();
-            statusBar.ProgressIndicator.ProgressValue = 0.0;
-            statusBar.ProgressIndicator.Text = " ";
+            await DispatcherHelper.RunAsync(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                statusBar.ProgressIndicator.ProgressValue = 0.0;
+                statusBar.ProgressIndicator.Text = " ";
+            });
         }
     }
 }

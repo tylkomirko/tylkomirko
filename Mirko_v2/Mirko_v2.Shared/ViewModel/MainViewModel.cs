@@ -2,6 +2,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using WykopAPI.Models;
 using Mirko_v2.Utils;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 
 namespace Mirko_v2.ViewModel
 {
@@ -26,20 +28,48 @@ namespace Mirko_v2.ViewModel
 
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+
         }
 
-        private IncrementalLoadingCollection<MirkoEntrySource, Entry> _mirkoEntries = null;
-        public IncrementalLoadingCollection<MirkoEntrySource, Entry> MirkoEntries
+        private IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> _mirkoEntries = null;
+        public IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> MirkoEntries
         {
-            get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, Entry>()); }
+            get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel>()); }
         }
+
+        private RelayCommand _addNewEntryCommand;
+        public RelayCommand AddNewEntryCommand
+        {
+            get { return _addNewEntryCommand ?? (_addNewEntryCommand = new RelayCommand(ExecuteAddNewEntryCommand)); }
+        }
+
+        private void ExecuteAddNewEntryCommand()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _settingsCommand;
+        public RelayCommand SettingsCommand
+        {
+            get { return _settingsCommand ?? (_settingsCommand = new RelayCommand(ExecuteSettingsCommand)); }
+        }
+
+        private void ExecuteSettingsCommand()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _logInOutCommand;
+        public RelayCommand LogInOutCommand
+        {
+            get { return _logInOutCommand ?? (_logInOutCommand = new RelayCommand(ExecuteLogInOutCommand)); }
+        }
+
+        private void ExecuteLogInOutCommand()
+        {
+            if(App.ApiService.UserInfo == null)
+                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("LoginPage");
+        }
+        
     }
 }

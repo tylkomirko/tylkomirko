@@ -2,6 +2,7 @@
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using WykopAPI.Models;
 
 namespace Mirko.Converters
 {
@@ -9,10 +10,11 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string str)
         {
+            UserSex s = (UserSex)value;
             Color c;
-            if (value as string == "male")
+            if (s == UserSex.Male)
                 c = Color.FromArgb(255, 70, 171, 242);
-            else if (value as string == "female")
+            else if (s == UserSex.Female)
                 c = Color.FromArgb(255, 242, 70, 208);
             else
                 c = Color.FromArgb(0, 0, 0, 0);

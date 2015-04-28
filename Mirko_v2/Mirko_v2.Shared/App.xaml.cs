@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -107,6 +109,12 @@ namespace Mirko_v2
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
+            DispatcherHelper.Initialize();
+
+            // expand window size 
+            var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
+            StatusBarManager.Init();
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -117,6 +125,7 @@ namespace Mirko_v2
                 
                 var navService = new NavigationService();
                 navService.Configure("MainPage", typeof(MainPage));
+                navService.Configure("LoginPage", typeof(LoginPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application

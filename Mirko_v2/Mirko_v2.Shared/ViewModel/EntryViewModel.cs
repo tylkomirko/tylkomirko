@@ -11,13 +11,62 @@ namespace Mirko_v2.ViewModel
     {
         public Entry EntryData { get; set; }
 
-        private RelayCommand<Entry> _replyCommand = null;
-        public RelayCommand<Entry> ReplyCommand
+        public EntryViewModel(Entry d)
         {
-            get { return _replyCommand ?? (_replyCommand = new RelayCommand<Entry>(ExecuteReplyCommand)); }
+            EntryData = d;
         }
 
-        private void ExecuteReplyCommand(Entry obj)
+        private RelayCommand _voteCommand = null;
+        public RelayCommand VoteCommand
+        {
+            get { return _voteCommand ?? (_voteCommand = new RelayCommand(ExecuteVoteCommand));  }
+        }
+
+        private void ExecuteVoteCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        private RelayCommand _replyCommand = null;
+        public RelayCommand ReplyCommand
+        {
+            get { return _replyCommand ?? (_replyCommand = new RelayCommand(ExecuteReplyCommand)); }
+        }
+
+        private void ExecuteReplyCommand()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _favouriteCommand = null;
+        public RelayCommand FavouriteCommand
+        {
+            get { return _favouriteCommand ?? (_replyCommand = new RelayCommand(ExecuteFavouriteCommand)); }
+        }
+
+        private void ExecuteFavouriteCommand()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _editCommand = null;
+        public RelayCommand EditCommand
+        {
+            get { return _editCommand ?? (_replyCommand = new RelayCommand(ExecuteEditCommand)); }
+        }
+
+        private void ExecuteEditCommand()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _deleteCommand = null;
+        public RelayCommand DeleteCommand
+        {
+            get { return _deleteCommand ?? (_replyCommand = new RelayCommand(ExecuteDeleteCommand)); }
+        }
+
+        private void ExecuteDeleteCommand()
         {
             throw new System.NotImplementedException();
         }

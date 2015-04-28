@@ -4,7 +4,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
-namespace Mirko_v2.Common
+namespace Mirko_v2.Utils
 {
     public static class VisualTreeExtensions
     {

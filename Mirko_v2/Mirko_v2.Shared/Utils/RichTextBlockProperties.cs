@@ -16,7 +16,7 @@ using WykopAPI;
 using WykopAPI.JSON;
 using WykopAPI.Models;
 
-namespace Mirko_v2.Common
+namespace Mirko_v2.Utils
 {
     public class Properties : DependencyObject
     {

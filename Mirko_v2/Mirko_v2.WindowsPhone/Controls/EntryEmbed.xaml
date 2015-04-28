@@ -13,17 +13,20 @@
     <Grid x:Name="EntryEmbedGrid"
           HorizontalAlignment="Stretch">
 
-        <controls:CachedImage x:Name="Image" />
+        <controls:CachedImage x:Name="Image"
+                              Uri="{Binding PreviewURL}"/>
 
         <TextBlock x:Name="AttachmentTB"
                    Visibility="Collapsed"
                    TextTrimming="CharacterEllipsis"
                    IsColorFontEnabled="False">
             
-            <Run Text="&#x1f4ce;" 
+            <Run Text="&#x1f4ce;"
+                 FontSize="16.0"
                  Foreground="Gray" />
             
-            <Run Text="" 
+            <Run Text=""
+                 FontSize="13.0"
                  Foreground="{ThemeResource AttachmentNameForeground}" />
         </TextBlock>
 

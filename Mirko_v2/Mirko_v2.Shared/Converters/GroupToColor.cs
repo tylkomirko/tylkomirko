@@ -5,6 +5,7 @@ using System;
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using WykopAPI.Models;
 
 namespace Mirko.Converters
 {
@@ -15,29 +16,29 @@ namespace Mirko.Converters
             Color c;
             var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-            switch((int)value){
-                case 0: // zielonki
+            switch((UserGroup)value){
+                case UserGroup.Green: // zielonki
                     c = Color.FromArgb(255, 51, 153, 51);
                     break;
-                case 1: // pomarancze
+                case UserGroup.Orange: // pomarancze
                     c = Color.FromArgb(255, 255, 89, 23);
                     break;
-                case 2: // bordo
+                case UserGroup.Maroon: // bordo
                     c = Color.FromArgb(255, 187, 0, 0);
                     break;
-                case 5: // biali
+                case UserGroup.Admin: // biali
                     if (settingsVM.NightMode)
                         c = Color.FromArgb(255, 255, 255, 255);
                     else
                         c = Color.FromArgb(255, 0, 0, 0);
                     break;
-                case 1001: // zbanowani
+                case UserGroup.Banned: // zbanowani
                     c = Color.FromArgb(255, 153, 153, 153);
                     break;
-                case 1002: // usunieci
+                case UserGroup.Deleted: // usunieci
                     c = Color.FromArgb(255, 153, 153, 153);
                     break;
-                case 2001: // niebiescy
+                case UserGroup.Client: // niebiescy
                     c = Color.FromArgb(255, 63, 111, 160);
                     break;
             }
