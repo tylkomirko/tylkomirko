@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 
@@ -22,6 +23,7 @@ namespace WykopAPI.Models
         Client
     };
 
+    [ImplementPropertyChanged]
     public class Entry
     {
         [JsonProperty("id")]

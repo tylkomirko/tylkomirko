@@ -22,9 +22,13 @@ namespace Mirko_v2.ViewModel
             get { return _voteCommand ?? (_voteCommand = new RelayCommand(ExecuteVoteCommand));  }
         }
 
-        private void ExecuteVoteCommand()
+        private async void ExecuteVoteCommand()
         {
-            throw new NotImplementedException();
+            var reply = await App.ApiService.voteEntry(id: EntryData.ID, upVote: !EntryData.Voted);
+
+            EntryData.VoteCount = (uint)reply.vote;
+            EntryData.Voted = !EntryData.Voted;
+            EntryData.Voters = reply.Voters;
         }
 
         private RelayCommand _replyCommand = null;
