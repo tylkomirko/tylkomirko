@@ -12,8 +12,9 @@ namespace Mirko_v2.ViewModel
     public class MirkoEntrySource : IIncrementalSource<EntryViewModel>
     {
         private List<Entry> cache = new List<Entry>(50);
+        private int pageIndex = 0;
 
-        public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageIndex, int pageSize)
+        public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize)
         {
             await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
