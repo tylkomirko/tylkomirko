@@ -1,5 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,10 +13,19 @@ namespace Mirko_v2.ViewModel
     public class EntryViewModel : ViewModelBase
     {
         public Entry EntryData { get; set; }
+        public EmbedViewModel EmbedVM { get; set; }
 
         public EntryViewModel(Entry d)
         {
+            EmbedVM = new EmbedViewModel(d.Embed);
             EntryData = d;
+            EntryData.Embed = null;
+        }
+
+        public void GoToEntryPage()
+        {
+            Messenger.Default.Send<EntryViewModel>(this, "Entry UserControl");
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
         }
 
         private RelayCommand _voteCommand = null;

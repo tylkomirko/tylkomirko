@@ -8,10 +8,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,6 +34,7 @@ namespace Mirko_v2
     {
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
+        private ContinuationManager continuationManager;
 #endif
 
         private static WykopAPI.WykopAPI _apiService = null;
@@ -125,9 +128,11 @@ namespace Mirko_v2
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = CreateRootFrame();
                 
-                var navService = new NavigationService();
-                navService.Configure("MainPage", typeof(MainPage));
-                navService.Configure("LoginPage", typeof(LoginPage));
+                var navService = new Mirko_v2.ViewModel.NavigationService();
+                navService.RegisterPage("MainPage", typeof(MainPage));
+                navService.RegisterPage("LoginPage", typeof(LoginPage));
+                navService.RegisterPage("EntryPage", typeof(EntryPage));
+                navService.RegisterPage("EmbedPage", typeof(EmbedPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application
@@ -177,10 +182,14 @@ namespace Mirko_v2
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
+                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("MainPage");
+
+                /*
                 if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }
+                 * */
             }
 
             // Ensure the current window is active
@@ -188,6 +197,25 @@ namespace Mirko_v2
         }
 
 #if WINDOWS_PHONE_APP
+        private async Task RestoreStatusAsync(ApplicationExecutionState previousExecutionState)
+        {
+            // Do not repeat app initialization when the Window already has content, 
+            // just ensure that the window is active 
+            if (previousExecutionState == ApplicationExecutionState.Terminated)
+            {
+                // Restore the saved session state only when appropriate 
+                try
+                {
+                    await SuspensionManager.RestoreAsync();
+                }
+                catch (SuspensionManagerException)
+                {
+                    //Something went wrong restoring state. 
+                    //Assume there is no state and continue 
+                }
+            }
+        } 
+
         /// <summary>
         /// Restores the content transitions after the app has launched.
         /// </summary>
@@ -199,6 +227,34 @@ namespace Mirko_v2
             rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection();// { new NavigationThemeTransition() };
             rootFrame.Navigated -= this.RootFrame_FirstNavigated;
         }
+
+        /// <summary> 
+        /// Handle OnActivated event to deal with File Open/Save continuation activation kinds 
+        /// </summary> 
+        /// <param name="e">Application activated event arguments, it can be casted to proper sub-type based on ActivationKind</param> 
+        protected async override void OnActivated(IActivatedEventArgs e)
+        {
+            base.OnActivated(e);
+
+            continuationManager = new ContinuationManager();
+
+            Frame rootFrame = CreateRootFrame();
+            await RestoreStatusAsync(e.PreviousExecutionState);
+
+            if (rootFrame.Content == null)
+            {
+                rootFrame.Navigate(typeof(MainPage));
+            }
+
+            var continuationEventArgs = e as IContinuationActivatedEventArgs;
+            if (continuationEventArgs != null)
+            {
+                // Call ContinuationManager to handle continuation activation 
+                continuationManager.Continue(continuationEventArgs);
+            }
+
+            Window.Current.Activate();
+        } 
 #endif
 
         /// <summary>

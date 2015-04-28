@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirko_v2.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -117,7 +118,7 @@ namespace Mirko_v2.Controls
             url = url.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
 
             var control = d as CachedImage;
-            var fullURL = (control.DataContext as Embed).URL;
+            var fullURL = (control.DataContext as EmbedViewModel).EmbedData.URL;
             bool downloadFromNet = false;
 
             var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;

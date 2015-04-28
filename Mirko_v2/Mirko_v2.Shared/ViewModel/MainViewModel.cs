@@ -4,6 +4,7 @@ using WykopAPI.Models;
 using Mirko_v2.Utils;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Mirko_v2.ViewModel
 {
@@ -28,13 +29,28 @@ namespace Mirko_v2.ViewModel
 
         public MainViewModel()
         {
-
+            Messenger.Default.Register<EntryViewModel>(this, "Entry UserControl", (e) => SelectedEntry = e);
+            Messenger.Default.Register<EmbedViewModel>(this, "Embed UserControl", (e) => SelectedEmbed = e);
         }
 
         private IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> _mirkoEntries = null;
         public IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> MirkoEntries
         {
             get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel>()); }
+        }
+
+        private EntryViewModel _selectedEntry = null;
+        public EntryViewModel SelectedEntry
+        {
+            get { return _selectedEntry; }
+            set { Set(() => SelectedEntry, ref _selectedEntry, value); }
+        }
+
+        private EmbedViewModel _selectedEmbed = null;
+        public EmbedViewModel SelectedEmbed
+        {
+            get { return _selectedEmbed; }
+            set { Set(() => SelectedEmbed, ref _selectedEmbed, value); }
         }
 
         private RelayCommand _addNewEntryCommand;

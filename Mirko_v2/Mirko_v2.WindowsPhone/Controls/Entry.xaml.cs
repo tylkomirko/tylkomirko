@@ -1,9 +1,12 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -20,6 +23,8 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class Entry : UserControl
     {
+        private bool singleTap;
+
         public WykopAPI.Models.Entry EntryData
         {
             get { return (WykopAPI.Models.Entry)GetValue(EntryDataProperty); }
@@ -77,6 +82,29 @@ namespace Mirko_v2.Controls
         public Entry()
         {
             this.InitializeComponent();
+        }
+
+        private async void UserControl_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            singleTap = true;
+            await Task.Delay(100); // ugly trick, I know
+
+            if (this.IsTapEnabled && singleTap)
+            {
+                if (DataContext != null)
+                    (DataContext as EntryViewModel).GoToEntryPage();
+            }
+        }
+
+        private void UserControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if (e != null)
+                e.Handled = true;
+
+            singleTap = false;
+
+            if (DataContext != null)
+                (DataContext as EntryViewModel).VoteCommand.Execute(null);
         }
     }
 }
