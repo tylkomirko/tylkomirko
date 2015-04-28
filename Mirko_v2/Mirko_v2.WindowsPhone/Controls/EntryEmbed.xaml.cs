@@ -25,25 +25,9 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class EntryEmbed : UserControl
     {
-        public delegate void PageNavigationEventHandler(object sender, PageNavigationEventArgs e);
-        public event PageNavigationEventHandler NavigateTo;
-
         public EntryEmbed()
         {
-            this.InitializeComponent();
-
-            Messenger.Default.Register<string>(this, "Embed opened.", (url) =>
-            {
-                if (DataContext != null)
-                {
-                    var vm = DataContext as EmbedViewModel;
-                    if (vm.EmbedData != null && vm.EmbedData.URL == url)
-                    {
-                        //Image.Visibility = Visibility.Collapsed;
-                        //MediaElement.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    }
-                }
-            });
+            this.InitializeComponent();            
         }
 
         private void UserControl_Tapped(object sender, TappedRoutedEventArgs e)

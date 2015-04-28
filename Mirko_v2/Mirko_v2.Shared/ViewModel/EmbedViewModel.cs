@@ -96,14 +96,9 @@ namespace Mirko_v2.ViewModel
                 var mp4 = await Gfycat.Gfycat.GIFtoMP4(EmbedData.URL);
 
                 if (!string.IsNullOrEmpty(mp4))
-                {
                     MediaElementSrc = mp4;
-                    Messenger.Default.Send<string>(url, "Embed opened.");
-                }
                 else
-                {
                     await StatusBarManager.ShowText("Coś poszło nie tak...");
-                }
             }
             else if (url.Contains("gfycat.com"))
             {
@@ -111,14 +106,9 @@ namespace Mirko_v2.ViewModel
                 var mp4 = await Gfycat.Gfycat.GFYgetURL(url);
 
                 if (!string.IsNullOrEmpty(mp4))
-                {
                     MediaElementSrc = mp4;
-                    Messenger.Default.Send<string>(url, "Embed opened.");
-                }
                 else
-                {
                     await StatusBarManager.ShowText("Coś poszło nie tak...");
-                }
             }
         }
     }

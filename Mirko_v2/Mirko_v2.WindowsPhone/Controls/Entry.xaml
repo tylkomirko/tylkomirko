@@ -190,7 +190,6 @@
             
             <controls:EntryEmbed x:Name="EmbedPreview"
                                  HorizontalAlignment="Left"
-                                 NavigateTo="Embed_NavigateTo"
                                  DataContext="{Binding EmbedVM}"/>
         </Grid>
 
