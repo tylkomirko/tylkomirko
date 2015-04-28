@@ -110,6 +110,62 @@ namespace Mirko_v2.ViewModel
                 else
                     await StatusBarManager.ShowText("Coś poszło nie tak...");
             }
+            else if (url.Contains("youtube"))
+            {
+                string uri = "";
+                var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+
+                if (settingsVM.YTApp != YoutubeApp.NONE)
+                {
+                    var index = url.IndexOf("watch?v=") + 8;
+                    var id = url.Substring(index, 11);
+
+                    if (settingsVM.YTApp == YoutubeApp.TUBECAST)
+                        uri = "tubecast:VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.METROTUBE)
+                        uri = "metrotube:VideoPage?VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.TOIB)
+                        uri = "toib:PlayVideo?VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.MYTUBE)
+                        uri = "mytube:link=www.youtube.com/watch?v=" + id;
+                }
+                else
+                {
+                    uri = url;
+                }
+
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+            }
+            else if (url.Contains("youtu.be"))
+            {
+                string uri = "";
+                var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+
+                if (settingsVM.YTApp != YoutubeApp.NONE)
+                {
+                    var index = url.IndexOf(".be/") + 4;
+                    var id = url.Substring(index, 11);
+
+                    if (settingsVM.YTApp == YoutubeApp.TUBECAST)
+                        uri = "tubecast:VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.METROTUBE)
+                        uri = "metrotube:VideoPage?VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.TOIB)
+                        uri = "toib:PlayVideo?VideoID=" + id;
+                    else if (settingsVM.YTApp == YoutubeApp.MYTUBE)
+                        uri = "mytube:link=www.youtube.com/watch?v=" + id;
+                }
+                else
+                {
+                    uri = url;
+                }
+
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+            }
+            else
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+            }
         }
     }
 }
