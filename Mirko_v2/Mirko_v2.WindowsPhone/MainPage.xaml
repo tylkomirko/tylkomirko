@@ -266,12 +266,19 @@
 
             <AppBarButton Label="dodaj"
                           Icon="Add"
-                          Command="{Binding AddNewEntryCommand}" />
+                          Command="{Binding AddNewEntryCommand}"
+                          Visibility="{Binding ElementName=LogoutButton, Path=Visibility}" />
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="ustawienia"
                               Command="{Binding SettingsCommand}"/>
-                <AppBarButton Label="wyloguj/zaloguj"
+                <AppBarButton Label="wyloguj"
+                              x:Name="LogoutButton"
+                              Visibility="{Binding Settings.UserInfo, Mode=OneWay, Source={StaticResource Locator},
+                                           Converter={StaticResource NullToVisibility}}"
+                              Command="{Binding LogInOutCommand}"/>
+                <AppBarButton Label="zaloguj"
+                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"
                               Command="{Binding LogInOutCommand}"/>
             </CommandBar.SecondaryCommands>
 

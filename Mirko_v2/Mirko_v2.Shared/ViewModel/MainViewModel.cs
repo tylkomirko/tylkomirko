@@ -67,8 +67,17 @@ namespace Mirko_v2.ViewModel
 
         private void ExecuteLogInOutCommand()
         {
-            if(App.ApiService.UserInfo == null)
+            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            if (settingsVM.UserInfo == null)
+            {
+                // login
                 SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("LoginPage");
+            }
+            else
+            {
+                // log out
+                settingsVM.Delete();
+            }
         }
         
     }
