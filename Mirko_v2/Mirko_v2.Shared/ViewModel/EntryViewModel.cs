@@ -48,9 +48,10 @@ namespace Mirko_v2.ViewModel
             get { return _favouriteCommand ?? (_replyCommand = new RelayCommand(ExecuteFavouriteCommand)); }
         }
 
-        private void ExecuteFavouriteCommand()
+        private async void ExecuteFavouriteCommand()
         {
-            throw new System.NotImplementedException();
+            var reply = await App.ApiService.addToFavourites(EntryData.ID);
+            EntryData.Favourite = reply.user_favorite;
         }
 
         private RelayCommand _editCommand = null;
