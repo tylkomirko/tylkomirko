@@ -70,9 +70,10 @@ namespace Mirko_v2.ViewModel
             get { return _settingsCommand ?? (_settingsCommand = new RelayCommand(ExecuteSettingsCommand)); }
         }
 
-        private void ExecuteSettingsCommand()
+        private async void ExecuteSettingsCommand()
         {
-            throw new System.NotImplementedException();
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("SettingsPage");
+            await StatusBarManager.HideStatusBar();
         }
 
         private RelayCommand _logInOutCommand;

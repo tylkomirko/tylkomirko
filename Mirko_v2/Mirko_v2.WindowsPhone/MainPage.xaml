@@ -98,7 +98,8 @@
                             NavigateTo="Entry_NavigateTo"
                             Background="{ThemeResource AppHeaderBackground}"/>
 
-        <Pivot x:Name="MainPivot" 
+        <Pivot x:Name="MainPivot"
+               Loaded="MainPivot_Loaded"
                Grid.Row="1"
                Margin="0,-132.5,0,0"
                HorizontalAlignment="Stretch"
@@ -126,10 +127,12 @@
                 Margin="10,-140,0,0"
                 Header="mirko"
                 Tag="0">
-                <ListView x:Name="MirkoListView"
-                          ItemsSource="{Binding MirkoEntries}"
-                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                          IsItemClickEnabled="False">
+                <controls:ListViewEx x:Name="MirkoListView"
+                                     ScrollingDown="ListView_ScrollingDown"
+                                     ScrollingUp="ListView_ScrollingUp"
+                                     ItemsSource="{Binding MirkoEntries}"
+                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     IsItemClickEnabled="False">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -153,7 +156,7 @@
                                    Fill="Transparent" />
                     </ListView.Footer>
 
-                </ListView>
+                </controls:ListViewEx>
             </PivotItem>
 
             <!--Pivot item two-->

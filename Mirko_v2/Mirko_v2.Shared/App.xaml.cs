@@ -54,6 +54,10 @@ namespace Mirko_v2
             }
         }
 
+        public static bool IsWIFIAvailable { get; set; }
+        public static bool IsNetworkAvailable { get; set; }
+        public static bool HasEntryAnimationPlayed { get; set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -133,6 +137,7 @@ namespace Mirko_v2
                 navService.RegisterPage("LoginPage", typeof(LoginPage));
                 navService.RegisterPage("EntryPage", typeof(EntryPage));
                 navService.RegisterPage("EmbedPage", typeof(EmbedPage));
+                navService.RegisterPage("SettingsPage", typeof(SettingsPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application

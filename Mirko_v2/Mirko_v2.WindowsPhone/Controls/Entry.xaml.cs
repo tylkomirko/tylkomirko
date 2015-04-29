@@ -23,22 +23,7 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class Entry : UserControl
     {
-        private bool singleTap;
-
-        public WykopAPI.Models.Entry EntryData
-        {
-            get { return (WykopAPI.Models.Entry)GetValue(EntryDataProperty); }
-            set { SetValue(EntryDataProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for EntryData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty EntryDataProperty =
-            DependencyProperty.Register("EntryData", typeof(WykopAPI.Models.Entry), typeof(Entry), new PropertyMetadata(null, EntryDataChanged));
-
-        private static void EntryDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }        
+        private bool singleTap; 
 
         public bool ShowComments
         {

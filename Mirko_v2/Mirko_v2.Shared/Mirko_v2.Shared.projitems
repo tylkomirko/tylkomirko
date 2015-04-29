@@ -15,6 +15,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolInverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToString.cs" />
@@ -35,8 +37,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVoteConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\VotersConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\YouTubeApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Cryptography.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Gfycat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\IncrementalLoadingCollection.cs" />
@@ -46,8 +50,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageNavigationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockProperties.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ScrollingDetector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusBarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />

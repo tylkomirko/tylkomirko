@@ -1,14 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Mirko_v2.Utils;
+using System;
 using Windows.UI.Xaml.Controls;
 
-namespace Mirko_v2.Utils
+namespace Mirko_v2.Controls
 {
-    public class ScrollingDetector
+    public class ListViewEx : ListView
     {
-        public Action ScrollingDownAction { get; set; }
-        public Action ScrollingUpAction { get; set; }
-
         private const int OffsetDelta = 24;
         private const int CounterTrigger = 6;
 
@@ -21,10 +18,29 @@ namespace Mirko_v2.Utils
         private int PreviousOffset = 0;
         private int Offset = 0;
 
-        public ScrollingDetector(ScrollViewer ScrollViewer)
+        public event EventHandler ScrollingDown;
+        public delegate void ScrollingDownEventHandler(object sender, EventArgs args);
+        public event EventHandler ScrollingUp;
+        public delegate void ScrollingUpEventHandler(object sender, EventArgs args);
+
+        public ListViewEx()
         {
+            base.Loaded += ListViewEx_Loaded;
+            base.Unloaded += ListViewEx_Unloaded;
+        }
+
+        private void ListViewEx_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var ScrollViewer = this.GetDescendant<ScrollViewer>();
             if (ScrollViewer != null)
                 ScrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+        }
+
+        private void ListViewEx_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) // is this necessary?
+        {
+            var ScrollViewer = this.GetDescendant<ScrollViewer>();
+            if (ScrollViewer != null)
+                ScrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
         }
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -36,7 +52,7 @@ namespace Mirko_v2.Utils
             Offset = newOffset;
 
             var delta = Offset - PreviousOffset;
-           // Debug.WriteLine("delta: " + delta);
+            // Debug.WriteLine("delta: " + delta);
 
             bool callAction = false;
             if (delta > 2)
@@ -54,10 +70,10 @@ namespace Mirko_v2.Utils
 
                 if (callAction && !ScrollingDownCalled)
                 {
-                    Debug.WriteLine("scrolling down");
+                    //Debug.WriteLine("scrolling down");
 
-                    if (ScrollingDownAction != null)
-                        ScrollingDownAction();
+                    if (ScrollingDown != null)
+                        ScrollingDown(this, null);
 
                     ScrollingDownCalled = true;
                     ScrollingUpCalled = false;
@@ -81,10 +97,10 @@ namespace Mirko_v2.Utils
 
                 if (callAction && !ScrollingUpCalled)
                 {
-                    Debug.WriteLine("scrolling up");
+                    //Debug.WriteLine("scrolling up");
 
-                    if (ScrollingUpAction != null)
-                        ScrollingUpAction();
+                    if (ScrollingUp != null)
+                        ScrollingUp(this, null);
 
                     ScrollingUpCalled = true;
                     ScrollingDownCalled = false;

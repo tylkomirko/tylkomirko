@@ -1,16 +1,24 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Mirko_v2.ViewModel
 {
-    public enum YoutubeApp
+    public enum YouTubeApp
     {
-        NONE,
+        [StringValue("Internet Explorer")]
+        IE,
+        [StringValue("TubeCast")]
         TUBECAST,
+        [StringValue("MetroTube")]
         METROTUBE,
+        [StringValue("toib")]
         TOIB,
+        [StringValue("MyTube")]
         MYTUBE,
     };
 
@@ -34,49 +42,27 @@ namespace Mirko_v2.ViewModel
         public bool IsBlacklistEnabled { get; set; }
         public int HotTimeSpan { get; set; }
 
-        public YoutubeApp YTApp { get; set; }
+        private List<string> _youTubeApps;
+        public List<string> YouTubeApps
+        {
+            get { return _youTubeApps; }
+        }
+
+        private YouTubeApp _selectedYouTubeApp = YouTubeApp.IE;
+        public YouTubeApp SelectedYouTubeApp
+        {
+            get { return _selectedYouTubeApp; }
+            set { Set(() => SelectedYouTubeApp, ref _selectedYouTubeApp, value);}
+        }
 
         public SettingsViewModel()
         {
             Windows.Storage.ApplicationData.Current.DataChanged += (s, o) => Load();
-        }
 
-        public int YTtoInt()
-        {
-            switch (YTApp)
-            {
-                case YoutubeApp.NONE:
-                    return 0;
-                case YoutubeApp.TUBECAST:
-                    return 1;
-                case YoutubeApp.METROTUBE:
-                    return 2;
-                case YoutubeApp.TOIB:
-                    return 3;
-                case YoutubeApp.MYTUBE:
-                    return 4;
-                default:
-                    return 404;
-            }
-        }
-
-        public YoutubeApp IntToYT(int id)
-        {
-            switch (id)
-            {
-                case 0:
-                    return YoutubeApp.NONE;
-                case 1:
-                    return YoutubeApp.TUBECAST;
-                case 2:
-                    return YoutubeApp.METROTUBE;
-                case 3:
-                    return YoutubeApp.TOIB;
-                case 4:
-                    return YoutubeApp.MYTUBE;
-                default:
-                    return YoutubeApp.NONE;
-            }
+            var values = Enum.GetValues(typeof(YouTubeApp));
+            _youTubeApps = new List<string>(values.Length);
+            foreach (YouTubeApp value in values)
+                _youTubeApps.Add(value.GetStringValue());
         }
 
         public void Load()
@@ -129,10 +115,10 @@ namespace Mirko_v2.ViewModel
             else
                 ShowPlus18 = false;
 
-            if (roamingValues.ContainsKey("YTApp"))
-                YTApp = IntToYT((int)roamingValues["YTApp"]);
+            if (roamingValues.ContainsKey("YouTubeApp"))
+                Enum.TryParse<YouTubeApp>((string)roamingValues["YouTubeApp"], false, out _selectedYouTubeApp);
             else
-                YTApp = YoutubeApp.NONE;
+                SelectedYouTubeApp = YouTubeApp.IE;
 
             if (roamingSettings.Containers.ContainsKey("UserInfo"))
             {
@@ -177,7 +163,7 @@ namespace Mirko_v2.ViewModel
             roamingValues["HotTimeSpan"] = HotTimeSpan;
             roamingValues["ShowPlus18"] = ShowPlus18;
 
-            roamingValues["YTApp"] = YTtoInt();
+            roamingValues["YouTubeApp"] = SelectedYouTubeApp.ToString();
 
             if (UserInfo != null)
             {
@@ -215,5 +201,25 @@ namespace Mirko_v2.ViewModel
             UserInfo = null;
             App.ApiService.UserInfo = null;
         }
+
+        private RelayCommand _saveCommand = null;
+        public RelayCommand SaveCommand
+        {
+            get { return _saveCommand ?? (_saveCommand = new RelayCommand(() => Save())); }
+        }
+
+        private RelayCommand<int> _youTubeAppChanged = null;
+        public RelayCommand<int> YouTubeAppChanged
+        {
+            get { return _youTubeAppChanged ?? (_youTubeAppChanged = new RelayCommand<int>(ExecuteYouTubeAppChanged)); }
+        }
+
+        private void ExecuteYouTubeAppChanged(int id)
+        {
+            var values = Enum.GetValues(typeof(YouTubeApp)).Cast<YouTubeApp>();
+            SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
+            Save();
+        }
+
     }
 }

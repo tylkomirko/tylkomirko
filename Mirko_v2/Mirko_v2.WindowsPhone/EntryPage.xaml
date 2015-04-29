@@ -9,6 +9,7 @@
     xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding Main.SelectedEntry, Mode=OneWay, Source={StaticResource Locator}}"
     utils:PageOrientation.SupportedOrientations="Portrait">
 
     <Grid Margin="0,25.6,0,-24">
@@ -23,21 +24,36 @@
                             Canvas.ZIndex="1"
                             NavigateTo="Entry_NavigateTo"
                             Background="{ThemeResource AppHeaderBackground}"/>
-        
+
         <ListView x:Name="ListView"
                   Grid.Row="1"
                   Margin="0,-132.5,0,0"
                   HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding EntryData.Comments}"
                   ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                  IsItemClickEnabled="False">
+                  IsItemClickEnabled="False"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling">
             
             <ListView.Header>
                 <DataTemplate>
-                    <controls:Entry EntryData="{Binding Main.SelectedEntry, Mode=OneWay, Source={StaticResource Locator}}" />
+                    <StackPanel>
+                        <Rectangle x:Name="HeaderSpacer"
+                                   Fill="Transparent"
+                                   Height="140"
+                                   Visibility="Visible" />
+                        <controls:Entry DataContext="{Binding}"/>
+                    </StackPanel>                
                 </DataTemplate>
             </ListView.Header>
             
         </ListView>
 
     </Grid>
+    
+    <Page.BottomAppBar>
+        <CommandBar>
+            
+        </CommandBar>
+    </Page.BottomAppBar>
+    
 </Page>

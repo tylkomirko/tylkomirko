@@ -110,23 +110,23 @@ namespace Mirko_v2.ViewModel
                 else
                     await StatusBarManager.ShowText("Coś poszło nie tak...");
             }
-            else if (url.Contains("youtube"))
+            else if (url.Contains("youtube")) // FIXME
             {
                 string uri = "";
                 var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-                if (settingsVM.YTApp != YoutubeApp.NONE)
+                if (settingsVM.SelectedYouTubeApp != YouTubeApp.IE)
                 {
                     var index = url.IndexOf("watch?v=") + 8;
                     var id = url.Substring(index, 11);
 
-                    if (settingsVM.YTApp == YoutubeApp.TUBECAST)
+                    if (settingsVM.SelectedYouTubeApp == YouTubeApp.TUBECAST)
                         uri = "tubecast:VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.METROTUBE)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.METROTUBE)
                         uri = "metrotube:VideoPage?VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.TOIB)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.TOIB)
                         uri = "toib:PlayVideo?VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.MYTUBE)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.MYTUBE)
                         uri = "mytube:link=www.youtube.com/watch?v=" + id;
                 }
                 else
@@ -141,18 +141,18 @@ namespace Mirko_v2.ViewModel
                 string uri = "";
                 var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-                if (settingsVM.YTApp != YoutubeApp.NONE)
+                if (settingsVM.SelectedYouTubeApp != YouTubeApp.IE)
                 {
                     var index = url.IndexOf(".be/") + 4;
                     var id = url.Substring(index, 11);
 
-                    if (settingsVM.YTApp == YoutubeApp.TUBECAST)
+                    if (settingsVM.SelectedYouTubeApp == YouTubeApp.TUBECAST)
                         uri = "tubecast:VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.METROTUBE)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.METROTUBE)
                         uri = "metrotube:VideoPage?VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.TOIB)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.TOIB)
                         uri = "toib:PlayVideo?VideoID=" + id;
-                    else if (settingsVM.YTApp == YoutubeApp.MYTUBE)
+                    else if (settingsVM.SelectedYouTubeApp == YouTubeApp.MYTUBE)
                         uri = "mytube:link=www.youtube.com/watch?v=" + id;
                 }
                 else
