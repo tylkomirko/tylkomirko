@@ -66,6 +66,15 @@ namespace Mirko_v2
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+
+            if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("NightMode"))
+            {
+                bool nightMode = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["NightMode"];
+                if (nightMode)
+                    RequestedTheme = ApplicationTheme.Dark;
+                else
+                    RequestedTheme = ApplicationTheme.Light;
+            }
         }
 
         private Frame CreateRootFrame()
@@ -118,7 +127,6 @@ namespace Mirko_v2
 
             Frame rootFrame = Window.Current.Content as Frame;
             DispatcherHelper.Initialize();
-            SimpleIoc.Default.GetInstance<SettingsViewModel>().Load();
 
             // expand window size 
             var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();

@@ -63,6 +63,8 @@ namespace Mirko_v2.ViewModel
             _youTubeApps = new List<string>(values.Length);
             foreach (YouTubeApp value in values)
                 _youTubeApps.Add(value.GetStringValue());
+
+            Load();
         }
 
         public void Load()
