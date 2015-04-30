@@ -7,7 +7,7 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var count = (int)value;
+            var count = (uint)value;
             if (count > 0)
                 return count.ToString();
             else

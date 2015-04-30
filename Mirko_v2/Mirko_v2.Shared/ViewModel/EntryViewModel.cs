@@ -20,6 +20,7 @@ namespace Mirko_v2.ViewModel
             EmbedVM = new EmbedViewModel(d.Embed);
             EntryData = d;
             EntryData.Embed = null;
+            d = null;
         }
 
         public void GoToEntryPage()

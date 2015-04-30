@@ -1,4 +1,5 @@
-﻿using Mirko_v2.ViewModel;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -121,12 +122,13 @@ namespace Mirko_v2.Controls
             var fullURL = (control.DataContext as EmbedViewModel).EmbedData.URL;
             bool downloadFromNet = false;
 
-            var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            var imgFolder = await localFolder.CreateFolderAsync("imgCache", CreationCollisionOption.OpenIfExists);
+            var localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var imgFolder = await localFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
             StorageFile file = null;
 
             // check if file exists
-            if (App.CachedURIs.Contains(fileName))
+            var cachedImages = SimpleIoc.Default.GetInstance<CacheViewModel>().CachedImages;
+            if (cachedImages.Contains(fileName))
             {
                 // read from file
                 try
@@ -183,7 +185,7 @@ namespace Mirko_v2.Controls
                             saveStream.Position = 0;
                             await saveStream.CopyToAsync(fileStream);
 
-                            App.CachedURIs.Add(fileName);
+                            cachedImages.Add(fileName);
                         }
 
                         stream.Dispose();

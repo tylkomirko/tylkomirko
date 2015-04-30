@@ -1,8 +1,14 @@
-﻿namespace WykopAPI.JSON
+﻿using Newtonsoft.Json;
+
+namespace WykopAPI.Models
 {
     public class Hashtag
     {
-        public string tag { get; set; }
-        public string count { get; set; }
+        [JsonProperty("tag")]
+        public string HashtagName { get; set; }
+
+        [JsonProperty("count")]
+        [JsonConverter(typeof(StringToUIntConverter))]
+        public uint Count { get; set; }
     }
 }

@@ -46,6 +46,8 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<FontsViewModel>();
+            SimpleIoc.Default.Register<NotificationsViewModel>();
+            SimpleIoc.Default.Register<CacheViewModel>();
         }
 
         public MainViewModel Main
@@ -53,14 +55,24 @@ namespace Mirko_v2.ViewModel
             get { return ServiceLocator.Current.GetInstance<MainViewModel>(); }
         }
 
-        public LoginViewModel Login
+        public NotificationsViewModel Notifications
         {
-            get { return ServiceLocator.Current.GetInstance<LoginViewModel>(); }
+            get { return ServiceLocator.Current.GetInstance<NotificationsViewModel>(); }
+        }
+
+        public CacheViewModel Cache
+        {
+            get { return ServiceLocator.Current.GetInstance<CacheViewModel>(); }
         }
 
         public SettingsViewModel Settings
         {
             get { return ServiceLocator.Current.GetInstance<SettingsViewModel>(); }
+        }
+
+        public LoginViewModel Login
+        {
+            get { return ServiceLocator.Current.GetInstance<LoginViewModel>(); }
         }
 
         public FontsViewModel Fonts

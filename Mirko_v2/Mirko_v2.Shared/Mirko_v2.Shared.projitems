@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\YouTubeApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Cryptography.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Gfycat.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
@@ -61,7 +63,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>

@@ -43,17 +43,6 @@ namespace Mirko_v2
             get { return _apiService ?? (_apiService = new WykopAPI.WykopAPI()); }
         }
 
-        private static List<string> _cachedURIs = null;
-        public static List<string> CachedURIs
-        {
-            get
-            {
-                if (_cachedURIs == null)
-                    _cachedURIs = new List<string>();
-                return _cachedURIs;
-            }
-        }
-
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         public static bool HasEntryAnimationPlayed { get; set; }
@@ -146,6 +135,7 @@ namespace Mirko_v2
                 navService.RegisterPage("EntryPage", typeof(EntryPage));
                 navService.RegisterPage("EmbedPage", typeof(EmbedPage));
                 navService.RegisterPage("SettingsPage", typeof(SettingsPage));
+                navService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application
@@ -191,6 +181,8 @@ namespace Mirko_v2
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
+
+                SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
 
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation

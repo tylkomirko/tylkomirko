@@ -5,6 +5,8 @@ using Mirko_v2.Utils;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Messaging;
+using System.Collections.Generic;
+using System;
 
 namespace Mirko_v2.ViewModel
 {
@@ -33,6 +35,7 @@ namespace Mirko_v2.ViewModel
             Messenger.Default.Register<EmbedViewModel>(this, "Embed UserControl", (e) => SelectedEmbed = e);
         }
 
+        #region Properties
         private IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> _mirkoEntries = null;
         public IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> MirkoEntries
         {
@@ -52,7 +55,9 @@ namespace Mirko_v2.ViewModel
             get { return _selectedEmbed; }
             set { Set(() => SelectedEmbed, ref _selectedEmbed, value); }
         }
+        #endregion
 
+        #region Commands
         private RelayCommand _addNewEntryCommand;
         public RelayCommand AddNewEntryCommand
         {
@@ -96,6 +101,7 @@ namespace Mirko_v2.ViewModel
                 settingsVM.Delete();
             }
         }
-        
+        #endregion
+
     }
 }
