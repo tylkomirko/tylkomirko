@@ -1,13 +1,16 @@
 ﻿using MetroLog;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WykopAPI.JSON;
@@ -15,9 +18,19 @@ using WykopAPI.Models;
 
 namespace WykopAPI
 {
-    public class WykopAPI : IDisposable
+    public class WykopAPI : IDisposable, INotifyPropertyChanged
     {
-        public UserInfo UserInfo { get; set; }
+        private UserInfo _userInfo = null;
+        public UserInfo UserInfo
+        {
+            get { return _userInfo; }
+
+            set 
+            { 
+                _userInfo = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string APPKEY { get; private set; }
         public string SECRETKEY { get; private set; }
@@ -71,6 +84,59 @@ namespace WykopAPI
             SECRETKEY = "aJaoASCwx9";
 
             _log = LogManagerFactory.DefaultLogManager.GetLogger<WykopAPI>();
+
+            LoadUserInfo();
+        }
+
+        private void LoadUserInfo()
+        {
+            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
+            var roamingValues = roamingSettings.Values;
+            if (roamingSettings.Containers.ContainsKey("UserInfo"))
+            {
+                var values = roamingSettings.Containers["UserInfo"].Values;
+                UserInfo = new UserInfo();
+
+                UserInfo.AccountKey = (string)values["AccountKey"];
+                UserInfo.UserKey = (string)values["UserKey"];
+                UserInfo.UserName = (string)values["UserName"];
+
+                UserInfo.IsAppRunning = (bool)values["IsAppRunning"];
+                UserInfo.IsPushEnabled = (bool)values["IsPushEnabled"];
+
+                UserInfo.AtNotificationsCount = (int)values["AtNotificationsCount"];
+                UserInfo.HashtagNotificationsCount = (int)values["HashtagNotificationsCount"];
+                UserInfo.PMNotificationsCount = (int)values["PMNotificationsCount"];
+
+                UserInfo.LastToastDate = DateTime.Parse((string)values["LastToastDate"], null, System.Globalization.DateTimeStyles.RoundtripKind);
+            }
+        }
+
+        private void SaveUserInfo()
+        {
+            if (UserInfo != null)
+            {
+                // FIXME
+                //UserInfo.HashtagNotificationsCount = App.NotificationsViewModel.HashtagNotificationsCount;
+                //UserInfo.AtNotificationsCount = App.NotificationsViewModel.AtNotificationsCount;
+                //UserInfo.PMNotificationsCount = App.NotificationsViewModel.PMNotificationsCount;
+
+                var container = Windows.Storage.ApplicationData.Current.RoamingSettings.CreateContainer("UserInfo", Windows.Storage.ApplicationDataCreateDisposition.Always);
+                var values = container.Values;
+
+                values["AccountKey"] = UserInfo.AccountKey;
+                values["UserKey"] = UserInfo.UserKey;
+                values["UserName"] = UserInfo.UserName;
+
+                values["IsAppRunning"] = UserInfo.IsAppRunning;
+                values["IsPushEnabled"] = UserInfo.IsPushEnabled;
+
+                values["AtNotificationsCount"] = UserInfo.AtNotificationsCount;
+                values["HashtagNotificationsCount"] = UserInfo.HashtagNotificationsCount;
+                values["PMNotificationsCount"] = UserInfo.PMNotificationsCount;
+
+                values["LastToastDate"] = UserInfo.LastToastDate.ToString("o");
+            }
         }
 
         public void Dispose()
@@ -352,6 +418,7 @@ namespace WykopAPI
             {
                 UserInfo.UserKey = result.userkey;
                 this.isLoggedIn = true;
+                SaveUserInfo();
                 return true;
             }
             else
@@ -850,5 +917,13 @@ namespace WykopAPI
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
+        }
+
     }
 }

@@ -34,7 +34,10 @@
 
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem x:Uid="DeleteFlyoutItem"/>
+                        <MenuFlyoutItem Text="usuń powiadomienia"
+                                        Command="{Binding DeleteHashtagNotifications, 
+                                                  Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                        CommandParameter="{Binding Name}"/>
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
 
@@ -55,7 +58,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="ListViewItemTemplateNoShift">
+        <DataTemplate x:Key="ListViewItemTemplateNoNumber">
             <Grid>
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="Holding">
@@ -66,7 +69,7 @@
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem Text="usuń powiadomienia"/>
-                        <MenuFlyoutItem x:Uid="UnobserveFlyoutItem" />
+                        <MenuFlyoutItem Text="przestań obserwować" />
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
 
@@ -91,8 +94,8 @@
         <StackPanel Grid.Row="0"
                     Canvas.ZIndex="1"
                     Margin="0,0,0,16">
-            <controls:AppHeader x:Name="AppHeader"                              
-                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+            <controls:AppHeader x:Name="AppHeader"
+                                Background="{ThemeResource AppHeaderBackground}"/>
             <Rectangle Height="1"
                        Opacity="{StaticResource AppBarOpacity}"
                        Fill="{StaticResource PivotHeaderBackground}"/>
@@ -103,11 +106,13 @@
               Grid.Row="1"
               Margin="19,-100,0,-72">
 
-            <ListView x:Name="ListView"
-                      IsItemClickEnabled="True"
-                      ItemTemplate="{StaticResource ListViewItemTemplate}"
-                      ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
-                      ItemsSource="{Binding HashtagsCollection}">
+            <controls:ListViewEx x:Name="ListView"
+                                 ScrollingDown="ListView_ScrollingDown"
+                                 ScrollingUp="ListView_ScrollingUp"
+                                 IsItemClickEnabled="True"
+                                 ItemTemplate="{StaticResource ListViewItemTemplate}"
+                                 ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
+                                 ItemsSource="{Binding HashtagsCollection}">
 
                 <ListView.Transitions>
                     <TransitionCollection>
@@ -125,14 +130,15 @@
                                Fill="Transparent"/>
                 </ListView.Footer>
 
-            </ListView>
+            </controls:ListViewEx>
         </Grid>
     </Grid>
 
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Compact" 
+        <CommandBar x:Name="AppBar"
+                    ClosedDisplayMode="Compact" 
                     Opacity="{StaticResource AppBarOpacity}">
-            <AppBarButton Icon="Find" Label="szukaj"/>
+            <AppBarButton Icon="Find" Label="szukaj" Click="FindHashtag_Click" />
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="usuń wszystkie powiadomienia" />

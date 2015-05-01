@@ -10,6 +10,7 @@ using System.Threading;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Utils;
 
 namespace Mirko_v2.ViewModel
 {
@@ -135,13 +136,33 @@ namespace Mirko_v2.ViewModel
             }
         }
 
-        private RelayCommand _deleteHashtagNotifications = null;
-        public RelayCommand DeleteHashtagNotifications
+        private RelayCommand<string> _deleteHashtagNotifications = null;
+        public RelayCommand<string> DeleteHashtagNotifications
         {
-            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand(ExecuteDeleteHashtagNotifications)); }
+            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>(ExecuteDeleteHashtagNotifications)); }
         }
 
-        private async void ExecuteDeleteHashtagNotifications()
+        private async void ExecuteDeleteHashtagNotifications(string hashtag)
+        {
+            var notifications = HashtagsDictionary[hashtag];
+            var IDs = notifications.Select(x => x.Data.ID);
+
+            foreach (var id in IDs)
+                await App.ApiService.markAsReadNotification(id);
+
+            HashtagsDictionary.Remove(hashtag);
+            await UpdateHashtagDictionary();
+
+            await StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
+        }
+
+        private RelayCommand _deleteAllHashtagNotifications = null;
+        public RelayCommand DeleteAllHashtagNotifications
+        {
+            get { return _deleteAllHashtagNotifications ?? (_deleteAllHashtagNotifications = new RelayCommand(ExecuteDeleteAllHashtagNotifications)); }
+        }
+
+        private async void ExecuteDeleteAllHashtagNotifications()
         {
             await App.ApiService.readHashtagNotifications();
         }
@@ -201,14 +222,14 @@ namespace Mirko_v2.ViewModel
 
             uint count = 0;
 
+            var tmp = new List<HashtagInfoContainer>();
             foreach (var name in orderedNames)
             {
                 var c = (uint)dic[name].Count;
                 if (c > 0)
                 {
                     count += c;
-
-                    this.HashtagsCollection.Add(new HashtagInfoContainer
+                    tmp.Add(new HashtagInfoContainer
                     {
                         Name = name,
                         Count = c,
@@ -216,10 +237,15 @@ namespace Mirko_v2.ViewModel
                 }
             }
 
-            await DispatcherHelper.RunAsync(() => this.HashtagNotificationsCount = count);
+            await DispatcherHelper.RunAsync(() =>
+            {
+                this.HashtagsCollection.AddRange(tmp);
+                this.HashtagNotificationsCount = count;
+            });
+
+            tmp.Clear();
 
             // now add observed hashtags without notifications
-
             var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
             foreach (var tag in observedTags)
             {
@@ -235,11 +261,12 @@ namespace Mirko_v2.ViewModel
                 }
 
                 if (!itemFound)
-                    this.HashtagsCollection.Add(new HashtagInfoContainer() { Name = tag, Count = 0 });
+                    tmp.Add(new HashtagInfoContainer() { Name = tag, Count = 0 });
             }
 
-            // now sort
+            await DispatcherHelper.RunAsync(() => this.HashtagsCollection.AddRange(tmp));
 
+            // now sort
             if (count > 0 || forcedSorting)
             {
                 var groups = this.HashtagsCollection.GroupBy(x => x.Count);

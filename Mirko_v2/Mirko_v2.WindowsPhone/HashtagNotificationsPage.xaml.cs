@@ -45,5 +45,23 @@ namespace Mirko_v2
             //this.Frame.Navigate(typeof(HashtagEntriesPage), tag);
             // FIXME
         }
+
+        private void ListView_ScrollingDown(object sender, EventArgs e)
+        {
+            if (AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
+                AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+        }
+
+        private void ListView_ScrollingUp(object sender, EventArgs e)
+        {
+            if (AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Minimal)
+                AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+        }
+
+        private void FindHashtag_Click(object sender, RoutedEventArgs e)
+        {
+            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
+            flyout.ShowAt(this);
+        }
     }
 }

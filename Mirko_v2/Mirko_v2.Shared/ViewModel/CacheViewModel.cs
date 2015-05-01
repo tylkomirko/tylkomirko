@@ -5,12 +5,32 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Storage;
 using System.Linq;
+using MetroLog;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Mirko_v2.ViewModel
 {
     public class CacheViewModel : ViewModelBase
     {
         private readonly TimeSpan FileLifeSpan = new TimeSpan(24, 0, 0);
+        private Timer SaveTimer = null;
+        private readonly ILogger Logger = null;
+
+        public CacheViewModel()
+        {
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
+            SaveTimer = new Timer(SaveTimerCallback, null, 45*1000, 0); // 45 seconds
+        }
+
+        private async void SaveTimerCallback(object state)
+        {
+            Logger.Info("Saving cache.");
+            await Save();
+
+            SaveTimer.Dispose(); // effectivly this is a one-shot timer
+            SaveTimer = null;
+        }
 
         #region Properties
         private List<string> _cachedImages = null;
@@ -62,6 +82,7 @@ namespace Mirko_v2.ViewModel
             {
                 var folder = await tempFolder.GetFolderAsync("ImageCache");
                 var files = await folder.GetFilesAsync();
+                Logger.Info(files.Count + " images in cache.");
                 CachedImages.AddRange(files.Select(x => x.Name));
                 files = null;
             }
@@ -81,8 +102,16 @@ namespace Mirko_v2.ViewModel
                 else
                 {
                     var fileContent = await FileIO.ReadLinesAsync(file);
-                    PopularHashtags.Clear();
-                    PopularHashtags.AddRange(fileContent);
+                    Logger.Info(fileContent.Count + " entries in PopularTags");
+                    if (fileContent.Count == 0)
+                    {
+                        needToDownload = true;
+                    }
+                    else
+                    {
+                        PopularHashtags.Clear();
+                        PopularHashtags.AddRange(fileContent);
+                    }
                 }
             } 
             catch(Exception)
@@ -92,6 +121,7 @@ namespace Mirko_v2.ViewModel
 
             if (needToDownload)
             {
+                Logger.Info("Downloading PopularHashtags.");
                 var data = await App.ApiService.getPopularTags();
                 PopularHashtags.Clear();
                 PopularHashtags.AddRange(data.Select(x => x.HashtagName));
@@ -99,6 +129,7 @@ namespace Mirko_v2.ViewModel
             }
 
             // ObservedTags
+            needToDownload = false;
             try
             {
                 var file = await tempFolder.GetFileAsync("ObservedTags");
@@ -110,6 +141,7 @@ namespace Mirko_v2.ViewModel
                 else
                 {
                     var fileContent = await FileIO.ReadLinesAsync(file);
+                    Logger.Info(fileContent.Count + " entries in ObservedTags");
                     ObservedHashtags.Clear();
                     ObservedHashtags.AddRange(fileContent);
                 }
@@ -121,11 +153,27 @@ namespace Mirko_v2.ViewModel
 
             if (needToDownload)
             {
+                Logger.Info("Downloading ObservedHashtags.");
                 var data = await App.ApiService.getUserObservedTags();
                 ObservedHashtags.Clear();
                 ObservedHashtags.AddRange(data);
                 data = null;
             }
+        }
+
+        private async Task Save()
+        {
+            var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+
+            // PopularTags
+            var file = await tempFolder.CreateFileAsync("PopularTags", CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteLinesAsync(file, PopularHashtags);
+            Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
+
+            // ObervedTags
+            file = await tempFolder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteLinesAsync(file, ObservedHashtags);
+            Logger.Info("Saved ObservedHashtags, " + ObservedHashtags.Count + " entries.");
         }
         #endregion
     }

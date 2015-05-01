@@ -28,8 +28,6 @@ namespace Mirko_v2.Controls
         public HashtagSuggestionBox()
         {
             this.InitializeComponent();
-
-            this.DataContext = this;
         }
 
         private void GenerateSuggestions(string query)

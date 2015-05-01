@@ -58,6 +58,7 @@ namespace Mirko_v2.ViewModel
         public SettingsViewModel()
         {
             Windows.Storage.ApplicationData.Current.DataChanged += (s, o) => Load();
+            App.ApiService.PropertyChanged += (s, e) => UserInfo = App.ApiService.UserInfo;
 
             var values = Enum.GetValues(typeof(YouTubeApp));
             _youTubeApps = new List<string>(values.Length);
@@ -122,30 +123,7 @@ namespace Mirko_v2.ViewModel
             else
                 SelectedYouTubeApp = YouTubeApp.IE;
 
-            if (roamingSettings.Containers.ContainsKey("UserInfo"))
-            {
-                var values = roamingSettings.Containers["UserInfo"].Values;
-                UserInfo = new WykopAPI.UserInfo();
-
-                UserInfo.AccountKey = (string)values["AccountKey"];
-                UserInfo.UserKey = (string)values["UserKey"];
-                UserInfo.UserName = (string)values["UserName"];
-
-                UserInfo.IsAppRunning = (bool)values["IsAppRunning"];
-                UserInfo.IsPushEnabled = (bool)values["IsPushEnabled"];
-
-                UserInfo.AtNotificationsCount = (int)values["AtNotificationsCount"];
-                UserInfo.HashtagNotificationsCount = (int)values["HashtagNotificationsCount"];
-                UserInfo.PMNotificationsCount = (int)values["PMNotificationsCount"];
-
-                UserInfo.LastToastDate = DateTime.Parse((string)values["LastToastDate"], null, System.Globalization.DateTimeStyles.RoundtripKind);
-            }
-            else
-            {
-                UserInfo = null;
-            }
-
-            App.ApiService.UserInfo = UserInfo;
+            UserInfo = App.ApiService.UserInfo;
         }
 
         public void Save()
@@ -165,31 +143,7 @@ namespace Mirko_v2.ViewModel
             roamingValues["HotTimeSpan"] = HotTimeSpan;
             roamingValues["ShowPlus18"] = ShowPlus18;
 
-            roamingValues["YouTubeApp"] = SelectedYouTubeApp.ToString();
-
-            if (UserInfo != null)
-            {
-                // FIXME
-                //UserInfo.HashtagNotificationsCount = App.NotificationsViewModel.HashtagNotificationsCount;
-                //UserInfo.AtNotificationsCount = App.NotificationsViewModel.AtNotificationsCount;
-                //UserInfo.PMNotificationsCount = App.NotificationsViewModel.PMNotificationsCount;
-
-                var container = roamingSettings.CreateContainer("UserInfo", Windows.Storage.ApplicationDataCreateDisposition.Always);
-                var values = container.Values;
-
-                values["AccountKey"] = UserInfo.AccountKey;
-                values["UserKey"] = UserInfo.UserKey;
-                values["UserName"] = UserInfo.UserName;
-
-                values["IsAppRunning"] = UserInfo.IsAppRunning;
-                values["IsPushEnabled"] = UserInfo.IsPushEnabled;
-
-                values["AtNotificationsCount"] = UserInfo.AtNotificationsCount;
-                values["HashtagNotificationsCount"] = UserInfo.HashtagNotificationsCount;
-                values["PMNotificationsCount"] = UserInfo.PMNotificationsCount;
-
-                values["LastToastDate"] = UserInfo.LastToastDate.ToString("o");
-            }
+            roamingValues["YouTubeApp"] = SelectedYouTubeApp.ToString();           
         }
 
         public void Delete()
@@ -200,7 +154,6 @@ namespace Mirko_v2.ViewModel
             roamingSettings.DeleteContainer("UserInfo");
             roamingValues.Clear();
 
-            UserInfo = null;
             App.ApiService.UserInfo = null;
         }
 

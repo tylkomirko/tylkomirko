@@ -59,10 +59,7 @@ namespace Mirko_v2
             if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("NightMode"))
             {
                 bool nightMode = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["NightMode"];
-                if (nightMode)
-                    RequestedTheme = ApplicationTheme.Dark;
-                else
-                    RequestedTheme = ApplicationTheme.Light;
+                RequestedTheme = nightMode ? ApplicationTheme.Dark : ApplicationTheme.Light;
             }
         }
 
