@@ -95,8 +95,6 @@ namespace Mirko_v2
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
             HideHeader.Begin();
-            if(AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
-                AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
 
             /*
             var CurrentPage = MainPivot.SelectedIndex;
@@ -110,8 +108,6 @@ namespace Mirko_v2
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
             ShowHeader.Begin();
-            if(AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Minimal)
-                AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
 
             /*
             if (CurrentPage == 0 && App.MainViewModel.MirkoNewEntries.Count > 0)

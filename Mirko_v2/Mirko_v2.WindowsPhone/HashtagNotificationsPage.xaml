@@ -107,8 +107,7 @@
               Margin="19,-100,0,-72">
 
             <controls:ListViewEx x:Name="ListView"
-                                 ScrollingDown="ListView_ScrollingDown"
-                                 ScrollingUp="ListView_ScrollingUp"
+                                 AppBar="{Binding ElementName=AppBar}"
                                  IsItemClickEnabled="True"
                                  ItemTemplate="{StaticResource ListViewItemTemplate}"
                                  ItemContainerStyle="{StaticResource StretchedOutListViewItem}"

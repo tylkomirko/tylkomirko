@@ -1,27 +1,21 @@
 ﻿using Mirko_v2.Utils;
 using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Mirko_v2.Controls
 {
     public class ListViewEx : ListView
     {
-        private const int OffsetDelta = 24;
-        private const int CounterTrigger = 6;
+        public CommandBar AppBar
+        {
+            get { return (CommandBar)GetValue(AppBarProperty); }
+            set { SetValue(AppBarProperty, value); }
+        }
 
-        private bool ScrollingDownCalled = false;
-        private bool ScrollingUpCalled = false;
-
-        private int ScrollingUpCounter = 0;
-        private int ScrollingDownCounter = 0;
-
-        private int PreviousOffset = 0;
-        private int Offset = 0;
-
-        public event EventHandler ScrollingDown;
-        public delegate void ScrollingDownEventHandler(object sender, EventArgs args);
-        public event EventHandler ScrollingUp;
-        public delegate void ScrollingUpEventHandler(object sender, EventArgs args);
+        // Using a DependencyProperty as the backing store for AppBar.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AppBarProperty =
+            DependencyProperty.Register("AppBar", typeof(CommandBar), typeof(ListViewEx), new PropertyMetadata(null));      
 
         public ListViewEx()
         {
@@ -42,6 +36,24 @@ namespace Mirko_v2.Controls
             if (ScrollViewer != null)
                 ScrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
         }
+
+        #region Scrolling detection
+        private const int OffsetDelta = 24;
+        private const int CounterTrigger = 6;
+
+        private bool ScrollingDownCalled = false;
+        private bool ScrollingUpCalled = false;
+
+        private int ScrollingUpCounter = 0;
+        private int ScrollingDownCounter = 0;
+
+        private int PreviousOffset = 0;
+        private int Offset = 0;
+
+        public event EventHandler ScrollingDown;
+        public delegate void ScrollingDownEventHandler(object sender, EventArgs args);
+        public event EventHandler ScrollingUp;
+        public delegate void ScrollingUpEventHandler(object sender, EventArgs args);
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
@@ -72,6 +84,12 @@ namespace Mirko_v2.Controls
                 {
                     //Debug.WriteLine("scrolling down");
 
+                    if(AppBar != null)
+                    {
+                        if (AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
+                            AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+                    }
+
                     if (ScrollingDown != null)
                         ScrollingDown(this, null);
 
@@ -99,6 +117,12 @@ namespace Mirko_v2.Controls
                 {
                     //Debug.WriteLine("scrolling up");
 
+                    if (AppBar != null)
+                    {
+                        if (AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Minimal)
+                            AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                    }
+
                     if (ScrollingUp != null)
                         ScrollingUp(this, null);
 
@@ -110,5 +134,6 @@ namespace Mirko_v2.Controls
                 }
             }
         }
+        #endregion
     }
 }
