@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.Linq;
 
 namespace Mirko_v2.ViewModel
 {
@@ -35,9 +36,11 @@ namespace Mirko_v2.ViewModel
         {
             var currentFrame = Window.Current.Content as Frame;
             var nextFrameType = _framesDictionary[key];
-            if (currentFrame != null)
+            if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = null;
+                CurrentPageKey = key;
+
                 currentFrame.Navigate(nextFrameType);
             }
         }
@@ -63,7 +66,12 @@ namespace Mirko_v2.ViewModel
         {
             if (!CanGoBack()) return;
             var frame = Window.Current.Content as Frame;
-            if (frame != null) frame.GoBack();
+            if (frame != null)
+            {
+                frame.GoBack();
+
+                CurrentPageKey = _framesDictionary.Single(x => x.Value == frame.CurrentSourcePageType).Key;
+            }
         }
 
         public void Dispose()
