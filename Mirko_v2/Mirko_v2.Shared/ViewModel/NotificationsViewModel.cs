@@ -144,6 +144,8 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteDeleteHashtagNotifications(string hashtag)
         {
+            if (!HashtagsDictionary.ContainsKey(hashtag)) return;
+
             var notifications = HashtagsDictionary[hashtag];
             var IDs = notifications.Select(x => x.Data.ID);
 
