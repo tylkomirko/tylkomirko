@@ -35,10 +35,5 @@ namespace Mirko_v2
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
-
-        private void Entry_NavigateTo(object sender, Utils.PageNavigationEventArgs e)
-        {
-
-        }
     }
 }

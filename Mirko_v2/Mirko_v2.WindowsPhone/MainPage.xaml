@@ -95,7 +95,6 @@
                             Margin="0,0,0,0"
                             Grid.Row="0"
                             Canvas.ZIndex="1"
-                            NavigateTo="Entry_NavigateTo"
                             Background="{ThemeResource AppHeaderBackground}"/>
 
         <Pivot x:Name="MainPivot"

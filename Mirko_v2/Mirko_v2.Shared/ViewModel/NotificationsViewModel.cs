@@ -36,6 +36,18 @@ namespace Mirko_v2.ViewModel
         }
 
         #region AppHeader commands
+        private RelayCommand _logoTappedCommand = null;
+        public RelayCommand LogoTappedCommand
+        {
+            get { return _logoTappedCommand ?? (_logoTappedCommand = new RelayCommand(ExecuteCommandLogoTapped)); }
+        }
+
+        private void ExecuteCommandLogoTapped()
+        {
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
+            navService.NavigateTo("MainPage");
+        }
+
         private RelayCommand _hashtagTappedCommand = null;
         public RelayCommand HashtagTappedCommand
         {

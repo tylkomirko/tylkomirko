@@ -15,9 +15,6 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class AppHeader : UserControl
     {
-        public delegate void PageNavigationEventHandler(object sender, PageNavigationEventArgs e);
-        public event PageNavigationEventHandler NavigateTo;
-
         public AppHeader()
         {
             this.InitializeComponent();
@@ -50,22 +47,12 @@ namespace Mirko_v2.Controls
             this.PMTB.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 89, 23));
         }
 
-        private void Hashtag_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-
-        }
-
         private void At_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
         }
 
         private void PM_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-
-        }
-
-        private void Logo_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
         }
