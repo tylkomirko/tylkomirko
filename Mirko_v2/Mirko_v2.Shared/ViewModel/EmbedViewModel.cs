@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using WykopAPI.Models;
 
@@ -74,6 +75,30 @@ namespace Mirko_v2.ViewModel
                 var sr = ImageStream.AsRandomAccessStream();
                 Bitmap = new BitmapImage();
                 Bitmap.SetSource(sr);
+            }
+        }
+
+        private RelayCommand _saveImageCommand = null;
+        public RelayCommand SaveImageCommand
+        {
+            get { return _saveImageCommand ?? (_saveImageCommand = new RelayCommand(ExecuteSaveImageCommand)); }
+        }
+
+        private async void ExecuteSaveImageCommand()
+        {
+            if (ImageStream == null || ImageStream.Length == 0) return;
+
+            var folder = KnownFolders.SavedPictures;
+            var fileName = Path.GetFileName(EmbedData.Source);
+
+            var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            using(var fileStream = await file.OpenStreamForWriteAsync())
+            {
+                fileStream.Seek(0, SeekOrigin.Begin);
+                ImageStream.Seek(0, SeekOrigin.Begin);
+                await ImageStream.CopyToAsync(fileStream);
+
+                await StatusBarManager.ShowText("Zapisano obraz.");
             }
         }
 

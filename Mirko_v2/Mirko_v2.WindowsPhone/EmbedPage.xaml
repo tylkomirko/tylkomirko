@@ -21,7 +21,9 @@
     
     <Page.Resources>
         <MenuFlyout x:Key="SaveFlyout">
-            <MenuFlyoutItem Text="zapisz" Click="SaveImage_Click" />
+            <MenuFlyoutItem Text="zapisz" 
+                            Command="{Binding Source={Binding Main.SelectedEmbed, Mode=OneWay, Source={StaticResource Locator}}, 
+                                      Path=SaveImageCommand}" />
         </MenuFlyout>
     </Page.Resources>
 
@@ -36,7 +38,7 @@
                   HorizontalContentAlignment="Stretch"
                   ZoomMode="Enabled">
 
-        <Grid IsHoldingEnabled="True">
+        <Grid IsHoldingEnabled="True">           
             <ProgressRing x:Name="Ring"
                           IsActive="True" />
 
