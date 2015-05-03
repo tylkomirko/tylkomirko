@@ -1,9 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
-using Mirko_v2.Utils;
-using Mirko_v2.ViewModel;
-using System;
-using System.Linq;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -21,7 +17,7 @@ namespace Mirko_v2.Controls
             this.Loaded += AppHeader_Loaded;
         }
 
-        void AppHeader_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void AppHeader_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             var navService = SimpleIoc.Default.GetInstance<INavigationService>();
             switch (navService.CurrentPageKey)
