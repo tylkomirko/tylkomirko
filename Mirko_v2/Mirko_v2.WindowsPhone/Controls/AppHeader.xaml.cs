@@ -1,4 +1,7 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
 using System;
 using System.Linq;
 using Windows.UI;
@@ -18,8 +21,33 @@ namespace Mirko_v2.Controls
         public AppHeader()
         {
             this.InitializeComponent();
+            this.Loaded += AppHeader_Loaded;
+        }
 
-            //this.DataContext = App.NotificationsViewModel;
+        void AppHeader_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
+            switch (navService.CurrentPageKey)
+            {
+                case "HashtagNotificationsPage":
+                    PaintHash();
+                    break;
+            }
+        }
+
+        public void PaintHash()
+        {
+            this.HashTB.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 89, 23));
+        }
+
+        public void PaintAt()
+        {
+            this.AtTB.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 89, 23));
+        }
+
+        public void PaintPM()
+        {
+            this.PMTB.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 89, 23));
         }
 
         private void Hashtag_Tapped(object sender, TappedRoutedEventArgs e)
