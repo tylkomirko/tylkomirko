@@ -114,9 +114,46 @@ namespace Mirko_v2.ViewModel
 
             }
         }
+
+        private RelayCommand _pmTappedCommand = null;
+        public RelayCommand PMTappedCommand
+        {
+            get { return _pmTappedCommand ?? (_pmTappedCommand = new RelayCommand(ExecutePMTappedCommand)); }
+        }
+
+        private void ExecutePMTappedCommand()
+        {
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
+
+            if (PMNotificationsCount == 1)
+            {
+                if (PMNotifications.Count > 0)
+                {
+                    var conversation = PMNotifications.First();
+                    /*
+                    var param = new PMNavigationParameter()
+                    {
+                        UserName = conversation.author,
+                        Sex = conversation.author_sex,
+                        Group = conversation.author_group,
+                    };
+
+                    NavigateTo(this, new PageNavigationEventArgs(typeof(PMPage), param.toString()));*/
+                }
+                else
+                {
+                    PMNotificationsCount = 0;
+                    navService.NavigateTo("ConversationsPage");
+                }
+            }
+            else
+            {
+                navService.NavigateTo("ConversationsPage");
+            }
+        }
         #endregion
 
-        #region Hashtag notifications
+        #region Hashtag
         private uint NewestHashtagNotificationID;
 
         private uint _hashtagNotificationsCount;
@@ -298,6 +335,33 @@ namespace Mirko_v2.ViewModel
         }
         #endregion
 
+        #region PM
+        private uint _pmNotificationsCount = 0;
+        public uint PMNotificationsCount
+        {
+            get { return _pmNotificationsCount; }
+            set { Set(() => PMNotificationsCount, ref _pmNotificationsCount, value); }
+        }
+
+        private ObservableCollectionEx<Notification> _pmNotifications = null;
+        public ObservableCollectionEx<Notification> PMNotifications
+        {
+            get { return _pmNotifications ?? (_pmNotifications = new ObservableCollectionEx<Notification>()); }
+        }
+
+        private ObservableCollectionEx<Conversation> _conversationsList = null;
+        public ObservableCollectionEx<Conversation> ConversationsList
+        {
+            get { return _conversationsList ?? (_conversationsList = new ObservableCollectionEx<Conversation>()); }
+        }
+
+        private ObservableDictionary<string, ObservableCollectionEx<PM>> _conversations = null;
+        public ObservableDictionary<string, ObservableCollectionEx<PM>> Conversations
+        {
+            get { return _conversations ?? (_conversations = new ObservableDictionary<string, ObservableCollectionEx<PM>>()); }
+        }
+        #endregion
+
         private async Task CheckNotifications()
         {
             uint pageIndex = 1;
@@ -327,35 +391,35 @@ namespace Mirko_v2.ViewModel
             } while (true);
 
             // now parse them. first PM
-            /*
             var pmNotifications = newNotifications.Where(x => x.Type == NotificationType.PM);
 
             if (this.ConversationsList.Count == 0)
             {
                 var conversations = await App.ApiService.getConversations();
                 if (conversations != null)
-                    this.ConversationsList.AddRange(VM.Conv.ToVM(conversations));
+                    this.ConversationsList.AddRange(conversations);
             }
 
             this.PMNotifications.Clear();
             foreach (var item in pmNotifications)
             {
-                var userName = item.author;
-                if (userName == App.NotificationsViewModel.CurrentUserName)
-                    continue;
+                var userName = item.AuthorName;
+                //if (userName == App.NotificationsViewModel.CurrentUserName)
+                //    continue;
+                // FIXME?
 
-                var conversation = this.ConversationsList.First(x => x.author == userName);
+                var conversation = this.ConversationsList.First(x => x.AuthorName == userName);
 
                 if (conversation != null)
                 {
-                    if (conversation.status != "new")
-                        conversation.status = "new";
+                    if (conversation.Status != ConversationStatus.New)
+                        conversation.Status = ConversationStatus.New;
                 }
                 else
                 {
-                    var conv = new VM.Conversation();
-                    conv.author = userName;
-                    conv.status = "new";
+                    var conv = new Conversation();
+                    conv.AuthorName = userName;
+                    conv.Status = ConversationStatus.New;
                     this.ConversationsList.Insert(0, conv);
                 }
 
@@ -363,6 +427,7 @@ namespace Mirko_v2.ViewModel
             }
 
             // now the rest
+            /*
             var atNotifications = newNotifications.Where(x => x.type != "pm");
             this.AtNotificationsCount = atNotifications.Count();
 

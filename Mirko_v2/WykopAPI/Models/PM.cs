@@ -3,6 +3,12 @@ using System;
 
 namespace WykopAPI.Models
 {
+    public enum ConversationStatus
+    {
+        Read,
+        New,
+    };
+
     public class Conversation
     {
         [JsonProperty("last_update")]
@@ -19,7 +25,9 @@ namespace WykopAPI.Models
         [JsonConverter(typeof(SexEnumConverter))]
         public UserSex AuthorSex { get; set; }
 
-        public string status { get; set; } // change to something more fitting
+        [JsonProperty("status")]
+        [JsonConverter(typeof(ConversationStatusEnumConverter))]
+        public ConversationStatus Status { get; set; }
 
         /* Removed properties:
          public string author_avatar_big { get; set; }

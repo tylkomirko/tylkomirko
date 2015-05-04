@@ -30,7 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NotificationsCountToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PMDirectionToVisibility.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\PMStatusToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />

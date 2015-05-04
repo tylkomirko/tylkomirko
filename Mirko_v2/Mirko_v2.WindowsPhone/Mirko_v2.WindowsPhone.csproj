@@ -102,6 +102,9 @@
     <Compile Include="Controls\SpoilerTextBlock.xaml.cs">
       <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConversationsPage.xaml.cs">
+      <DependentUpon>ConversationsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EmbedPage.xaml.cs">
       <DependentUpon>EmbedPage.xaml</DependentUpon>
     </Compile>
@@ -163,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SpoilerTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConversationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

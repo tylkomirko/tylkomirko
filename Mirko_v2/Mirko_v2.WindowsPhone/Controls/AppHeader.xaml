@@ -177,8 +177,14 @@
             </Grid>
 
             <Grid Margin="35,5,35,5"
-                  Background="Transparent"
-                  Tapped="PM_Tapped">
+                  Background="Transparent">
+
+                <i:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="Tapped">
+                        <core:InvokeCommandAction Command="{Binding PMTappedCommand}" />
+                    </core:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+
                 <TextBlock x:Name="PMTB"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="28"

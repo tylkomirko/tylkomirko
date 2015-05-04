@@ -13,6 +13,7 @@
     <converters:InvertVisibility x:Key="InvertVisibility" />
     <converters:CountToString x:Key="CountToString" />
     <converters:PMDirectionToVisibility x:Key="PMDirectionToVisibility" />
+    <converters:ConversationStatusToBrush x:Key="ConversationStatusToBrush" />
     <converters:UserVotedToBrush x:Key="UserVotedToBrush" />
     <converters:NewEntriesNumeral x:Key="NewEntriesNumeral" />
     <converters:FontSizeScaler x:Key="FontSizeScaler" />

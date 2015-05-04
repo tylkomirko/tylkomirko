@@ -25,6 +25,10 @@ namespace Mirko_v2.Controls
                 case "HashtagNotificationsPage":
                     PaintHash();
                     break;
+
+                case "ConversationsPage":
+                    PaintPM();
+                    break;
             }
         }
 
@@ -48,10 +52,6 @@ namespace Mirko_v2.Controls
 
         }
 
-        private void PM_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-
-        }
         /*
 
         private void Hashtag_Tapped(object sender, TappedRoutedEventArgs e)

@@ -82,6 +82,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Models\Converters\BoolConverter.cs" />
+    <Compile Include="Models\Converters\ConversationStatusEnumConverter.cs" />
     <Compile Include="Models\Converters\EmbedTypeConverter.cs" />
     <Compile Include="Models\Converters\GroupConverter.cs" />
     <Compile Include="Models\Converters\NotificationTypeConverter.cs" />
