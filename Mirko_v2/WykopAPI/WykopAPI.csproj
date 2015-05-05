@@ -81,6 +81,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="LocalStorage.cs" />
     <Compile Include="Models\Converters\BoolConverter.cs" />
     <Compile Include="Models\Converters\ConversationStatusEnumConverter.cs" />
     <Compile Include="Models\Converters\EmbedTypeConverter.cs" />
@@ -98,7 +99,7 @@
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Replys.cs" />
     <Compile Include="MD5.cs" />
-    <Compile Include="MessageEventArgs.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="NewEntry.cs" />
     <Compile Include="RetryHandler.cs" />
     <Compile Include="Models\TaggedEntries.cs" />

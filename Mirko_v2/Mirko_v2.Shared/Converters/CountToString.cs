@@ -7,11 +7,13 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var count = (uint)value;
-            if (count > 0)
-                return count.ToString();
-            else
-                return string.Empty;
+            string str = string.Empty;
+            if (value is uint && (uint)value > 0)
+                str = ((uint)value).ToString();
+            else if (value is int && (int)value > 0)
+                str = ((int)value).ToString();
+
+            return str;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

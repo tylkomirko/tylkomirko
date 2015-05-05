@@ -125,26 +125,18 @@ namespace Mirko_v2.ViewModel
         {
             var navService = SimpleIoc.Default.GetInstance<INavigationService>();
 
-            if (PMNotificationsCount == 1)
+            if (PMNotifications.Count == 1)
             {
-                if (PMNotifications.Count > 0)
+                var conversation = PMNotifications.First();
+                /*
+                var param = new PMNavigationParameter()
                 {
-                    var conversation = PMNotifications.First();
-                    /*
-                    var param = new PMNavigationParameter()
-                    {
-                        UserName = conversation.author,
-                        Sex = conversation.author_sex,
-                        Group = conversation.author_group,
-                    };
+                    UserName = conversation.author,
+                    Sex = conversation.author_sex,
+                    Group = conversation.author_group,
+                };
 
-                    NavigateTo(this, new PageNavigationEventArgs(typeof(PMPage), param.toString()));*/
-                }
-                else
-                {
-                    PMNotificationsCount = 0;
-                    navService.NavigateTo("ConversationsPage");
-                }
+                NavigateTo(this, new PageNavigationEventArgs(typeof(PMPage), param.toString()));*/
             }
             else
             {
@@ -400,7 +392,7 @@ namespace Mirko_v2.ViewModel
                     this.ConversationsList.AddRange(conversations);
             }
 
-            this.PMNotifications.Clear();
+            var tempPMnotifications = new List<Notification>();
             foreach (var item in pmNotifications)
             {
                 var userName = item.AuthorName;
@@ -423,8 +415,15 @@ namespace Mirko_v2.ViewModel
                     this.ConversationsList.Insert(0, conv);
                 }
 
-                this.PMNotifications.Add(item);
+                tempPMnotifications.Add(item);
             }
+
+            await DispatcherHelper.RunAsync(() =>
+            {
+                this.PMNotifications.Clear();
+                this.PMNotifications.AddRange(tempPMnotifications);
+                tempPMnotifications = null;
+            });
 
             // now the rest
             /*

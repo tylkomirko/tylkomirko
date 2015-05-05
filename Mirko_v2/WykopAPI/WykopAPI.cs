@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
 using WykopAPI.JSON;
 using WykopAPI.Models;
 
@@ -34,6 +35,8 @@ namespace WykopAPI
 
         public string APPKEY { get; private set; }
         public string SECRETKEY { get; private set; }
+        public bool IsWIFIAvailable { get; set; }
+        public bool IsNetworkAvailable { get; set; }
 
         private bool isLoggedIn = false;
         private bool limitExceeded = false;
@@ -61,6 +64,12 @@ namespace WykopAPI
             }
         }
 
+        private LocalStorage _localStorage = null;
+        public LocalStorage LocalStorage
+        {
+            get { return _localStorage ?? (_localStorage = new LocalStorage()); }
+        }
+
         private Timer _limitTimer = null;
         private Timer limitTimer
         {
@@ -78,14 +87,56 @@ namespace WykopAPI
         public delegate void MessageEventHandler(object sender, MessageEventArgs e);
         public event MessageEventHandler MessageReceiver;
 
+        public delegate void NetworkEventHandler(object sender, NetworkEventArgs e);
+        public event NetworkEventHandler NetworkStatusChanged;
+
         public WykopAPI()
         {
             APPKEY = "Q9vny6I5JQ";
             SECRETKEY = "aJaoASCwx9";
 
             _log = LogManagerFactory.DefaultLogManager.GetLogger<WykopAPI>();
+            NetworkInformation.NetworkStatusChanged += (s) =>
+            {
+                CheckConnection();
+                if (NetworkStatusChanged != null)
+                    NetworkStatusChanged(this, new NetworkEventArgs(IsNetworkAvailable, IsWIFIAvailable));
+            };
 
             LoadUserInfo();
+        }
+
+        private void CheckConnection()
+        {
+            try
+            {
+                var internetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+                if (internetConnectionProfile == null)
+                {
+                    IsNetworkAvailable = false;
+                    IsWIFIAvailable = false;
+                }
+                else
+                {
+                    IsNetworkAvailable = true;
+                    /*
+                    MainViewModel.ActionOnCurrentCollection(col =>
+                    {
+                        col._hasMoreItems = true;
+                    });
+                     * */
+
+                    if (internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 71) // wifi
+                        IsWIFIAvailable = true;
+                    else
+                        IsWIFIAvailable = false;
+                }
+            }
+            catch (Exception e)
+            {
+                _log.Error("NetworkStatusChanged", e);
+            }
         }
 
         private void LoadUserInfo()

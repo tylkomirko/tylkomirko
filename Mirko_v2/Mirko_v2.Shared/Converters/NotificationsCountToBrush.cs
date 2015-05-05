@@ -9,9 +9,13 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var count = (uint)value;
+            bool truth = false;
+            if (value is uint)
+                truth = (uint)value > 0;
+            else
+                truth = (int)value > 0;
 
-            if (count > 0)
+            if (truth)
                 return Application.Current.Resources["NotificationsForeground"] as SolidColorBrush;
             else
                 return Application.Current.Resources["NoNotificationsForeground"] as SolidColorBrush;

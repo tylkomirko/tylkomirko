@@ -188,11 +188,11 @@
                 <TextBlock x:Name="PMTB"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="28"
-                           Foreground="{Binding PMNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
+                           Foreground="{Binding PMNotifications.Count, Converter={StaticResource NotificationsCountToBrush}}"
                            IsColorFontEnabled="False"
                            VerticalAlignment="Center">
                     <Run Text="&#x2709;" FontWeight="SemiBold" />
-                    <Run Text="{Binding PMNotificationsCount, Converter={StaticResource CountToString}}" />
+                    <Run Text="{Binding PMNotifications.Count, Converter={StaticResource CountToString}}" />
                 </TextBlock>
             </Grid>
 
