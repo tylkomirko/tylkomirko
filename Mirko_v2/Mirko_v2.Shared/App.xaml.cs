@@ -181,6 +181,7 @@ namespace Mirko_v2
 #endif
 
                 SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
+                App.ApiService.LocalStorage.InitAction();
 
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation

@@ -389,7 +389,10 @@ namespace Mirko_v2.ViewModel
             {
                 var conversations = await App.ApiService.getConversations();
                 if (conversations != null)
+                {
                     this.ConversationsList.AddRange(conversations);
+                    conversations = null;
+                }
             }
 
             var tempPMnotifications = new List<Notification>();

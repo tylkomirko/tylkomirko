@@ -8,6 +8,9 @@ using System.Linq;
 using MetroLog;
 using System.Threading;
 using System.Threading.Tasks;
+using WykopAPI.Models;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Mirko_v2.ViewModel
 {

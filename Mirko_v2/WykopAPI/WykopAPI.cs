@@ -856,13 +856,22 @@ namespace WykopAPI
 
         #region PM
 
-        public async Task<List<Conversation>> getConversations()
+        public async Task<List<Conversation>> getConversations(bool force = false)
         {
+            if (!force)
+            {
+                List<Conversation> tmp = null;
+                tmp = await LocalStorage.ReadConversations();
+                if (tmp != null)
+                    return tmp;
+            }
+
             if (this.limitExceeded)
                 return null;
 
             string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var reply = await deserialize<List<Conversation>>(URL);
+            await LocalStorage.SaveConversations(reply);
 
             if (reply != null)
                 return reply.Where(x => x.AuthorGroup != UserGroup.Deleted).ToList();
