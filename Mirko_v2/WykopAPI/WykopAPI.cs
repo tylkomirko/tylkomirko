@@ -871,7 +871,6 @@ namespace WykopAPI
 
             string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var reply = await deserialize<List<Conversation>>(URL);
-            await LocalStorage.SaveConversations(reply);
 
             if (reply != null)
                 return reply.Where(x => x.AuthorGroup != UserGroup.Deleted).ToList();

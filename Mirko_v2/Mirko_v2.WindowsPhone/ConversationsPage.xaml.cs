@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +27,8 @@ namespace Mirko_v2
         public ConversationsPage()
         {
             this.InitializeComponent();
+
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
         }
 
         /// <summary>
@@ -34,6 +38,16 @@ namespace Mirko_v2
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var newItem = e.ClickedItem as ConversationViewModel;
+            if (newItem == null) return;
+
+            var VM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
+            VM.CurrentConversation = newItem;
+            VM.GoToConversationPageCommand.Execute(null);
         }
     }
 }

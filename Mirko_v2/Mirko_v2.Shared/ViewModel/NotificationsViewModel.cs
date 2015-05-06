@@ -339,19 +339,7 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<Notification> PMNotifications
         {
             get { return _pmNotifications ?? (_pmNotifications = new ObservableCollectionEx<Notification>()); }
-        }
-
-        private ObservableCollectionEx<Conversation> _conversationsList = null;
-        public ObservableCollectionEx<Conversation> ConversationsList
-        {
-            get { return _conversationsList ?? (_conversationsList = new ObservableCollectionEx<Conversation>()); }
-        }
-
-        private ObservableDictionary<string, ObservableCollectionEx<PM>> _conversations = null;
-        public ObservableDictionary<string, ObservableCollectionEx<PM>> Conversations
-        {
-            get { return _conversations ?? (_conversations = new ObservableDictionary<string, ObservableCollectionEx<PM>>()); }
-        }
+        }       
         #endregion
 
         private async Task CheckNotifications()
@@ -383,14 +371,17 @@ namespace Mirko_v2.ViewModel
             } while (true);
 
             // now parse them. first PM
+            var pmVM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
             var pmNotifications = newNotifications.Where(x => x.Type == NotificationType.PM);
 
-            if (this.ConversationsList.Count == 0)
+            if (pmVM.ConversationsList.Count == 0)
             {
                 var conversations = await App.ApiService.getConversations();
                 if (conversations != null)
                 {
-                    this.ConversationsList.AddRange(conversations);
+                    foreach(var item in conversations)
+                        pmVM.ConversationsList.Add(new ConversationViewModel(item));
+
                     conversations = null;
                 }
             }
@@ -403,19 +394,19 @@ namespace Mirko_v2.ViewModel
                 //    continue;
                 // FIXME?
 
-                var conversation = this.ConversationsList.First(x => x.AuthorName == userName);
+                var conversation = pmVM.ConversationsList.First(x => x.Data.AuthorName == userName);
 
                 if (conversation != null)
                 {
-                    if (conversation.Status != ConversationStatus.New)
-                        conversation.Status = ConversationStatus.New;
+                    if (conversation.Data.Status != ConversationStatus.New)
+                        conversation.Data.Status = ConversationStatus.New;
                 }
                 else
                 {
                     var conv = new Conversation();
                     conv.AuthorName = userName;
                     conv.Status = ConversationStatus.New;
-                    this.ConversationsList.Insert(0, conv);
+                    pmVM.ConversationsList.Insert(0, new ConversationViewModel(conv));
                 }
 
                 tempPMnotifications.Add(item);

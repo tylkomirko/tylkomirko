@@ -8,11 +8,10 @@ namespace Mirko.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string str)
         {
-            var count = (uint?)value;
-            if (count > 0)
-                return Visibility.Visible;
+            if (value is uint)
+                return (uint)value > 0 ? Visibility.Visible : Visibility.Collapsed;
             else
-                return Visibility.Collapsed;
+                return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string str)

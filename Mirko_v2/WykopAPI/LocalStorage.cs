@@ -57,7 +57,7 @@ namespace WykopAPI
             {
                 var file = await RootFolder.GetFileAsync("Conversations");
                 var props = await file.GetBasicPropertiesAsync();
-                if (DateTime.Now - props.DateModified > FileLifeSpan)
+                if (DateTime.Now - props.DateModified > new TimeSpan(6, 0, 0))
                     return null;
 
                 _log.Info("Reading Conversations.");
@@ -94,6 +94,10 @@ namespace WykopAPI
             }
             catch (Exception)
             {
+            }
+            finally
+            {
+                conversations = null;
             }
         }
     }

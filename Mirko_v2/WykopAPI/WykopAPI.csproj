@@ -86,6 +86,7 @@
     <Compile Include="Models\Converters\ConversationStatusEnumConverter.cs" />
     <Compile Include="Models\Converters\EmbedTypeConverter.cs" />
     <Compile Include="Models\Converters\GroupConverter.cs" />
+    <Compile Include="Models\Converters\MessageDirectionEnumConverter.cs" />
     <Compile Include="Models\Converters\NotificationTypeConverter.cs" />
     <Compile Include="Models\Converters\SexEnumConverter.cs" />
     <Compile Include="Models\Converters\StringToUIntConverter.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Models\EntryComment.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Hashtag.cs" />
+    <Compile Include="Models\NewEntry.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\PM.cs" />
     <Compile Include="Models\Profile.cs" />

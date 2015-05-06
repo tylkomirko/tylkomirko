@@ -7,10 +7,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:Mirko_v2.Utils"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}"
+    DataContext="{Binding Messages, Mode=OneWay, Source={StaticResource Locator}}"
     utils:PageOrientation.SupportedOrientations="Portrait">
+
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding SaveCommand}" />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
 
     <Grid x:Name="LayoutRoot"
           Margin="0,25.6,0,0">
@@ -39,7 +47,10 @@
             <ListView x:Name="ListView"
                       IsItemClickEnabled="True"
                       ItemsSource="{Binding ConversationsList}"
-                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}">
+                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                      SelectionMode="None"
+                      ItemClick="ListView_ItemClick"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <ListView.Transitions>
                     <TransitionCollection>
@@ -74,8 +85,8 @@
                             <TextBlock Grid.Column="0"
                                        Grid.Row="0"
                                        FontSize="27"
-                                       Text="{Binding AuthorName}"
-                                       Foreground="{Binding AuthorGroup, Converter={StaticResource GroupToColor}}" />
+                                       Text="{Binding Data.AuthorName}"
+                                       Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}" />
 
                             <TextBlock Grid.Column="1"
                                        Grid.Row="0"
@@ -83,7 +94,7 @@
                                        VerticalAlignment="Bottom"
                                        Margin="5,0,0,3.5"
                                        TextTrimming="CharacterEllipsis"
-                                       Text="{Binding LastUpdate, Converter={StaticResource DateConverter}}"
+                                       Text="{Binding Data.LastUpdate, Converter={StaticResource DateConverter}}"
                                        FontSize="15"
                                        Foreground="#404040" />
 
@@ -91,8 +102,17 @@
                                        Grid.Row="1"
                                        TextWrapping="Wrap"
                                        FontSize="14"
-                                       Tag="{Binding AuthorName}"
-                                       Foreground="{Binding Status, Converter={StaticResource ConversationStatusToBrush}}" />
+                                       Tag="{Binding Data.AuthorName}"
+                                       Text="{Binding Data.LastMessage}"
+                                       Foreground="{Binding Data.Status, Converter={StaticResource ConversationStatusToBrush}}">
+                                
+                                <i:Interaction.Behaviors>
+                                    <core:EventTriggerBehavior EventName="DataContextChanged">
+                                        <core:InvokeCommandAction Command="{Binding LoadLastMessageCommand}" />
+                                    </core:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                                
+                            </TextBlock>
 
                         </Grid>
 

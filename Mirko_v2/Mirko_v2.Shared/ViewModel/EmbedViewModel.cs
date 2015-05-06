@@ -50,6 +50,7 @@ namespace Mirko_v2.ViewModel
         public EmbedViewModel(Embed e)
         {
             EmbedData = e;
+            e = null;
         }
 
         public void GoToEmbedPage()

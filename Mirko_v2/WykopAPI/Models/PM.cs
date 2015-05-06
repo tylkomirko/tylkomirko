@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using PropertyChanged;
 using System;
+using System.Collections.Generic;
 
 namespace WykopAPI.Models
 {
@@ -9,6 +11,13 @@ namespace WykopAPI.Models
         New,
     };
 
+    public enum MessageDirection
+    {
+        Sent,
+        Received
+    };
+
+    [ImplementPropertyChanged]
     public class Conversation
     {
         [JsonProperty("last_update")]
@@ -28,6 +37,9 @@ namespace WykopAPI.Models
         [JsonProperty("status")]
         [JsonConverter(typeof(ConversationStatusEnumConverter))]
         public ConversationStatus Status { get; set; }
+
+        public List<PM> Messages { get; set; } // this is not returned by Wypok API
+        public string LastMessage { get; set; } // this is not returned by Wypok API
 
         /* Removed properties:
          public string author_avatar_big { get; set; }
@@ -55,9 +67,16 @@ namespace WykopAPI.Models
         [JsonProperty("body")]
         public string Text { get; set; }
 
-        public string status { get; set; }
-        public string direction { get; set; }
-        public Embed embed { get; set; }
+        [JsonProperty("status")]
+        [JsonConverter(typeof(ConversationStatusEnumConverter))]
+        public ConversationStatus Status { get; set; }
+
+        [JsonProperty("direction")]
+        [JsonConverter(typeof(MessageDirectionEnumConverter))]
+        public MessageDirection Direction { get; set; }
+
+        [JsonProperty("embed")]
+        public Embed Embed { get; set; }
 
         /* Removed properties:
          public string author_avatar_big { get; set; }
