@@ -260,8 +260,8 @@ namespace Mirko_v2.ViewModel
             var dic = this.HashtagsDictionary;
             var orderedNames = dic.Keys.OrderByDescending(x => dic[x].Count).ToList();
 
-            if (this.HashtagsCollection.Count > 0)
-                this.HashtagsCollection.Clear();
+            //if (this.HashtagsCollection.Count > 0)
+            //    await DispatcherHelper.RunAsync(() => this.HashtagsCollection.Clear());
 
             uint count = 0;
 
@@ -282,6 +282,7 @@ namespace Mirko_v2.ViewModel
 
             await DispatcherHelper.RunAsync(() =>
             {
+                this.HashtagsCollection.Clear();
                 this.HashtagsCollection.AddRange(tmp);
                 this.HashtagNotificationsCount = count;
             });
@@ -308,6 +309,7 @@ namespace Mirko_v2.ViewModel
             }
 
             await DispatcherHelper.RunAsync(() => this.HashtagsCollection.AddRange(tmp));
+            tmp = null;
 
             // now sort
             if (count > 0 || forcedSorting)
@@ -315,14 +317,23 @@ namespace Mirko_v2.ViewModel
                 var groups = this.HashtagsCollection.GroupBy(x => x.Count);
                 int itemsToRemove = this.HashtagsCollection.Count();
 
+                var sortedGroups = new List<HashtagInfoContainer>();
+
                 foreach (var group in groups)
                 {
                     var sortedGroup = group.OrderBy(x => x.Name);
-                    this.HashtagsCollection.AddRange(sortedGroup);
+                    sortedGroups.AddRange(sortedGroup);
                 }
 
-                for (int i = 0; i < itemsToRemove; i++)
-                    this.HashtagsCollection.RemoveAt(0);
+                await DispatcherHelper.RunAsync(() =>
+                {
+                    this.HashtagsCollection.AddRange(sortedGroups);
+
+                    for (int i = 0; i < itemsToRemove; i++)
+                        this.HashtagsCollection.RemoveAt(0);
+                });
+
+                sortedGroups = null;
             }
         }
         #endregion
