@@ -84,14 +84,6 @@ namespace Mirko_v2
              * */
         }
 
-        private void Entry_NavigateTo(object sender, PageNavigationEventArgs e)
-        {
-            /*
-            if (NavigateTo != null)
-                NavigateTo(sender, e);
-             * */
-        }
-
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
             HideHeader.Begin();

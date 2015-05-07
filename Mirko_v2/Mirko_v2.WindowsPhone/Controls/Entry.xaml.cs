@@ -63,23 +63,6 @@ namespace Mirko_v2.Controls
             DependencyProperty.Register("IsHot", typeof(bool), typeof(Entry), new PropertyMetadata(false));
         #endregion
 
-        #region Events
-        public delegate void PageNavigationEventHandler(object sender, PageNavigationEventArgs e);
-        public event PageNavigationEventHandler NavigateTo;
-
-        private void Entry_NavigateTo(object sender, PageNavigationEventArgs e)
-        {
-            if (NavigateTo != null)
-                NavigateTo(sender, e);
-        }
-
-        private void Embed_NavigateTo(object sender, PageNavigationEventArgs e)
-        {
-            if (NavigateTo != null)
-                NavigateTo(sender, e);
-        }
-        #endregion
-
         public Entry()
         {
             this.InitializeComponent();            
