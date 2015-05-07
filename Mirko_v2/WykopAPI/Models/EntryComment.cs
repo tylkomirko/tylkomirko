@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace WykopAPI.Models
 {
+    [ImplementPropertyChanged]
     public class EntryComment
     {
         [JsonProperty("id")]

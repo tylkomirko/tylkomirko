@@ -12,14 +12,25 @@ namespace Mirko_v2.ViewModel
 {
     public class EntryViewModel : ViewModelBase
     {
-        public Entry EntryData { get; set; }
+        public Entry Data { get; set; }
+        public ObservableCollectionEx<CommentViewModel> Comments { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
 
         public EntryViewModel(Entry d)
         {
-            EmbedVM = new EmbedViewModel(d.Embed);
-            EntryData = d;
-            EntryData.Embed = null;
+            Data = d;
+            EmbedVM = new EmbedViewModel(Data.Embed);
+
+            if (Data.Comments != null)
+            {
+                Comments = new ObservableCollectionEx<CommentViewModel>();
+                foreach (var com in Data.Comments)
+                    Comments.Add(new CommentViewModel(com));
+
+                Data.Comments = null;
+            }
+
+            Data.Embed = null;
             d = null;
         }
 
@@ -37,11 +48,11 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteVoteCommand()
         {
-            var reply = await App.ApiService.voteEntry(id: EntryData.ID, upVote: !EntryData.Voted);
+            var reply = await App.ApiService.voteEntry(id: Data.ID, upVote: !Data.Voted);
 
-            EntryData.VoteCount = (uint)reply.vote;
-            EntryData.Voted = !EntryData.Voted;
-            EntryData.Voters = reply.Voters;
+            Data.VoteCount = (uint)reply.vote;
+            Data.Voted = !Data.Voted;
+            Data.Voters = reply.Voters;
         }
 
         private RelayCommand _replyCommand = null;
@@ -63,8 +74,8 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteFavouriteCommand()
         {
-            var reply = await App.ApiService.addToFavourites(EntryData.ID);
-            EntryData.Favourite = reply.user_favorite;
+            var reply = await App.ApiService.addToFavourites(Data.ID);
+            Data.Favourite = reply.user_favorite;
         }
 
         private RelayCommand _editCommand = null;

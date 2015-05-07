@@ -118,8 +118,8 @@
                        VerticalAlignment="Center"
                        
                        FontSize="18.0"
-                       Text="{Binding EntryData.AuthorSex, Converter={StaticResource SexToText}}"
-                       Foreground="{Binding EntryData.AuthorSex, Converter={StaticResource SexToColor}}" />
+                       Text="{Binding Data.AuthorSex, Converter={StaticResource SexToText}}"
+                       Foreground="{Binding Data.AuthorSex, Converter={StaticResource SexToColor}}" />
 
             <TextBlock x:Name="AuthorTB"
                        Margin="0,2.5,0,0"
@@ -129,8 +129,8 @@
                        TextTrimming="CharacterEllipsis"
                        
                        FontSize="15.0"
-                       Text="{Binding EntryData.AuthorName}"
-                       Foreground="{Binding EntryData.AuthorGroup, Converter={StaticResource GroupToColor}}" />
+                       Text="{Binding Data.AuthorName}"
+                       Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}" />
 
             <TextBlock x:Name="DateTB"
                        Margin="4,4,0,0"
@@ -139,7 +139,7 @@
                        HorizontalAlignment="Left"
                        
                        FontSize="12.0"
-                       Text="{Binding EntryData.Date, Converter={StaticResource DateConverter}}"
+                       Text="{Binding Data.Date, Converter={StaticResource DateConverter}}"
                        Foreground="Gray"/>
         </StackPanel>
 
@@ -152,9 +152,9 @@
                    FontWeight="SemiBold"
                    
                    FontSize="15.0"
-                   Foreground="{Binding EntryData.Voted, Converter={StaticResource UserVotedToBrush}}"
-                   Visibility="{Binding EntryData.VoteCount, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
-                <Run Text="+"/><Run Text="{Binding EntryData.VoteCount}" />
+                   Foreground="{Binding Data.Voted, Converter={StaticResource UserVotedToBrush}}"
+                   Visibility="{Binding Data.VoteCount, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
+                <Run Text="+"/><Run Text="{Binding Data.VoteCount}" />
             
             <i:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="Tapped">
@@ -176,7 +176,7 @@
                        TextWrapping="Wrap"
                        HorizontalAlignment="Stretch"
                        FontSize="14.0"
-                       utils:Properties.Html="{Binding EntryData.Text}"/>
+                       utils:Properties.Html="{Binding Data.Text}"/>
 
         <Grid x:Name="EmbedPreviewGrid"
               Grid.Column="1"

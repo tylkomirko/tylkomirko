@@ -35,6 +35,22 @@ namespace Mirko_v2.Controls
         public static readonly DependencyProperty ShowCommentsProperty =
             DependencyProperty.Register("ShowComments", typeof(bool), typeof(Entry), new PropertyMetadata(false));
 
+        public bool ShowLeftSpacer
+        {
+            get { return (bool)GetValue(ShowLeftSpacerProperty); }
+            set { SetValue(ShowLeftSpacerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowLeftSpacer.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowLeftSpacerProperty =
+            DependencyProperty.Register("ShowLeftSpacer", typeof(bool), typeof(Entry), new PropertyMetadata(false, ShowLeftSpacerChanged));
+
+        private static void ShowLeftSpacerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+                (d as Entry).LeftSpacer.Width = 30.0;
+        }
+
         #region IsHot
         public bool IsHot
         {
@@ -66,7 +82,7 @@ namespace Mirko_v2.Controls
 
         public Entry()
         {
-            this.InitializeComponent();
+            this.InitializeComponent();            
         }
 
         private async void UserControl_Tapped(object sender, TappedRoutedEventArgs e)

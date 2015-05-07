@@ -15,7 +15,7 @@ namespace Mirko_v2.Utils
             var src = sender as Controls.Entry;
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(src.GetDescendant<Grid>("EntryGrid"));
 
-            var entryData = (src.DataContext as EntryViewModel).EntryData;
+            var entryData = (src.DataContext as EntryViewModel).Data;
 
             var userInfo = App.ApiService.UserInfo;
             if (userInfo == null || userInfo.UserName == null)

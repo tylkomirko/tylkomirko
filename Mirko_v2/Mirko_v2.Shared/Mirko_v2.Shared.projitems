@@ -60,6 +60,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
