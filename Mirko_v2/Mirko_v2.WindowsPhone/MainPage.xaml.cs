@@ -108,5 +108,11 @@ namespace Mirko_v2
                 ShowHotPopup();
              * */
         }
+
+        private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            var currentScrollViewer = (MainPivot.SelectedItem as PivotItem).GetDescendant<ListView>().GetDescendant<ScrollViewer>();
+            currentScrollViewer.ChangeView(null, 0.0, null);
+        }
     }
 }

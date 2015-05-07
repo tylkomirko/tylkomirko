@@ -42,6 +42,13 @@ namespace Mirko_v2.ViewModel
             get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel>()); }
         }
 
+        private int _currentPivotItem = 0;
+        public int CurrentPivotItem
+        {
+            get { return _currentPivotItem; }
+            set { Set(() => CurrentPivotItem, ref _currentPivotItem, value); }
+        }
+
         private EntryViewModel _selectedEntry = null;
         public EntryViewModel SelectedEntry
         {

@@ -102,6 +102,7 @@
                Grid.Row="1"
                Margin="0,-132.5,0,0"
                HorizontalAlignment="Stretch"
+               SelectedIndex="{Binding CurrentPivotItem, Mode=TwoWay}"
 			   Style="{StaticResource CustomPivotStyle}" 
                BorderBrush="{ThemeResource PivotHeaderBackground}">
 
@@ -272,6 +273,10 @@
                           Icon="Add"
                           Command="{Binding AddNewEntryCommand}"
                           Visibility="{Binding ElementName=LogoutButton, Path=Visibility}" />
+            
+            <AppBarButton Label="do góry"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="ustawienia"
