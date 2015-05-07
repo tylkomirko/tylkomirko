@@ -23,5 +23,6 @@
     <converters:MoreThanOneToString x:Key="MoreThanOneToString" />
     <converters:BoolInverter x:Key="BoolInverter" />
     <converters:YouTubeApp x:Key="YouTubeApp" />
+    <converters:CountToBool x:Key="CountToBool" />
 
 </ResourceDictionary>

@@ -102,7 +102,7 @@ namespace Mirko_v2
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
         {
             var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
-            mf.ShowAt(sender as FrameworkElement);
+            mf.ShowAt(this);
         }
     }
 }

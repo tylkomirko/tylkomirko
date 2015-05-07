@@ -9,26 +9,22 @@ using Mirko_v2.Utils;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using System.Collections.ObjectModel;
+using Windows.Storage;
+using System.IO;
+using Windows.Storage.Pickers;
 
 namespace Mirko_v2.ViewModel
 {
-    public class ConversationViewModel : ViewModelBase
+    public class ConversationViewModel : ViewModelBase, IFileOpenPickerContinuable
     {
         public Conversation Data { get; set; }
         public ObservableCollectionEx<PMViewModel> Messages { get; set; }
 
-        private string _newMessageText = null;
-        public string NewMessageText
+        private NewEntry _newEntry = null;
+        public NewEntry NewEntry
         {
-            get { return _newMessageText ?? (_newMessageText = ""); }
-            set { Set(() => NewMessageText, ref _newMessageText, value); }
-        }
-
-        private string _attachmentName = null;
-        public string AttachmentName
-        {
-            get { return _attachmentName ?? (_attachmentName = ""); }
-            set { Set(() => AttachmentName, ref _attachmentName, value); }
+            get { return _newEntry ?? (_newEntry = new NewEntry()); }
+            set { Set(() => NewEntry, ref _newEntry, value); }
         }
 
         public ConversationViewModel(Conversation d)
@@ -45,6 +41,17 @@ namespace Mirko_v2.ViewModel
             }
 
             d = null;
+        }
+
+        private RelayCommand _sendMessageCommand = null;
+        public RelayCommand SendMessageCommand
+        {
+            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
+        }
+
+        private async void ExecuteSendMessageCommand()
+        {
+            await App.ApiService.sendPM(NewEntry, Data.AuthorName);
         }
 
         private RelayCommand _loadLastMessageCommand = null;
@@ -69,6 +76,18 @@ namespace Mirko_v2.ViewModel
             var lastPMText = pms.Last().Text;
 
             Data.LastMessage = HTMLUtils.HTMLtoTEXT(lastPMText);
+        }
+
+        private RelayCommand _addAttachment = null;
+        public RelayCommand AddAttachment
+        {
+            get { return _addAttachment ?? (_addAttachment = new RelayCommand(ExecuteAddAttachment)); }
+        }
+
+        private void ExecuteAddAttachment()
+        {
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
+            navService.NavigateTo("AddAttachmentPage", "PM");
         }
 
         private void ProcessMessages(ObservableCollectionEx<PMViewModel> pms)
@@ -106,6 +125,67 @@ namespace Mirko_v2.ViewModel
                 if (pms[maxIndex].Data.Direction == MessageDirection.Sent)
                     pms[maxIndex].ShowArrow = false;
             }
+        }
+
+        private RelayCommand _openPicker = null;
+        public RelayCommand OpenPicker
+        {
+            get { return _openPicker ?? (_openPicker = new RelayCommand(ExecuteOpenPicker)); }
+        }
+
+        private void ExecuteOpenPicker()
+        {
+            var openPicker = new FileOpenPicker();
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".gif");
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+            openPicker.PickSingleFileAndContinue();
+        }
+
+        public async void ContinueFileOpenPicker(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs args)
+        {
+            if (args.Files.Count() > 0)
+            {
+                StorageFile file = args.Files[0];
+                var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                NewEntry.FileStream = s.AsStreamForRead();
+                NewEntry.FileName = file.Name;
+                NewEntry.AttachmentName = file.DisplayName;
+
+                SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
+            }
+        }
+
+        private RelayCommand _removeAttachment = null;
+        public RelayCommand RemoveAttachment
+        {
+            get { return _removeAttachment ?? (_removeAttachment = new RelayCommand(ExecuteRemoveAttachment)); }
+        }
+
+        private void ExecuteRemoveAttachment()
+        {
+            NewEntry.AttachmentName = string.Empty;
+            NewEntry.Embed = null;
+            NewEntry.FileName = string.Empty;
+
+            if (NewEntry.FileStream != null)
+                NewEntry.FileStream.Dispose();
+            NewEntry.FileStream = null;
+        }
+
+        private RelayCommand _acceptPressed = null;
+        public RelayCommand AcceptPressed
+        {
+            get { return _acceptPressed ?? (_acceptPressed = new RelayCommand(ExecuteAcceptPressed)); }
+        }
+
+        private void ExecuteAcceptPressed()
+        {
+            SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
         }
     }
 }

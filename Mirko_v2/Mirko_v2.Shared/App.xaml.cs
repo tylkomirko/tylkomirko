@@ -135,6 +135,7 @@ namespace Mirko_v2
                 navService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
                 navService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
                 navService.RegisterPage("ConversationPage", typeof(ConversationPage));
+                navService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application

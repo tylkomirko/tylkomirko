@@ -8,6 +8,7 @@ using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Ioc;
+using Windows.Storage;
 
 namespace Mirko_v2.ViewModel
 {

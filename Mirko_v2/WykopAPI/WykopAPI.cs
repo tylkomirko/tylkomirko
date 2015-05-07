@@ -588,18 +588,18 @@ namespace WykopAPI
                 return null;
 
             string URL = "entries/add";
-            if (newEntry.isReply)
+            if (newEntry.IsReply)
                 URL += "comment/" + newEntry.ID;
 
             URL += "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
             var post = new SortedDictionary<string, string>();
-            post.Add("body", newEntry.body);
-            if (newEntry.embed != null)
-                post.Add("embed", newEntry.embed);
+            post.Add("body", newEntry.Text);
+            if (newEntry.Embed != null)
+                post.Add("embed", newEntry.Embed);
 
-            var stream = newEntry.fileStream;
-            var fileName = newEntry.fileName;
+            var stream = newEntry.FileStream;
+            var fileName = newEntry.FileName;
 
             var result = await deserialize<EntryIDReply>(URL, post, stream, fileName);
             if (result != null)
@@ -614,13 +614,13 @@ namespace WykopAPI
                 return null;
 
             string URL = "entries/edit";
-            if (entry.isReply)
-                URL += "comment/" + entry.ID + "/" + entry.commentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            if (entry.IsReply)
+                URL += "comment/" + entry.ID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             else
                 URL += "/" + entry.ID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
             var post = new SortedDictionary<string, string>();
-            post.Add("body", entry.body);
+            post.Add("body", entry.Text);
 
             var result = await deserialize<EntryIDReply>(URL, post);
             if (result != null)
@@ -893,20 +893,14 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return false;
 
-            var body = newEntry.body;
-            var embed = newEntry.embed;
-
             string URL = "pm/SendMessage/" + userName + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
             var post = new SortedDictionary<string, string>();
-            post.Add("body", body);
-            if (!string.IsNullOrEmpty(embed))
-                post.Add("embed", embed);
+            post.Add("body", newEntry.Text);
+            if (!string.IsNullOrEmpty(newEntry.Embed))
+                post.Add("embed", newEntry.Embed);
 
-            var stream = newEntry.fileStream;
-            var fileName = newEntry.fileName;
-
-            var result = await deserialize<List<bool>>(URL, post, stream, fileName);
+            var result = await deserialize<List<bool>>(URL, post, newEntry.FileStream, newEntry.FileName);
             return result[0];
         }
         #endregion

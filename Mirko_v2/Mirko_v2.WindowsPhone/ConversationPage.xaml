@@ -14,7 +14,7 @@
     
     <Page.Resources>
         <MenuFlyout x:Name="DeleteAttachmentFlyout">
-            <MenuFlyoutItem Text="usuń" />
+            <MenuFlyoutItem Text="usuń" Command="{Binding RemoveAttachment}" />
         </MenuFlyout>
 
         <!--Lennys Flyout-->
@@ -188,7 +188,7 @@
                                      GotFocus="TextBox_GotFocus"
                                      LostFocus="TextBox_LostFocus"
                                      TextChanged="TextBox_TextChanged"
-                                     Text="{Binding NewMessageText, Mode=TwoWay}"
+                                     Text="{Binding NewEntry.Text, Mode=TwoWay}"
                                      Style="{StaticResource TextBoxStyle2}" />
                         </Border>
 
@@ -206,11 +206,11 @@
                                        Foreground="Gray"
                                        TextTrimming="CharacterEllipsis"
                                        Holding="AttachmentSymbol_Holding"
-                                       Visibility="{Binding AttachmentName.Length, 
-                                            Converter={StaticResource CountToVisibility}}">
+                                       Visibility="{Binding NewEntry.AttachmentName, 
+                                            Converter={StaticResource NullToVisibility}}">
                                 <Run Text="&#128206;" />
                             
-                                <Run Text="{Binding AttachmentName}" 
+                                <Run Text="{Binding NewEntry.AttachmentName}" 
                                      Foreground="{ThemeResource AttachmentNameForeground}"/>
                             </TextBlock>
 
@@ -234,7 +234,7 @@
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact"
                     Opacity="{StaticResource AppBarOpacity}">
-            <AppBarButton x:Name="SendButton" Icon="Accept" Label="wyślij" IsEnabled="False"  />
+            <AppBarButton x:Name="SendButton" Icon="Accept" Label="wyślij" IsEnabled="False" Command="{Binding SendMessageCommand}"  />
             <AppBarButton Label="lenny"
                           Click="LennyButton_Click">
                 
@@ -242,7 +242,7 @@
                     <BitmapIcon UriSource="ms-appx:///Assets/appbar.smiley.glasses.png" />
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Icon="Attach" Label="załącznik"  />
+            <AppBarButton Icon="Attach" Label="załącznik" Command="{Binding AddAttachment}"  />
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="SettingsButton" 

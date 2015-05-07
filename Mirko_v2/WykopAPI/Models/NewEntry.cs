@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace WykopAPI.Models
 {
+    [ImplementPropertyChanged]
     public class NewEntry
     {
+        public string AttachmentName { get; set; } 
         public string Text { get; set; }
         public string Embed { get; set; }
 

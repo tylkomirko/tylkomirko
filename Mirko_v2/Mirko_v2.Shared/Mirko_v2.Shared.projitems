@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVoteConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />

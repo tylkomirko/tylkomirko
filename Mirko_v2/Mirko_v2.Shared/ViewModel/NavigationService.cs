@@ -49,10 +49,12 @@ namespace Mirko_v2.ViewModel
         {
             var currentFrame = Window.Current.Content as Frame;
             var nextFrameType = _framesDictionary[key];
-            if (currentFrame != null)
+            if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = data;
-                currentFrame.Navigate(nextFrameType);
+                CurrentPageKey = key;
+
+                currentFrame.Navigate(nextFrameType, data);
             }
         }
 

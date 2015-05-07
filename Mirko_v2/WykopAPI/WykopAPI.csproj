@@ -102,7 +102,6 @@
     <Compile Include="Models\Replys.cs" />
     <Compile Include="MD5.cs" />
     <Compile Include="EventArgs.cs" />
-    <Compile Include="NewEntry.cs" />
     <Compile Include="RetryHandler.cs" />
     <Compile Include="Models\TaggedEntries.cs" />
     <Compile Include="Models\User.cs" />

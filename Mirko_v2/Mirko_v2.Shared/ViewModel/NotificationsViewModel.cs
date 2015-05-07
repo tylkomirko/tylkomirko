@@ -379,9 +379,13 @@ namespace Mirko_v2.ViewModel
                 var conversations = await App.ApiService.getConversations();
                 if (conversations != null)
                 {
+                    var tmp = new List<ConversationViewModel>(conversations.Count);
                     foreach(var item in conversations)
-                        pmVM.ConversationsList.Add(new ConversationViewModel(item));
+                        tmp.Add(new ConversationViewModel(item));
 
+                    await DispatcherHelper.RunAsync(() => pmVM.ConversationsList.AddRange(tmp));
+
+                    tmp = null;
                     conversations = null;
                 }
             }
