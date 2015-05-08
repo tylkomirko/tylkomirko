@@ -133,6 +133,7 @@ namespace Mirko_v2
                 navService.RegisterPage("EmbedPage", typeof(EmbedPage));
                 navService.RegisterPage("SettingsPage", typeof(SettingsPage));
                 navService.RegisterPage("HashtagSelectionPage", typeof(HashtagSelectionPage));
+                navService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
                 navService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
                 navService.RegisterPage("ConversationPage", typeof(ConversationPage));
                 navService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));

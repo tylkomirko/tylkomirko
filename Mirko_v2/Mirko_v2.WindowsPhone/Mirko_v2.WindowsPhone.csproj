@@ -99,6 +99,9 @@
     <Compile Include="Controls\EntryEmbed.xaml.cs">
       <DependentUpon>EntryEmbed.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HashtagNotificationHeader.xaml.cs">
+      <DependentUpon>HashtagNotificationHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HashtagSuggestionBox.xaml.cs">
       <DependentUpon>HashtagSuggestionBox.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,9 @@
     </Compile>
     <Compile Include="EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HashtagNotificationsPage.xaml.cs">
+      <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="HashtagSelectionPage.xaml.cs">
       <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
@@ -177,6 +183,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\HashtagNotificationHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\HashtagSuggestionBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -206,6 +216,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EntryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HashtagNotificationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

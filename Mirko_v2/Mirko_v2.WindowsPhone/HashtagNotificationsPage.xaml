@@ -1,0 +1,103 @@
+﻿<Page
+    x:Class="Mirko_v2.HashtagNotificationsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:utils="using:Mirko_v2.Utils"
+    xmlns:controls="using:Mirko_v2.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <Grid x:Name="LayoutRoot"
+          Margin="0,25.6,0,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0"
+                    Canvas.ZIndex="1">
+            <controls:AppHeader Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+            <controls:HashtagNotificationHeader x:Name="Header" />
+        </StackPanel>
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="0,-135,0,-24">
+            <ListView x:Name="ListView"
+                      SelectionMode="None"
+                      IsItemClickEnabled="True"
+                      ItemClick="ListView_ItemClick"
+                      ItemsSource="{Binding CurrentHashtagNotifications}"
+                      ItemContainerStyle="{StaticResource StretchedOutListViewItem}">
+
+                <ListView.Header>
+                    <Rectangle Height="140"
+                               Fill="Transparent" />
+                </ListView.Header>
+
+                <ListView.Footer>
+                    <Rectangle Height="84"
+                               Fill="Transparent"/>
+                </ListView.Footer>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="author"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       Margin="10,0,0,0"
+                                       FontWeight="SemiBold"
+                                       FontSize="15"                                      
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
+                                       Text="{Binding Data.AuthorName}" />
+
+                            <TextBlock x:Name="date"
+                                       Grid.Column="1"
+                                       Grid.Row="0"
+                                       Margin="10,0,0,0"
+                                       Foreground="Gray"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+
+                            <RichTextBlock x:Name="BodyRTB"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Grid.Row="1"
+                                           Margin="10,0,10,16"
+                                           FontSize="14"
+                                           IsTextSelectionEnabled="False"
+                                           MaxLines="1"
+                                           TextTrimming="CharacterEllipsis"
+                                           utils:Properties.Html="{Binding Data.Entry.Text}"/>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </Grid>
+    </Grid>
+</Page>

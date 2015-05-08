@@ -155,6 +155,20 @@ namespace Mirko_v2.ViewModel
             set { Set(() => HashtagNotificationsCount, ref _hashtagNotificationsCount, value); }
         }
 
+        private HashtagInfoContainer _currentHashtag = null;
+        public HashtagInfoContainer CurrentHashtag
+        {
+            get { return _currentHashtag; }
+            set { Set(() => CurrentHashtag, ref _currentHashtag, value); }
+        }
+
+        private ObservableCollectionEx<NotificationViewModel> _currentHashtagNotifications = null;
+        public ObservableCollectionEx<NotificationViewModel> CurrentHashtagNotifications
+        {
+            get { return _currentHashtagNotifications; }
+            set { Set(() => CurrentHashtagNotifications, ref _currentHashtagNotifications, value); }
+        }
+
         private ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> _hashtagsDictionary;
         public ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> HashtagsDictionary
         {
@@ -208,6 +222,18 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteDeleteAllHashtagNotifications()
         {
             await App.ApiService.readHashtagNotifications();
+        }
+
+        private RelayCommand _goToHashtagNotificationsPage = null;
+        public RelayCommand GoToHashtagNotificationsPage
+        {
+            get { return _goToHashtagNotificationsPage ?? (_goToHashtagNotificationsPage = new RelayCommand(ExecuteGoToHashtagNotificationsPage)); }
+        }
+
+        private void ExecuteGoToHashtagNotificationsPage()
+        {
+            CurrentHashtagNotifications = HashtagsDictionary[CurrentHashtag.Name];
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
         }
 
         public async Task CheckHashtagNotifications()

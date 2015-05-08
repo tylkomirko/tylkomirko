@@ -108,10 +108,13 @@
 
             <controls:ListViewEx x:Name="ListView"
                                  AppBar="{Binding ElementName=AppBar}"
+                                 SelectionMode="None"
                                  IsItemClickEnabled="True"
+                                 ItemClick="ListView_ItemClick"
                                  ItemTemplate="{StaticResource ListViewItemTemplate}"
                                  ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
-                                 ItemsSource="{Binding HashtagsCollection}">
+                                 ItemsSource="{Binding HashtagsCollection}"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <ListView.Transitions>
                     <TransitionCollection>

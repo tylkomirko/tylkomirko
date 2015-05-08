@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2.Utils;
-using Mirko_v2.ViewModel;
+﻿using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,9 +21,9 @@ namespace Mirko_v2
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HashtagSelectionPage : Page
+    public sealed partial class HashtagNotificationsPage : Page
     {
-        public HashtagSelectionPage()
+        public HashtagNotificationsPage()
         {
             this.InitializeComponent();
         }
@@ -39,29 +37,9 @@ namespace Mirko_v2
         {
         }
 
-        private void HashtagSuggestionBox_HashtagSelected(object sender, StringEventArgs e)
-        {
-            var tag = e.String;
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.Hide();
-            //this.Frame.Navigate(typeof(HashtagEntriesPage), tag);
-            // FIXME
-        }
-
-        private void FindHashtag_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.ShowAt(this);
-        }
-
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var newItem = e.ClickedItem as HashtagInfoContainer;
-            if (newItem == null) return;
 
-            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-            VM.CurrentHashtag = newItem;
-            VM.GoToHashtagNotificationsPage.Execute(null);
         }
     }
 }
