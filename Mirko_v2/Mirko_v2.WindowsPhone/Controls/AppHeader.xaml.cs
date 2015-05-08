@@ -28,7 +28,7 @@ namespace Mirko_v2.Controls
             var navService = SimpleIoc.Default.GetInstance<INavigationService>();
             switch (navService.CurrentPageKey)
             {
-                case "HashtagNotificationsPage":
+                case "HashtagSelectionPage":
                     PaintHash();
                     break;
 

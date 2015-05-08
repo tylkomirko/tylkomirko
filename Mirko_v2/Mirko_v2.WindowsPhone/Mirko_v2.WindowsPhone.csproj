@@ -123,8 +123,8 @@
     <Compile Include="EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HashtagNotificationsPage.xaml.cs">
-      <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
+    <Compile Include="HashtagSelectionPage.xaml.cs">
+      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -209,7 +209,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HashtagNotificationsPage.xaml">
+    <Page Include="HashtagSelectionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

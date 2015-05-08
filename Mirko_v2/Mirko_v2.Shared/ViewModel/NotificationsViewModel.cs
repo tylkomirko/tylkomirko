@@ -63,7 +63,7 @@ namespace Mirko_v2.ViewModel
 
             if (HashtagNotificationsCount == 0)
             {
-                navService.NavigateTo("HashtagNotificationsPage");
+                navService.NavigateTo("HashtagSelectionPage");
             }
             else if (HashtagNotificationsCount == 1)
             {
@@ -109,7 +109,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    navService.NavigateTo("HashtagNotificationsPage");
+                    navService.NavigateTo("HashtagSelectionPage");
                 }
 
             }

@@ -21,9 +21,9 @@ namespace Mirko_v2
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HashtagNotificationsPage : Page
+    public sealed partial class HashtagSelectionPage : Page
     {
-        public HashtagNotificationsPage()
+        public HashtagSelectionPage()
         {
             this.InitializeComponent();
         }
