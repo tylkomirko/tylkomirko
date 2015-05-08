@@ -1,0 +1,223 @@
+﻿<Page
+    x:Class="Mirko_v2.AddEntryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:utils="using:Mirko_v2.Utils"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding AddEntry, Mode=OneWay, Source={StaticResource Locator}}"
+    utils:PageOrientation.SupportedOrientations="Portrait">
+
+    <Page.Resources>
+        <Flyout x:Name="HashtagFlyout">
+            <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected" />
+        </Flyout>
+
+        <MenuFlyout x:Name="DeleteAttachmentFlyout">
+            <MenuFlyoutItem Text="usuń" Command="{Binding RemoveAttachment}" />
+        </MenuFlyout>
+
+        <!--Lennys Flyout-->
+        <Flyout x:Name="LennysFlyout">
+            <controls:LennyChooser LennySelected="LennyChooser_LennySelected" />
+        </Flyout>
+
+        <Flyout x:Name="HyperlinkFlyout">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Link:"
+                               Grid.Column="0"
+                               Style="{ThemeResource TitleTextBlockStyle}"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox x:Name="LinkTextBox"
+                             Grid.Column="1"
+                             HorizontalAlignment="Stretch"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="opis"
+                               Grid.Column="0"
+                               Style="{ThemeResource TitleTextBlockStyle}"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox x:Name="DescriptionTextBox"
+                             Grid.Column="1"/>
+                </Grid>
+                <Button Content="OK"
+                        Grid.Row="2"
+                        Click="HyperlinkFlyoutButton_Click"/>
+            </Grid>
+        </Flyout>
+
+    </Page.Resources>
+
+    <Grid x:Name="LayoutRoot"
+          Margin="0,25.6,0,0"
+          Background="{StaticResource PivotHeaderBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0">
+            <controls:AppHeader Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+
+            <TextBlock Text="nowy wpis" 
+                       x:Name="PageTitle"
+                       Margin="18,-6.5,0,26.5" 
+                       Style="{ThemeResource HeaderTextBlockStyle}"
+                       CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
+                       FontSize="34"
+                       Foreground="Gray">
+
+                <TextBlock.Transitions>
+                    <TransitionCollection>
+                        <EdgeUIThemeTransition Edge="Right" />
+                    </TransitionCollection>
+                </TextBlock.Transitions>
+
+            </TextBlock>
+        </StackPanel>
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" 
+              x:Name="ContentRoot" 
+              Margin="19,9.5,19,45"
+              VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch">
+
+            <ScrollViewer VerticalAlignment="Bottom"
+                          VerticalScrollBarVisibility="Hidden">
+
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Stretch">
+
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EdgeUIThemeTransition Edge="Left" />
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+
+                    <TextBox x:Name="Editor"
+                             PlaceholderText="treść wpisu..."
+                             InputScope="Chat"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MinHeight="100"
+                             Background="{ThemeResource NewContentBackground}"
+                             Foreground="{ThemeResource NewContentForeground}"
+                             Text="{Binding NewEntry.Text, Mode=TwoWay}"
+                             BorderThickness="0"                  
+                             TextChanged="Editor_TextChanged"
+                             Loaded="Editor_Loaded"
+                             Style="{StaticResource TextBoxStyle1}">
+                    </TextBox>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="AttachmentSymbol"
+                                   Grid.Column="0"
+                                   Margin="-2,-6,0,0"
+                                   FontSize="14"
+                                   IsColorFontEnabled="False"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Holding="AttachmentSymbol_Holding"
+                                   Visibility="{Binding NewEntry.AttachmentName, 
+                                            Converter={StaticResource NullToVisibility}}">
+                            <Run Text="&#128206;" />
+                            
+                            <Run Text="{Binding NewEntry.AttachmentName}" 
+                                 Foreground="{ThemeResource AttachmentNameForeground}"/>
+
+                        </TextBlock>
+
+                        <Polygon x:Name="LittleArrow"
+                                 Grid.Column="1"
+                                 Points="0,0 24,14 48,0"
+                                 Margin="0,-10,14,24"
+                                 Stroke="{ThemeResource NewContentBackground}" 
+                                 Fill="{ThemeResource NewContentBackground}"
+                                 StrokeThickness="0"
+                                 HorizontalAlignment="Right"/>
+
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton x:Uid="/AddEntry/Send"
+                          x:Name="SendButton"
+                          Icon="Accept"
+                          Foreground="Green"
+                          IsEnabled="False"/>
+
+            <AppBarButton x:Uid="/AddEntry/Hashtag" x:Name="HashtagButton"
+                          Click="HashtagButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="ms-appx:///Assets/appbar.social.twitter.hashtag.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton x:Uid="/AddEntry/Lennys" x:Name="LennysButton"
+                          Click="LennysButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="ms-appx:///Assets/appbar.smiley.glasses.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton x:Uid="/AddEntry/Spoiler" x:Name="SpoilerButton"
+                          Click="SpoilerButton_Click">
+                <AppBarButton.Icon>
+                    <FontIcon  Glyph="!" FontWeight="Bold" FontSize="28"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarToggleButton x:Name="FormattingHelperButton"
+                                Unchecked="FormattingHelperButton_Unchecked"
+                                Visibility="Collapsed"/>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="/AddEntry/Bold" Click="BoldAppBar_Clicked" Tag="bold" />
+                <AppBarButton x:Uid="/AddEntry/Italic" Click="ItalicAppBar_Cliked" Tag="italic" />
+                <AppBarButton x:Uid="/AddEntry/Quote" Click="QuoteAppBar_Clicked" Tag="quote" />
+                <AppBarButton x:Uid="/AddEntry/Code" Click="CodeAppBar_Click" />
+                <AppBarButton x:Uid="/AddEntry/Hyperlink" Click="HyperlinkAppBar_Clicked" />
+                <AppBarButton x:Uid="/AddEntry/Attachment" Click="AttachmentAppBar_Clicked" />
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
+    </Page.BottomAppBar>
+
+</Page>
+

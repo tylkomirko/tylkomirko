@@ -49,7 +49,7 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<NotificationsViewModel>();
             SimpleIoc.Default.Register<CacheViewModel>();
             SimpleIoc.Default.Register<MessagesViewModel>();
-            SimpleIoc.Default.Register<NewEntryViewModel>();
+            SimpleIoc.Default.Register<AddEntryViewModel>();
         }
 
         public MainViewModel Main
@@ -67,9 +67,9 @@ namespace Mirko_v2.ViewModel
             get { return ServiceLocator.Current.GetInstance<MessagesViewModel>(); }
         }
 
-        public NewEntryViewModel NewEntry
+        public AddEntryViewModel AddEntry
         {
-            get { return ServiceLocator.Current.GetInstance<NewEntryViewModel>(); }
+            get { return ServiceLocator.Current.GetInstance<AddEntryViewModel>(); }
         }
 
         public CacheViewModel Cache

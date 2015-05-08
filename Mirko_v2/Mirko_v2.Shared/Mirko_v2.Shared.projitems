@@ -59,6 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AddEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />

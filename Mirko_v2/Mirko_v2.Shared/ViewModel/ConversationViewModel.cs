@@ -51,7 +51,18 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteSendMessageCommand()
         {
-            await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+            await StatusBarManager.ShowTextAndProgress("Wysyłam wiadomość...");
+            bool success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+            if (success)
+            {
+                await StatusBarManager.ShowText("Wiadomość została wysłana.");
+                Data.LastMessage = NewEntry.Text;
+                Data.LastUpdate = DateTime.Now;
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Wiadomość nie została wysłana.");
+            }
         }
 
         private RelayCommand _loadLastMessageCommand = null;
@@ -163,18 +174,7 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _removeAttachment = null;
         public RelayCommand RemoveAttachment
         {
-            get { return _removeAttachment ?? (_removeAttachment = new RelayCommand(ExecuteRemoveAttachment)); }
-        }
-
-        private void ExecuteRemoveAttachment()
-        {
-            NewEntry.AttachmentName = string.Empty;
-            NewEntry.Embed = null;
-            NewEntry.FileName = string.Empty;
-
-            if (NewEntry.FileStream != null)
-                NewEntry.FileStream.Dispose();
-            NewEntry.FileStream = null;
+            get { return _removeAttachment ?? (_removeAttachment = new RelayCommand(() => NewEntry.RemoveAttachment())); }
         }
 
         private RelayCommand _acceptPressed = null;

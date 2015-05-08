@@ -23,5 +23,16 @@ namespace WykopAPI.Models
 
         public Stream FileStream { get; set; }
         public string FileName { get; set; }
+
+        public void RemoveAttachment()
+        {
+            AttachmentName = string.Empty;
+            Embed = null;
+            FileName = string.Empty;
+
+            if (FileStream != null)
+                FileStream.Dispose();
+            FileStream = null;
+        }
     }
 }

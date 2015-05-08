@@ -84,6 +84,9 @@
     <Compile Include="AddAttachmentPage.xaml.cs">
       <DependentUpon>AddAttachmentPage.xaml</DependentUpon>
     </Compile>
+    <None Include="AddEntryPage.xaml.cs">
+      <DependentUpon>AddEntryPage.xaml</DependentUpon>
+    </None>
     <Compile Include="Controls\AppHeader.xaml.cs">
       <DependentUpon>AppHeader.xaml</DependentUpon>
     </Compile>
@@ -154,6 +157,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Include="AddEntryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <Page Include="Controls\AppHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
