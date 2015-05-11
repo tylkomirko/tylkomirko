@@ -126,6 +126,9 @@
     <Compile Include="EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HashtagFlipPage.xaml.cs">
+      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HashtagNotificationsPage.xaml.cs">
       <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
     </Compile>
@@ -216,6 +219,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EntryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HashtagFlipPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

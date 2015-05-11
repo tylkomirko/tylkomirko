@@ -72,5 +72,19 @@ namespace Mirko_v2.ViewModel
                 base.OnCollectionChanged(eventArgs);
             }
         }
+
+        public int GetIndex(T item)
+        {
+            if (item == null || this.Count == 0) return -1;
+
+            for (int i = 0; i < this.Count - 1; i++)
+            {
+                var currentItem = this.Items[i];
+                if (currentItem != null && currentItem.Equals(item))
+                    return i;
+            }
+
+            return -1; // not found
+        }
     }
 }

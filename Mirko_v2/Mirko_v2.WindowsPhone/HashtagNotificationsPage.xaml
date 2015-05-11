@@ -11,7 +11,8 @@
     xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}"
+    utils:PageOrientation.SupportedOrientations="Portrait">
 
     <Grid x:Name="LayoutRoot"
           Margin="0,25.6,0,0">
@@ -49,7 +50,7 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid>                            
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -60,8 +61,7 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock x:Name="author"
-                                       Grid.Column="0"
+                            <TextBlock Grid.Column="0"
                                        Grid.Row="0"
                                        Margin="10,0,0,0"
                                        FontWeight="SemiBold"
@@ -72,8 +72,7 @@
                                        Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
                                        Text="{Binding Data.AuthorName}" />
 
-                            <TextBlock x:Name="date"
-                                       Grid.Column="1"
+                            <TextBlock Grid.Column="1"
                                        Grid.Row="0"
                                        Margin="10,0,0,0"
                                        Foreground="Gray"
@@ -82,8 +81,7 @@
                                        HorizontalAlignment="Left"
                                        Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
 
-                            <RichTextBlock x:Name="BodyRTB"
-                                           Grid.Column="0"
+                            <RichTextBlock Grid.Column="0"
                                            Grid.ColumnSpan="2"
                                            Grid.Row="1"
                                            Margin="10,0,10,16"

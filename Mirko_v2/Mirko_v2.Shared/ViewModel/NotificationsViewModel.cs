@@ -11,13 +11,34 @@ using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
+using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Mirko_v2.ViewModel
 {
-    public class HashtagInfoContainer
+    public class HashtagInfoContainer : INotifyPropertyChanged
     {
         public string Name { get; set; }
-        public uint Count { get; set; }
+
+        private uint _count;
+        public uint Count
+        {
+            get { return _count; }
+            set 
+            { 
+                _count = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) 
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class NotificationsViewModel : ViewModelBase
@@ -27,6 +48,7 @@ namespace Mirko_v2.ViewModel
         public NotificationsViewModel()
         {
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
+            _updateHashtagDic = new SemaphoreSlim(1);
         }
 
         private async void TimerCallback(object state)
@@ -146,6 +168,8 @@ namespace Mirko_v2.ViewModel
         #endregion
 
         #region Hashtag
+        private SemaphoreSlim _updateHashtagDic = null;
+
         private uint NewestHashtagNotificationID;
 
         private uint _hashtagNotificationsCount;
@@ -169,26 +193,61 @@ namespace Mirko_v2.ViewModel
             set { Set(() => CurrentHashtagNotifications, ref _currentHashtagNotifications, value); }
         }
 
+        private NotificationViewModel _selectedHashtagNotification = null;
+        public NotificationViewModel SelectedHashtagNotification
+        {
+            get { return _selectedHashtagNotification; }
+            set { Set(() => SelectedHashtagNotification, ref _selectedHashtagNotification, value); }
+        }
+
         private ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> _hashtagsDictionary;
         public ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> HashtagsDictionary
         {
-            get
-            {
-                if (_hashtagsDictionary == null)
-                    _hashtagsDictionary = new ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>>();
-                return _hashtagsDictionary;
-            }
+            get { return _hashtagsDictionary ?? (_hashtagsDictionary = new ObservableDictionary<string,ObservableCollectionEx<NotificationViewModel>>()); }
         }
 
         private ObservableCollectionEx<HashtagInfoContainer> _hashtagsCollection;
         public ObservableCollectionEx<HashtagInfoContainer> HashtagsCollection
         {
-            get
+            get { return _hashtagsCollection ?? (_hashtagsCollection = new ObservableCollectionEx<HashtagInfoContainer>()); }
+        }
+
+        private ObservableCollectionEx<EntryViewModel> _hashtagFlipEntries = null;
+        public ObservableCollectionEx<EntryViewModel> HashtagFlipEntries
+        {
+            get { return _hashtagFlipEntries ?? (_hashtagFlipEntries = new ObservableCollectionEx<EntryViewModel>()); }
+        }
+
+        private EntryViewModel _hashtagFlipCurrentEntry = null;
+        public EntryViewModel HashtagFlipCurrentEntry
+        {
+            get { return _hashtagFlipCurrentEntry; }
+            set { Set(() => HashtagFlipCurrentEntry, ref _hashtagFlipCurrentEntry, value); }
+        }
+
+        private RelayCommand<uint> _deleteHashtagNotification = null;
+        public RelayCommand<uint> DeleteHashtagNotification
+        {
+            get { return _deleteHashtagNotification ?? (_deleteHashtagNotification = new RelayCommand<uint>(async (id) => await ExecuteDeleteHashtagNotification(id))); }
+        }
+
+        private async Task ExecuteDeleteHashtagNotification(uint ID)
+        {
+            try
             {
-                if (_hashtagsCollection == null)
-                    _hashtagsCollection = new ObservableCollectionEx<HashtagInfoContainer>();
-                return _hashtagsCollection;
+                var notification = CurrentHashtagNotifications.Single(x => x.Data.ID == ID);
+                if (notification.Data.IsNew)
+                {
+                    await App.ApiService.markAsReadNotification(ID);
+
+                    if(CurrentHashtag != null)
+                        await DispatcherHelper.RunAsync(() => HashtagsDictionary[CurrentHashtag.Name].Remove(notification));
+
+                    await DispatcherHelper.RunAsync(() => CurrentHashtagNotifications.Remove(notification));
+                    await UpdateHashtagDictionary();
+                }
             }
+            catch (Exception) { }
         }
 
         private RelayCommand<string> _deleteHashtagNotifications = null;
@@ -236,6 +295,82 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
         }
 
+        private RelayCommand _goToFlipPage = null;
+        public RelayCommand GoToFlipPage
+        {
+            get { return _goToFlipPage ?? (_goToFlipPage = new RelayCommand(ExecuteGoToFlipPage)); }
+        }
+
+        private async void ExecuteGoToFlipPage()
+        {
+            if (SelectedHashtagNotification == null) return;
+            var index = CurrentHashtagNotifications.GetIndex(SelectedHashtagNotification);
+
+            var count = CurrentHashtagNotifications.Count; // make additional space for regural hashtag entries
+            var list = new List<EntryViewModel>(count); 
+            for (int i = 0; i < count; i++)
+                list.Add(null);
+
+            await DispatcherHelper.RunAsync(() =>
+            {
+                HashtagFlipEntries.Clear();
+                HashtagFlipEntries.AddRange(list);
+            });
+            list = null;
+
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagFlipPage");
+
+            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+            var notification = CurrentHashtagNotifications[index].Data;
+            var entry = await App.ApiService.getEntry(notification.Entry.ID);
+            var entryVM = new EntryViewModel(entry);
+            await DispatcherHelper.RunAsync(() =>
+            {
+                HashtagFlipEntries.Replace(index, entryVM);
+                HashtagFlipCurrentEntry = entryVM;
+            });
+            await StatusBarManager.HideProgress();
+        }
+
+        private RelayCommand _hashtagFlipLoadMore = null;
+        public RelayCommand HashtagFlipLoadMore
+        {
+            get { return _hashtagFlipLoadMore ?? (_hashtagFlipLoadMore = new RelayCommand(ExecuteHashtagFlipLoadMore)); }
+        }
+
+        private async void ExecuteHashtagFlipLoadMore()
+        {
+            if (HashtagFlipCurrentEntry == null) return;
+
+            var count = HashtagFlipEntries.Count;
+            var index = HashtagFlipEntries.GetIndex(HashtagFlipCurrentEntry);
+            var indexMin = Math.Max(index - 1, 0);
+            var indexMax = Math.Min(index + 1, count - 1);
+
+            if(HashtagFlipEntries[indexMin] == null)
+            {
+                var notification = CurrentHashtagNotifications[indexMin];
+                var entry = await App.ApiService.getEntry(notification.Data.Entry.ID);
+                if (entry != null)
+                {
+                    await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(indexMin, new EntryViewModel(entry)));
+                }
+            }
+
+            if(HashtagFlipEntries[indexMax] == null)
+            {
+                var notification = CurrentHashtagNotifications[indexMax];
+                var entry = await App.ApiService.getEntry(notification.Data.Entry.ID);
+                if (entry != null)
+                {
+                    await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(indexMax, new EntryViewModel(entry)));
+                }
+            }
+
+            var notification_tmp = CurrentHashtagNotifications[index];
+            await ExecuteDeleteHashtagNotification(notification_tmp.Data.ID);
+        }
+
         public async Task CheckHashtagNotifications()
         {
             uint pageIndex = 1;
@@ -268,14 +403,9 @@ namespace Mirko_v2.ViewModel
                 var tagName = body.Substring(index, nextIndex - index);
 
                 if (dic.ContainsKey(tagName))
-                {
-                    var list = dic[tagName];
-                    list.Add(new NotificationViewModel(item));
-                }
+                    await DispatcherHelper.RunAsync(() => dic[tagName].Add(new NotificationViewModel(item)));
                 else
-                {
-                    dic[tagName] = new ObservableCollectionEx<NotificationViewModel>() { new NotificationViewModel(item) };
-                }
+                    await DispatcherHelper.RunAsync(() => dic[tagName] = new ObservableCollectionEx<NotificationViewModel>() { new NotificationViewModel(item) });
             }
 
             await UpdateHashtagDictionary();
@@ -283,83 +413,100 @@ namespace Mirko_v2.ViewModel
 
         private async Task UpdateHashtagDictionary(bool forcedSorting = false)
         {
-            var dic = this.HashtagsDictionary;
-            var orderedNames = dic.Keys.OrderByDescending(x => dic[x].Count).ToList();
+            await _updateHashtagDic.WaitAsync();
 
-            //if (this.HashtagsCollection.Count > 0)
-            //    await DispatcherHelper.RunAsync(() => this.HashtagsCollection.Clear());
-
-            uint count = 0;
-
-            var tmp = new List<HashtagInfoContainer>();
-            foreach (var name in orderedNames)
+            try
             {
-                var c = (uint)dic[name].Count;
-                if (c > 0)
+                var dic = this.HashtagsDictionary;
+                var orderedNames = dic.Keys.OrderByDescending(x => dic[x].Count).ToList();
+
+                //if (this.HashtagsCollection.Count > 0)
+                //    await DispatcherHelper.RunAsync(() => this.HashtagsCollection.Clear());
+
+                uint count = 0;
+
+                var tmp = new List<HashtagInfoContainer>();
+                foreach (var name in orderedNames)
                 {
-                    count += c;
-                    tmp.Add(new HashtagInfoContainer
+                    var c = (uint)dic[name].Count;
+                    if (c > 0)
                     {
-                        Name = name,
-                        Count = c,
-                    });
-                }
-            }
-
-            await DispatcherHelper.RunAsync(() =>
-            {
-                this.HashtagsCollection.Clear();
-                this.HashtagsCollection.AddRange(tmp);
-                this.HashtagNotificationsCount = count;
-            });
-
-            tmp.Clear();
-
-            // now add observed hashtags without notifications
-            var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
-            foreach (var tag in observedTags)
-            {
-                bool itemFound = false;
-
-                foreach (var addedTag in this.HashtagsCollection)
-                {
-                    if (addedTag.Name == tag)
-                    {
-                        itemFound = true;
-                        break;
+                        count += c;
+                        tmp.Add(new HashtagInfoContainer
+                        {
+                            Name = name,
+                            Count = c,
+                        });
                     }
-                }
-
-                if (!itemFound)
-                    tmp.Add(new HashtagInfoContainer() { Name = tag, Count = 0 });
-            }
-
-            await DispatcherHelper.RunAsync(() => this.HashtagsCollection.AddRange(tmp));
-            tmp = null;
-
-            // now sort
-            if (count > 0 || forcedSorting)
-            {
-                var groups = this.HashtagsCollection.GroupBy(x => x.Count);
-                int itemsToRemove = this.HashtagsCollection.Count();
-
-                var sortedGroups = new List<HashtagInfoContainer>();
-
-                foreach (var group in groups)
-                {
-                    var sortedGroup = group.OrderBy(x => x.Name);
-                    sortedGroups.AddRange(sortedGroup);
                 }
 
                 await DispatcherHelper.RunAsync(() =>
                 {
-                    this.HashtagsCollection.AddRange(sortedGroups);
+                    this.HashtagsCollection.Clear();
+                    this.HashtagsCollection.AddRange(tmp);
+                    this.HashtagNotificationsCount = count;
 
-                    for (int i = 0; i < itemsToRemove; i++)
-                        this.HashtagsCollection.RemoveAt(0);
+                    if (CurrentHashtag != null)
+                    {
+                        if (this.HashtagsDictionary.ContainsKey(this.CurrentHashtag.Name))
+                            this.CurrentHashtag.Count = (uint)HashtagsDictionary[this.CurrentHashtag.Name].Count;
+                        else
+                            this.CurrentHashtag.Count = 0;
+                    }
                 });
 
-                sortedGroups = null;
+                tmp.Clear();
+
+                // now add observed hashtags without notifications
+                var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
+                foreach (var tag in observedTags)
+                {
+                    bool itemFound = false;
+
+                    foreach (var addedTag in this.HashtagsCollection)
+                    {
+                        if (addedTag.Name == tag)
+                        {
+                            itemFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!itemFound)
+                        tmp.Add(new HashtagInfoContainer() { Name = tag, Count = 0 });
+                }
+
+                await DispatcherHelper.RunAsync(() => this.HashtagsCollection.AddRange(tmp));
+                tmp = null;
+
+                // now sort
+                if (count > 0 || forcedSorting)
+                {
+                    var groups = this.HashtagsCollection.GroupBy(x => x.Count);
+                    int itemsToRemove = this.HashtagsCollection.Count();
+
+                    var sortedGroups = new List<HashtagInfoContainer>();
+
+                    foreach (var group in groups)
+                    {
+                        var sortedGroup = group.OrderBy(x => x.Name);
+                        sortedGroups.AddRange(sortedGroup);
+                    }
+
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        this.HashtagsCollection.AddRange(sortedGroups);
+
+                        for (int i = 0; i < itemsToRemove; i++)
+                            this.HashtagsCollection.RemoveAt(0);
+                    });
+
+                    sortedGroups = null;
+                }
+            }
+            finally
+            {
+                _updateHashtagDic.Release();
             }
         }
         #endregion

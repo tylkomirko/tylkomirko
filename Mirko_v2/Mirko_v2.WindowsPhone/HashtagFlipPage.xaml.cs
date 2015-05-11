@@ -1,7 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2.Utils;
-using Mirko_v2.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,11 +20,13 @@ namespace Mirko_v2
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HashtagNotificationsPage : Page
+    public sealed partial class HashtagFlipPage : Page
     {
-        public HashtagNotificationsPage()
+        public HashtagFlipPage()
         {
             this.InitializeComponent();
+
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Required;
         }
 
         /// <summary>
@@ -37,15 +36,6 @@ namespace Mirko_v2
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-        }
-
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var item = e.ClickedItem as NotificationViewModel;
-            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-
-            VM.SelectedHashtagNotification = item;
-            VM.GoToFlipPage.Execute(null);
         }
     }
 }
