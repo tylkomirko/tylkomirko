@@ -581,6 +581,7 @@ namespace Mirko_v2.ViewModel
                 mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
 
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
+            SelectedAtNotification.MarkAsReadCommand.Execute(null);
         }
 
         private RelayCommand _deleteAllAtNotifications = null;
