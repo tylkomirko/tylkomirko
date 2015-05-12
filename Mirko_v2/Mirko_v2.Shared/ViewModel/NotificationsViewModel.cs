@@ -432,9 +432,6 @@ namespace Mirko_v2.ViewModel
                 var dic = this.HashtagsDictionary;
                 var orderedNames = dic.Keys.OrderByDescending(x => dic[x].Count).ToList();
 
-                //if (this.HashtagsCollection.Count > 0)
-                //    await DispatcherHelper.RunAsync(() => this.HashtagsCollection.Clear());
-
                 uint count = 0;
 
                 var tmp = new List<HashtagInfoContainer>();
@@ -507,10 +504,8 @@ namespace Mirko_v2.ViewModel
 
                     await DispatcherHelper.RunAsync(() =>
                     {
+                        this.HashtagsCollection.Clear();
                         this.HashtagsCollection.AddRange(sortedGroups);
-
-                        for (int i = 0; i < itemsToRemove; i++)
-                            this.HashtagsCollection.RemoveAt(0);
                     });
 
                     sortedGroups = null;
