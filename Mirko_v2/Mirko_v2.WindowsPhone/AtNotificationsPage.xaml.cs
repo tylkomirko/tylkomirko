@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +36,16 @@ namespace Mirko_v2
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var notificationVM = e.ClickedItem as NotificationViewModel;
+            if (notificationVM == null) return;
+
+            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+            VM.SelectedAtNotification = notificationVM;
+            VM.GoToNotification.Execute(null);
         }
     }
 }

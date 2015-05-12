@@ -526,10 +526,61 @@ namespace Mirko_v2.ViewModel
             set { Set(() => AtNotificationsCount, ref _atNotificationsCount, value); }
         }
 
+        private NotificationViewModel _selectedAtNotification = null;
+        public NotificationViewModel SelectedAtNotification
+        {
+            get { return _selectedAtNotification; }
+            set { Set(() => SelectedAtNotification, ref _selectedAtNotification, value); }
+        }
+
         private IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel> _atNotifications = null;
         public IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel> AtNotifications
         {
             get { return _atNotifications ?? (_atNotifications = new IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel>()); }
+        }
+
+        private RelayCommand _goToNotification = null;
+        public RelayCommand GoToNotification
+        {
+            get { return _goToNotification ?? (_goToNotification = new RelayCommand(ExecuteGoToNotification)); }
+        }
+
+        private async void ExecuteGoToNotification()
+        {
+            var notification = SelectedAtNotification.Data;
+            if (notification.Type != NotificationType.EntryDirected && notification.Type != NotificationType.CommentDirected)
+                return;
+
+            var entryID = notification.Entry.ID;
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+            var otherEntries = mainVM.OtherEntries;
+            var entryVM = otherEntries.SingleOrDefault(x => x.Data.ID == entryID);
+
+            if(entryVM != null)
+            {
+                mainVM.SelectedEntry = entryVM;
+            }
+            else
+            {
+                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                var entryData = await App.ApiService.getEntry(entryID);
+                if(entryData == null)
+                {
+                    await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                }
+                else
+                {
+                    await StatusBarManager.HideProgress();
+                    entryVM = new EntryViewModel(entryData);
+                    await DispatcherHelper.RunAsync(() => otherEntries.Add(entryVM));
+                    mainVM.SelectedEntry = entryVM;
+                }
+            }
+
+            if (notification.Type == NotificationType.CommentDirected)
+                mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
+
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
         }
 
         private RelayCommand _deleteAllAtNotifications = null;

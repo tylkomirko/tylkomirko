@@ -37,6 +37,7 @@
 
             <ListView x:Name="ListView"
                       IsItemClickEnabled="True"
+                      ItemClick="ListView_ItemClick"
                       ItemsSource="{Binding AtNotifications}"
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">

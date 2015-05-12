@@ -42,6 +42,12 @@ namespace Mirko_v2.ViewModel
             get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel>()); }
         }
 
+        private ObservableCollectionEx<EntryViewModel> _otherEntries = null;
+        public ObservableCollectionEx<EntryViewModel> OtherEntries
+        {
+            get { return _otherEntries ?? (_otherEntries = new ObservableCollectionEx<EntryViewModel>()); }
+        }
+
         private int _currentPivotItem = 0;
         public int CurrentPivotItem
         {
@@ -54,6 +60,13 @@ namespace Mirko_v2.ViewModel
         {
             get { return _selectedEntry; }
             set { Set(() => SelectedEntry, ref _selectedEntry, value); }
+        }
+
+        private CommentViewModel _commentToScrollInto = null;
+        public CommentViewModel CommentToScrollInto
+        {
+            get { return _commentToScrollInto; }
+            set { Set(() => CommentToScrollInto, ref _commentToScrollInto, value); }
         }
 
         private EmbedViewModel _selectedEmbed = null;

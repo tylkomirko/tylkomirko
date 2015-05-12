@@ -9,7 +9,7 @@
     xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding Main.SelectedEntry, Mode=OneWay, Source={StaticResource Locator}}"
+    DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
     utils:PageOrientation.SupportedOrientations="Portrait">
 
     <Grid Margin="0,25.6,0,-24">
@@ -28,10 +28,12 @@
                              Grid.Row="1"
                              Margin="0,-132.5,0,0"
                              HorizontalAlignment="Stretch"
+                             DataContext="{Binding SelectedEntry}"
                              AppBar="{Binding ElementName=AppBar}"
                              ItemsSource="{Binding Comments}"
                              ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                              IsItemClickEnabled="False"
+                             Loaded="ListView_Loaded"
                              VirtualizingStackPanel.VirtualizationMode="Recycling">
             
             <ListView.Header>
