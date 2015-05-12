@@ -536,6 +536,21 @@ namespace Mirko_v2.ViewModel
         {
             get { return _atNotifications ?? (_atNotifications = new IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel>()); }
         }
+
+        private RelayCommand _deleteAllAtNotifications = null;
+        public RelayCommand DeleteAllAtNotifications
+        {
+            get { return _deleteAllAtNotifications ?? (_deleteAllAtNotifications = new RelayCommand(ExecuteDeleteAllAtNotifications)); }
+        }
+
+        private async void ExecuteDeleteAllAtNotifications()
+        {
+            var success = await App.ApiService.readNotifications();
+            if (!success) return;
+
+            foreach (var notificationVM in AtNotifications)
+                notificationVM.Data.IsNew = false;
+        }
         #endregion
 
         #region PM

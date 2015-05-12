@@ -38,7 +38,8 @@
             <ListView x:Name="ListView"
                       IsItemClickEnabled="True"
                       ItemsSource="{Binding AtNotifications}"
-                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}">
+                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <ListView.Transitions>
                     <TransitionCollection>
@@ -69,4 +70,15 @@
             </ListView>
         </Grid>
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Minimal"
+                    Opacity="{StaticResource AppBarOpacity}">
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="usuń wszystkie" 
+                              Command="{Binding DeleteAllAtNotifications}" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+
 </Page>
