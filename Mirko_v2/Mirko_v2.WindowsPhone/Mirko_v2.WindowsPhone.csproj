@@ -87,6 +87,9 @@
     <None Include="AddEntryPage.xaml.cs">
       <DependentUpon>AddEntryPage.xaml</DependentUpon>
     </None>
+    <Compile Include="AtNotificationsPage.xaml.cs">
+      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\AppHeader.xaml.cs">
       <DependentUpon>AppHeader.xaml</DependentUpon>
     </Compile>
@@ -170,6 +173,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Include="AtNotificationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\AppHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

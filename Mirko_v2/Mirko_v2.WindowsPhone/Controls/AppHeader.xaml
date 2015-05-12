@@ -151,8 +151,14 @@
 
 
             <Grid Margin="35,5,0,5"
-                  Background="Transparent"
-                  Tapped="At_Tapped">
+                  Background="Transparent">
+
+                <i:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="Tapped">
+                        <core:InvokeCommandAction Command="{Binding AtTappedCommand}" />
+                    </core:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+
                 <TextBlock x:Name="AtTB"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="28"

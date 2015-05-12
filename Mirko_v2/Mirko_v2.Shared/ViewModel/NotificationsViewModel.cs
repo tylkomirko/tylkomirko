@@ -137,6 +137,18 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private RelayCommand _atTappedCommand = null;
+        public RelayCommand AtTappedCommand
+        {
+            get { return _atTappedCommand ?? (_atTappedCommand = new RelayCommand(ExecuteAtTappedCommand)); }
+        }
+
+        private void ExecuteAtTappedCommand()
+        {
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
+            navService.NavigateTo("AtNotificationsPage");
+        }
+
         private RelayCommand _pmTappedCommand = null;
         public RelayCommand PMTappedCommand
         {
@@ -511,6 +523,21 @@ namespace Mirko_v2.ViewModel
         }
         #endregion
 
+        #region At
+        private uint _atNotificationsCount;
+        public uint AtNotificationsCount
+        {
+            get { return _atNotificationsCount; }
+            set { Set(() => AtNotificationsCount, ref _atNotificationsCount, value); }
+        }
+
+        private IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel> _atNotifications = null;
+        public IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel> AtNotifications
+        {
+            get { return _atNotifications ?? (_atNotifications = new IncrementalLoadingCollection<AtNotificationsSource, NotificationViewModel>()); }
+        }
+        #endregion
+
         #region PM
         private uint _pmNotificationsCount = 0;
         public uint PMNotificationsCount
@@ -608,15 +635,18 @@ namespace Mirko_v2.ViewModel
             });
 
             // now the rest
-            /*
-            var atNotifications = newNotifications.Where(x => x.type != "pm");
-            this.AtNotificationsCount = atNotifications.Count();
+            var atNotifications = newNotifications.Where(x => x.Type != NotificationType.PM);
+            this.AtNotificationsCount = (uint)atNotifications.Count();
 
             if (atNotifications.Count() > 0)
             {
-                this.AtNotificationsStream.PrependRange(atNotifications);
+                var VMs = new List<NotificationViewModel>();
+                foreach (var n in atNotifications)
+                    VMs.Add(new NotificationViewModel(n));
+
+                await DispatcherHelper.RunAsync(() => this.AtNotifications.PrependRange(VMs));
+                VMs = null;
             }
-             * */
         }
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\AtNotificationsCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />

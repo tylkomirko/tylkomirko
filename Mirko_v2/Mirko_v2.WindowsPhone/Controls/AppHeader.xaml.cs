@@ -32,6 +32,10 @@ namespace Mirko_v2.Controls
                     PaintHash();
                     break;
 
+                case "AtNotificationsPage":
+                    PaintAt();
+                    break;
+
                 case "ConversationsPage":
                     PaintPM();
                     break;
