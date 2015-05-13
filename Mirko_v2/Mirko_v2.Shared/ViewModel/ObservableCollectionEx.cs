@@ -77,7 +77,7 @@ namespace Mirko_v2.ViewModel
         {
             if (item == null || this.Count == 0) return -1;
 
-            for (int i = 0; i < this.Count - 1; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 var currentItem = this.Items[i];
                 if (currentItem != null && currentItem.Equals(item))
