@@ -310,10 +310,43 @@ namespace Mirko_v2.ViewModel
             get { return _goToHashtagNotificationsPage ?? (_goToHashtagNotificationsPage = new RelayCommand(ExecuteGoToHashtagNotificationsPage)); }
         }
 
-        private void ExecuteGoToHashtagNotificationsPage()
+        private async void ExecuteGoToHashtagNotificationsPage()
         {
             CurrentHashtagNotifications = HashtagsDictionary[CurrentHashtag.Name];
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
+            if (CurrentHashtagNotifications.Count > 1)
+            {
+                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
+            }
+            else if (CurrentHashtagNotifications.Count == 1)
+            {
+                var notification = CurrentHashtagNotifications[0].Data;
+
+                var entry = await App.ApiService.getEntry(notification.Entry.ID);
+                if (entry != null)
+                {
+                    var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                    var entryVM = new EntryViewModel(entry);
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        mainVM.OtherEntries.Add(entryVM);
+                        mainVM.SelectedEntry = entryVM;
+                    });
+
+                    SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
+
+                    await StatusBarManager.HideProgress();
+
+                    await ExecuteDeleteHashtagNotification(notification.ID);
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                }
+            }
+            else
+            {
+                // TODO.
+            }
         }
 
         private RelayCommand _goToFlipPage = null;
