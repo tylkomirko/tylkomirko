@@ -390,7 +390,12 @@ namespace Mirko_v2.ViewModel
             if (currentIndex == -1 || HashtagFlipEntries[currentIndex] != null) return;
             await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
 
-            var notification = CurrentHashtagNotifications[currentIndex].Data;
+            Notification notification = null;
+            if (currentIndex > CurrentHashtagNotifications.Count)
+                notification = CurrentHashtagNotifications.Last().Data;
+            else
+                notification = CurrentHashtagNotifications[currentIndex].Data;
+
             var entry = await App.ApiService.getEntry(notification.Entry.ID);
             if (entry != null)
             {
