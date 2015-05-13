@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Views;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,20 @@ namespace Mirko_v2.ViewModel
         {
             if (CanGoBack())
             {
+                if (CurrentPageKey == "HashtagFlipPage")
+                {
+                    var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+                    if (VM.CurrentHashtagNotifications.Count == 0)
+                    {
+                        var currentFrame = Window.Current.Content as Frame;
+                        var backStack = currentFrame.BackStack;
+
+                        var entry = backStack.FirstOrDefault(x => x.SourcePageType == typeof(HashtagNotificationsPage));
+                        if(entry != null)
+                            backStack.Remove(entry);
+                    }
+                }
+
                 GoBack();
                 e.Handled = true;
             }
