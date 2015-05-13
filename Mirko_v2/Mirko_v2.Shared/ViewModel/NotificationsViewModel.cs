@@ -360,23 +360,16 @@ namespace Mirko_v2.ViewModel
             if (SelectedHashtagNotification == null) return;
             var index = CurrentHashtagNotifications.GetIndex(SelectedHashtagNotification);
 
-            var count = CurrentHashtagNotifications.Count;
-            var list = new List<EntryViewModel>(count); 
-            for (int i = 0; i < count; i++)
-                list.Add(null);
-
             await DispatcherHelper.RunAsync(() =>
             {
                 HashtagFlipEntries.Clear();
-                foreach (var n in list)
-                    HashtagFlipEntries.Add(n);
+                for (int i = 0; i < CurrentHashtagNotifications.Count; i++)
+                    HashtagFlipEntries.Add(null);
             });
 
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagFlipPage");
 
             await ExecuteHashtagFlipSelectionChanged(index);
-
-            list = null;
         }
 
         private RelayCommand<int> _hashtagFlipSelectionChanged = null;
