@@ -247,15 +247,24 @@ namespace Mirko_v2.ViewModel
         {
             try
             {
-                var notification = CurrentHashtagNotifications.Single(x => x.Data.ID == ID);
-                if (notification.Data.IsNew)
+                ObservableCollectionEx<NotificationViewModel> collection = null;
+                NotificationViewModel notification = null;
+
+                foreach(var col in HashtagsDictionary.Values)
+                {
+                    var tmp = col.SingleOrDefault(x => x.Data.ID == ID);
+                    if(tmp != null)
+                    {
+                        notification = tmp;
+                        collection = col;
+                        break;
+                    }
+                }
+
+                if (notification != null && notification.Data.IsNew)
                 {
                     await App.ApiService.markAsReadNotification(ID);
-
-                    if(CurrentHashtag != null)
-                        await DispatcherHelper.RunAsync(() => HashtagsDictionary[CurrentHashtag.Name].Remove(notification));
-
-                    await DispatcherHelper.RunAsync(() => CurrentHashtagNotifications.Remove(notification));
+                    await DispatcherHelper.RunAsync(() => collection.Remove(notification));
                     await UpdateHashtagDictionary();
                 }
             }
@@ -318,7 +327,7 @@ namespace Mirko_v2.ViewModel
             if (SelectedHashtagNotification == null) return;
             var index = CurrentHashtagNotifications.GetIndex(SelectedHashtagNotification);
 
-            var count = CurrentHashtagNotifications.Count; // make additional space for regural hashtag entries
+            var count = CurrentHashtagNotifications.Count;
             var list = new List<EntryViewModel>(count); 
             for (int i = 0; i < count; i++)
                 list.Add(null);
@@ -326,61 +335,46 @@ namespace Mirko_v2.ViewModel
             await DispatcherHelper.RunAsync(() =>
             {
                 HashtagFlipEntries.Clear();
-                HashtagFlipEntries.AddRange(list);
+                foreach (var n in list)
+                    HashtagFlipEntries.Add(n);
             });
-            list = null;
 
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagFlipPage");
 
+            await ExecuteHashtagFlipSelectionChanged(index);
+
+            list = null;
+        }
+
+        private RelayCommand<int> _hashtagFlipSelectionChanged = null;
+        public RelayCommand<int> HashtagFlipSelectionChanged
+        {
+            get { return _hashtagFlipSelectionChanged ?? (_hashtagFlipSelectionChanged = new RelayCommand<int>(async (i) => await ExecuteHashtagFlipSelectionChanged(i))); }
+        }
+
+        private async Task ExecuteHashtagFlipSelectionChanged(int currentIndex)
+        {
+            if (currentIndex == -1 || HashtagFlipEntries[currentIndex] != null) return;
             await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
-            var notification = CurrentHashtagNotifications[index].Data;
+
+            var notification = CurrentHashtagNotifications[currentIndex].Data;
             var entry = await App.ApiService.getEntry(notification.Entry.ID);
-            var entryVM = new EntryViewModel(entry);
-            await DispatcherHelper.RunAsync(() =>
+            if (entry != null)
             {
-                HashtagFlipEntries.Replace(index, entryVM);
-                HashtagFlipCurrentEntry = entryVM;
-            });
-            await StatusBarManager.HideProgress();
-        }
-
-        private RelayCommand _hashtagFlipLoadMore = null;
-        public RelayCommand HashtagFlipLoadMore
-        {
-            get { return _hashtagFlipLoadMore ?? (_hashtagFlipLoadMore = new RelayCommand(ExecuteHashtagFlipLoadMore)); }
-        }
-
-        private async void ExecuteHashtagFlipLoadMore()
-        {
-            if (HashtagFlipCurrentEntry == null) return;
-
-            var count = HashtagFlipEntries.Count;
-            var index = HashtagFlipEntries.GetIndex(HashtagFlipCurrentEntry);
-            var indexMin = Math.Max(index - 1, 0);
-            var indexMax = Math.Min(index + 1, count - 1);
-
-            if(HashtagFlipEntries[indexMin] == null)
-            {
-                var notification = CurrentHashtagNotifications[indexMin];
-                var entry = await App.ApiService.getEntry(notification.Data.Entry.ID);
-                if (entry != null)
+                var entryVM = new EntryViewModel(entry);
+                await DispatcherHelper.RunAsync(() =>
                 {
-                    await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(indexMin, new EntryViewModel(entry)));
-                }
-            }
+                    HashtagFlipEntries.Replace(currentIndex, entryVM);
+                    HashtagFlipCurrentEntry = entryVM;
+                });
+                await StatusBarManager.HideProgress();
 
-            if(HashtagFlipEntries[indexMax] == null)
+                await ExecuteDeleteHashtagNotification(notification.ID);
+            }
+            else
             {
-                var notification = CurrentHashtagNotifications[indexMax];
-                var entry = await App.ApiService.getEntry(notification.Data.Entry.ID);
-                if (entry != null)
-                {
-                    await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(indexMax, new EntryViewModel(entry)));
-                }
+                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
             }
-
-            var notification_tmp = CurrentHashtagNotifications[index];
-            await ExecuteDeleteHashtagNotification(notification_tmp.Data.ID);
         }
 
         public async Task CheckHashtagNotifications()
