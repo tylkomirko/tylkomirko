@@ -5,6 +5,8 @@
     xmlns:local="using:Mirko_v2"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:controls="using:Mirko_v2.Controls"
     xmlns:utils="using:Mirko_v2.Utils"
     mc:Ignorable="d"
@@ -125,6 +127,7 @@
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
@@ -142,6 +145,14 @@
                         <Run Text="@"/><Run Text="{Binding Data.AuthorName}"/>
                     </TextBlock>
 
+                    <TextBlock Grid.Column="2"
+                               FontSize="12"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Text="(online)"
+                               Foreground="Gray"
+                               Visibility="{Binding IsOnline, Converter={StaticResource BoolToVisibility}}"/>
+
                 </Grid>
 
             </Border>
@@ -157,6 +168,12 @@
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       ItemTemplateSelector="{StaticResource PMTemplateSelector}"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">
+
+                <i:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="Loaded">
+                        <core:InvokeCommandAction Command="{Binding CheckIfOnline}" />
+                    </core:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
 
                 <ListView.Header>
                     <Rectangle Height="160"

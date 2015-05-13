@@ -971,6 +971,33 @@ namespace WykopAPI
 
         #endregion
 
+        #region Functions that don't use API
+        public async Task<bool> isUserOnline(string username)
+        {
+            using (var client = new HttpClient()) // whelp
+            using (var reply = await client.GetAsync("http://wykop.pl/ludzie/" + username))
+            {
+                if(reply.IsSuccessStatusCode)
+                {
+                    using (var stream = await reply.Content.ReadAsStreamAsync())
+                    using (var streamReader = new StreamReader(stream))
+                    {
+                        while(!streamReader.EndOfStream)
+                        {
+                            var line = await streamReader.ReadLineAsync();
+                            if (line == "<span style=\"color: green; line-height: 18px; font-size: 40px; font-weight: bold; vertical-align: middle;\">\u2022</span>")
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName] string caller = "")
         {

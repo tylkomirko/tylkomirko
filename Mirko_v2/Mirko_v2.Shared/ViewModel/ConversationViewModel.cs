@@ -27,6 +27,13 @@ namespace Mirko_v2.ViewModel
             set { Set(() => NewEntry, ref _newEntry, value); }
         }
 
+        private bool _isOnline = false;
+        public bool IsOnline
+        {
+            get { return _isOnline; }
+            set { Set(() => IsOnline, ref _isOnline, value); }
+        }
+
         public ConversationViewModel(Conversation d)
         {
             Data = d;
@@ -186,6 +193,17 @@ namespace Mirko_v2.ViewModel
         private void ExecuteAcceptPressed()
         {
             SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
+        }
+
+        private RelayCommand _checkIfOnline = null;
+        public RelayCommand CheckIfOnline
+        {
+            get { return _checkIfOnline ?? (_checkIfOnline = new RelayCommand(ExecuteCheckIfOnline)); }
+        }
+
+        private async void ExecuteCheckIfOnline()
+        {
+            IsOnline = await App.ApiService.isUserOnline(Data.AuthorName);
         }
     }
 }
