@@ -11,7 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
     utils:PageOrientation.SupportedOrientations="Portrait">
-
+    
     <Grid Margin="0,25.6,0,-24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

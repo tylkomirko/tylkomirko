@@ -102,6 +102,9 @@
     <Compile Include="Controls\EntryEmbed.xaml.cs">
       <DependentUpon>EntryEmbed.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FullEntry.xaml.cs">
+      <DependentUpon>FullEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HashtagNotificationHeader.xaml.cs">
       <DependentUpon>HashtagNotificationHeader.xaml</DependentUpon>
     </Compile>
@@ -190,6 +193,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\EntryEmbed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FullEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -133,11 +133,12 @@
                                      ScrollingUp="ListView_ScrollingUp"
                                      ItemsSource="{Binding MirkoEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IsItemClickEnabled="False">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <controls:Entry />
+                            <controls:FullEntry />
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
