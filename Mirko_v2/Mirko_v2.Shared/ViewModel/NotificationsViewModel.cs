@@ -319,12 +319,17 @@ namespace Mirko_v2.ViewModel
             }
             else if (CurrentHashtagNotifications.Count == 1)
             {
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                await DispatcherHelper.RunAsync(() => mainVM.SelectedEntry = null);
+
+                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
+
                 var notification = CurrentHashtagNotifications[0].Data;
 
+                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
                 var entry = await App.ApiService.getEntry(notification.Entry.ID);
                 if (entry != null)
                 {
-                    var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                     var entryVM = new EntryViewModel(entry);
                     await DispatcherHelper.RunAsync(() =>
                     {
@@ -332,10 +337,7 @@ namespace Mirko_v2.ViewModel
                         mainVM.SelectedEntry = entryVM;
                     });
 
-                    SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
-
                     await StatusBarManager.HideProgress();
-
                     await ExecuteDeleteHashtagNotification(notification.ID);
                 }
                 else
