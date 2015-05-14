@@ -20,6 +20,22 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Mirko_v2
 {
+    public class HashtagSelectionPageTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate ItemTemplate { get; set; }
+        public DataTemplate ItemTemplateNoCount { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+
+            if (VM.HashtagsDictionary.Count > 0)
+                return ItemTemplate;
+            else
+                return ItemTemplateNoCount;
+        }
+    }
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>

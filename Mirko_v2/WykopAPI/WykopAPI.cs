@@ -139,6 +139,7 @@ namespace WykopAPI
             }
         }
 
+        #region UserInfo
         private void LoadUserInfo()
         {
             var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
@@ -189,6 +190,7 @@ namespace WykopAPI
                 values["LastToastDate"] = UserInfo.LastToastDate.ToString("o");
             }
         }
+        #endregion
 
         public void Dispose()
         {

@@ -18,68 +18,75 @@
         <Flyout x:Key="HashtagFlyout">
             <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected" />
         </Flyout>
+        
+        <local:HashtagSelectionPageTemplateSelector x:Key="TemplateSelector">
+            
+            <local:HashtagSelectionPageTemplateSelector.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-        <DataTemplate x:Key="ListViewItemTemplate">
-            <Grid Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Holding">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
 
-                <i:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="Holding">
-                        <utils:OpenMenuFlyout />
-                    </core:EventTriggerBehavior>
-                </i:Interaction.Behaviors>
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="usuń powiadomienia"
+                                                Command="{Binding DeleteHashtagNotifications, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{Binding Name}"/>
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
 
-                <FlyoutBase.AttachedFlyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem Text="usuń powiadomienia"
-                                        Command="{Binding DeleteHashtagNotifications, 
-                                                  Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
-                                        CommandParameter="{Binding Name}"/>
-                    </MenuFlyout>
-                </FlyoutBase.AttachedFlyout>
+                        <TextBlock Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                                   Text="{Binding Count}"
+                                   Visibility="{Binding Count, Converter={StaticResource CountToVisibility}}"/>
 
-                <TextBlock Grid.Column="0"
-                           HorizontalAlignment="Left"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-                           Text="{Binding Count}"
-                           Visibility="{Binding Count, Converter={StaticResource CountToVisibility}}"/>
+                        <TextBlock Grid.Column="1"
+                                   HorizontalAlignment="Left"
+                                   FontSize="26"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Name}" />
+                    </Grid>
+                </DataTemplate>
+            </local:HashtagSelectionPageTemplateSelector.ItemTemplate>
+            
+            <local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
+                <DataTemplate>
+                    <Grid Margin="0,0,0,15">
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Holding">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
 
-                <TextBlock Grid.Column="1"
-                           HorizontalAlignment="Left"
-                           FontSize="26"
-                           Foreground="Gray"
-                           TextTrimming="CharacterEllipsis"
-                           Text="{Binding Name}" />
-            </Grid>
-        </DataTemplate>
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="przestań obserwować" />
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
 
-        <DataTemplate x:Key="ListViewItemTemplateNoNumber">
-            <Grid>
-                <i:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="Holding">
-                        <utils:OpenMenuFlyout />
-                    </core:EventTriggerBehavior>
-                </i:Interaction.Behaviors>
-
-                <FlyoutBase.AttachedFlyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem Text="usuń powiadomienia"/>
-                        <MenuFlyoutItem Text="przestań obserwować" />
-                    </MenuFlyout>
-                </FlyoutBase.AttachedFlyout>
-
-                <TextBlock HorizontalAlignment="Left"
-                           FontSize="26"
-                           Foreground="Gray"
-                           TextTrimming="CharacterEllipsis"
-                           Text="{Binding Name}" />
-            </Grid>
-        </DataTemplate>
+                        <TextBlock HorizontalAlignment="Left"
+                                   FontSize="26"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Name}" />
+                    </Grid>
+                </DataTemplate>
+            </local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
+            
+        </local:HashtagSelectionPageTemplateSelector>
     </Page.Resources>
 
     <Grid x:Name="LayoutRoot"
@@ -111,7 +118,7 @@
                                  SelectionMode="None"
                                  IsItemClickEnabled="True"
                                  ItemClick="ListView_ItemClick"
-                                 ItemTemplate="{StaticResource ListViewItemTemplate}"
+                                 ItemTemplateSelector="{StaticResource TemplateSelector}"
                                  ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
                                  ItemsSource="{Binding HashtagsCollection}"
                                  VirtualizingStackPanel.VirtualizationMode="Recycling">

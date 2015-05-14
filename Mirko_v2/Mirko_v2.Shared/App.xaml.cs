@@ -40,7 +40,29 @@ namespace Mirko_v2
         private static WykopAPI.WykopAPI _apiService = null;
         public static WykopAPI.WykopAPI ApiService
         {
-            get { return _apiService ?? (_apiService = new WykopAPI.WykopAPI()); }
+            get
+            {
+                if(_apiService == null)
+                {
+                    _apiService = new WykopAPI.WykopAPI();
+                    _apiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
+                    _apiService.MessageReceiver += ApiService_MessageReceiver;
+                }
+                return _apiService;
+            }
+        }
+
+        static void ApiService_MessageReceiver(object sender, WykopAPI.MessageEventArgs e)
+        {
+            
+        }
+
+        static async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
+        {
+            if(!e.IsNetworkAvailable)
+            {
+                await StatusBarManager.ShowText("Brak połączenia z Internetem.");
+            }
         }
 
         public static bool IsWIFIAvailable { get; set; }
