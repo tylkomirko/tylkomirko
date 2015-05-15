@@ -96,14 +96,11 @@ namespace WykopAPI
             SECRETKEY = "aJaoASCwx9";
 
             _log = LogManagerFactory.DefaultLogManager.GetLogger<WykopAPI>();
-            NetworkInformation.NetworkStatusChanged += (s) =>
-            {
-                CheckConnection();
-                if (NetworkStatusChanged != null)
-                    NetworkStatusChanged(this, new NetworkEventArgs(IsNetworkAvailable, IsWIFIAvailable));
-            };
-
+            NetworkInformation.NetworkStatusChanged += (s) => CheckConnection();
+            
             LoadUserInfo();
+
+            CheckConnection();
         }
 
         private void CheckConnection()
@@ -137,6 +134,9 @@ namespace WykopAPI
             {
                 _log.Error("NetworkStatusChanged", e);
             }
+
+            if (NetworkStatusChanged != null)
+                NetworkStatusChanged(this, new NetworkEventArgs(IsNetworkAvailable, IsWIFIAvailable));
         }
 
         #region UserInfo
