@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Mirko_v2.Utils;
 using Windows.UI.Xaml.Media.Animation;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,6 +31,8 @@ namespace Mirko_v2
         private Storyboard HideHeader;
         private Storyboard ShowHeader;
         private Storyboard ShowPivotContent;
+
+        private bool HasEntryAnimationPlayed = false;
 
         public MainPage()
         {
@@ -62,7 +65,7 @@ namespace Mirko_v2
                 ItemsPresenter = MainPivot.GetDescendant<ItemsPresenter>();
             }
 
-            //if (!App.HasEntryAnimationPlayed)
+            //if (!HasEntryAnimationPlayed)
             //    ItemsPresenter.Opacity = 0;
 
             // create hide animations
@@ -82,6 +85,21 @@ namespace Mirko_v2
             else if (pivot.SelectedIndex == 1 && PivotHeader.Opacity != 0)
                 ShowHotPopup();
              * */
+        }
+
+        private async void PivotPageGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!HasEntryAnimationPlayed)
+            {
+                this.AppHeader.PlayAnimation();
+                ShowHeader.SpeedRatio = .5;
+                ShowHeader.Begin();
+
+                await Task.Delay(1);
+                await AppBarAnimation.BeginAsync();
+
+                App.HasEntryAnimationPlayed = true;
+            }
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)

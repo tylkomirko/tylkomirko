@@ -57,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusBarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StoryboardExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />

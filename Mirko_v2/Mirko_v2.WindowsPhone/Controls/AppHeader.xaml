@@ -48,44 +48,44 @@
 
                 <!-- Actual content is added in C# -->
 
-                <Grid.Resources>
+                <Grid.Resources>                    
                     <QuadraticEase x:Key="LogoEasing"
-                               EasingMode="EaseIn"/>
+                                   EasingMode="EaseIn"/>
 
                     <Storyboard x:Name="LogoAnimation">
                         <DoubleAnimation Storyboard.TargetName="Logo"
-                                     Storyboard.TargetProperty="Opacity"
-                                     From="0.0"
-                                     To="1.0"
-                                     Duration="0:0:0.2" />
+                                         Storyboard.TargetProperty="Opacity"
+                                         From="0.0"
+                                         To="1.0"
+                                         Duration="0:0:0.2" />
 
                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Logo"
-                                                   Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                   EnableDependentAnimation="True"
-                                                   Duration="0:0:0.7">
+                                                       Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                       EnableDependentAnimation="True"
+                                                       Duration="0:0:0.7">
 
                             <EasingDoubleKeyFrame KeyTime="0:0:0.35"
-                                              Value="1.2" 
-                                              EasingFunction="{StaticResource LogoEasing}" />
+                                                  Value="1.2" 
+                                                  EasingFunction="{StaticResource LogoEasing}" />
 
                             <EasingDoubleKeyFrame KeyTime="0:0:0.7"
-                                              Value="1.0" 
-                                              EasingFunction="{StaticResource LogoEasing}" />
+                                                  Value="1.0" 
+                                                  EasingFunction="{StaticResource LogoEasing}" />
 
                         </DoubleAnimationUsingKeyFrames>
 
                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Logo"
-                                                   Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                   EnableDependentAnimation="True"
-                                                   Duration="0:0:0.7">
+                                                       Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                       EnableDependentAnimation="True"
+                                                       Duration="0:0:0.7">
 
                             <EasingDoubleKeyFrame KeyTime="0:0:0.35"
-                                              Value="1.2" 
-                                              EasingFunction="{StaticResource LogoEasing}" />
+                                                  Value="1.2" 
+                                                  EasingFunction="{StaticResource LogoEasing}" />
 
                             <EasingDoubleKeyFrame KeyTime="0:0:0.7"
-                                              Value="1.0" 
-                                              EasingFunction="{StaticResource LogoEasing}" />
+                                                  Value="1.0" 
+                                                  EasingFunction="{StaticResource LogoEasing}" />
 
                         </DoubleAnimationUsingKeyFrames>
                     </Storyboard>

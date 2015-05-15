@@ -160,5 +160,11 @@ namespace Mirko_v2.Controls
             Logo.Children.Add(outlinePath);
             Logo.Children.Add(insidePath);
         }
+
+        public void PlayAnimation()
+        {
+            LogoAnimation.Begin();
+            NotificationsAnimation.Begin();
+        }
     }
 }

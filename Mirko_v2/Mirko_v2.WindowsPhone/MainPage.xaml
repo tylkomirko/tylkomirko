@@ -12,7 +12,8 @@
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
     utils:PageOrientation.SupportedOrientations="Portrait">
 
-    <Grid x:Name="PivotPageGrid" 
+    <Grid x:Name="PivotPageGrid"
+          Loaded="PivotPageGrid_Loaded"
           Margin="0,25.6,0,-24">
 
         <Grid.RowDefinitions>
