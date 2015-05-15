@@ -681,7 +681,7 @@ namespace WykopAPI
 
         public async Task<List<Hashtag>> getPopularTags()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "tags/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -691,7 +691,7 @@ namespace WykopAPI
 
         public async Task<List<string>> getUserObservedTags()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "user/tags/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -868,7 +868,7 @@ namespace WykopAPI
                     return tmp;
             }
 
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;

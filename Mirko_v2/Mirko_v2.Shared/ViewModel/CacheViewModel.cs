@@ -126,9 +126,16 @@ namespace Mirko_v2.ViewModel
             {
                 Logger.Info("Downloading PopularHashtags.");
                 var data = await App.ApiService.getPopularTags();
-                PopularHashtags.Clear();
-                PopularHashtags.AddRange(data.Select(x => x.HashtagName));
-                data = null;
+                if (data != null)
+                {
+                    PopularHashtags.Clear();
+                    PopularHashtags.AddRange(data.Select(x => x.HashtagName));
+                    data = null;
+                }
+                else
+                {
+                    Logger.Warn("Downloading PopularHashtags failed.");
+                }
             }
 
             // ObservedTags
@@ -158,9 +165,16 @@ namespace Mirko_v2.ViewModel
             {
                 Logger.Info("Downloading ObservedHashtags.");
                 var data = await App.ApiService.getUserObservedTags();
-                ObservedHashtags.Clear();
-                ObservedHashtags.AddRange(data);
-                data = null;
+                if (data != null)
+                {
+                    ObservedHashtags.Clear();
+                    ObservedHashtags.AddRange(data);
+                    data = null;
+                }
+                else
+                {
+                    Logger.Warn("Downloading ObservedHashtags failed.");
+                }
             }
         }
 
