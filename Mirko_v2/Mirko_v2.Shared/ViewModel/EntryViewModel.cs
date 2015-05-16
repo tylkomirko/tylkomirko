@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,11 @@ namespace Mirko_v2.ViewModel
         public Entry Data { get; set; }
         public ObservableCollectionEx<CommentViewModel> Comments { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
+        
+        public EntryViewModel()
+        {
+
+        }
 
         public EntryViewModel(Entry d)
         {
@@ -41,6 +47,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _voteCommand = null;
+        [JsonIgnore]
         public RelayCommand VoteCommand
         {
             get { return _voteCommand ?? (_voteCommand = new RelayCommand(ExecuteVoteCommand));  }
@@ -56,6 +63,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _replyCommand = null;
+        [JsonIgnore]
         public RelayCommand ReplyCommand
         {
             get { return _replyCommand ?? (_replyCommand = new RelayCommand(ExecuteReplyCommand)); }
@@ -67,6 +75,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _favouriteCommand = null;
+        [JsonIgnore]
         public RelayCommand FavouriteCommand
         {
             get { return _favouriteCommand ?? (_replyCommand = new RelayCommand(ExecuteFavouriteCommand)); }
@@ -79,6 +88,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _editCommand = null;
+        [JsonIgnore]
         public RelayCommand EditCommand
         {
             get { return _editCommand ?? (_replyCommand = new RelayCommand(ExecuteEditCommand)); }
@@ -90,6 +100,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _deleteCommand = null;
+        [JsonIgnore]
         public RelayCommand DeleteCommand
         {
             get { return _deleteCommand ?? (_replyCommand = new RelayCommand(ExecuteDeleteCommand)); }

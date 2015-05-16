@@ -7,6 +7,11 @@ using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Messaging;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Mirko_v2.ViewModel
 {
@@ -29,10 +34,22 @@ namespace Mirko_v2.ViewModel
         /// </summary>
         /// 
 
+        private Timer Timer = null;
+
         public MainViewModel()
         {
+            Timer = new Timer(TimerCallback, null, 60 * 1000, 60 * 1000);
+
             Messenger.Default.Register<EntryViewModel>(this, "Entry UserControl", (e) => SelectedEntry = e);
             Messenger.Default.Register<EmbedViewModel>(this, "Embed UserControl", (e) => SelectedEmbed = e);
+        }
+
+        private async void TimerCallback(object state)
+        {
+            if(CurrentPivotItem == 0)
+            {
+                await SaveCollection(MirkoEntries, "MirkoEntries");
+            }
         }
 
         #region Properties
@@ -40,6 +57,12 @@ namespace Mirko_v2.ViewModel
         public IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> MirkoEntries
         {
             get { return _mirkoEntries ?? (_mirkoEntries = new IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel>()); }
+        }
+
+        private ObservableCollectionEx<EntryViewModel> _mirkoNewEntries = null;
+        public ObservableCollectionEx<EntryViewModel> MirkoNewEntries
+        {
+            get { return _mirkoNewEntries ?? (_mirkoNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
         }
 
         private ObservableCollectionEx<EntryViewModel> _otherEntries = null;
@@ -74,6 +97,50 @@ namespace Mirko_v2.ViewModel
         {
             get { return _selectedEmbed; }
             set { Set(() => SelectedEmbed, ref _selectedEmbed, value); }
+        }
+        #endregion
+
+        #region Saving/loading
+        private async Task SaveCollection(ICollection<EntryViewModel> col, string filename)
+        {
+            if (col == null || filename == null) return;
+            if (col.Count == 0) return;
+
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            var items = col.Take(50);
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var streamWriter = new StreamWriter(stream))
+            using (var jsonWriter = new JsonTextWriter(streamWriter))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Formatting = Formatting.None;
+                serializer.Serialize(jsonWriter, items);
+            }
+        }
+
+        public async Task<List<EntryViewModel>> ReadCollection(string filename)
+        {
+            if (filename == null) return null;
+
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            try
+            {
+                var file = await folder.GetFileAsync(filename);
+
+                using (var stream = await file.OpenStreamForReadAsync())
+                using (var streamReader = new StreamReader(stream))
+                using (var jsonReader = new JsonTextReader(streamReader))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    return serializer.Deserialize<List<EntryViewModel>>(jsonReader);
+                }
+            } 
+            catch(Exception e)
+            {
+                return null;
+            }
         }
         #endregion
 

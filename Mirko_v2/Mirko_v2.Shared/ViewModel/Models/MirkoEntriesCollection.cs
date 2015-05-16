@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Data;
 using WykopAPI.Models;
 using Mirko_v2.Utils;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace Mirko_v2.ViewModel
 {
@@ -16,8 +17,6 @@ namespace Mirko_v2.ViewModel
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize)
         {
-            await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
-
             var entriesToReturn = new List<Entry>(pageSize);
             int entriesInCache = cache.Count();
             int missingEntries = pageSize - entriesInCache;
@@ -42,49 +41,36 @@ namespace Mirko_v2.ViewModel
                 var entries = new List<Entry>(50);
 
                 IEnumerable<Entry> newEntries = null;
-                //if (App.IsNetworkAvailable)
-                if(true)
+                if (App.ApiService.IsNetworkAvailable)
                 {
+                    await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
+
                     do
                     {
                         newEntries = await App.ApiService.getEntries(pageIndex++);
-
                         if (newEntries != null)
-                        {
                             entries.AddRange(newEntries);
 
-                            //await App.SQLite.InsertEntries(newEntries);
-                        }
-
                     } while (entries.Count <= missingEntries && newEntries != null);
+
+                    await StatusBarManager.HideProgress();
                 }
                 else
                 {
-                    // network not avaible. use sqlite.
-                    /*
-                    do
+                    // offline mode
+                    var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                    if(mainVM.MirkoEntries.Count == 0)
                     {
-                        List<SQLiteStorage.Tables.Entry> dbTemp = null;
-                        if (FirstID == null)
-                            dbTemp = await App.SQLite.SelectMultiple("MainEntries", int.MaxValue);
-                        else
-                            dbTemp = await App.SQLite.SelectMultiple("MainEntries", FirstID.Value);
+                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                        var savedEntries = await mainVM.ReadCollection("MirkoEntries");
+                        await StatusBarManager.HideProgress();
 
-                        newEntries = SQLiteStorage.Converters.DBToJson(dbTemp);
-
-                        if (newEntries != null)
-                        {
-                            entries.AddRange(newEntries);
-                        }
-                        else
-                        {
-                            _hasMoreItems = false;
-                            StatusBarManager.HideProgress();
-                            return new LoadMoreItemsResult() { Count = 0 };
-                        }
-
-                    } while (entries.Count <= missingEntries && newEntries != null);
-                     * */
+                        return savedEntries;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
 
                 var tmp = new List<Entry>(missingEntries);
@@ -104,8 +90,6 @@ namespace Mirko_v2.ViewModel
                 cache.AddRange(entries);
                 entries.Clear();
             }
-
-            await StatusBarManager.HideProgress();
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach(var entry in entriesToReturn)

@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,11 @@ namespace Mirko_v2.ViewModel
         public EntryComment Data { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
 
+        public CommentViewModel()
+        {
+
+        }
+
         public CommentViewModel(EntryComment c)
         {
             Data = c;
@@ -22,6 +28,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _voteCommand = null;
+        [JsonIgnore]
         public RelayCommand VoteCommand
         {
             get { return _voteCommand ?? (_voteCommand = new RelayCommand(ExecuteVoteCommand)); }

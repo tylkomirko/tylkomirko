@@ -152,7 +152,15 @@ namespace Mirko_v2.Controls
                 downloadFromNet = true;
             }
 
-            if (downloadFromNet)
+            if(downloadFromNet && !App.ApiService.IsNetworkAvailable)
+            {
+                control.Ring.Visibility = Visibility.Collapsed;
+                control.Ring.IsActive = false;
+                control.Image.Opacity = 1.0;
+                control.Image.Visibility = Visibility.Collapsed;
+                control.Visibility = Visibility.Collapsed; // none of this really works.
+            }
+            else if(downloadFromNet)
             {
                 control.Ring.Visibility = Visibility.Visible;
                 control.Ring.IsActive = true;
@@ -196,7 +204,7 @@ namespace Mirko_v2.Controls
                     // display error of a kind.
                     control.Image.Visibility = Visibility.Collapsed;
                 }
-            }
+            }            
         }
         #endregion
     }

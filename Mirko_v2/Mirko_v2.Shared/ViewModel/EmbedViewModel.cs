@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,7 @@ namespace Mirko_v2.ViewModel
         public Embed EmbedData { get; set; }
 
         private MemoryStream _imageStream = null;
+        [JsonIgnore]
         public MemoryStream ImageStream
         {
             get { return _imageStream; }
@@ -33,7 +35,9 @@ namespace Mirko_v2.ViewModel
                 }
             }
         }
+
         private BitmapImage _bitmap = null;
+        [JsonIgnore]
         public BitmapImage Bitmap
         {
             get { return _bitmap; }
@@ -45,6 +49,11 @@ namespace Mirko_v2.ViewModel
         {
             get { return _mediaElementSrc; }
             set { Set(() => MediaElementSrc, ref _mediaElementSrc, value); }
+        }
+
+        public EmbedViewModel()
+        {
+
         }
 
         public EmbedViewModel(Embed e)
@@ -60,6 +69,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _loadImageCommand = null;
+        [JsonIgnore]
         public RelayCommand LoadImageCommand
         {
             get { return _loadImageCommand ?? (_loadImageCommand = new RelayCommand(ExecuteLoadImageCommand)); }
@@ -80,6 +90,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _saveImageCommand = null;
+        [JsonIgnore]
         public RelayCommand SaveImageCommand
         {
             get { return _saveImageCommand ?? (_saveImageCommand = new RelayCommand(ExecuteSaveImageCommand)); }
@@ -104,6 +115,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _openEmbedCommand = null;
+        [JsonIgnore]
         public RelayCommand OpenEmbedCommand
         {
             get { return _openEmbedCommand ?? (_openEmbedCommand = new RelayCommand(ExecuteOpenEmbedCommand)); }
