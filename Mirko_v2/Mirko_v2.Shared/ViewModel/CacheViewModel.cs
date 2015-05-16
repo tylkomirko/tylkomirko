@@ -48,12 +48,6 @@ namespace Mirko_v2.ViewModel
             get { return _popularHashtags ?? (_popularHashtags = new ObservableCollectionEx<string>()); }
         }
 
-        private List<string> _observedHashtags;
-        public List<string> ObservedHashtags
-        {
-            get { return _observedHashtags ?? (_observedHashtags = new List<string>()); }
-        }
-
         private ObservableCollectionEx<string> _hashtagSuggestions = null;
         public ObservableCollectionEx<string> HashtagSuggestions
         {
@@ -136,46 +130,7 @@ namespace Mirko_v2.ViewModel
                 {
                     Logger.Warn("Downloading PopularHashtags failed.");
                 }
-            }
-
-            // ObservedTags
-            needToDownload = false;
-            try
-            {
-                var file = await tempFolder.GetFileAsync("ObservedTags");
-                var props = await file.GetBasicPropertiesAsync();
-                if (DateTime.Now - props.DateModified > FileLifeSpan)
-                {
-                    needToDownload = true;
-                }
-                else
-                {
-                    var fileContent = await FileIO.ReadLinesAsync(file);
-                    Logger.Info(fileContent.Count + " entries in ObservedTags");
-                    ObservedHashtags.Clear();
-                    ObservedHashtags.AddRange(fileContent);
-                }
-            }
-            catch (Exception)
-            {
-                needToDownload = true;
-            }
-
-            if (needToDownload)
-            {
-                Logger.Info("Downloading ObservedHashtags.");
-                var data = await App.ApiService.getUserObservedTags();
-                if (data != null)
-                {
-                    ObservedHashtags.Clear();
-                    ObservedHashtags.AddRange(data);
-                    data = null;
-                }
-                else
-                {
-                    Logger.Warn("Downloading ObservedHashtags failed.");
-                }
-            }
+            }            
         }
 
         private async Task Save()
@@ -186,11 +141,6 @@ namespace Mirko_v2.ViewModel
             var file = await tempFolder.CreateFileAsync("PopularTags", CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteLinesAsync(file, PopularHashtags);
             Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
-
-            // ObervedTags
-            file = await tempFolder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
-            await FileIO.WriteLinesAsync(file, ObservedHashtags);
-            Logger.Info("Saved ObservedHashtags, " + ObservedHashtags.Count + " entries.");
         }
         #endregion
     }

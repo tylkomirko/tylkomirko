@@ -14,6 +14,7 @@ using Mirko_v2.Utils;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.Storage;
 
 namespace Mirko_v2.ViewModel
 {
@@ -235,6 +236,54 @@ namespace Mirko_v2.ViewModel
         {
             get { return _hashtagFlipCurrentEntry; }
             set { Set(() => HashtagFlipCurrentEntry, ref _hashtagFlipCurrentEntry, value); }
+        }
+
+        private List<string> _observedHashtags;
+        public List<string> ObservedHashtags // this VM is not the best for this, I know. but I can't think of a better one right now.
+        {
+            get { return _observedHashtags ?? (_observedHashtags = new List<string>()); }
+        }
+
+        private async Task DownloadObservedHashtags()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var needToDownload = false;
+            try
+            {
+                var file = await folder.GetFileAsync("ObservedTags");
+                var props = await file.GetBasicPropertiesAsync();
+                if (DateTime.Now - props.DateModified > new TimeSpan(12, 0, 0))
+                {
+                    needToDownload = true;
+                }
+                else
+                {
+                    var fileContent = await FileIO.ReadLinesAsync(file);
+                    ObservedHashtags.Clear();
+                    ObservedHashtags.AddRange(fileContent);
+                }
+            }
+            catch (Exception)
+            {
+                needToDownload = true;
+            }
+
+            if (needToDownload)
+            {
+                var data = await App.ApiService.getUserObservedTags();
+                if (data != null)
+                {
+                    ObservedHashtags.Clear();
+                    ObservedHashtags.AddRange(data);
+                    data = null;
+                }
+            }
+
+            if(ObservedHashtags.Count > 0)
+            {
+                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteLinesAsync(file, ObservedHashtags);
+            }
         }
 
         private RelayCommand<uint> _deleteHashtagNotification = null;
@@ -494,8 +543,10 @@ namespace Mirko_v2.ViewModel
                 tmp.Clear();
 
                 // now add observed hashtags without notifications
-                var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
-                foreach (var tag in observedTags)
+                if (ObservedHashtags.Count == 0)
+                    await DownloadObservedHashtags();
+
+                foreach (var tag in ObservedHashtags)
                 {
                     bool itemFound = false;
 
