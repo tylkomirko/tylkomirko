@@ -16,9 +16,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using WykopAPI.Models;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Mirko_v2
+namespace Mirko_v2.Pages
 {
     public class PMTemplateSelector : DataTemplateSelector
     {
@@ -36,10 +36,7 @@ namespace Mirko_v2
         }
     }
 
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class ConversationPage : Page
+    public sealed partial class ConversationPage : UserControl
     {
         public ConversationPage()
         {
@@ -52,35 +49,28 @@ namespace Mirko_v2
             };
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+            //this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            /*
             if (this.TextBox.Text.Length > 0)
                 this.BottomAppBar.IsSticky = true;
             else
-                this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+                this.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;*/
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            /*
             var txt = TextBox.Text;
             if (txt.Length > 0 || AttachmentSymbol.Text.Length > 3) // 3 is the length of attachment symbol and two spaces
                 SendButton.IsEnabled = true;
             else
-                SendButton.IsEnabled = false;
+                SendButton.IsEnabled = false;*/
         }
 
         private void LennyButton_Click(object sender, RoutedEventArgs e)

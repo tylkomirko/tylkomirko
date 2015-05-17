@@ -49,7 +49,7 @@ namespace Mirko_v2.Controls
         {
             if ((bool)e.NewValue)
                 (d as Entry).LeftSpacer.Width = 30.0;
-        }
+        }                
 
         #region IsHot
         public bool IsHot
@@ -75,8 +75,11 @@ namespace Mirko_v2.Controls
 
             if (this.IsTapEnabled && singleTap)
             {
-                if (DataContext != null)
+                if (DataContext != null) 
+                {
                     (DataContext as EntryViewModel).GoToEntryPage();
+                    e.Handled = true;
+                }
             }
         }
 

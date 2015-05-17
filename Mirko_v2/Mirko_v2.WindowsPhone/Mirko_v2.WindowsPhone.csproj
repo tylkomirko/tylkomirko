@@ -87,9 +87,6 @@
     <None Include="AddEntryPage.xaml.cs">
       <DependentUpon>AddEntryPage.xaml</DependentUpon>
     </None>
-    <Compile Include="AtNotificationsPage.xaml.cs">
-      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\AppHeader.xaml.cs">
       <DependentUpon>AppHeader.xaml</DependentUpon>
     </Compile>
@@ -120,32 +117,35 @@
     <Compile Include="Controls\SpoilerTextBlock.xaml.cs">
       <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ConversationPage.xaml.cs">
-      <DependentUpon>ConversationPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ConversationsPage.xaml.cs">
       <DependentUpon>ConversationsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EmbedPage.xaml.cs">
-      <DependentUpon>EmbedPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HashtagFlipPage.xaml.cs">
-      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HashtagNotificationsPage.xaml.cs">
-      <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="HashtagSelectionPage.xaml.cs">
-      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AtNotificationsPage.xaml.cs">
+      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ConversationPage.xaml.cs">
+      <DependentUpon>ConversationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EmbedPage.xaml.cs">
+      <DependentUpon>EmbedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="HostPage.xaml.cs">
       <DependentUpon>HostPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HashtagFlipPage.xaml.cs">
+      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HashtagNotificationsPage.xaml.cs">
+      <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HashtagSelectionPage.xaml.cs">
+      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PivotPage.xaml.cs">
       <DependentUpon>PivotPage.xaml</DependentUpon>
@@ -179,10 +179,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <Page Include="AtNotificationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\AppHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -223,31 +219,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ConversationPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ConversationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EmbedPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HashtagFlipPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HashtagNotificationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HashtagSelectionPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="LoginPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AtNotificationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ConversationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EmbedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -258,6 +246,18 @@
     <Page Include="HostPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\HashtagFlipPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\HashtagNotificationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\HashtagSelectionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PivotPage.xaml">
       <SubType>Designer</SubType>

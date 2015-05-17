@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Controls;
 using Mirko_v2.Pages;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Mirko_v2.ViewModel
         public NavigationService()
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+            _framesWithoutHeader = new List<string>() { "EmbedPage" };
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
@@ -44,11 +46,13 @@ namespace Mirko_v2.ViewModel
         private bool NavigatedToRootPage = false;
         private Page _rootPage = null;
         private Frame _rootPageFrame = null;
+        private AppHeader _rootPageHeader = null;
         private AppBar _rootPageAppBar = null;
 
         private readonly Stack<Type> _stack = new Stack<Type>();
         private readonly Dictionary<string, Type> _framesNames = new Dictionary<string, Type>();
         private readonly Dictionary<Type, UserControl> _framesContent = new Dictionary<Type, UserControl>();
+        private readonly List<string> _framesWithoutHeader = null;
         public object CurrentData { get; set; }
 
         public void RegisterPage(string key, Type type)
@@ -65,6 +69,7 @@ namespace Mirko_v2.ViewModel
                 currentFrame.Navigate(typeof(HostPage));
                 _rootPage = currentFrame.Content as HostPage;
                 _rootPageFrame = _rootPage.FindName("MainFrame") as Frame;
+                _rootPageHeader = _rootPage.FindName("AppHeader") as AppHeader;
 
                 NavigatedToRootPage = true;
             }
@@ -82,6 +87,11 @@ namespace Mirko_v2.ViewModel
             _rootPageFrame.Content = content;
             //_rootPageAppBar = new CommandBar() { ContentTemplate = (DataTemplate)content.Resources["AppBar"] };
             //_rootPage.BottomAppBar = _rootPageAppBar;
+
+            if (_framesWithoutHeader.Contains(key))
+                _rootPageHeader.Visibility = Visibility.Collapsed;
+            else
+                _rootPageHeader.Visibility = Visibility.Visible;
 
             _stack.Push(type);
             CurrentPageKey = key;
@@ -116,9 +126,12 @@ namespace Mirko_v2.ViewModel
             return currentFrame != null && currentFrame.CanGoBack;*/
 
             if (_stack.Count <= 1)
+            {
+                Application.Current.Exit(); 
                 return false;
-            else
-                return true;
+            }
+
+            return true;
         }
 
         public void GoBack()
@@ -136,9 +149,14 @@ namespace Mirko_v2.ViewModel
             }
 
             content = _framesContent[type];
-            _rootPage.Content = content;
+            _rootPageFrame.Content = content;
 
             CurrentPageKey = _framesNames.Single(x => x.Value == type).Key;
+
+            if (_framesWithoutHeader.Contains(CurrentPageKey))
+                _rootPageHeader.Visibility = Visibility.Collapsed;
+            else
+                _rootPageHeader.Visibility = Visibility.Visible;
 
             /*
             if (!CanGoBack()) return;
