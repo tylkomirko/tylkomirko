@@ -45,7 +45,8 @@ namespace Mirko_v2.ViewModel
         private Page _rootPage = null;
         private Frame _rootPageFrame = null;
         private AppBar _rootPageAppBar = null;
-        
+
+        private readonly Stack<Type> _stack = new Stack<Type>();
         private readonly Dictionary<string, Type> _framesNames = new Dictionary<string, Type>();
         private readonly Dictionary<Type, UserControl> _framesContent = new Dictionary<Type, UserControl>();
         public object CurrentData { get; set; }
@@ -61,8 +62,8 @@ namespace Mirko_v2.ViewModel
 
             if(!NavigatedToRootPage)
             {
-                currentFrame.Navigate(typeof(RootPage));
-                _rootPage = currentFrame.Content as RootPage;
+                currentFrame.Navigate(typeof(HostPage));
+                _rootPage = currentFrame.Content as HostPage;
                 _rootPageFrame = _rootPage.FindName("MainFrame") as Frame;
 
                 NavigatedToRootPage = true;
@@ -79,9 +80,11 @@ namespace Mirko_v2.ViewModel
 
             content = _framesContent[type];
             _rootPageFrame.Content = content;
-            _rootPageAppBar = new CommandBar() { ContentTemplate = (DataTemplate)content.Resources["AppBar"] };
-            _rootPage.BottomAppBar = _rootPageAppBar;
+            //_rootPageAppBar = new CommandBar() { ContentTemplate = (DataTemplate)content.Resources["AppBar"] };
+            //_rootPage.BottomAppBar = _rootPageAppBar;
 
+            _stack.Push(type);
+            CurrentPageKey = key;
 
             /*var nextFrameType = _framesDictionary[key];
             if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
@@ -108,12 +111,36 @@ namespace Mirko_v2.ViewModel
 
         public bool CanGoBack()
         {
+            /*
             var currentFrame = Window.Current.Content as Frame;
-            return currentFrame != null && currentFrame.CanGoBack;
+            return currentFrame != null && currentFrame.CanGoBack;*/
+
+            if (_stack.Count <= 1)
+                return false;
+            else
+                return true;
         }
 
         public void GoBack()
         {
+            if (!CanGoBack()) return;
+
+            _stack.Pop();
+            var type = _stack.Peek();
+            UserControl content = null;
+
+            if (!_framesContent.ContainsKey(type))
+            {
+                content = (UserControl)Activator.CreateInstance(type);
+                _framesContent.Add(type, content);
+            }
+
+            content = _framesContent[type];
+            _rootPage.Content = content;
+
+            CurrentPageKey = _framesNames.Single(x => x.Value == type).Key;
+
+            /*
             if (!CanGoBack()) return;
             var frame = Window.Current.Content as Frame;
             if (frame != null)
@@ -121,7 +148,7 @@ namespace Mirko_v2.ViewModel
                 frame.GoBack();
 
                 CurrentPageKey = _framesNames.Single(x => x.Value == frame.CurrentSourcePageType).Key;
-            }
+            }*/
         }
 
         public void Dispose()

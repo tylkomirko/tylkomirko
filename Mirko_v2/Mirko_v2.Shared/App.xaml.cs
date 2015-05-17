@@ -150,7 +150,7 @@ namespace Mirko_v2
                 rootFrame = CreateRootFrame();
                 
                 var navService = new Mirko_v2.ViewModel.NavigationService();
-                navService.RegisterPage("MainPage", typeof(RootPage));
+                navService.RegisterPage("MainPage", typeof(HostPage));
                 navService.RegisterPage("LoginPage", typeof(LoginPage));
                 navService.RegisterPage("EntryPage", typeof(EntryPage));
                 navService.RegisterPage("EmbedPage", typeof(EmbedPage));
@@ -277,7 +277,7 @@ namespace Mirko_v2
 
             if (rootFrame.Content == null)
             {
-                rootFrame.Navigate(typeof(RootPage));
+                rootFrame.Navigate(typeof(HostPage));
             }
 
             var continuationEventArgs = e as IContinuationActivatedEventArgs;

@@ -129,9 +129,6 @@
     <Compile Include="EmbedPage.xaml.cs">
       <DependentUpon>EmbedPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EntryPage.xaml.cs">
-      <DependentUpon>EntryPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HashtagFlipPage.xaml.cs">
       <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
     </Compile>
@@ -147,8 +144,8 @@
     <Compile Include="Pages\EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RootPage.xaml.cs">
-      <DependentUpon>RootPage.xaml</DependentUpon>
+    <Compile Include="HostPage.xaml.cs">
+      <DependentUpon>HostPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PivotPage.xaml.cs">
       <DependentUpon>PivotPage.xaml</DependentUpon>
@@ -238,10 +235,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EntryPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="HashtagFlipPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -262,7 +255,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RootPage.xaml">
+    <Page Include="HostPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

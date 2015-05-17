@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirko_v2.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,13 @@ namespace Mirko_v2.Pages
         public EntryPage()
         {
             this.InitializeComponent();
+        }
+
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var mainVM = this.DataContext as MainViewModel;
+            if (mainVM.CommentToScrollInto != null)
+                ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }
     }
 }
