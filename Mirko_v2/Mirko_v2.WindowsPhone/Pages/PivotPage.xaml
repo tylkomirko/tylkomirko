@@ -147,19 +147,10 @@
                 </TransitionCollection>
             </Pivot.Transitions>
 
-            <Pivot.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               Margin="0,17,0,0"
-                               VerticalAlignment="Center"
-                               FontSize="18"/>
-                </DataTemplate>
-            </Pivot.HeaderTemplate>
-
             <!--Pivot item one-->
             <PivotItem
                 x:Uid="MirkoPivotItem"
-                Margin="10,-140,0,0"
+                Margin="10,0,0,0"
                 Header="mirko"
                 Tag="0">
                 <controls:ListViewEx x:Name="MirkoListView"

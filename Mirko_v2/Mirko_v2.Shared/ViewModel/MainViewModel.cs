@@ -132,16 +132,23 @@ namespace Mirko_v2.ViewModel
             if (col.Count == 0) return;
 
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            var items = col.Take(50);
-
-            using (var stream = await file.OpenStreamForWriteAsync())
-            using (var streamWriter = new StreamWriter(stream))
-            using (var jsonWriter = new JsonTextWriter(streamWriter))
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Formatting = Formatting.None;
-                serializer.Serialize(jsonWriter, items);
+                var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                var items = col.Take(50);
+
+                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var streamWriter = new StreamWriter(stream))
+                using (var jsonWriter = new JsonTextWriter(streamWriter))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.None;
+                    serializer.Serialize(jsonWriter, items);
+                }
+            }
+            catch(Exception)
+            {
+
             }
         }
 

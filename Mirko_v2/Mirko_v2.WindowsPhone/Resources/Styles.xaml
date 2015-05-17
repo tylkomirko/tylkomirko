@@ -3,6 +3,48 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Mirko_v2.Resources">
 
+    <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="LayoutRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal"/>
+                                <VisualState x:Name="MouseOver"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" To="Transparent" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" Storyboard.TargetName="ContentContainer" />
+                                        <ColorAnimation Duration="0" To="DarkGray" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ContentContainer"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" To="White" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ContentContainer" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="SelectedUnfocused">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" To="White" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ContentContainer" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="Transparent" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Background="Black" BorderBrush="Black"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="ListViewItem" x:Key="StretchedOutListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
@@ -220,31 +262,7 @@
                         <ContentControl x:Name="TitleContentControl" ContentTemplate="{TemplateBinding TitleTemplate}" Content="{TemplateBinding Title}" Style="{StaticResource PivotTitleContentControlStyle}" HorizontalContentAlignment="Stretch" Opacity="0.5"/>
                         <ScrollViewer x:Name="ScrollViewer" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollBarVisibility="Hidden" Margin="{TemplateBinding Padding}" Grid.Row="1" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" VerticalSnapPointsType="None" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" VerticalContentAlignment="Stretch" ZoomMode="Disabled">
                             <PivotPanel x:Name="Panel" VerticalAlignment="Stretch">
-                                <PivotHeaderPanel x:Name="Header" Background="{TemplateBinding BorderBrush}" Margin="0,93,0,0" Opacity="0.95" Typography.Kerning="True" Canvas.ZIndex="1" Height="49">
-
-                                    <PivotHeaderPanel.Resources>
-                                        <Storyboard x:Name="ShowHeader">
-                                            <DoubleAnimation Storyboard.TargetName="Header"
-                                                                 Storyboard.TargetProperty="Opacity"                                                                 
-                                                                 To="0.95"
-                                                                 Duration="0:0:0.2">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CubicEase EasingMode="EaseOut" />
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                        
-                                        <Storyboard x:Name="HideHeader">
-                                            <DoubleAnimation Storyboard.TargetName="Header"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0.0"
-                                                                 Duration="0:0:0.2">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CubicEase EasingMode="EaseOut" />
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </PivotHeaderPanel.Resources>
+                                <PivotHeaderPanel x:Name="Header" Visibility="Collapsed" Background="{TemplateBinding BorderBrush}" Margin="0,93,0,0" Opacity="0.95" Typography.Kerning="True" Canvas.ZIndex="1" Height="49">
 
                                     <PivotHeaderPanel.RenderTransform>
                                         <CompositeTransform x:Name="HeaderTranslateTransform" TranslateX="0" />

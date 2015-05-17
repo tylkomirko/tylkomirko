@@ -22,11 +22,8 @@ namespace Mirko_v2.Pages
 {
     public sealed partial class PivotPage : UserControl
     {
-        public PivotHeaderPanel PivotHeader;
         public ItemsPresenter ItemsPresenter;
 
-        private Storyboard HideHeader;
-        private Storyboard ShowHeader;
         private Storyboard ShowPivotContent;
 
         private bool HasEntryAnimationPlayed = false;
@@ -38,22 +35,13 @@ namespace Mirko_v2.Pages
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
         {
-            if (PivotHeader == null)
+            if (ItemsPresenter == null)
             {
-                PivotHeader = MainPivot.GetDescendant<PivotHeaderPanel>();
                 ItemsPresenter = MainPivot.GetDescendant<ItemsPresenter>();
             }
 
             //if (!HasEntryAnimationPlayed)
             //    ItemsPresenter.Opacity = 0;
-
-            // create hide animations
-            if (HideHeader == null)
-                HideHeader = PivotHeader.Resources["HideHeader"] as Storyboard;
-
-            // create show animations
-            if (ShowHeader == null)
-                ShowHeader = PivotHeader.Resources["ShowHeader"] as Storyboard;
 
             if (ShowPivotContent == null)
                 ShowPivotContent = ItemsPresenter.Resources["FadeIn"] as Storyboard;
@@ -70,16 +58,13 @@ namespace Mirko_v2.Pages
         {
             if (!HasEntryAnimationPlayed)
             {
-                ShowHeader.SpeedRatio = .5;
-                ShowHeader.Begin();
-
+                ShowPivotContent.Begin();
                 App.HasEntryAnimationPlayed = true;
             }
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
-            HideHeader.Begin();
 
             /*
             var CurrentPage = MainPivot.SelectedIndex;
@@ -92,7 +77,6 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
-            ShowHeader.Begin();
 
             /*
             if (CurrentPage == 0 && App.MainViewModel.MirkoNewEntries.Count > 0)

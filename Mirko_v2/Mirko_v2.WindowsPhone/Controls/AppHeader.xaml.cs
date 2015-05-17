@@ -6,6 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -14,9 +15,14 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class AppHeader : UserControl
     {
+        private DispatcherTimer Timer = null;
+
         public AppHeader()
         {
             this.InitializeComponent();
+
+            Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
+            Timer.Tick += Timer_Tick;
 
             this.Loaded += AppHeader_Loaded;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
@@ -166,5 +172,55 @@ namespace Mirko_v2.Controls
             LogoAnimation.Begin();
             NotificationsAnimation.Begin();
         }
+
+        private void StreamsPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LeaveNotifications != null)
+            {
+                if (Timer.IsEnabled) return;
+
+                Timer.Stop();
+
+                EnterStreams.Begin();
+                LeaveNotifications.Begin();
+
+                Timer.Start();
+            }
+        }
+
+
+        #region Animations
+        private void Timer_Tick(object sender, object e)
+        {
+            if (NotificationsPanel.Opacity == 0)
+            {
+                EnterNotifications.Begin();
+                LeaveStreams.Begin();
+            }
+
+            Timer.Stop();
+        }
+
+        private void EnterStreams_Completed(object sender, object e)
+        {
+            StreamsPanel.IsTapEnabled = true;
+        }
+
+        private void LeaveStreams_Completed(object sender, object e)
+        {
+            StreamsPanel.IsTapEnabled = false;
+        }
+
+        private void LeaveNotifications_Completed(object sender, object e)
+        {
+            NotificationsPanel.IsTapEnabled = false;
+        }
+
+        private void EnterNotifications_Completed(object sender, object e)
+        {
+            NotificationsPanel.IsTapEnabled = true;
+        }
+
+        #endregion
     }
 }
