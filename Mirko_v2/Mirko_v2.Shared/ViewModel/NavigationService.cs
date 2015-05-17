@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
-using Mirko_v2.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,6 @@ namespace Mirko_v2.ViewModel
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
-
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
             if (CanGoBack())
@@ -41,62 +39,31 @@ namespace Mirko_v2.ViewModel
         }
 #endif
 
-        private bool NavigatedToRootPage = false;
-        private Page _rootPage = null;
-        private Frame _rootPageFrame = null;
-        private AppBar _rootPageAppBar = null;
-        
-        private readonly Dictionary<string, Type> _framesNames = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, UserControl> _framesContent = new Dictionary<Type, UserControl>();
+        private readonly Dictionary<String, Type> _framesDictionary = new Dictionary<string, Type>();
         public object CurrentData { get; set; }
 
         public void RegisterPage(string key, Type type)
         {
-            _framesNames.Add(key, type);
+            _framesDictionary.Add(key, type);
         }
 
         public void NavigateTo(string key)
         {
             var currentFrame = Window.Current.Content as Frame;
-
-            if(!NavigatedToRootPage)
-            {
-                currentFrame.Navigate(typeof(RootPage));
-                _rootPage = currentFrame.Content as RootPage;
-                _rootPageFrame = _rootPage.FindName("MainFrame") as Frame;
-
-                NavigatedToRootPage = true;
-            }
-
-            var type = _framesNames[key];
-            UserControl content = null;
-
-            if(!_framesContent.ContainsKey(type))
-            {
-                content = (UserControl)Activator.CreateInstance(type);
-                _framesContent.Add(type, content);
-            }
-
-            content = _framesContent[type];
-            _rootPageFrame.Content = content;
-            _rootPageAppBar = new CommandBar() { ContentTemplate = (DataTemplate)content.Resources["AppBar"] };
-            _rootPage.BottomAppBar = _rootPageAppBar;
-
-
-            /*var nextFrameType = _framesDictionary[key];
+            var nextFrameType = _framesDictionary[key];
             if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = null;
                 CurrentPageKey = key;
 
                 currentFrame.Navigate(nextFrameType);
-            }*/
+            }
         }
 
         public void NavigateTo(string key, object data)
         {
             var currentFrame = Window.Current.Content as Frame;
-            var nextFrameType = _framesNames[key];
+            var nextFrameType = _framesDictionary[key];
             if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = data;
@@ -120,7 +87,7 @@ namespace Mirko_v2.ViewModel
             {
                 frame.GoBack();
 
-                CurrentPageKey = _framesNames.Single(x => x.Value == frame.CurrentSourcePageType).Key;
+                CurrentPageKey = _framesDictionary.Single(x => x.Value == frame.CurrentSourcePageType).Key;
             }
         }
 

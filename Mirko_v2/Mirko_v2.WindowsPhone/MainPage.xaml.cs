@@ -11,16 +11,19 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Mirko_v2.Utils;
+using Windows.UI.Xaml.Media.Animation;
 using System.Threading.Tasks;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Mirko_v2.Pages
+namespace Mirko_v2
 {
-    public sealed partial class PivotPage : UserControl
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class MainPage : Page
     {
         public PivotHeaderPanel PivotHeader;
         public ItemsPresenter ItemsPresenter;
@@ -31,9 +34,27 @@ namespace Mirko_v2.Pages
 
         private bool HasEntryAnimationPlayed = false;
 
-        public PivotPage()
+        public MainPage()
         {
             this.InitializeComponent();
+
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+
+        /// <summary>
+        /// Invoked when this page is about to be displayed in a Frame.
+        /// </summary>
+        /// <param name="e">Event data that describes how this page was reached.
+        /// This parameter is typically used to configure the page.</param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // TODO: Prepare page for display here.
+
+            // TODO: If your application contains multiple pages, ensure that you are
+            // handling the hardware Back button by registering for the
+            // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
+            // If you are using the NavigationHelper provided by some templates,
+            // this event is handled for you.
         }
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
@@ -66,12 +87,16 @@ namespace Mirko_v2.Pages
              * */
         }
 
-        private void PivotPageGrid_Loaded(object sender, RoutedEventArgs e)
+        private async void PivotPageGrid_Loaded(object sender, RoutedEventArgs e)
         {
             if (!HasEntryAnimationPlayed)
             {
+                this.AppHeader.PlayAnimation();
                 ShowHeader.SpeedRatio = .5;
                 ShowHeader.Begin();
+
+                await Task.Delay(1);
+                await AppBarAnimation.BeginAsync();
 
                 App.HasEntryAnimationPlayed = true;
             }
@@ -104,7 +129,8 @@ namespace Mirko_v2.Pages
 
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var currentScrollViewer = (MainPivot.SelectedItem as PivotItem).GetDescendant<ListView>().GetDescendant<ScrollViewer>();
+            currentScrollViewer.ChangeView(null, 0.0, null);
         }
     }
 }

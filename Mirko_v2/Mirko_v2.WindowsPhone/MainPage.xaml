@@ -1,57 +1,17 @@
-﻿<UserControl
-    x:Class="Mirko_v2.Pages.PivotPage"
+﻿<Page
+    x:Class="Mirko_v2.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Mirko_v2.Pages"
+    xmlns:local="using:Mirko_v2"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:utils="using:Mirko_v2.Utils"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
+    utils:PageOrientation.SupportedOrientations="Portrait">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="AppBar">
-
-            <CommandBar Opacity="{StaticResource AppBarOpacity}"
-                    ClosedDisplayMode="Compact">
-
-                <CommandBar.Resources>
-                    <Storyboard x:Name="AppBarAnimation">
-                        <DoubleAnimation Storyboard.TargetName="AppBar"
-                                     Storyboard.TargetProperty="Opacity"
-                                     From="0.0"
-                                     To="{StaticResource AppBarOpacity}"
-                                     Duration="0:0:0.5" />
-                    </Storyboard>
-                </CommandBar.Resources>
-
-                <AppBarButton Label="dodaj"
-                          Icon="Add"
-                          Command="{Binding AddNewEntryCommand}"
-                          Visibility="{Binding ElementName=LogoutButton, Path=Visibility}" />
-
-                <AppBarButton Label="do góry"
-                          Icon="Up"
-                          Click="ScrollUpButton_Click" />
-
-                <CommandBar.SecondaryCommands>
-                    <AppBarButton Label="ustawienia"
-                              Command="{Binding SettingsCommand}"/>
-                    <AppBarButton Label="wyloguj"
-                              x:Name="LogoutButton"
-                              Visibility="{Binding Settings.UserInfo, Mode=OneWay, Source={StaticResource Locator},
-                                           Converter={StaticResource NullToVisibility}}"
-                              Command="{Binding LogInOutCommand}"/>
-                    <AppBarButton Label="zaloguj"
-                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"
-                              Command="{Binding LogInOutCommand}"/>
-                </CommandBar.SecondaryCommands>
-            </CommandBar>
-
-        </DataTemplate>       
-    </UserControl.Resources>
-    
     <Grid x:Name="PivotPageGrid"
           Loaded="PivotPageGrid_Loaded"
           Margin="0,25.6,0,-24">
@@ -131,6 +91,12 @@
                 </ComboBox>
             </Grid>
         </Popup>
+
+        <controls:AppHeader x:Name="AppHeader"
+                            Margin="0,0,0,0"
+                            Grid.Row="0"
+                            Canvas.ZIndex="1"
+                            Background="{ThemeResource AppHeaderBackground}"/>
 
         <Pivot x:Name="MainPivot"
                Loaded="MainPivot_Loaded"
@@ -290,4 +256,78 @@
         </Pivot>
     </Grid>
 
-</UserControl>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar"
+                    Opacity="{StaticResource AppBarOpacity}"
+                    ClosedDisplayMode="Compact">
+
+            <CommandBar.Resources>
+                <Storyboard x:Name="AppBarAnimation">
+                    <DoubleAnimation Storyboard.TargetName="AppBar"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="0.0"
+                                     To="{StaticResource AppBarOpacity}"
+                                     Duration="0:0:0.5" />
+                </Storyboard>
+            </CommandBar.Resources>
+
+            <AppBarButton Label="dodaj"
+                          Icon="Add"
+                          Command="{Binding AddNewEntryCommand}"
+                          Visibility="{Binding ElementName=LogoutButton, Path=Visibility}" />
+            
+            <AppBarButton Label="do góry"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="ustawienia"
+                              Command="{Binding SettingsCommand}"/>
+                <AppBarButton Label="wyloguj"
+                              x:Name="LogoutButton"
+                              Visibility="{Binding Settings.UserInfo, Mode=OneWay, Source={StaticResource Locator},
+                                           Converter={StaticResource NullToVisibility}}"
+                              Command="{Binding LogInOutCommand}"/>
+                <AppBarButton Label="zaloguj"
+                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"
+                              Command="{Binding LogInOutCommand}"/>
+            </CommandBar.SecondaryCommands>
+
+            <!--
+            <AppBarButton x:Uid="RefreshAppBarButton" 
+                          x:Name="RefreshAppBarButton" 
+                          Label="refresh" 
+                          Click="RefreshAppBarButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/refresh.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+
+            <AppBarButton x:Uid="AddAppBarButton" 
+                          x:Name="AddAppBarButton" 
+                          Label="add"
+                          Icon="Add" 
+                          Click="AddAppBarButton_Click" />
+            <AppBarButton x:Uid="ScrollUpAppBarButton" 
+                          x:Name="ScrollUpAppBarButton" 
+                          Label="up" 
+                          Icon="Up" 
+                          Click="ScrollUpAppBarButton_Click" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Uid="ForceRefreshButton" 
+                              x:Name="ForceRefreshButton" 
+                              Label="force refresh"
+                              Click="ForceRefreshButton_Click"/>
+                <AppBarButton x:Name="SettingsButton" 
+                              Label="ustawienia"
+                              Click="SettingsButton_Click"/>
+                <AppBarButton Label="czarnolisto"
+                              Click="BlacklistButton_Click"/>
+                <AppBarButton Label="wyloguj się"
+                              Click="LogoutButton_Click"/>
+            </CommandBar.SecondaryCommands>
+            -->
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>
