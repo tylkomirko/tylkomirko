@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Pages;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -149,7 +150,7 @@ namespace Mirko_v2
                 rootFrame = CreateRootFrame();
                 
                 var navService = new Mirko_v2.ViewModel.NavigationService();
-                navService.RegisterPage("MainPage", typeof(MainPage));
+                navService.RegisterPage("MainPage", typeof(RootPage));
                 navService.RegisterPage("LoginPage", typeof(LoginPage));
                 navService.RegisterPage("EntryPage", typeof(EntryPage));
                 navService.RegisterPage("EmbedPage", typeof(EmbedPage));
@@ -161,6 +162,8 @@ namespace Mirko_v2
                 navService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
                 navService.RegisterPage("ConversationPage", typeof(ConversationPage));
                 navService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
+
+                navService.RegisterPage("PivotPage", typeof(PivotPage));
                 SimpleIoc.Default.Register<INavigationService>(() => navService);
 
                 // TODO: change this value to a cache size that is appropriate for your application
@@ -213,7 +216,7 @@ namespace Mirko_v2
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("MainPage");
+                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("PivotPage");
 
                 /*
                 if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
@@ -274,7 +277,7 @@ namespace Mirko_v2
 
             if (rootFrame.Content == null)
             {
-                rootFrame.Navigate(typeof(MainPage));
+                rootFrame.Navigate(typeof(RootPage));
             }
 
             var continuationEventArgs = e as IContinuationActivatedEventArgs;
