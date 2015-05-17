@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -35,13 +36,37 @@ namespace Mirko_v2.ViewModel
         /// 
 
         private Timer Timer = null;
+        private bool StartedOffline = false;
 
         public MainViewModel()
         {
             Timer = new Timer(TimerCallback, null, 60 * 1000, 60 * 1000);
+            StartedOffline = !App.ApiService.IsNetworkAvailable;
+            App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
 
             Messenger.Default.Register<EntryViewModel>(this, "Entry UserControl", (e) => SelectedEntry = e);
             Messenger.Default.Register<EmbedViewModel>(this, "Embed UserControl", (e) => SelectedEmbed = e);
+        }
+
+        private async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
+        {
+            if(e.IsNetworkAvailable)
+            {
+                if(StartedOffline)
+                {
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        MirkoEntries.Clear();
+                        MirkoEntries.HasMoreItems = true;
+                    });
+
+                    StartedOffline = false;
+                }
+                else
+                {
+                    await DispatcherHelper.RunAsync(() => MirkoEntries.HasMoreItems = true);
+                }
+            }
         }
 
         private async void TimerCallback(object state)
@@ -137,7 +162,7 @@ namespace Mirko_v2.ViewModel
                     return serializer.Deserialize<List<EntryViewModel>>(jsonReader);
                 }
             } 
-            catch(Exception e)
+            catch(Exception)
             {
                 return null;
             }

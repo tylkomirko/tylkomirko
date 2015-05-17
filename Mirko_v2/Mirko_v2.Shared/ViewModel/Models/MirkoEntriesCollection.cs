@@ -38,6 +38,7 @@ namespace Mirko_v2.ViewModel
 
             if (missingEntries > 0)
             {
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 var entries = new List<Entry>(50);
 
                 IEnumerable<Entry> newEntries = null;
@@ -58,7 +59,6 @@ namespace Mirko_v2.ViewModel
                 else
                 {
                     // offline mode
-                    var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                     if(mainVM.MirkoEntries.Count == 0)
                     {
                         await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");

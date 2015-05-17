@@ -35,6 +35,7 @@ namespace Mirko_v2.Utils
         public bool HasMoreItems
         {
             get { return hasMoreItems; }
+            set { hasMoreItems = value; }
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
