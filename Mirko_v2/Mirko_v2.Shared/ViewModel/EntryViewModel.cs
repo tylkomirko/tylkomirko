@@ -147,6 +147,24 @@ namespace Mirko_v2.ViewModel
             }*/
         }
 
+        private RelayCommand _goToHashtagPage = null;
+        [JsonIgnore]
+        public RelayCommand GoToHashtagPage
+        {
+            get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand(ExecuteGoToHashtagPage)); }
+        }
+
+        private void ExecuteGoToHashtagPage()
+        {
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+
+            mainVM.SelectedHashtag = new Meta() { Hashtag = TappedHashtag };
+            mainVM.TaggedEntries.ClearAll();
+            mainVM.TaggedNewEntries.Clear();
+
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagEntriesPage");
+        }
+
         private RelayCommand _observeHashtag = null;
         [JsonIgnore]
         public RelayCommand ObserveHashtag

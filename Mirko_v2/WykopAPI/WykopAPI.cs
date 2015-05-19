@@ -699,14 +699,25 @@ namespace WykopAPI
             return await deserialize<List<string>>(URL);
         }
 
-        public async Task<TaggedEntries> getTaggedEntries(string hashtag, uint pageIndex)
+        public async Task<TaggedEntries> getTaggedEntries(string hashtag, int pageIndex)
         {
             if (this.limitExceeded)
                 return null;
 
-            string URL = "tag/entries/" + hashtag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            if (UserInfo != null)
+            {
+                var URL = "tag/entries/" + hashtag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-            return await deserialize<TaggedEntries>(URL);
+                var result = await deserialize<TaggedEntries>(URL);
+                return result;
+            }
+            else
+            {
+                string URL = "tag/entries/" + hashtag.Substring(1) + "/appkey," + this.APPKEY + ",page," + pageIndex;
+
+                var result = await deserialize<TaggedEntries>(URL);
+                return result;
+            }
         }
 
         public async Task<TaggedEntries> getTaggedEntries(string hashtag, int firstID, uint pageIndex)

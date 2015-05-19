@@ -1,19 +1,25 @@
-﻿using System;
+﻿using Mirko_v2.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
 using WykopAPI.Models;
-using Mirko_v2.Utils;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
-    public class MirkoEntrySource : IIncrementalSource<EntryViewModel>
+    public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
     {
         private List<Entry> cache = new List<Entry>(50);
         private int pageIndex = 0;
+
+        public void ClearCache()
+        {
+            cache.Clear();
+            pageIndex = 0;
+        }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize)
         {
@@ -39,6 +45,7 @@ namespace Mirko_v2.ViewModel
             if (missingEntries > 0)
             {
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var tag = mainVM.SelectedHashtag.Hashtag;
                 var entries = new List<Entry>(50);
 
                 IEnumerable<Entry> newEntries = null;
@@ -48,9 +55,12 @@ namespace Mirko_v2.ViewModel
 
                     do
                     {
-                        newEntries = await App.ApiService.getEntries(pageIndex++);
-                        if (newEntries != null)
-                            entries.AddRange(newEntries);
+                        var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
+                        if (newEntriesTemp != null)
+                        {
+                            entries.AddRange(newEntriesTemp.Entries);
+                            await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
+                        }
 
                     } while (entries.Count <= missingEntries && newEntries != null);
 
@@ -58,19 +68,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    // offline mode
-                    if(mainVM.MirkoEntries.Count == 0)
-                    {
-                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
-                        var savedEntries = await mainVM.ReadCollection("MirkoEntries");
-                        await StatusBarManager.HideProgress();
-
-                        return savedEntries;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return null;
                 }
 
                 var tmp = new List<Entry>(missingEntries);
@@ -92,7 +90,7 @@ namespace Mirko_v2.ViewModel
             }
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
-            foreach(var entry in entriesToReturn)
+            foreach (var entry in entriesToReturn)
                 VMs.Add(new EntryViewModel(entry));
 
             return VMs;

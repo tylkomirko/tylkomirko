@@ -72,7 +72,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\AtNotificationsCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntriesCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\MirkoEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\TaggedEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />

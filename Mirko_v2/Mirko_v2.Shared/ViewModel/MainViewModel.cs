@@ -90,6 +90,25 @@ namespace Mirko_v2.ViewModel
             get { return _mirkoNewEntries ?? (_mirkoNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
         }
 
+        private Meta _selectedHashtag = null;
+        public Meta SelectedHashtag
+        {
+            get { return _selectedHashtag; }
+            set { Set(() => SelectedHashtag, ref _selectedHashtag, value); }
+        }
+
+        private IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel> _taggedEntries = null;
+        public IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel> TaggedEntries
+        {
+            get { return _taggedEntries ?? (_taggedEntries = new IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel>()); }
+        }
+
+        private ObservableCollectionEx<EntryViewModel> _taggedNewEntries = null;
+        public ObservableCollectionEx<EntryViewModel> TaggedNewEntries
+        {
+            get { return _taggedNewEntries ?? (_taggedNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
+        }
+
         private ObservableCollectionEx<EntryViewModel> _otherEntries = null;
         public ObservableCollectionEx<EntryViewModel> OtherEntries
         {

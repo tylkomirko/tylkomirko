@@ -14,6 +14,7 @@ namespace Mirko_v2.Utils
     public interface IIncrementalSource<T>
     {
         Task<IEnumerable<T>> GetPagedItems(int pageSize);
+        void ClearCache();
     }
 
     public class IncrementalLoadingCollection<T, I> : ObservableCollectionEx<I>,
@@ -23,7 +24,7 @@ namespace Mirko_v2.Utils
         private T source;
         private int itemsPerPage;
         private bool hasMoreItems;
-        private int currentPage;
+        //private int currentPage;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
         {
@@ -36,6 +37,12 @@ namespace Mirko_v2.Utils
         {
             get { return hasMoreItems; }
             set { hasMoreItems = value; }
+        }
+
+        public void ClearAll()
+        {
+            this.Clear();
+            source.ClearCache();
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)

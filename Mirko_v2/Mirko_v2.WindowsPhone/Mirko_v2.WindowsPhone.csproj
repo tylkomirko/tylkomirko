@@ -102,6 +102,9 @@
     <Compile Include="Controls\FullEntry.xaml.cs">
       <DependentUpon>FullEntry.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\HashtagEntriesPage.xaml.cs">
+      <DependentUpon>HashtagEntriesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HashtagNotificationHeader.xaml.cs">
       <DependentUpon>HashtagNotificationHeader.xaml</DependentUpon>
     </Compile>
@@ -197,6 +200,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FullEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\HashtagEntriesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
