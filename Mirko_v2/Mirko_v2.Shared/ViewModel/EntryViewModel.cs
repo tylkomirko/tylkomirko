@@ -3,10 +3,12 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -110,5 +112,35 @@ namespace Mirko_v2.ViewModel
         {
             throw new System.NotImplementedException();
         }
+
+
+        #region MenuFlyout
+        public void PrepareHashtagFlyout(ref MenuFlyout mf, string tag)
+        {
+            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+            if (observedTags.Contains(tag))
+            {
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
+            }
+            else
+            {
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
+            }
+
+            /*
+            if (App.MainViewModel.BlacklistedTags.Contains(tag))
+            {
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "unblacklistTag");
+            }
+            else
+            {
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
+            }*/
+        }
+        #endregion
     }
 }

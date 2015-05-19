@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Common;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -23,8 +24,9 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class Entry : UserControl
     {
-        private bool singleTap; 
+        private bool singleTap;
 
+        #region Registered properties
         public bool ShowComments
         {
             get { return (bool)GetValue(ShowCommentsProperty); }
@@ -49,7 +51,8 @@ namespace Mirko_v2.Controls
         {
             if ((bool)e.NewValue)
                 (d as Entry).LeftSpacer.Width = 30.0;
-        }                
+        }
+        #endregion
 
         #region IsHot
         public bool IsHot
@@ -92,6 +95,17 @@ namespace Mirko_v2.Controls
 
             if (DataContext != null)
                 (DataContext as EntryViewModel).VoteCommand.Execute(null);
+        }
+
+        public void HashtagTapped(string tag, TextBlock tb)
+        {
+            if (string.IsNullOrEmpty(tag) || tb == null) return;
+
+            var mf = Resources["HashtagFlyout"] as MenuFlyout;
+            var VM = DataContext as EntryViewModel;
+            VM.PrepareHashtagFlyout(ref mf, tag);            
+
+            mf.ShowAt(tb);
         }
     }
 }
