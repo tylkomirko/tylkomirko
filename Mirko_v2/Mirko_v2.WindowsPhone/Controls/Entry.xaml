@@ -23,7 +23,7 @@
             <MenuFlyoutItem Text="przeglądaj" />
             <MenuFlyoutItem Text="obserwuj" Tag="observeTag" Command="{Binding ObserveHashtag}"/>
             <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" Command="{Binding ObserveHashtag}" />
-            <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" />
+            <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" Command="{Binding BlacklistHashtag}" />
             <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed" />
         </MenuFlyout>
     </UserControl.Resources>

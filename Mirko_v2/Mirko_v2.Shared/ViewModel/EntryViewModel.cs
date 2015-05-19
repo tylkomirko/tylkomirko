@@ -169,7 +169,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowText("Nie udało się usunąć tagu " + TappedHashtag);
+                    await StatusBarManager.ShowText("Nie udało się usunąć tagu " + TappedHashtag + ".");
                 }
             }
             else
@@ -182,8 +182,28 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowText("Nie udało się dodać tagu " + TappedHashtag);
+                    await StatusBarManager.ShowText("Nie udało się dodać tagu " + TappedHashtag + ".");
                 }
+            }
+        }
+
+        private RelayCommand _blacklistHashtag = null;
+        [JsonIgnore]
+        public RelayCommand BlacklistHashtag
+        {
+            get { return _blacklistHashtag ?? (_blacklistHashtag = new RelayCommand(ExecuteBlacklistHashtag)); }
+        }
+
+        private async void ExecuteBlacklistHashtag()
+        {
+            var success = await App.ApiService.blockTag(TappedHashtag);
+            if (success)
+            {
+                await StatusBarManager.ShowText("Tag " + TappedHashtag + " został zablokowany.");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Nie udało się zablokować tagu " + TappedHashtag + ".");
             }
         }
         #endregion

@@ -910,22 +910,22 @@ namespace WykopAPI
         #region Blacklist
         public async Task<bool> blockTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/block/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/block/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> unblockTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/unblock/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unblock/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> blockUser(string name)
