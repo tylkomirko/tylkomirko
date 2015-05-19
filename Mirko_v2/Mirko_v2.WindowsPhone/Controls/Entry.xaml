@@ -21,8 +21,8 @@
     <UserControl.Resources>
         <MenuFlyout x:Name="HashtagFlyout">
             <MenuFlyoutItem Text="przeglądaj" />
-            <MenuFlyoutItem Text="obserwuj" Tag="observeTag" />
-            <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" />
+            <MenuFlyoutItem Text="obserwuj" Tag="observeTag" Command="{Binding ObserveHashtag}"/>
+            <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" Command="{Binding ObserveHashtag}" />
             <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" />
             <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed" />
         </MenuFlyout>

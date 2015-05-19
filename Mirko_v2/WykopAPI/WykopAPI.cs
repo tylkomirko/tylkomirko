@@ -721,22 +721,22 @@ namespace WykopAPI
 
         public async Task<bool> observeTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/observe/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> unobserveTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/unobserve/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         #endregion

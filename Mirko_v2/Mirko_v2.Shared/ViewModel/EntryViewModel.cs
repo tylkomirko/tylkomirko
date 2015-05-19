@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Common;
+using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Mirko_v2.ViewModel
         public Entry Data { get; set; }
         public ObservableCollectionEx<CommentViewModel> Comments { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
+
+        private string TappedHashtag = null;
         
         public EntryViewModel()
         {
@@ -114,9 +117,11 @@ namespace Mirko_v2.ViewModel
         }
 
 
-        #region MenuFlyout
+        #region Hashtag
         public void PrepareHashtagFlyout(ref MenuFlyout mf, string tag)
         {
+            TappedHashtag = tag;
+
             var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
             if (observedTags.Contains(tag))
             {
@@ -140,6 +145,46 @@ namespace Mirko_v2.ViewModel
                 MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
                 MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
             }*/
+        }
+
+        private RelayCommand _observeHashtag = null;
+        [JsonIgnore]
+        public RelayCommand ObserveHashtag
+        {
+            get { return _observeHashtag ?? (_observeHashtag = new RelayCommand(ExecuteObserveHashtag)); }
+        }
+
+        private async void ExecuteObserveHashtag()
+        {
+            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+
+            await StatusBarManager.ShowProgress();
+            if(observedTags.Contains(TappedHashtag))
+            {
+                var success = await App.ApiService.unobserveTag(TappedHashtag);
+                if (success)
+                {
+                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został usunięty.");
+                    observedTags.Remove(TappedHashtag);
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie udało się usunąć tagu " + TappedHashtag);
+                }
+            }
+            else
+            {
+                var success = await App.ApiService.observeTag(TappedHashtag);
+                if (success)
+                {
+                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został dodany.");
+                    observedTags.Add(TappedHashtag);
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie udało się dodać tagu " + TappedHashtag);
+                }
+            }
         }
         #endregion
     }
