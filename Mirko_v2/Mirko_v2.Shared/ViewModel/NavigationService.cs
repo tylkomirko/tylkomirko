@@ -70,6 +70,7 @@ namespace Mirko_v2.ViewModel
                 _rootPage = currentFrame.Content as HostPage;
                 _rootPageFrame = _rootPage.FindName("MainFrame") as Frame;
                 _rootPageHeader = _rootPage.FindName("AppHeader") as AppHeader;
+                _rootPageAppBar = _rootPage.BottomAppBar;
 
                 NavigatedToRootPage = true;
             }
@@ -85,8 +86,15 @@ namespace Mirko_v2.ViewModel
 
             content = _framesContent[type];
             _rootPageFrame.Content = content;
-            //_rootPageAppBar = new CommandBar() { ContentTemplate = (DataTemplate)content.Resources["AppBar"] };
-            //_rootPage.BottomAppBar = _rootPageAppBar;
+            //var appBarTemplate = content.Resources["AppBar"] as DataTemplate;
+            //_rootPageAppBar.Content = appBarTemplate.LoadContent();
+
+            /*
+            if(content is IHaveAppBar)
+            {
+                var commandBar = (content as IHaveAppBar).CreateCommandBar();
+                _rootPageAppBar = commandBar;
+            }*/
 
             if (_framesWithoutHeader.Contains(key))
                 _rootPageHeader.Visibility = Visibility.Collapsed;

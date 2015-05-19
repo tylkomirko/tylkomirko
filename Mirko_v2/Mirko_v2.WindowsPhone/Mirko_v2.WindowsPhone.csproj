@@ -147,6 +147,7 @@
     <Compile Include="Pages\HashtagSelectionPage.xaml.cs">
       <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\IHaveAppBar.cs" />
     <Compile Include="Pages\PivotPage.xaml.cs">
       <DependentUpon>PivotPage.xaml</DependentUpon>
     </Compile>

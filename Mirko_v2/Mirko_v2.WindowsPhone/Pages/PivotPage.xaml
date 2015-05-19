@@ -14,7 +14,7 @@
         <DataTemplate x:Key="AppBar">
 
             <CommandBar Opacity="{StaticResource AppBarOpacity}"
-                    ClosedDisplayMode="Compact">
+                        ClosedDisplayMode="Compact">
 
                 <CommandBar.Resources>
                     <Storyboard x:Name="AppBarAnimation">
@@ -141,12 +141,6 @@
 			   Style="{StaticResource CustomPivotStyle}" 
                BorderBrush="{ThemeResource PivotHeaderBackground}">
 
-            <Pivot.Transitions>
-                <TransitionCollection>
-                    <PaneThemeTransition Edge="Right" />
-                </TransitionCollection>
-            </Pivot.Transitions>
-
             <!--Pivot item one-->
             <PivotItem
                 x:Uid="MirkoPivotItem"
@@ -167,12 +161,6 @@
                             <controls:FullEntry />
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
-                    <ListView.Transitions>
-                        <TransitionCollection>
-                            <AddDeleteThemeTransition/>
-                        </TransitionCollection>
-                    </ListView.Transitions>
 
                     <ListView.Header>
                         <Rectangle Height="135"

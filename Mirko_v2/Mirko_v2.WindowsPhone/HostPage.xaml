@@ -25,7 +25,14 @@
                             Margin="0,20,0,0"
                             x:Name="AppHeader"/>
         <Frame Grid.Row="1" 
-               x:Name="MainFrame" />
-
+               x:Name="MainFrame"
+               Loaded="MainFrame_Loaded"/>
     </Grid>
+    
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar">           
+
+        </CommandBar>
+    </Page.BottomAppBar>
+    
 </Page>

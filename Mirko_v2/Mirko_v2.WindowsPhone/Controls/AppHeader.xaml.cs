@@ -53,6 +53,8 @@ namespace Mirko_v2.Controls
                 DrawRegularLogo();
             else
                 DrawOfflineLogo();
+
+            Timer.Start();
         }
 
         private void DrawLogo()

@@ -32,5 +32,18 @@ namespace Mirko_v2
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
         }
+
+        private void MainFrame_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var c = new CommandBar() { IsOpen = true };
+            var up = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Up),
+                Label = "w górę",
+            };            
+
+            c.PrimaryCommands.Add(up);
+            //BottomAppBar = c;
+        }
     }
 }

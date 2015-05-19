@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class PivotPage : UserControl
+    public sealed partial class PivotPage : UserControl, IHaveAppBar
     {
         public ItemsPresenter ItemsPresenter;
 
@@ -89,6 +89,20 @@ namespace Mirko_v2.Pages
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar() { IsOpen = true };
+            var up = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Up),
+                Label = "w górę",
+            };
+            up.Click += ScrollUpButton_Click;
+
+            c.PrimaryCommands.Add(up);
+            return c;
         }
     }
 }
