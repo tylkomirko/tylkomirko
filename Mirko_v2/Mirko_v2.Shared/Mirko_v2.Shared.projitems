@@ -68,6 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\IResumable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\Models\AtNotificationsCollection.cs" />

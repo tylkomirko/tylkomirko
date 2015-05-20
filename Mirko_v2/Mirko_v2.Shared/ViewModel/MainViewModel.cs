@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Controls;
 
 namespace Mirko_v2.ViewModel
 {
@@ -28,7 +29,7 @@ namespace Mirko_v2.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IResumable
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -313,6 +314,101 @@ namespace Mirko_v2.ViewModel
 
             await DispatcherHelper.RunAsync(() => TaggedNewEntries.PrependRange(entriesToSend));
             await StatusBarManager.HideProgress();
+        }
+        #endregion
+
+        #region IResumable
+        private ListViewEx GetCurrentListView()
+        {
+            var frame = (SimpleIoc.Default.GetInstance<INavigationService>() as NavigationService).CurrentFrame();
+            ListViewEx listView = null;
+            foreach (var lv in frame.GetDescendants<ListViewEx>())
+            {
+                if ((string)lv.Tag == "LV" + CurrentPivotItem)
+                    listView = lv; break;
+            }
+
+            return listView;
+        }
+
+        private IEnumerable<EntryViewModel> GetCurrentlyVisibleEntries(out int firstIndex)
+        {
+            var listView = GetCurrentListView();
+
+            var firstIdx = listView.VisibleItems_FirstIdx();
+            //if (firstIdx <= 10)
+            //    firstIdx = 0;
+
+            firstIndex = firstIdx;
+            var lastIdx = listView.VisibleItems_LastIdx() + 2;
+
+            if (CurrentPivotItem == 0)
+                return MirkoEntries.GetRange(firstIdx, lastIdx - firstIdx);
+            else
+                return null;
+        }
+
+        public void SaveState(string pageName)
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+            
+            if(pageName == "PivotPage")
+            {
+                settings["CurrentPivotItem"] = CurrentPivotItem;
+                int firstVisibleIndex = 0;
+                settings["CurrentEntries"] = JsonConvert.SerializeObject(GetCurrentlyVisibleEntries(out firstVisibleIndex), Formatting.None);
+                settings["FirstIndex"] = firstVisibleIndex;
+            }
+            else if(pageName == "EntryPage")
+            {
+                settings["SelectedEntry"] = JsonConvert.SerializeObject(SelectedEntry, Formatting.None);
+            } 
+            else if(pageName == "EmbedPage")
+            {
+                settings["SelectedEmbed"] = JsonConvert.SerializeObject(SelectedEmbed, Formatting.None);
+            }
+        }
+
+        public void LoadState(string pageName)
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+            if (pageName == "PivotPage")
+            {
+                int firstIndex = 0;
+
+                if (settings.ContainsKey("CurrentPivotItem"))
+                    CurrentPivotItem = (int)settings["CurrentPivotItem"];
+
+                if (settings.ContainsKey("FirstIndex"))
+                    firstIndex = (int)settings["FirstIndex"];
+
+                if(settings.ContainsKey("CurrentEntries"))
+                {
+                    var entries = JsonConvert.DeserializeObject<List<EntryViewModel>>((string)settings["CurrentEntries"]);
+
+                    if (CurrentPivotItem == 0)
+                    {
+                        MirkoEntries.PrependRange(entries);
+                        GetCurrentListView().ScrollIntoView(MirkoEntries[firstIndex]);
+                    }
+                }
+            }
+            else if (pageName == "EntryPage")
+            {
+                if (settings.ContainsKey("SelectedEntry"))
+                    SelectedEntry = JsonConvert.DeserializeObject<EntryViewModel>((string)settings["SelectedEntry"]);
+            }
+            else if (pageName == "EmbedPage")
+            {
+                if (settings.ContainsKey("SelectedEmbed"))
+                    SelectedEmbed = JsonConvert.DeserializeObject<EmbedViewModel>((string)settings["SelectedEmbed"]);
+            }
+        }
+
+        public string GetName()
+        {
+            return "MainViewModel";
         }
         #endregion
     }

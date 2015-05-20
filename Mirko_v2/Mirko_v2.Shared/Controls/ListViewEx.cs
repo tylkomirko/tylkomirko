@@ -137,5 +137,25 @@ namespace Mirko_v2.Controls
             }
         }
         #endregion
+
+        #region VisibleItems
+        public int VisibleItems_FirstIdx()
+        {
+            var panel = this.ItemsPanelRoot as ItemsStackPanel;
+            if (panel != null)
+                return panel.FirstVisibleIndex;
+            else
+                return -1;
+        }
+
+        public int VisibleItems_LastIdx()
+        {
+            var panel = this.ItemsPanelRoot as ItemsStackPanel;
+            if (panel != null)
+                return panel.LastVisibleIndex;
+            else
+                return -1;
+        }
+        #endregion
     }
 }

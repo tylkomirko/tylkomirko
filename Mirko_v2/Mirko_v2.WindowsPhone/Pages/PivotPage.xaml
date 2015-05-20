@@ -155,8 +155,9 @@
                                      ItemsSource="{Binding MirkoEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                     IsItemClickEnabled="False">
-
+                                     IsItemClickEnabled="False"
+                                     Tag="LV0">
+                    
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <controls:FullEntry />

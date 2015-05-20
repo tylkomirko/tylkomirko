@@ -190,5 +190,24 @@ namespace Mirko_v2.ViewModel
             get { return _currentPageKey; }
             set { _currentPageKey = value; }
         }
+
+        public UserControl GetFrame(string pageKey)
+        {
+            var type = _framesNames[pageKey];
+            if (_framesContent.ContainsKey(type))
+                return _framesContent[type];
+            else
+                return null;
+        }
+
+        public void InsertMainPage()
+        {
+            _stack.Push(typeof(PivotPage));
+        }
+
+        public UserControl CurrentFrame()
+        {
+            return _rootPageFrame.Content as UserControl;
+        }
     }
 }
