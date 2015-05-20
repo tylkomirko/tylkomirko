@@ -20,7 +20,12 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<CommentViewModel> Comments { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
 
-        private string TappedHashtag = null;
+        private string _tappedHashtag = null;
+        public string TappedHashtag
+        {
+            get { return _tappedHashtag; }
+            set { Set(() => TappedHashtag, ref _tappedHashtag, value); }
+        }
         
         public EntryViewModel()
         {
@@ -145,24 +150,6 @@ namespace Mirko_v2.ViewModel
                 MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
                 MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
             }*/
-        }
-
-        private RelayCommand _goToHashtagPage = null;
-        [JsonIgnore]
-        public RelayCommand GoToHashtagPage
-        {
-            get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand(ExecuteGoToHashtagPage)); }
-        }
-
-        private void ExecuteGoToHashtagPage()
-        {
-            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
-
-            mainVM.SelectedHashtag = new Meta() { Hashtag = TappedHashtag };
-            mainVM.TaggedEntries.ClearAll();
-            mainVM.TaggedNewEntries.Clear();
-
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagEntriesPage");
         }
 
         private RelayCommand _observeHashtag = null;

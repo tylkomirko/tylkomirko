@@ -48,8 +48,8 @@ namespace Mirko_v2.Pages
             var tag = e.String;
             var flyout = Resources["HashtagFlyout"] as FlyoutBase;
             flyout.Hide();
-            //this.Frame.Navigate(typeof(HashtagEntriesPage), tag);
-            // FIXME
+
+            SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(tag);
         }
 
         private void FindHashtag_Click(object sender, RoutedEventArgs e)

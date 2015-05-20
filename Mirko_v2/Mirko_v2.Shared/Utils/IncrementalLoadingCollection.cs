@@ -43,6 +43,7 @@ namespace Mirko_v2.Utils
         {
             this.Clear();
             source.ClearCache();
+            this.hasMoreItems = true;
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)

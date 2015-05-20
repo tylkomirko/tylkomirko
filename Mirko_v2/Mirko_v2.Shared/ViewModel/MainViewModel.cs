@@ -71,6 +71,17 @@ namespace Mirko_v2.ViewModel
 
         private async void TimerCallback(object state)
         {
+            // check new entries
+            var currentPage = SimpleIoc.Default.GetInstance<INavigationService>().CurrentPageKey;
+            if(currentPage == "PivotPage" )
+            {
+
+            } 
+            else if(currentPage == "HashtagEntriesPage")
+            {
+                await CheckNewHashtagEntries();
+            }
+
             if(CurrentPivotItem == 0)
             {
                 await SaveCollection(MirkoEntries, "MirkoEntries");
@@ -207,6 +218,26 @@ namespace Mirko_v2.ViewModel
             throw new System.NotImplementedException();
         }
 
+        private RelayCommand<string> _goToHashtagPage = null;
+        [JsonIgnore]
+        public RelayCommand<string> GoToHashtagPage
+        {
+            get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand<string>(ExecuteGoToHashtagPage)); }
+        }
+
+        private void ExecuteGoToHashtagPage(string tag)
+        {
+            if (SelectedHashtag != null && SelectedHashtag.Hashtag == tag)
+                return;
+
+            SelectedHashtag = new Meta() { Hashtag = tag };
+
+            TaggedEntries.ClearAll();
+            TaggedNewEntries.Clear();
+
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagEntriesPage");
+        }
+
         private RelayCommand _settingsCommand;
         public RelayCommand SettingsCommand
         {
@@ -241,5 +272,51 @@ namespace Mirko_v2.ViewModel
         }
         #endregion
 
+        #region Functions
+        private async Task CheckNewHashtagEntries()
+        {
+            await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
+
+            EntryViewModel firstEntry = null;
+
+            if (TaggedNewEntries.Count > 0)
+            {
+                firstEntry = TaggedNewEntries.First();
+            }
+            else if (TaggedEntries.Count > 0)
+            {
+                firstEntry = TaggedEntries.First();
+            }
+            else
+            {
+                await StatusBarManager.HideProgress();
+                return;
+            }
+
+            uint firstEntryID = firstEntry.Data.ID;
+            int pageIndex = 1;
+            var entriesToSend = new List<EntryViewModel>(20);
+
+            while (true)
+            {
+                var taggedEntries = await App.ApiService.getTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
+                var newEntries = taggedEntries.Entries;
+
+                if (newEntries == null || newEntries.First().ID <= firstEntryID)
+                    break;
+
+                var unique = newEntries.Where(x => x.ID > firstEntryID);
+
+                foreach(var uniqueEntry in unique)
+                    entriesToSend.Add(new EntryViewModel(uniqueEntry));
+
+                if (unique.Count() < newEntries.Count)
+                    break;
+            }
+
+            await DispatcherHelper.RunAsync(() => TaggedNewEntries.PrependRange(entriesToSend));
+            await StatusBarManager.HideProgress();
+        }
+        #endregion
     }
 }

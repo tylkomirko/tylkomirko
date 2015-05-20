@@ -362,6 +362,14 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteGoToHashtagNotificationsPage()
         {
             CurrentHashtagNotifications = HashtagsDictionary[CurrentHashtag.Name];
+
+            if(CurrentHashtagNotifications == null)
+            {
+                // no notifications. go to hashtag entries page.
+                SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(CurrentHashtag.Name);
+                return;
+            }
+
             if (CurrentHashtagNotifications.Count > 1)
             {
                 SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
@@ -393,10 +401,6 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
                 }
-            }
-            else
-            {
-                // TODO.
             }
         }
 

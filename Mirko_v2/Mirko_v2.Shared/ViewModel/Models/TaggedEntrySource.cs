@@ -12,7 +12,7 @@ namespace Mirko_v2.ViewModel
 {
     public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private List<Entry> cache = new List<Entry>(50);
+        private List<Entry> cache = new List<Entry>(25);
         private int pageIndex = 0;
 
         public void ClearCache()
@@ -46,9 +46,8 @@ namespace Mirko_v2.ViewModel
             {
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 var tag = mainVM.SelectedHashtag.Hashtag;
-                var entries = new List<Entry>(50);
+                var entries = new List<Entry>(25);
 
-                IEnumerable<Entry> newEntries = null;
                 if (App.ApiService.IsNetworkAvailable)
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
@@ -58,11 +57,20 @@ namespace Mirko_v2.ViewModel
                         var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
                         if (newEntriesTemp != null)
                         {
-                            entries.AddRange(newEntriesTemp.Entries);
-                            await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
+                            if (newEntriesTemp.Entries.Count > 0)
+                            {
+                                entries.AddRange(newEntriesTemp.Entries);
+                                await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
+                            }
+                            else
+                                break;
+                        }
+                        else
+                        {
+                            break;
                         }
 
-                    } while (entries.Count <= missingEntries && newEntries != null);
+                    } while (entries.Count <= missingEntries);
 
                     await StatusBarManager.HideProgress();
                 }
