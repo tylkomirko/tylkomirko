@@ -28,6 +28,7 @@ namespace Mirko_v2.ViewModel
             int missingEntries = pageSize - entriesInCache;
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
             if (entriesInCache > 0)
             {
@@ -43,8 +44,7 @@ namespace Mirko_v2.ViewModel
             }
 
             if (missingEntries > 0)
-            {
-                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+            {                
                 var tag = mainVM.SelectedHashtag.Hashtag;
                 var entries = new List<Entry>(25);
 
@@ -96,6 +96,9 @@ namespace Mirko_v2.ViewModel
                 cache.AddRange(entries);
                 entries.Clear();
             }
+
+            if (entriesToReturn.Count == 0 && mainVM.TaggedEntries.Count == 0)
+                await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach (var entry in entriesToReturn)

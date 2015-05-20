@@ -34,6 +34,16 @@ namespace Mirko_v2.Pages
             var sv = ListView.GetDescendant<ScrollViewer>();
             sv.ChangeView(null, 0.0, null);*/
         }
+
+        private void ListView_ScrollingDown(object sender, EventArgs e)
+        {
+            HideHeader.Begin();
+        }
+
+        private void ListView_ScrollingUp(object sender, EventArgs e)
+        {
+            ShowHeader.Begin();
+        }
     }
 
 

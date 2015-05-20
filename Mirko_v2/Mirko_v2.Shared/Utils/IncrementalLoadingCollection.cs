@@ -1,12 +1,13 @@
-﻿using Mirko_v2.ViewModel;
+﻿using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
-using System.Linq;
 using Windows.UI.Xaml.Data;
 
 namespace Mirko_v2.Utils
@@ -24,6 +25,7 @@ namespace Mirko_v2.Utils
         private T source;
         private int itemsPerPage;
         private bool hasMoreItems;
+        private bool hasNoItems;
         //private int currentPage;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
@@ -39,11 +41,19 @@ namespace Mirko_v2.Utils
             set { hasMoreItems = value; }
         }
 
+        public bool HasNoItems
+        {
+            get { return hasNoItems; }
+            set { hasNoItems = value; base.OnPropertyChanged(new PropertyChangedEventArgs("HasNoItems")); }
+        }
+
         public void ClearAll()
         {
-            this.Clear();
+            Clear();
             source.ClearCache();
-            this.hasMoreItems = true;
+
+            HasMoreItems = true;
+            DispatcherHelper.CheckBeginInvokeOnUI(() => HasNoItems = false);
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)

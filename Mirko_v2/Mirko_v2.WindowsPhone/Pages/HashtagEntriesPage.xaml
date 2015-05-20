@@ -54,7 +54,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="White"
-                           Text="{Binding NewTaggedEntries.Count, Converter={StaticResource NewEntriesNumeral}}">
+                           Text="{Binding TaggedNewEntries.Count, Converter={StaticResource NewEntriesNumeral}}">
                 </TextBlock>
             </Grid>
         </Popup>
@@ -102,11 +102,13 @@
             </Border>
         </StackPanel>
 
-        <!--TODO: Content should be placed within the following grid-->
+        <!--TODO: Content should be placed within the following grid-->        
         <controls:ListViewEx x:Name="ListView"
                              Grid.Row="1"
                              Margin="10,-140,0,0"
                              ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                             ScrollingDown="ListView_ScrollingDown"
+                             ScrollingUp="ListView_ScrollingUp"
                              ItemsSource="{Binding TaggedEntries}"
                              IsItemClickEnabled="False"
                              VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -118,8 +120,18 @@
             </ListView.ItemTemplate>
 
             <ListView.Header>
-                <Rectangle Height="140"
-                           Fill="Transparent" />
+                <StackPanel>
+                    <Rectangle Height="140"
+                               Fill="Transparent" />
+
+                    <TextBlock x:Name="NoItemsTB"
+                               Margin="0,8,0,0"
+                               Text="Brak wpisów."
+                               FontSize="18"
+                               FontWeight="Light"
+                               Foreground="LightGray"
+                               Visibility="{Binding TaggedEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
+                </StackPanel>
             </ListView.Header>
 
             <ListView.Footer>

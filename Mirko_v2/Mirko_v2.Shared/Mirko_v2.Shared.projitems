@@ -16,7 +16,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\SplitPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolInverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />

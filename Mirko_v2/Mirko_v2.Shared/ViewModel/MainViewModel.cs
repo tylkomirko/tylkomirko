@@ -227,9 +227,6 @@ namespace Mirko_v2.ViewModel
 
         private void ExecuteGoToHashtagPage(string tag)
         {
-            if (SelectedHashtag != null && SelectedHashtag.Hashtag == tag)
-                return;
-
             SelectedHashtag = new Meta() { Hashtag = tag };
 
             TaggedEntries.ClearAll();

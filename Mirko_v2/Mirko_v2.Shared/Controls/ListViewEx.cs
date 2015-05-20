@@ -7,6 +7,7 @@ namespace Mirko_v2.Controls
 {
     public class ListViewEx : ListView
     {
+        #region AppBar
         public CommandBar AppBar
         {
             get { return (CommandBar)GetValue(AppBarProperty); }
@@ -15,7 +16,8 @@ namespace Mirko_v2.Controls
 
         // Using a DependencyProperty as the backing store for AppBar.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AppBarProperty =
-            DependencyProperty.Register("AppBar", typeof(CommandBar), typeof(ListViewEx), new PropertyMetadata(null));      
+            DependencyProperty.Register("AppBar", typeof(CommandBar), typeof(ListViewEx), new PropertyMetadata(null));
+        #endregion
 
         public ListViewEx()
         {
@@ -84,7 +86,7 @@ namespace Mirko_v2.Controls
                 {
                     //Debug.WriteLine("scrolling down");
 
-                    if(AppBar != null)
+                    if (AppBar != null)
                     {
                         if (AppBar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
                             AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
