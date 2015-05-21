@@ -14,6 +14,7 @@ using System.IO;
 using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Controls;
+using Newtonsoft.Json.Linq;
 
 namespace Mirko_v2.ViewModel
 {
@@ -139,6 +140,13 @@ namespace Mirko_v2.ViewModel
         {
             get { return _selectedEntry; }
             set { Set(() => SelectedEntry, ref _selectedEntry, value); }
+        }
+
+        private int _indexToScrollTo = -1;
+        public int IndexToScrollTo
+        {
+            get { return _indexToScrollTo; }
+            set { _indexToScrollTo = value; }
         }
 
         private CommentViewModel _commentToScrollInto = null;
@@ -336,10 +344,10 @@ namespace Mirko_v2.ViewModel
             var listView = GetCurrentListView();
 
             var firstIdx = listView.VisibleItems_FirstIdx();
-            //if (firstIdx <= 10)
-            //    firstIdx = 0;
-
             firstIndex = firstIdx;
+            if (firstIdx <= 15)
+                firstIdx = 0;
+
             var lastIdx = listView.VisibleItems_LastIdx() + 2;
 
             if (CurrentPivotItem == 0)
@@ -348,61 +356,86 @@ namespace Mirko_v2.ViewModel
                 return null;
         }
 
-        public void SaveState(string pageName)
+        public async Task SaveState(string pageName)
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            int firstVisibleIndex = 0;
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                writer.Formatting = Formatting.None;
+                JsonSerializer serializer = new JsonSerializer();
+
+                if(pageName == "PivotPage")
+                {
+                    var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
+                    serializer.Serialize(writer, entries);
+                }
+                else if (pageName == "EntryPage")
+                {
+                    serializer.Serialize(writer, SelectedEntry);
+                }
+                else if (pageName == "EmbedPage")
+                {
+                    serializer.Serialize(writer, SelectedEmbed);
+                }
+            }
             
             if(pageName == "PivotPage")
             {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
                 settings["CurrentPivotItem"] = CurrentPivotItem;
-                int firstVisibleIndex = 0;
-                settings["CurrentEntries"] = JsonConvert.SerializeObject(GetCurrentlyVisibleEntries(out firstVisibleIndex), Formatting.None);
                 settings["FirstIndex"] = firstVisibleIndex;
-            }
-            else if(pageName == "EntryPage")
-            {
-                settings["SelectedEntry"] = JsonConvert.SerializeObject(SelectedEntry, Formatting.None);
-            } 
-            else if(pageName == "EmbedPage")
-            {
-                settings["SelectedEmbed"] = JsonConvert.SerializeObject(SelectedEmbed, Formatting.None);
             }
         }
 
-        public void LoadState(string pageName)
+        public async Task<bool> LoadState(string pageName)
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
-
-            if (pageName == "PivotPage")
+            try
             {
-                int firstIndex = 0;
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
 
-                if (settings.ContainsKey("CurrentPivotItem"))
-                    CurrentPivotItem = (int)settings["CurrentPivotItem"];
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+                var file = await folder.GetFileAsync("MainViewModel");
 
-                if (settings.ContainsKey("FirstIndex"))
-                    firstIndex = (int)settings["FirstIndex"];
-
-                if(settings.ContainsKey("CurrentEntries"))
+                using (var stream = await file.OpenStreamForReadAsync())
+                using (var sr = new StreamReader(stream))
+                using (var reader = new JsonTextReader(sr))
                 {
-                    var entries = JsonConvert.DeserializeObject<List<EntryViewModel>>((string)settings["CurrentEntries"]);
+                    JsonSerializer serializer = new JsonSerializer();
 
-                    if (CurrentPivotItem == 0)
+                    if (pageName == "PivotPage")
                     {
+                        var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
                         MirkoEntries.PrependRange(entries);
-                        GetCurrentListView().ScrollIntoView(MirkoEntries[firstIndex]);
+
+                        if (settings.ContainsKey("CurrentPivotItem"))
+                            CurrentPivotItem = (int)settings["CurrentPivotItem"];
+
+                        if (settings.ContainsKey("FirstIndex"))
+                        {
+                            IndexToScrollTo = (int)settings["FirstIndex"];
+                        }
+                    }
+                    else if (pageName == "EntryPage")
+                    {
+                        SelectedEntry = serializer.Deserialize<EntryViewModel>(reader);
+                    }
+                    else if (pageName == "EmbedPage")
+                    {
+                        SelectedEmbed = serializer.Deserialize<EmbedViewModel>(reader);
                     }
                 }
-            }
-            else if (pageName == "EntryPage")
+
+                return true; // success!
+
+            } catch(Exception)
             {
-                if (settings.ContainsKey("SelectedEntry"))
-                    SelectedEntry = JsonConvert.DeserializeObject<EntryViewModel>((string)settings["SelectedEntry"]);
-            }
-            else if (pageName == "EmbedPage")
-            {
-                if (settings.ContainsKey("SelectedEmbed"))
-                    SelectedEmbed = JsonConvert.DeserializeObject<EmbedViewModel>((string)settings["SelectedEmbed"]);
+                return false;
             }
         }
 

@@ -152,6 +152,7 @@
                                      AppBar="{Binding ElementName=AppBar}"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
+                                     Loaded="ListView_Loaded"
                                      ItemsSource="{Binding MirkoEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"

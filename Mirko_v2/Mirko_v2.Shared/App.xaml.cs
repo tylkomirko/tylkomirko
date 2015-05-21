@@ -126,7 +126,7 @@ namespace Mirko_v2
         /// search results, and so forth.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -188,7 +188,7 @@ namespace Mirko_v2
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    ResumeFromSuspension();
+                    await ResumeFromSuspension();
                 }
 
                 // Place the frame in the current Window
@@ -300,7 +300,7 @@ namespace Mirko_v2
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
@@ -309,7 +309,7 @@ namespace Mirko_v2
             if (currentFrame.DataContext is IResumable)
             {
                 var resumableVM = currentFrame.DataContext as IResumable;
-                resumableVM.SaveState(currentPage);
+                await resumableVM.SaveState(currentPage);
 
                 var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
                 localSettings["PageKey"] = currentPage;
@@ -321,7 +321,7 @@ namespace Mirko_v2
             deferral.Complete();
         }
 
-        private void ResumeFromSuspension()
+        private async Task ResumeFromSuspension()
         {
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
             if (!settings.ContainsKey("PageKey")) return;
@@ -329,11 +329,22 @@ namespace Mirko_v2
             var pageKey = (string)settings["PageKey"];
             var viewModelName = (string)settings["VM"];
 
-            NavService.InsertMainPage();
-            NavService.NavigateTo(pageKey);
-
+            bool resumed = false;
             if (viewModelName == "MainViewModel")
-                (SimpleIoc.Default.GetInstance<MainViewModel>() as IResumable).LoadState(pageKey);
+            {
+                var resumableVM = SimpleIoc.Default.GetInstance<MainViewModel>() as IResumable;
+                resumed = await resumableVM.LoadState(pageKey);
+            }
+
+            if(resumed)
+            {
+                NavService.InsertMainPage();
+                NavService.NavigateTo(pageKey);
+            }
+            else
+            {
+                NavService.NavigateTo("PivotPage");
+            }
         }
     }
 }

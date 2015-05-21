@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Mirko_v2.Utils;
 using System.Threading.Tasks;
+using Mirko_v2.ViewModel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -103,6 +104,20 @@ namespace Mirko_v2.Pages
 
             c.PrimaryCommands.Add(up);
             return c;
+        }
+
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var VM = this.DataContext as MainViewModel;
+            var lv = sender as ListView;
+            var items = VM.MirkoEntries;
+
+            var idx = VM.IndexToScrollTo;
+            if (idx != -1 && items.Count - 1 >= idx)
+            {
+                lv.ScrollIntoView(items[idx], ScrollIntoViewAlignment.Leading);
+                VM.IndexToScrollTo = -1;
+            }
         }
     }
 }
