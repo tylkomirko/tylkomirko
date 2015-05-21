@@ -142,13 +142,6 @@ namespace Mirko_v2.ViewModel
             set { Set(() => SelectedEntry, ref _selectedEntry, value); }
         }
 
-        private int _indexToScrollTo = -1;
-        public int IndexToScrollTo
-        {
-            get { return _indexToScrollTo; }
-            set { _indexToScrollTo = value; }
-        }
-
         private CommentViewModel _commentToScrollInto = null;
         public CommentViewModel CommentToScrollInto
         {
@@ -326,6 +319,13 @@ namespace Mirko_v2.ViewModel
         #endregion
 
         #region IResumable
+        private int _indexToScrollTo = -1;
+        public int IndexToScrollTo
+        {
+            get { return _indexToScrollTo; }
+            set { _indexToScrollTo = value; }
+        }
+
         private ListViewEx GetCurrentListView()
         {
             var frame = (SimpleIoc.Default.GetInstance<INavigationService>() as NavigationService).CurrentFrame();
@@ -358,38 +358,44 @@ namespace Mirko_v2.ViewModel
 
         public async Task SaveState(string pageName)
         {
-            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
-            var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            int firstVisibleIndex = 0;
-
-            using (var stream = await file.OpenStreamForWriteAsync())
-            using (var sw = new StreamWriter(stream))
-            using (var writer = new JsonTextWriter(sw))
+            try
             {
-                writer.Formatting = Formatting.None;
-                JsonSerializer serializer = new JsonSerializer();
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+                var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                int firstVisibleIndex = 0;
 
-                if(pageName == "PivotPage")
+                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var sw = new StreamWriter(stream))
+                using (var writer = new JsonTextWriter(sw))
                 {
-                    var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
-                    serializer.Serialize(writer, entries);
+                    writer.Formatting = Formatting.None;
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    if (pageName == "PivotPage")
+                    {
+                        var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
+                        serializer.Serialize(writer, entries);
+                    }
+                    else if (pageName == "EntryPage")
+                    {
+                        serializer.Serialize(writer, SelectedEntry);
+                    }
+                    else if (pageName == "EmbedPage")
+                    {
+                        serializer.Serialize(writer, SelectedEmbed);
+                    }
                 }
-                else if (pageName == "EntryPage")
+
+                if (pageName == "PivotPage")
                 {
-                    serializer.Serialize(writer, SelectedEntry);
+                    var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+                    settings["CurrentPivotItem"] = CurrentPivotItem;
+                    settings["FirstIndex"] = firstVisibleIndex;
                 }
-                else if (pageName == "EmbedPage")
-                {
-                    serializer.Serialize(writer, SelectedEmbed);
-                }
-            }
-            
-            if(pageName == "PivotPage")
+            } catch(Exception)
             {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
 
-                settings["CurrentPivotItem"] = CurrentPivotItem;
-                settings["FirstIndex"] = firstVisibleIndex;
             }
         }
 

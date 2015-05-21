@@ -110,7 +110,12 @@ namespace Mirko_v2.Pages
         {
             var VM = this.DataContext as MainViewModel;
             var lv = sender as ListView;
-            var items = VM.MirkoEntries;
+
+            ObservableCollectionEx<EntryViewModel> items;
+            if ((string)lv.Tag == "LV0")
+                items = VM.MirkoEntries;
+            else
+                return;
 
             var idx = VM.IndexToScrollTo;
             if (idx != -1 && items.Count - 1 >= idx)
