@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Controls;
 using Mirko_v2.Pages;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Mirko_v2.ViewModel
         public NavigationService()
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-            _framesWithoutHeader = new List<string>() { "EmbedPage" };
+            framesWithoutHeader = new List<string>() { "EmbedPage" };
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
@@ -43,81 +44,99 @@ namespace Mirko_v2.ViewModel
         }
 #endif
 
-        private bool NavigatedToRootPage = false;
-        private Page _rootPage = null;
-        private Frame _rootPageFrame = null;
-        private AppHeader _rootPageHeader = null;
-        private AppBar _rootPageAppBar = null;
+        struct CachedPage
+        {
+            public UserControl Page;
+            public CommandBar AppBar;
+        };
 
-        private readonly Stack<Type> _stack = new Stack<Type>();
-        private readonly Dictionary<string, Type> _framesNames = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, UserControl> _framesContent = new Dictionary<Type, UserControl>();
-        private readonly List<string> _framesWithoutHeader = null;
+        private const int cachedPagesCount = 4;
+        private bool navigatedToRootPage = false;
+        private Page rootPage = null;
+        private Frame rootPageFrame = null;
+        private AppHeader rootPageHeader = null;
+
+        private readonly Stack<Type> backStack = new Stack<Type>();
+        private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
+        private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
+        private readonly List<string> framesWithoutHeader = null;
+
+        public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
+        public event NavigatingEventHandler Navigating;
+
         public object CurrentData { get; set; }
+
+        private CachedPage GetCachedPage(Type type)
+        {
+            var cachedPage = new CachedPage();
+
+            UserControl content = null;
+            CommandBar appBar = null;
+
+            if (!pagesCache.ContainsKey(type))
+            {
+                if (pagesCache.Count > cachedPagesCount)
+                    pagesCache.Remove(pagesCache.First().Key);
+
+                content = (UserControl)Activator.CreateInstance(type);
+                var hasAppBar = content as IHaveAppBar;
+                if (hasAppBar != null)
+                    appBar = hasAppBar.CreateCommandBar();
+
+                cachedPage.Page = content;
+                cachedPage.AppBar = appBar;
+
+                pagesCache.Add(type, cachedPage);
+            }
+            else
+            {
+                cachedPage = pagesCache[type];
+            }
+
+            return cachedPage;
+        }
 
         public void RegisterPage(string key, Type type)
         {
-            _framesNames.Add(key, type);
+            pagesNames.Add(key, type);
         }
 
         public void NavigateTo(string key)
         {
             var currentFrame = Window.Current.Content as Frame;
 
-            if(!NavigatedToRootPage)
+            if(!navigatedToRootPage)
             {
                 currentFrame.Navigate(typeof(HostPage));
-                _rootPage = currentFrame.Content as HostPage;
-                _rootPageFrame = _rootPage.FindName("MainFrame") as Frame;
-                _rootPageHeader = _rootPage.FindName("AppHeader") as AppHeader;
-                _rootPageAppBar = _rootPage.BottomAppBar;
+                rootPage = currentFrame.Content as HostPage;
+                rootPageFrame = rootPage.FindName("MainFrame") as Frame;
+                rootPageHeader = rootPage.FindName("AppHeader") as AppHeader;
 
-                NavigatedToRootPage = true;
+                navigatedToRootPage = true;
             }
 
-            var type = _framesNames[key];
-            UserControl content = null;
+            var type = pagesNames[key];
+            var page = GetCachedPage(type);
 
-            if(!_framesContent.ContainsKey(type))
-            {
-                content = (UserControl)Activator.CreateInstance(type);
-                _framesContent.Add(type, content);
-            }
+            rootPageFrame.Content = page.Page;
+            rootPage.BottomAppBar = page.AppBar;          
 
-            content = _framesContent[type];
-            _rootPageFrame.Content = content;
-            //var appBarTemplate = content.Resources["AppBar"] as DataTemplate;
-            //_rootPageAppBar.Content = appBarTemplate.LoadContent();
-
-            /*
-            if(content is IHaveAppBar)
-            {
-                var commandBar = (content as IHaveAppBar).CreateCommandBar();
-                _rootPageAppBar = commandBar;
-            }*/
-
-            if (_framesWithoutHeader.Contains(key))
-                _rootPageHeader.Visibility = Visibility.Collapsed;
+            if (framesWithoutHeader.Contains(key))
+                rootPageHeader.Visibility = Visibility.Collapsed;
             else
-                _rootPageHeader.Visibility = Visibility.Visible;
+                rootPageHeader.Visibility = Visibility.Visible;
 
-            _stack.Push(type);
+            backStack.Push(type);
             CurrentPageKey = key;
 
-            /*var nextFrameType = _framesDictionary[key];
-            if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
-            {
-                CurrentData = null;
-                CurrentPageKey = key;
-
-                currentFrame.Navigate(nextFrameType);
-            }*/
+            if (Navigating != null)
+                Navigating(this, new StringEventArgs(key));
         }
 
         public void NavigateTo(string key, object data)
         {
             var currentFrame = Window.Current.Content as Frame;
-            var nextFrameType = _framesNames[key];
+            var nextFrameType = pagesNames[key];
             if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = data;
@@ -129,11 +148,7 @@ namespace Mirko_v2.ViewModel
 
         public bool CanGoBack()
         {
-            /*
-            var currentFrame = Window.Current.Content as Frame;
-            return currentFrame != null && currentFrame.CanGoBack;*/
-
-            if (_stack.Count <= 1)
+            if (backStack.Count <= 1)
             {
                 Application.Current.Exit(); 
                 return false;
@@ -146,35 +161,22 @@ namespace Mirko_v2.ViewModel
         {
             if (!CanGoBack()) return;
 
-            _stack.Pop();
-            var type = _stack.Peek();
-            UserControl content = null;
+            backStack.Pop();
+            var type = backStack.Peek();
+            var page = GetCachedPage(type);
 
-            if (!_framesContent.ContainsKey(type))
-            {
-                content = (UserControl)Activator.CreateInstance(type);
-                _framesContent.Add(type, content);
-            }
+            rootPageFrame.Content = page.Page;
+            rootPage.BottomAppBar = page.AppBar;
 
-            content = _framesContent[type];
-            _rootPageFrame.Content = content;
+            CurrentPageKey = pagesNames.Single(x => x.Value == type).Key;
 
-            CurrentPageKey = _framesNames.Single(x => x.Value == type).Key;
-
-            if (_framesWithoutHeader.Contains(CurrentPageKey))
-                _rootPageHeader.Visibility = Visibility.Collapsed;
+            if (framesWithoutHeader.Contains(CurrentPageKey))
+                rootPageHeader.Visibility = Visibility.Collapsed;
             else
-                _rootPageHeader.Visibility = Visibility.Visible;
+                rootPageHeader.Visibility = Visibility.Visible;
 
-            /*
-            if (!CanGoBack()) return;
-            var frame = Window.Current.Content as Frame;
-            if (frame != null)
-            {
-                frame.GoBack();
-
-                CurrentPageKey = _framesNames.Single(x => x.Value == frame.CurrentSourcePageType).Key;
-            }*/
+            if (Navigating != null)
+                Navigating(this, new StringEventArgs(CurrentPageKey));
         }
 
         public void Dispose()
@@ -193,21 +195,21 @@ namespace Mirko_v2.ViewModel
 
         public UserControl GetFrame(string pageKey)
         {
-            var type = _framesNames[pageKey];
-            if (_framesContent.ContainsKey(type))
-                return _framesContent[type];
+            var type = pagesNames[pageKey];
+            if (pagesCache.ContainsKey(type))
+                return pagesCache[type].Page;
             else
                 return null;
         }
 
         public void InsertMainPage()
         {
-            _stack.Push(typeof(PivotPage));
+            backStack.Push(typeof(PivotPage));
         }
 
         public UserControl CurrentFrame()
         {
-            return _rootPageFrame.Content as UserControl;
+            return rootPageFrame.Content as UserControl;
         }
     }
 }

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class EntryPage : UserControl
+    public sealed partial class EntryPage : UserControl, IHaveAppBar
     {
         public EntryPage()
         {
@@ -30,6 +30,27 @@ namespace Mirko_v2.Pages
             var mainVM = this.DataContext as MainViewModel;
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
+        }
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar() { IsOpen = true };
+            var up = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Up),
+                Label = "w górę",
+            };
+            //up.Click += ScrollUpButton_Click;
+
+            var add = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Add),
+                Label = "nowy",
+            };
+
+            c.PrimaryCommands.Add(add);
+            //c.PrimaryCommands.Add(up);
+            return c;
         }
     }
 }

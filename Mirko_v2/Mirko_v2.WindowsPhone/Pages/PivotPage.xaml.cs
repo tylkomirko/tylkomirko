@@ -89,7 +89,6 @@ namespace Mirko_v2.Pages
 
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         public CommandBar CreateCommandBar()
@@ -102,6 +101,13 @@ namespace Mirko_v2.Pages
             };
             up.Click += ScrollUpButton_Click;
 
+            var add = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Add),
+                Label = "nowy",
+            };
+
+            c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(up);
             return c;
         }
