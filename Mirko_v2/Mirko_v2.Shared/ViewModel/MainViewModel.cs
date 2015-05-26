@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Controls;
+using Newtonsoft.Json.Linq;
 
 namespace Mirko_v2.ViewModel
 {
@@ -28,7 +30,7 @@ namespace Mirko_v2.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IResumable
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -71,6 +73,17 @@ namespace Mirko_v2.ViewModel
 
         private async void TimerCallback(object state)
         {
+            // check new entries
+            var currentPage = SimpleIoc.Default.GetInstance<INavigationService>().CurrentPageKey;
+            if(currentPage == "PivotPage" )
+            {
+
+            } 
+            else if(currentPage == "HashtagEntriesPage")
+            {
+                await CheckNewHashtagEntries();
+            }
+
             if(CurrentPivotItem == 0)
             {
                 await SaveCollection(MirkoEntries, "MirkoEntries");
@@ -88,6 +101,25 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<EntryViewModel> MirkoNewEntries
         {
             get { return _mirkoNewEntries ?? (_mirkoNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
+        }
+
+        private Meta _selectedHashtag = null;
+        public Meta SelectedHashtag
+        {
+            get { return _selectedHashtag; }
+            set { Set(() => SelectedHashtag, ref _selectedHashtag, value); }
+        }
+
+        private IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel> _taggedEntries = null;
+        public IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel> TaggedEntries
+        {
+            get { return _taggedEntries ?? (_taggedEntries = new IncrementalLoadingCollection<TaggedEntrySource, EntryViewModel>()); }
+        }
+
+        private ObservableCollectionEx<EntryViewModel> _taggedNewEntries = null;
+        public ObservableCollectionEx<EntryViewModel> TaggedNewEntries
+        {
+            get { return _taggedNewEntries ?? (_taggedNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
         }
 
         private ObservableCollectionEx<EntryViewModel> _otherEntries = null;
@@ -132,16 +164,23 @@ namespace Mirko_v2.ViewModel
             if (col.Count == 0) return;
 
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            var items = col.Take(50);
-
-            using (var stream = await file.OpenStreamForWriteAsync())
-            using (var streamWriter = new StreamWriter(stream))
-            using (var jsonWriter = new JsonTextWriter(streamWriter))
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Formatting = Formatting.None;
-                serializer.Serialize(jsonWriter, items);
+                var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                var items = col.Take(50);
+
+                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var streamWriter = new StreamWriter(stream))
+                using (var jsonWriter = new JsonTextWriter(streamWriter))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.None;
+                    serializer.Serialize(jsonWriter, items);
+                }
+            }
+            catch(Exception)
+            {
+
             }
         }
 
@@ -181,6 +220,23 @@ namespace Mirko_v2.ViewModel
             throw new System.NotImplementedException();
         }
 
+        private RelayCommand<string> _goToHashtagPage = null;
+        [JsonIgnore]
+        public RelayCommand<string> GoToHashtagPage
+        {
+            get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand<string>(ExecuteGoToHashtagPage)); }
+        }
+
+        private void ExecuteGoToHashtagPage(string tag)
+        {
+            SelectedHashtag = new Meta() { Hashtag = tag };
+
+            TaggedEntries.ClearAll();
+            TaggedNewEntries.Clear();
+
+            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagEntriesPage");
+        }
+
         private RelayCommand _settingsCommand;
         public RelayCommand SettingsCommand
         {
@@ -215,5 +271,184 @@ namespace Mirko_v2.ViewModel
         }
         #endregion
 
+        #region Functions
+        private async Task CheckNewHashtagEntries()
+        {
+            await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
+
+            EntryViewModel firstEntry = null;
+
+            if (TaggedNewEntries.Count > 0)
+            {
+                firstEntry = TaggedNewEntries.First();
+            }
+            else if (TaggedEntries.Count > 0)
+            {
+                firstEntry = TaggedEntries.First();
+            }
+            else
+            {
+                await StatusBarManager.HideProgress();
+                return;
+            }
+
+            uint firstEntryID = firstEntry.Data.ID;
+            int pageIndex = 1;
+            var entriesToSend = new List<EntryViewModel>(20);
+
+            while (true)
+            {
+                var taggedEntries = await App.ApiService.getTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
+                var newEntries = taggedEntries.Entries;
+
+                if (newEntries == null || newEntries.First().ID <= firstEntryID)
+                    break;
+
+                var unique = newEntries.Where(x => x.ID > firstEntryID);
+
+                foreach(var uniqueEntry in unique)
+                    entriesToSend.Add(new EntryViewModel(uniqueEntry));
+
+                if (unique.Count() < newEntries.Count)
+                    break;
+            }
+
+            await DispatcherHelper.RunAsync(() => TaggedNewEntries.PrependRange(entriesToSend));
+            await StatusBarManager.HideProgress();
+        }
+        #endregion
+
+        #region IResumable
+        private int _indexToScrollTo = -1;
+        public int IndexToScrollTo
+        {
+            get { return _indexToScrollTo; }
+            set { _indexToScrollTo = value; }
+        }
+
+        private ListViewEx GetCurrentListView()
+        {
+            var frame = (SimpleIoc.Default.GetInstance<INavigationService>() as NavigationService).CurrentFrame();
+            ListViewEx listView = null;
+            foreach (var lv in frame.GetDescendants<ListViewEx>())
+            {
+                if ((string)lv.Tag == "LV" + CurrentPivotItem)
+                    listView = lv; break;
+            }
+
+            return listView;
+        }
+
+        private IEnumerable<EntryViewModel> GetCurrentlyVisibleEntries(out int firstIndex)
+        {
+            var listView = GetCurrentListView();
+
+            var firstIdx = listView.VisibleItems_FirstIdx();
+            firstIndex = firstIdx;
+            if (firstIdx <= 15)
+                firstIdx = 0;
+
+            var lastIdx = listView.VisibleItems_LastIdx() + 2;
+
+            if (CurrentPivotItem == 0)
+                return MirkoEntries.GetRange(firstIdx, lastIdx - firstIdx);
+            else
+                return null;
+        }
+
+        public async Task SaveState(string pageName)
+        {
+            try
+            {
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+                var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                int firstVisibleIndex = 0;
+
+                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var sw = new StreamWriter(stream))
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    writer.Formatting = Formatting.None;
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    if (pageName == "PivotPage")
+                    {
+                        var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
+                        serializer.Serialize(writer, entries);
+                    }
+                    else if (pageName == "EntryPage")
+                    {
+                        serializer.Serialize(writer, SelectedEntry);
+                    }
+                    else if (pageName == "EmbedPage")
+                    {
+                        serializer.Serialize(writer, SelectedEmbed);
+                    }
+                }
+
+                if (pageName == "PivotPage")
+                {
+                    var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+                    settings["CurrentPivotItem"] = CurrentPivotItem;
+                    settings["FirstIndex"] = firstVisibleIndex;
+                }
+            } catch(Exception)
+            {
+
+            }
+        }
+
+        public async Task<bool> LoadState(string pageName)
+        {
+            try
+            {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+                var file = await folder.GetFileAsync("MainViewModel");
+
+                using (var stream = await file.OpenStreamForReadAsync())
+                using (var sr = new StreamReader(stream))
+                using (var reader = new JsonTextReader(sr))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    if (pageName == "PivotPage")
+                    {
+                        var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
+                        MirkoEntries.PrependRange(entries);
+
+                        if (settings.ContainsKey("CurrentPivotItem"))
+                            CurrentPivotItem = (int)settings["CurrentPivotItem"];
+
+                        if (settings.ContainsKey("FirstIndex"))
+                        {
+                            IndexToScrollTo = (int)settings["FirstIndex"];
+                        }
+                    }
+                    else if (pageName == "EntryPage")
+                    {
+                        SelectedEntry = serializer.Deserialize<EntryViewModel>(reader);
+                    }
+                    else if (pageName == "EmbedPage")
+                    {
+                        SelectedEmbed = serializer.Deserialize<EmbedViewModel>(reader);
+                    }
+                }
+
+                return true; // success!
+
+            } catch(Exception)
+            {
+                return false;
+            }
+        }
+
+        public string GetName()
+        {
+            return "MainViewModel";
+        }
+        #endregion
     }
 }

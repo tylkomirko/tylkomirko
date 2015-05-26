@@ -1,5 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Controls;
+using Mirko_v2.Pages;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +17,9 @@ namespace Mirko_v2.ViewModel
         public NavigationService()
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+            framesWithoutHeader = new List<string>() { "EmbedPage" };
         }
+
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
             if (CanGoBack())
@@ -39,31 +44,99 @@ namespace Mirko_v2.ViewModel
         }
 #endif
 
-        private readonly Dictionary<String, Type> _framesDictionary = new Dictionary<string, Type>();
+        struct CachedPage
+        {
+            public UserControl Page;
+            public CommandBar AppBar;
+        };
+
+        private const int cachedPagesCount = 4;
+        private bool navigatedToRootPage = false;
+        private Page rootPage = null;
+        private Frame rootPageFrame = null;
+        private AppHeader rootPageHeader = null;
+
+        private readonly Stack<Type> backStack = new Stack<Type>();
+        private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
+        private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
+        private readonly List<string> framesWithoutHeader = null;
+
+        public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
+        public event NavigatingEventHandler Navigating;
+
         public object CurrentData { get; set; }
+
+        private CachedPage GetCachedPage(Type type)
+        {
+            var cachedPage = new CachedPage();
+
+            UserControl content = null;
+            CommandBar appBar = null;
+
+            if (!pagesCache.ContainsKey(type))
+            {
+                if (pagesCache.Count > cachedPagesCount)
+                    pagesCache.Remove(pagesCache.First().Key);
+
+                content = (UserControl)Activator.CreateInstance(type);
+                var hasAppBar = content as IHaveAppBar;
+                if (hasAppBar != null)
+                    appBar = hasAppBar.CreateCommandBar();
+
+                cachedPage.Page = content;
+                cachedPage.AppBar = appBar;
+
+                pagesCache.Add(type, cachedPage);
+            }
+            else
+            {
+                cachedPage = pagesCache[type];
+            }
+
+            return cachedPage;
+        }
 
         public void RegisterPage(string key, Type type)
         {
-            _framesDictionary.Add(key, type);
+            pagesNames.Add(key, type);
         }
 
         public void NavigateTo(string key)
         {
             var currentFrame = Window.Current.Content as Frame;
-            var nextFrameType = _framesDictionary[key];
-            if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
-            {
-                CurrentData = null;
-                CurrentPageKey = key;
 
-                currentFrame.Navigate(nextFrameType);
+            if(!navigatedToRootPage)
+            {
+                currentFrame.Navigate(typeof(HostPage));
+                rootPage = currentFrame.Content as HostPage;
+                rootPageFrame = rootPage.FindName("MainFrame") as Frame;
+                rootPageHeader = rootPage.FindName("AppHeader") as AppHeader;
+
+                navigatedToRootPage = true;
             }
+
+            var type = pagesNames[key];
+            var page = GetCachedPage(type);
+
+            rootPageFrame.Content = page.Page;
+            rootPage.BottomAppBar = page.AppBar;          
+
+            if (framesWithoutHeader.Contains(key))
+                rootPageHeader.Visibility = Visibility.Collapsed;
+            else
+                rootPageHeader.Visibility = Visibility.Visible;
+
+            backStack.Push(type);
+            CurrentPageKey = key;
+
+            if (Navigating != null)
+                Navigating(this, new StringEventArgs(key));
         }
 
         public void NavigateTo(string key, object data)
         {
             var currentFrame = Window.Current.Content as Frame;
-            var nextFrameType = _framesDictionary[key];
+            var nextFrameType = pagesNames[key];
             if (currentFrame != null && (currentFrame.CurrentSourcePageType == null || currentFrame.CurrentSourcePageType != nextFrameType))
             {
                 CurrentData = data;
@@ -75,20 +148,35 @@ namespace Mirko_v2.ViewModel
 
         public bool CanGoBack()
         {
-            var currentFrame = Window.Current.Content as Frame;
-            return currentFrame != null && currentFrame.CanGoBack;
+            if (backStack.Count <= 1)
+            {
+                Application.Current.Exit(); 
+                return false;
+            }
+
+            return true;
         }
 
         public void GoBack()
         {
             if (!CanGoBack()) return;
-            var frame = Window.Current.Content as Frame;
-            if (frame != null)
-            {
-                frame.GoBack();
 
-                CurrentPageKey = _framesDictionary.Single(x => x.Value == frame.CurrentSourcePageType).Key;
-            }
+            backStack.Pop();
+            var type = backStack.Peek();
+            var page = GetCachedPage(type);
+
+            rootPageFrame.Content = page.Page;
+            rootPage.BottomAppBar = page.AppBar;
+
+            CurrentPageKey = pagesNames.Single(x => x.Value == type).Key;
+
+            if (framesWithoutHeader.Contains(CurrentPageKey))
+                rootPageHeader.Visibility = Visibility.Collapsed;
+            else
+                rootPageHeader.Visibility = Visibility.Visible;
+
+            if (Navigating != null)
+                Navigating(this, new StringEventArgs(CurrentPageKey));
         }
 
         public void Dispose()
@@ -103,6 +191,25 @@ namespace Mirko_v2.ViewModel
         {
             get { return _currentPageKey; }
             set { _currentPageKey = value; }
+        }
+
+        public UserControl GetFrame(string pageKey)
+        {
+            var type = pagesNames[pageKey];
+            if (pagesCache.ContainsKey(type))
+                return pagesCache[type].Page;
+            else
+                return null;
+        }
+
+        public void InsertMainPage()
+        {
+            backStack.Push(typeof(PivotPage));
+        }
+
+        public UserControl CurrentFrame()
+        {
+            return rootPageFrame.Content as UserControl;
         }
     }
 }

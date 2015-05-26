@@ -18,16 +18,19 @@
     Tapped="UserControl_Tapped"
     DoubleTapped="UserControl_DoubleTapped">
 
-    <!--
     <UserControl.Resources>
         <MenuFlyout x:Name="HashtagFlyout">
-            <MenuFlyoutItem Text="przeglądaj" Click="BrowseTag_Click"/>
-            <MenuFlyoutItem Text="obserwuj" Click="ObserveTag_Click" Tag="observeTag" />
-            <MenuFlyoutItem Text="nie obserwuj" Click="UnobserveTag_Click" Tag="unobserveTag" Visibility="Collapsed" />
-            <MenuFlyoutItem Text="czarnolisto" Click="BlacklistTag_Click" Tag="blacklistTag" />
-            <MenuFlyoutItem Text="usuń z czarnolisto" Click="UnblacklistTag_Click" Tag="unblacklistTag" Visibility="Collapsed" />
+            <MenuFlyoutItem Text="przeglądaj" 
+                            Command="{Binding GoToHashtagPage, Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding TappedHashtag}"/>
+            <MenuFlyoutItem Text="obserwuj" Tag="observeTag" Command="{Binding ObserveHashtag}"/>
+            <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" Command="{Binding ObserveHashtag}" />
+            <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" Command="{Binding BlacklistHashtag}" />
+            <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed" />
         </MenuFlyout>
+    </UserControl.Resources>
 
+    <!--
         <MenuFlyout x:Key="UserFlyout">
             <MenuFlyoutItem Text="odpowiedz" Click="ReplyFlyoutItem_Click" />
             <MenuFlyoutItem Text="obserwuj" Click="ObserveUser_Click" />

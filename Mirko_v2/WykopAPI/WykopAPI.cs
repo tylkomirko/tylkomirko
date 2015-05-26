@@ -699,14 +699,25 @@ namespace WykopAPI
             return await deserialize<List<string>>(URL);
         }
 
-        public async Task<TaggedEntries> getTaggedEntries(string hashtag, uint pageIndex)
+        public async Task<TaggedEntries> getTaggedEntries(string hashtag, int pageIndex)
         {
             if (this.limitExceeded)
                 return null;
 
-            string URL = "tag/entries/" + hashtag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            if (UserInfo != null)
+            {
+                var URL = "tag/entries/" + hashtag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-            return await deserialize<TaggedEntries>(URL);
+                var result = await deserialize<TaggedEntries>(URL);
+                return result;
+            }
+            else
+            {
+                string URL = "tag/entries/" + hashtag.Substring(1) + "/appkey," + this.APPKEY + ",page," + pageIndex;
+
+                var result = await deserialize<TaggedEntries>(URL);
+                return result;
+            }
         }
 
         public async Task<TaggedEntries> getTaggedEntries(string hashtag, int firstID, uint pageIndex)
@@ -721,22 +732,22 @@ namespace WykopAPI
 
         public async Task<bool> observeTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/observe/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> unobserveTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/unobserve/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         #endregion
@@ -910,22 +921,22 @@ namespace WykopAPI
         #region Blacklist
         public async Task<bool> blockTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/block/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/block/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> unblockTag(string tag)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/unblock/" + tag + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unblock/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> blockUser(string name)

@@ -14,6 +14,11 @@ namespace Mirko_v2.ViewModel
         private uint pageIndex = 1;
         private uint lastID = uint.MaxValue;
 
+        public void ClearCache()
+        {
+            
+        }
+
         public async Task<IEnumerable<NotificationViewModel>> GetPagedItems(int pageSize)
         {
             var notificationsToReturn = new List<Notification>(pageSize);

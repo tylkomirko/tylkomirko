@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Pages;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -68,6 +69,7 @@ namespace Mirko_v2
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         public static bool HasEntryAnimationPlayed { get; set; }
+        private Mirko_v2.ViewModel.NavigationService NavService = null;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -124,7 +126,7 @@ namespace Mirko_v2
         /// search results, and so forth.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -148,20 +150,23 @@ namespace Mirko_v2
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = CreateRootFrame();
                 
-                var navService = new Mirko_v2.ViewModel.NavigationService();
-                navService.RegisterPage("MainPage", typeof(MainPage));
-                navService.RegisterPage("LoginPage", typeof(LoginPage));
-                navService.RegisterPage("EntryPage", typeof(EntryPage));
-                navService.RegisterPage("EmbedPage", typeof(EmbedPage));
-                navService.RegisterPage("SettingsPage", typeof(SettingsPage));
-                navService.RegisterPage("HashtagSelectionPage", typeof(HashtagSelectionPage));
-                navService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
-                navService.RegisterPage("HashtagFlipPage", typeof(HashtagFlipPage));
-                navService.RegisterPage("AtNotificationsPage", typeof(AtNotificationsPage));
-                navService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
-                navService.RegisterPage("ConversationPage", typeof(ConversationPage));
-                navService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
-                SimpleIoc.Default.Register<INavigationService>(() => navService);
+                NavService = new Mirko_v2.ViewModel.NavigationService();
+                NavService.RegisterPage("MainPage", typeof(HostPage));
+                NavService.RegisterPage("LoginPage", typeof(LoginPage));
+                NavService.RegisterPage("EntryPage", typeof(EntryPage));
+                NavService.RegisterPage("EmbedPage", typeof(EmbedPage));
+                NavService.RegisterPage("SettingsPage", typeof(SettingsPage));
+                NavService.RegisterPage("HashtagSelectionPage", typeof(HashtagSelectionPage));
+                NavService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
+                NavService.RegisterPage("HashtagFlipPage", typeof(HashtagFlipPage));
+                NavService.RegisterPage("HashtagEntriesPage", typeof(HashtagEntriesPage));
+                NavService.RegisterPage("AtNotificationsPage", typeof(AtNotificationsPage));
+                NavService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
+                NavService.RegisterPage("ConversationPage", typeof(ConversationPage));
+                NavService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
+
+                NavService.RegisterPage("PivotPage", typeof(PivotPage));
+                SimpleIoc.Default.Register<INavigationService>(() => NavService);
 
                 // TODO: change this value to a cache size that is appropriate for your application
                 rootFrame.CacheSize = 1;
@@ -183,7 +188,7 @@ namespace Mirko_v2
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    // TODO: Load state from previously suspended application
+                    await ResumeFromSuspension();
                 }
 
                 // Place the frame in the current Window
@@ -213,7 +218,7 @@ namespace Mirko_v2
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("MainPage");
+                NavService.NavigateTo("PivotPage");
 
                 /*
                 if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
@@ -274,7 +279,7 @@ namespace Mirko_v2
 
             if (rootFrame.Content == null)
             {
-                rootFrame.Navigate(typeof(MainPage));
+                rootFrame.Navigate(typeof(HostPage));
             }
 
             var continuationEventArgs = e as IContinuationActivatedEventArgs;
@@ -295,15 +300,51 @@ namespace Mirko_v2
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            // TODO: Save application state and stop any background activity
+            var currentPage = NavService.CurrentPageKey;
+            var currentFrame = NavService.CurrentFrame();
+            if (currentFrame.DataContext is IResumable)
+            {
+                var resumableVM = currentFrame.DataContext as IResumable;
+                await resumableVM.SaveState(currentPage);
+
+                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+                localSettings["PageKey"] = currentPage;
+                localSettings["VM"] = resumableVM.GetName();
+            }
 
             SimpleIoc.Default.GetInstance<SettingsViewModel>().Save();
 
             deferral.Complete();
+        }
+
+        private async Task ResumeFromSuspension()
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+            if (!settings.ContainsKey("PageKey")) return;
+
+            var pageKey = (string)settings["PageKey"];
+            var viewModelName = (string)settings["VM"];
+
+            bool resumed = false;
+            if (viewModelName == "MainViewModel")
+            {
+                var resumableVM = SimpleIoc.Default.GetInstance<MainViewModel>() as IResumable;
+                resumed = await resumableVM.LoadState(pageKey);
+            }
+
+            if(resumed)
+            {
+                NavService.InsertMainPage();
+                NavService.NavigateTo(pageKey);
+            }
+            else
+            {
+                NavService.NavigateTo("PivotPage");
+            }
         }
     }
 }

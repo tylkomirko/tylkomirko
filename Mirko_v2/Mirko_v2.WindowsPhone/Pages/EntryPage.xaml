@@ -1,0 +1,52 @@
+﻿<UserControl
+    x:Class="Mirko_v2.Pages.EntryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Mirko_v2.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <controls:ListViewEx x:Name="ListView"
+                         Grid.Row="1"
+                         Margin="0,-132.5,0,0"
+                         HorizontalAlignment="Stretch"
+                         DataContext="{Binding SelectedEntry}"
+                         ItemsSource="{Binding Comments}"
+                         ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                         IsItemClickEnabled="False"
+                         Loaded="ListView_Loaded"
+                         ScrollingDown="ListView_ScrollingDown"
+                         ScrollingUp="ListView_ScrollingUp"
+                         VirtualizingStackPanel.VirtualizationMode="Recycling">
+        
+
+        <ListView.Header>
+            <StackPanel Margin="0,0,0,0">
+                <Rectangle x:Name="HeaderSpacer"
+                           Fill="Transparent"
+                           Height="140" />
+                <controls:Entry DataContext="{Binding}"/>
+            </StackPanel>
+        </ListView.Header>
+
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <controls:Entry DataContext="{Binding}"
+                                IsTapEnabled="False"
+                                ShowLeftSpacer="True"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+
+        <ListView.Footer>
+            <Rectangle x:Name="Footer"
+                       Fill="Transparent"
+                       Height="64" />
+        </ListView.Footer>
+
+    </controls:ListViewEx>
+</UserControl>

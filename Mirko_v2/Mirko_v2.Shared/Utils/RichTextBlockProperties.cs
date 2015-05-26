@@ -313,37 +313,7 @@ namespace Mirko_v2.Utils
             if (control == null) return;
 
             var tag = tb.Text;
-            /*
-            control.TappedHashtag = tag;
-
-            var mf = control.Resources["HashtagFlyout"] as MenuFlyout;
-
-            if (App.NotificationsViewModel.ObservedTags.Contains(tag))
-            {
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
-            }
-            else
-            {
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
-            }
-
-            if (App.MainViewModel.BlacklistedTags.Contains(tag))
-            {
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "unblacklistTag");
-            }
-            else
-            {
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
-            }
-            
-            mf.ShowAt(tb);
-             * */
-
-            // FIXME
+            control.HashtagTapped(tag, tb);
         }
         #endregion HTML
 

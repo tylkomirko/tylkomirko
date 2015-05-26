@@ -1,24 +1,15 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Mirko_v2
+namespace Mirko_v2.Pages
 {
     public class HashtagSelectionPageTemplateSelector : DataTemplateSelector
     {
@@ -36,23 +27,21 @@ namespace Mirko_v2
         }
     }
 
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class HashtagSelectionPage : Page
+    public sealed partial class HashtagSelectionPage : UserControl, IHaveAppBar
     {
         public HashtagSelectionPage()
         {
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void ListView_ScrollingDown(object sender, EventArgs e)
         {
+            AppBar.Hide();
+        }
+
+        private void ListView_ScrollingUp(object sender, EventArgs e)
+        {
+            AppBar.Show();
         }
 
         private void HashtagSuggestionBox_HashtagSelected(object sender, StringEventArgs e)
@@ -60,14 +49,8 @@ namespace Mirko_v2
             var tag = e.String;
             var flyout = Resources["HashtagFlyout"] as FlyoutBase;
             flyout.Hide();
-            //this.Frame.Navigate(typeof(HashtagEntriesPage), tag);
-            // FIXME
-        }
 
-        private void FindHashtag_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.ShowAt(this);
+            SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(tag);
         }
 
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -79,5 +62,32 @@ namespace Mirko_v2
             VM.CurrentHashtag = newItem;
             VM.GoToHashtagNotificationsPage.Execute(null);
         }
+
+        #region AppBar
+        private CommandBar AppBar = null;
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar();
+
+            var find = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Find),
+                Label = "szukaj",
+            };
+            find.Click += FindHashtag_Click;
+
+            c.PrimaryCommands.Add(find);
+            AppBar = c;
+
+            return c;
+        }
+
+        private void FindHashtag_Click(object sender, RoutedEventArgs e)
+        {
+            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
+            flyout.ShowAt(this);
+        }
+        #endregion
     }
 }

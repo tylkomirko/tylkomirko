@@ -3,10 +3,13 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Common;
+using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -16,6 +19,13 @@ namespace Mirko_v2.ViewModel
         public Entry Data { get; set; }
         public ObservableCollectionEx<CommentViewModel> Comments { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
+
+        private string _tappedHashtag = null;
+        public string TappedHashtag
+        {
+            get { return _tappedHashtag; }
+            set { Set(() => TappedHashtag, ref _tappedHashtag, value); }
+        }
         
         public EntryViewModel()
         {
@@ -110,5 +120,97 @@ namespace Mirko_v2.ViewModel
         {
             throw new System.NotImplementedException();
         }
+
+
+        #region Hashtag
+        public void PrepareHashtagFlyout(ref MenuFlyout mf, string tag)
+        {
+            TappedHashtag = tag;
+
+            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+            if (observedTags.Contains(tag))
+            {
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
+            }
+            else
+            {
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
+            }
+
+            /*
+            if (App.MainViewModel.BlacklistedTags.Contains(tag))
+            {
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "unblacklistTag");
+            }
+            else
+            {
+                MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
+            }*/
+        }
+
+        private RelayCommand _observeHashtag = null;
+        [JsonIgnore]
+        public RelayCommand ObserveHashtag
+        {
+            get { return _observeHashtag ?? (_observeHashtag = new RelayCommand(ExecuteObserveHashtag)); }
+        }
+
+        private async void ExecuteObserveHashtag()
+        {
+            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+
+            await StatusBarManager.ShowProgress();
+            if(observedTags.Contains(TappedHashtag))
+            {
+                var success = await App.ApiService.unobserveTag(TappedHashtag);
+                if (success)
+                {
+                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został usunięty.");
+                    observedTags.Remove(TappedHashtag);
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie udało się usunąć tagu " + TappedHashtag + ".");
+                }
+            }
+            else
+            {
+                var success = await App.ApiService.observeTag(TappedHashtag);
+                if (success)
+                {
+                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został dodany.");
+                    observedTags.Add(TappedHashtag);
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie udało się dodać tagu " + TappedHashtag + ".");
+                }
+            }
+        }
+
+        private RelayCommand _blacklistHashtag = null;
+        [JsonIgnore]
+        public RelayCommand BlacklistHashtag
+        {
+            get { return _blacklistHashtag ?? (_blacklistHashtag = new RelayCommand(ExecuteBlacklistHashtag)); }
+        }
+
+        private async void ExecuteBlacklistHashtag()
+        {
+            var success = await App.ApiService.blockTag(TappedHashtag);
+            if (success)
+            {
+                await StatusBarManager.ShowText("Tag " + TappedHashtag + " został zablokowany.");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Nie udało się zablokować tagu " + TappedHashtag + ".");
+            }
+        }
+        #endregion
     }
 }

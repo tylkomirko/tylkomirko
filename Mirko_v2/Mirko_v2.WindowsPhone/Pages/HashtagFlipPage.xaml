@@ -1,8 +1,8 @@
-﻿<Page
-    x:Class="Mirko_v2.HashtagFlipPage"
+﻿<UserControl
+    x:Class="Mirko_v2.Pages.HashtagFlipPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Mirko_v2"
+    xmlns:local="using:Mirko_v2.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:Mirko_v2.Utils"
@@ -10,9 +10,9 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}"
-    utils:PageOrientation.SupportedOrientations="Portrait">
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot"
           Margin="0,25.6,0,0">
@@ -22,30 +22,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Title Panel -->
-        <StackPanel Grid.Row="0"
-                    Canvas.ZIndex="1">
-            <controls:AppHeader Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
-            <controls:HashtagNotificationHeader x:Name="Header" />
-        </StackPanel>
+        <controls:HashtagNotificationHeader x:Name="Header"
+                                            Grid.Row="0"
+                                            Canvas.ZIndex="1"/>
 
         <FlipView x:Name="FlipView"
                   Grid.Row="1"
                   ItemsSource="{Binding HashtagFlipEntries}"
                   SelectedItem="{Binding HashtagFlipCurrentEntry, Mode=TwoWay}">
-            
+
             <i:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="SelectionChanged">
                     <core:InvokeCommandAction Command="{Binding HashtagFlipSelectionChanged}"
                                               CommandParameter="{Binding ElementName=FlipView, Path=SelectedIndex}"/>
                 </core:EventTriggerBehavior>
             </i:Interaction.Behaviors>
-            
+
             <FlipView.ItemTemplate>
                 <DataTemplate>
                     <controls:ListViewEx Margin="0,-132.5,0,0"
                                          HorizontalAlignment="Stretch"
-                                         AppBar="{Binding ElementName=AppBar}"
                                          ItemsSource="{Binding Comments}"
                                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                          IsItemClickEnabled="False"
@@ -56,7 +52,8 @@
                                 <Rectangle x:Name="HeaderSpacer"
                                            Fill="Transparent"
                                            Height="140" />
-                                <controls:Entry DataContext="{Binding}"/>
+                                <controls:Entry DataContext="{Binding}"
+                                                IsTapEnabled="False"/>
                             </StackPanel>
                         </ListView.Header>
 
@@ -78,12 +75,6 @@
                 </DataTemplate>
             </FlipView.ItemTemplate>
         </FlipView>
-        
+
     </Grid>
-    
-    <Page.BottomAppBar>
-        <CommandBar x:Name="AppBar">
-            
-        </CommandBar>
-    </Page.BottomAppBar>
-</Page>
+</UserControl>

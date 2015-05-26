@@ -1,12 +1,13 @@
-﻿using Mirko_v2.ViewModel;
+﻿using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
-using System.Linq;
 using Windows.UI.Xaml.Data;
 
 namespace Mirko_v2.Utils
@@ -14,6 +15,7 @@ namespace Mirko_v2.Utils
     public interface IIncrementalSource<T>
     {
         Task<IEnumerable<T>> GetPagedItems(int pageSize);
+        void ClearCache();
     }
 
     public class IncrementalLoadingCollection<T, I> : ObservableCollectionEx<I>,
@@ -23,7 +25,8 @@ namespace Mirko_v2.Utils
         private T source;
         private int itemsPerPage;
         private bool hasMoreItems;
-        private int currentPage;
+        private bool hasNoItems;
+        //private int currentPage;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
         {
@@ -36,6 +39,21 @@ namespace Mirko_v2.Utils
         {
             get { return hasMoreItems; }
             set { hasMoreItems = value; }
+        }
+
+        public bool HasNoItems
+        {
+            get { return hasNoItems; }
+            set { hasNoItems = value; base.OnPropertyChanged(new PropertyChangedEventArgs("HasNoItems")); }
+        }
+
+        public void ClearAll()
+        {
+            Clear();
+            source.ClearCache();
+
+            HasMoreItems = true;
+            DispatcherHelper.CheckBeginInvokeOnUI(() => HasNoItems = false);
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
