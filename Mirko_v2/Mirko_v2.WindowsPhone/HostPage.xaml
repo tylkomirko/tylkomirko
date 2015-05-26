@@ -5,6 +5,8 @@
     xmlns:local="using:Mirko_v2"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:Mirko_v2.Utils"
+    xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     utils:PageOrientation.SupportedOrientations="Portrait">
