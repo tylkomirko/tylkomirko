@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Mirko_v2.Utils;
+using Mirko_v2.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -33,7 +34,19 @@ namespace Mirko_v2.Pages
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }
 
+        private void ListView_ScrollingDown(object sender, EventArgs e)
+        {
+            AppBar.Hide();
+        }
+
+        private void ListView_ScrollingUp(object sender, EventArgs e)
+        {
+            AppBar.Show();
+        }
+
         #region AppBar
+        private CommandBar AppBar = null;
+
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar() { IsOpen = true };
@@ -52,6 +65,8 @@ namespace Mirko_v2.Pages
 
             //c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(up);
+            AppBar = c;
+
             return c;
         }
 

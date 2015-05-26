@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using Mirko_v2.Controls;
+using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
-using Mirko_v2.Utils;
-using System.Threading.Tasks;
-using Mirko_v2.ViewModel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -66,6 +55,7 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
+            AppBar.Hide();
 
             /*
             var CurrentPage = MainPivot.SelectedIndex;
@@ -78,7 +68,7 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
-
+            AppBar.Show();
             /*
             if (CurrentPage == 0 && App.MainViewModel.MirkoNewEntries.Count > 0)
                 ShowNewEntriesPopup();
@@ -107,6 +97,8 @@ namespace Mirko_v2.Pages
         }
 
         #region AppBar
+        private CommandBar AppBar = null;
+
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar() { IsOpen = true };
@@ -125,6 +117,8 @@ namespace Mirko_v2.Pages
 
             c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(up);
+            AppBar = c;
+
             return c;
         }
 

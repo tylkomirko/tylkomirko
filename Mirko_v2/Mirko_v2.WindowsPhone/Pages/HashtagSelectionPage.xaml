@@ -112,6 +112,8 @@
                                  SelectionMode="None"
                                  IsItemClickEnabled="True"
                                  ItemClick="ListView_ItemClick"
+                                 ScrollingDown="ListView_ScrollingDown"
+                                 ScrollingUp="ListView_ScrollingUp"
                                  ItemTemplateSelector="{StaticResource TemplateSelector}"
                                  ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
                                  ItemsSource="{Binding HashtagsCollection}"

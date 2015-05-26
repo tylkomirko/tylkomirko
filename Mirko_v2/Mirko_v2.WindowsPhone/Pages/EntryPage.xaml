@@ -19,7 +19,9 @@
                          ItemsSource="{Binding Comments}"
                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                          IsItemClickEnabled="False"
-                         Loaded="ListView_Loaded"                             
+                         Loaded="ListView_Loaded"
+                         ScrollingDown="ListView_ScrollingDown"
+                         ScrollingUp="ListView_ScrollingUp"
                          VirtualizingStackPanel.VirtualizationMode="Recycling">
         
 

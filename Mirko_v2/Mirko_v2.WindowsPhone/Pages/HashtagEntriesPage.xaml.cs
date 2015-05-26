@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using Mirko_v2.Controls;
+using Mirko_v2.Utils;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class HashtagEntriesPage : UserControl
+    public sealed partial class HashtagEntriesPage : UserControl, IHaveAppBar
     {
         public HashtagEntriesPage()
         {
@@ -38,12 +30,42 @@ namespace Mirko_v2.Pages
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
             HideHeader.Begin();
+            AppBar.Hide();
         }
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
             ShowHeader.Begin();
+            AppBar.Show();
         }
+
+        #region AppBar
+        private CommandBar AppBar = null;
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar();
+
+            var up = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Up),
+                Label = "w górę",
+            };
+            up.Click += ScrollUp_Click;
+
+            c.PrimaryCommands.Add(up);
+
+            AppBar = c;
+            return c;
+        }
+
+        private void ScrollUp_Click(object sender, RoutedEventArgs e)
+        {
+            var sv = this.ListView.GetDescendant<ScrollViewer>();
+            if (sv != null)
+                sv.ChangeView(null, 0.0, null);
+        }
+        #endregion
     }
 
 
