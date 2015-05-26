@@ -87,10 +87,26 @@ namespace Mirko_v2.Pages
              * */
         }
 
-        private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
+            var VM = this.DataContext as MainViewModel;
+            var lv = sender as ListView;
+
+            ObservableCollectionEx<EntryViewModel> items;
+            if ((string)lv.Tag == "LV0")
+                items = VM.MirkoEntries;
+            else
+                return;
+
+            var idx = VM.IndexToScrollTo;
+            if (idx != -1 && items.Count - 1 >= idx)
+            {
+                lv.ScrollIntoView(items[idx], ScrollIntoViewAlignment.Leading);
+                VM.IndexToScrollTo = -1;
+            }
         }
 
+        #region AppBar
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar() { IsOpen = true };
@@ -112,23 +128,19 @@ namespace Mirko_v2.Pages
             return c;
         }
 
-        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
-            var VM = this.DataContext as MainViewModel;
-            var lv = sender as ListView;
+            ScrollViewer sv = null;
+            var index = MainPivot.SelectedIndex;
 
-            ObservableCollectionEx<EntryViewModel> items;
-            if ((string)lv.Tag == "LV0")
-                items = VM.MirkoEntries;
-            else
-                return;
+            if (index == 0)
+                sv = MirkoListView.GetDescendant<ScrollViewer>();
+            else if (index == 1)
+                sv = HotListView.GetDescendant<ScrollViewer>();
 
-            var idx = VM.IndexToScrollTo;
-            if (idx != -1 && items.Count - 1 >= idx)
-            {
-                lv.ScrollIntoView(items[idx], ScrollIntoViewAlignment.Leading);
-                VM.IndexToScrollTo = -1;
-            }
+            if(sv != null)
+                sv.ChangeView(null, 0.0, null);
         }
+        #endregion
     }
 }
