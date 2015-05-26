@@ -1,12 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
+using Mirko_v2.Utils;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -15,17 +15,75 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class AppHeader : UserControl
     {
+        private enum PaintedButton
+        {
+            None,
+            Hash,
+            At,
+            PM,
+        };
+
+        private PaintedButton CurrentlyPaintedButton = PaintedButton.None;
+        private BindingExpression CurrentlyPaintedButtonBinding = null;
+
         private DispatcherTimer Timer = null;
 
         public AppHeader()
         {
             this.InitializeComponent();
 
+            var navService = SimpleIoc.Default.GetInstance<INavigationService>() as Mirko_v2.ViewModel.NavigationService;
+            if(navService != null)
+                navService.Navigating += NavService_Navigating;
+
             Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
             Timer.Tick += Timer_Tick;
 
             this.Loaded += AppHeader_Loaded;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
+        }
+
+        private void NavService_Navigating(object source, StringEventArgs newPage)
+        {
+            var currentPage = newPage.String;
+
+            var fill = Application.Current.Resources["AppHeaderSelectionBrush"] as SolidColorBrush;
+
+            if (CurrentlyPaintedButton != PaintedButton.None)
+            {
+                if (CurrentlyPaintedButton == PaintedButton.Hash)
+                    this.HashTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+                else if(CurrentlyPaintedButton == PaintedButton.At)
+                    this.AtTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+                else if(CurrentlyPaintedButton == PaintedButton.PM)
+                    this.PMTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+            }
+
+            if (currentPage == "HashtagSelectionPage")
+            {
+                CurrentlyPaintedButtonBinding = this.HashTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButton = PaintedButton.Hash;
+
+                this.HashTB.Foreground = fill;
+            }
+            else if (currentPage == "AtNotificationsPage")
+            {
+                CurrentlyPaintedButtonBinding = this.AtTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButton = PaintedButton.At;
+
+                this.AtTB.Foreground = fill;
+            }
+            else if (currentPage == "ConversationsPage")
+            {
+                CurrentlyPaintedButtonBinding = this.PMTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButton = PaintedButton.PM;
+
+                this.PMTB.Foreground = fill;
+            }
+            else
+            {
+                CurrentlyPaintedButton = PaintedButton.None;
+            }
         }
 
         private void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
@@ -38,17 +96,6 @@ namespace Mirko_v2.Controls
 
         private void AppHeader_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            var currentPage = SimpleIoc.Default.GetInstance<INavigationService>().CurrentPageKey;
-
-            var fill = Application.Current.Resources["AppHeaderSelectionBrush"] as SolidColorBrush;
-
-            if (currentPage == "HashtagSelectionPage")
-                this.HashTB.Foreground = fill;
-            else if (currentPage == "AtNotificationsPage")
-                this.AtTB.Foreground = fill;
-            else if (currentPage == "ConversationsPage")
-                this.PMTB.Foreground = fill;
-
             if (App.ApiService.IsNetworkAvailable)
                 DrawRegularLogo();
             else
