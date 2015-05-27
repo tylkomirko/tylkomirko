@@ -30,7 +30,8 @@
                 <Rectangle x:Name="HeaderSpacer"
                            Fill="Transparent"
                            Height="140" />
-                <controls:Entry DataContext="{Binding}"/>
+                <controls:Entry DataContext="{Binding}"
+                                IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
             </StackPanel>
         </ListView.Header>
 

@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Common;
 using Mirko_v2.Utils;
@@ -50,9 +51,18 @@ namespace Mirko_v2.ViewModel
             d = null;
         }
 
-        public void GoToEntryPage()
+        public void GoToEntryPage(bool isHot)
         {
-            Messenger.Default.Send<EntryViewModel>(this, "Entry UserControl");
+            if (isHot)
+            {
+                Messenger.Default.Send<EntryViewModel>(this, "Hot Entry UserControl");
+                if(Comments.Count == 0)
+                    GetComments.Execute(null);
+            }
+            else
+            {
+                Messenger.Default.Send<EntryViewModel>(this, "Entry UserControl");
+            }
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
         }
 
@@ -121,6 +131,34 @@ namespace Mirko_v2.ViewModel
             throw new System.NotImplementedException();
         }
 
+        private RelayCommand _getComments = null;
+        [JsonIgnore]
+        public RelayCommand GetComments
+        {
+            get { return _getComments ?? (_getComments = new RelayCommand(ExecuteGetComments)); }
+        }
+
+        private async void ExecuteGetComments()
+        {
+            await StatusBarManager.ShowTextAndProgress("Pobieram komentarze...");
+
+            var entry = await App.ApiService.getEntry(Data.ID);
+            if(entry != null)
+            {
+                var comments = new List<CommentViewModel>(entry.Comments.Count);
+                foreach(var c in entry.Comments)
+                    comments.Add(new CommentViewModel(c));
+
+                Comments.Clear();
+                Comments.AddRange(comments);
+                Data.CommentCount = entry.CommentCount;
+                Data.VoteCount = entry.VoteCount;
+
+                comments = null;
+            }
+
+            await StatusBarManager.HideProgress();
+        }
 
         #region Hashtag
         public void PrepareHashtagFlyout(ref MenuFlyout mf, string tag)

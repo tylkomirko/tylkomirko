@@ -1,4 +1,5 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,18 @@ namespace Mirko_v2.Controls
         // Using a DependencyProperty as the backing store for Fullscreen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FullscreenProperty =
             DependencyProperty.Register("Fullscreen", typeof(bool), typeof(FullEntry), new PropertyMetadata(false));
+        #endregion
+
+        #region IsHot
+        public bool IsHot
+        {
+            get { return (bool)GetValue(IsHotProperty); }
+            set { SetValue(IsHotProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsHot.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsHotProperty =
+            DependencyProperty.Register("IsHot", typeof(bool), typeof(FullEntry), new PropertyMetadata(false));
         #endregion
 
         #region Blacklist
@@ -127,9 +140,28 @@ namespace Mirko_v2.Controls
                 CommentCountBorder.Visibility = Visibility.Collapsed;
 
                 ListView.SetBinding(ListView.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Source = BlacklistBlocks });
-
                 BlacklistBlocks.Clear();
-                BlacklistBlocks.AddRange(BlacklistHelper.ProcessComments(entry.Comments));
+
+                if(IsHot && entry.Comments.Count == 0)
+                {
+                    entry.Comments.CollectionChanged += Comments_CollectionChanged;
+                    entry.GetComments.Execute(null);
+                }
+                else
+                {
+                    BlacklistBlocks.AddRange(BlacklistHelper.ProcessComments(entry.Comments));
+                }
+            }
+        }
+
+        private void Comments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                var comments = sender as ObservableCollectionEx<CommentViewModel>;
+                BlacklistBlocks.AddRange(BlacklistHelper.ProcessComments(comments));
+
+                comments.CollectionChanged -= Comments_CollectionChanged;
             }
         }
     }

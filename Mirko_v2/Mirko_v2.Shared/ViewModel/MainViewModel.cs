@@ -48,8 +48,18 @@ namespace Mirko_v2.ViewModel
             StartedOffline = !App.ApiService.IsNetworkAvailable;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
 
-            Messenger.Default.Register<EntryViewModel>(this, "Entry UserControl", (e) => SelectedEntry = e);
             Messenger.Default.Register<EmbedViewModel>(this, "Embed UserControl", (e) => SelectedEmbed = e);
+            Messenger.Default.Register<EntryViewModel>(this, "Entry UserControl", (e) => 
+            {
+                SelectedEntry = e;
+                SelectedEntryIsHot = false;
+            });
+
+            Messenger.Default.Register<EntryViewModel>(this, "Hot Entry UserControl", (e) => 
+            {
+                SelectedEntry = e;
+                SelectedEntryIsHot = true;
+            });
         }
 
         private async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
@@ -176,6 +186,13 @@ namespace Mirko_v2.ViewModel
         {
             get { return _selectedEntry; }
             set { Set(() => SelectedEntry, ref _selectedEntry, value); }
+        }
+
+        private bool _selectedEntryIsHot = false;
+        public bool SelectedEntryIsHot
+        {
+            get { return _selectedEntryIsHot; }
+            set { _selectedEntryIsHot = value; }
         }
 
         private CommentViewModel _commentToScrollInto = null;

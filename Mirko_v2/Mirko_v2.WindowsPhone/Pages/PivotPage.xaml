@@ -252,7 +252,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <controls:Entry IsHot="True" />
+                            <controls:FullEntry IsHot="True" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
 

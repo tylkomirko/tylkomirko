@@ -27,6 +27,16 @@ namespace Mirko_v2.Controls
         private bool singleTap;
 
         #region Registered properties
+        public bool IsHot
+        {
+            get { return (bool)GetValue(IsHotProperty); }
+            set { SetValue(IsHotProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsHot.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsHotProperty =
+            DependencyProperty.Register("IsHot", typeof(bool), typeof(Entry), new PropertyMetadata(false));
+
         public bool ShowComments
         {
             get { return (bool)GetValue(ShowCommentsProperty); }
@@ -54,18 +64,6 @@ namespace Mirko_v2.Controls
         }
         #endregion
 
-        #region IsHot
-        public bool IsHot
-        {
-            get { return (bool)GetValue(IsHotProperty); }
-            set { SetValue(IsHotProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsHot.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsHotProperty =
-            DependencyProperty.Register("IsHot", typeof(bool), typeof(Entry), new PropertyMetadata(false));
-        #endregion
-
         public Entry()
         {
             this.InitializeComponent();            
@@ -80,7 +78,7 @@ namespace Mirko_v2.Controls
             {
                 if (DataContext != null) 
                 {
-                    (DataContext as EntryViewModel).GoToEntryPage();
+                    (DataContext as EntryViewModel).GoToEntryPage(IsHot);
                     e.Handled = true;
                 }
             }
