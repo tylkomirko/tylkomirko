@@ -1,20 +1,18 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using WykopAPI.Models;
-using Mirko_v2.Utils;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Messaging;
-using System.Collections.Generic;
+using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Controls;
+using Mirko_v2.Utils;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
-using GalaSoft.MvvmLight.Threading;
-using Mirko_v2.Controls;
-using Newtonsoft.Json.Linq;
+using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -37,12 +35,16 @@ namespace Mirko_v2.ViewModel
         /// </summary>
         /// 
 
+        private NavigationService NavService = null;
         private Timer Timer = null;
         private bool StartedOffline = false;
 
-        public MainViewModel()
+        public MainViewModel(NavigationService nav)
         {
+            NavService = nav;
+
             Timer = new Timer(TimerCallback, null, 60 * 1000, 60 * 1000);
+
             StartedOffline = !App.ApiService.IsNetworkAvailable;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
 
@@ -74,7 +76,7 @@ namespace Mirko_v2.ViewModel
         private async void TimerCallback(object state)
         {
             // check new entries
-            var currentPage = SimpleIoc.Default.GetInstance<INavigationService>().CurrentPageKey;
+            var currentPage = NavService.CurrentPageKey;
             if(currentPage == "PivotPage" )
             {
 
@@ -234,7 +236,7 @@ namespace Mirko_v2.ViewModel
             TaggedEntries.ClearAll();
             TaggedNewEntries.Clear();
 
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagEntriesPage");
+            NavService.NavigateTo("HashtagEntriesPage");
         }
 
         private RelayCommand _settingsCommand;
@@ -245,7 +247,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteSettingsCommand()
         {
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("SettingsPage");
+            NavService.NavigateTo("SettingsPage");
             await StatusBarManager.HideStatusBar();
         }
 
@@ -261,7 +263,7 @@ namespace Mirko_v2.ViewModel
             if (settingsVM.UserInfo == null)
             {
                 // login
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("LoginPage");
+                NavService.NavigateTo("LoginPage");
             }
             else
             {
@@ -328,7 +330,7 @@ namespace Mirko_v2.ViewModel
 
         private ListViewEx GetCurrentListView()
         {
-            var frame = (SimpleIoc.Default.GetInstance<INavigationService>() as NavigationService).CurrentFrame();
+            var frame = NavService.CurrentFrame();
             ListViewEx listView = null;
             foreach (var lv in frame.GetDescendants<ListViewEx>())
             {

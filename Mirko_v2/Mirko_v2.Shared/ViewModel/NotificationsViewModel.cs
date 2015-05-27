@@ -1,20 +1,18 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using WykopAPI.Models;
-using System.Linq;
-using System.Threading;
-using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Views;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Storage;
+using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -45,11 +43,13 @@ namespace Mirko_v2.ViewModel
     public class NotificationsViewModel : ViewModelBase
     {
         private Timer Timer = null;
+        private NavigationService NavService = null;
 
-        public NotificationsViewModel()
+        public NotificationsViewModel(NavigationService nav)
         {
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
             _updateHashtagDic = new SemaphoreSlim(1);
+            NavService = nav;
         }
 
         private async void TimerCallback(object state)
@@ -62,13 +62,7 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _logoTappedCommand = null;
         public RelayCommand LogoTappedCommand
         {
-            get { return _logoTappedCommand ?? (_logoTappedCommand = new RelayCommand(ExecuteCommandLogoTapped)); }
-        }
-
-        private void ExecuteCommandLogoTapped()
-        {
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
-            navService.NavigateTo("MainPage");
+            get { return _logoTappedCommand ?? (_logoTappedCommand = new RelayCommand(() => NavService.NavigateTo("PivotPage"))); }
         }
 
         private RelayCommand _hashtagTappedCommand = null;
@@ -79,14 +73,12 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteHashtagTappedCommand()
         {
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
-
             if (HashtagsCollection.Count == 0)
                 await UpdateHashtagDictionary();
 
             if (HashtagNotificationsCount == 0)
             {
-                navService.NavigateTo("HashtagSelectionPage");
+                NavService.NavigateTo("HashtagSelectionPage");
             }
             else if (HashtagNotificationsCount == 1)
             {
@@ -132,7 +124,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    navService.NavigateTo("HashtagSelectionPage");
+                    NavService.NavigateTo("HashtagSelectionPage");
                 }
 
             }
@@ -146,8 +138,7 @@ namespace Mirko_v2.ViewModel
 
         private void ExecuteAtTappedCommand()
         {
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
-            navService.NavigateTo("AtNotificationsPage");
+            NavService.NavigateTo("AtNotificationsPage");
         }
 
         private RelayCommand _pmTappedCommand = null;
@@ -158,8 +149,6 @@ namespace Mirko_v2.ViewModel
 
         private void ExecutePMTappedCommand()
         {
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
-
             if (PMNotifications.Count == 1)
             {
                 var conversation = PMNotifications.First();
@@ -175,7 +164,7 @@ namespace Mirko_v2.ViewModel
             }
             else
             {
-                navService.NavigateTo("ConversationsPage");
+                NavService.NavigateTo("ConversationsPage");
             }
         }
         #endregion
@@ -372,14 +361,14 @@ namespace Mirko_v2.ViewModel
 
             if (CurrentHashtagNotifications.Count > 1)
             {
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagNotificationsPage");
+                NavService.NavigateTo("HashtagNotificationsPage");
             }
             else if (CurrentHashtagNotifications.Count == 1)
             {
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 await DispatcherHelper.RunAsync(() => mainVM.SelectedEntry = null);
 
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
+                NavService.NavigateTo("EntryPage");
 
                 var notification = CurrentHashtagNotifications[0].Data;
 
@@ -422,7 +411,7 @@ namespace Mirko_v2.ViewModel
                     HashtagFlipEntries.Add(null);
             });
 
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("HashtagFlipPage");
+            NavService.NavigateTo("HashtagFlipPage");
 
             await ExecuteHashtagFlipSelectionChanged(index);
         }
@@ -662,7 +651,7 @@ namespace Mirko_v2.ViewModel
             if (notification.Type == NotificationType.CommentDirected)
                 mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
 
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
+            NavService.NavigateTo("EntryPage");
             SelectedAtNotification.MarkAsReadCommand.Execute(null);
         }
 

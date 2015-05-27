@@ -15,6 +15,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using Mirko_v2.Pages;
 
 namespace Mirko_v2.ViewModel
 {
@@ -42,14 +43,38 @@ namespace Mirko_v2.ViewModel
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
-            SimpleIoc.Default.Register<MainViewModel>();
+            _navService = new Mirko_v2.ViewModel.NavigationService();
+            NavService.RegisterPage("MainPage", typeof(HostPage));
+            NavService.RegisterPage("LoginPage", typeof(LoginPage));
+            NavService.RegisterPage("EntryPage", typeof(EntryPage));
+            NavService.RegisterPage("EmbedPage", typeof(EmbedPage));
+            NavService.RegisterPage("SettingsPage", typeof(SettingsPage));
+            NavService.RegisterPage("HashtagSelectionPage", typeof(HashtagSelectionPage));
+            NavService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
+            NavService.RegisterPage("HashtagFlipPage", typeof(HashtagFlipPage));
+            NavService.RegisterPage("HashtagEntriesPage", typeof(HashtagEntriesPage));
+            NavService.RegisterPage("AtNotificationsPage", typeof(AtNotificationsPage));
+            NavService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
+            NavService.RegisterPage("ConversationPage", typeof(ConversationPage));
+            NavService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
+
+            NavService.RegisterPage("PivotPage", typeof(PivotPage));
+            SimpleIoc.Default.Register<GalaSoft.MvvmLight.Views.INavigationService>(() => NavService);
+
+            SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<FontsViewModel>();
-            SimpleIoc.Default.Register<NotificationsViewModel>();
+            SimpleIoc.Default.Register<NotificationsViewModel>(() => { return new NotificationsViewModel(NavService); });
             SimpleIoc.Default.Register<CacheViewModel>();
             SimpleIoc.Default.Register<MessagesViewModel>();
             SimpleIoc.Default.Register<AddEntryViewModel>();
+        }
+
+        private NavigationService _navService = null;
+        public NavigationService NavService
+        {
+            get { return _navService; } 
         }
 
         public MainViewModel Main

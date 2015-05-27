@@ -143,30 +143,15 @@ namespace Mirko_v2
             applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
             StatusBarManager.Init();
 
+            var locator = this.Resources["Locator"] as ViewModelLocator;
+            NavService = locator.NavService;
+
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = CreateRootFrame();
-                
-                NavService = new Mirko_v2.ViewModel.NavigationService();
-                NavService.RegisterPage("MainPage", typeof(HostPage));
-                NavService.RegisterPage("LoginPage", typeof(LoginPage));
-                NavService.RegisterPage("EntryPage", typeof(EntryPage));
-                NavService.RegisterPage("EmbedPage", typeof(EmbedPage));
-                NavService.RegisterPage("SettingsPage", typeof(SettingsPage));
-                NavService.RegisterPage("HashtagSelectionPage", typeof(HashtagSelectionPage));
-                NavService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
-                NavService.RegisterPage("HashtagFlipPage", typeof(HashtagFlipPage));
-                NavService.RegisterPage("HashtagEntriesPage", typeof(HashtagEntriesPage));
-                NavService.RegisterPage("AtNotificationsPage", typeof(AtNotificationsPage));
-                NavService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
-                NavService.RegisterPage("ConversationPage", typeof(ConversationPage));
-                NavService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
-
-                NavService.RegisterPage("PivotPage", typeof(PivotPage));
-                SimpleIoc.Default.Register<INavigationService>(() => NavService);
+                rootFrame = CreateRootFrame();              
 
                 // TODO: change this value to a cache size that is appropriate for your application
                 rootFrame.CacheSize = 1;
