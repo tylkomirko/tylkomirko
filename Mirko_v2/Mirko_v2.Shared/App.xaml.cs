@@ -68,7 +68,6 @@ namespace Mirko_v2
 
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
-        public static bool HasEntryAnimationPlayed { get; set; }
         private Mirko_v2.ViewModel.NavigationService NavService = null;
 
         /// <summary>

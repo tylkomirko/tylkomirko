@@ -28,13 +28,11 @@ namespace Mirko_v2.Pages
             if (ItemsPresenter == null)
             {
                 ItemsPresenter = MainPivot.GetDescendant<ItemsPresenter>();
+                ShowPivotContent = ItemsPresenter.Resources["FadeIn"] as Storyboard;
             }
 
-            //if (!HasEntryAnimationPlayed)
-            //    ItemsPresenter.Opacity = 0;
-
-            if (ShowPivotContent == null)
-                ShowPivotContent = ItemsPresenter.Resources["FadeIn"] as Storyboard;
+            if (!HasEntryAnimationPlayed)
+                ItemsPresenter.Opacity = 0;
 
             /*
             if (pivot.SelectedIndex == 0)
@@ -49,7 +47,7 @@ namespace Mirko_v2.Pages
             if (!HasEntryAnimationPlayed)
             {
                 ShowPivotContent.Begin();
-                App.HasEntryAnimationPlayed = true;
+                HasEntryAnimationPlayed = true;
             }
         }
 
