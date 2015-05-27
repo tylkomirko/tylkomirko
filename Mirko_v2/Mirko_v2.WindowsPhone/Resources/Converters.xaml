@@ -24,5 +24,7 @@
     <converters:BoolInverter x:Key="BoolInverter" />
     <converters:YouTubeApp x:Key="YouTubeApp" />
     <converters:CountToBool x:Key="CountToBool" />
+    <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
+    <converters:HotTimeSpanIndexConverter x:Key="HotTimeSpanIndexConverter" />
 
 </ResourceDictionary>

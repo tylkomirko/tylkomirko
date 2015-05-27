@@ -88,12 +88,19 @@ namespace Mirko_v2.ViewModel
             }
 
             if(CurrentPivotItem == 0)
-            {
                 await SaveCollection(MirkoEntries, "MirkoEntries");
-            }
+            else if(CurrentPivotItem == 1)
+                await SaveCollection(HotEntries, "HotEntries");
         }
 
         #region Properties
+        private bool _canGoBack = true;
+        public bool CanGoBack
+        {
+            get { return _canGoBack; }
+            set { Set(() => CanGoBack, ref _canGoBack, value); }
+        }
+
         private IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> _mirkoEntries = null;
         public IncrementalLoadingCollection<MirkoEntrySource, EntryViewModel> MirkoEntries
         {
@@ -104,6 +111,32 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<EntryViewModel> MirkoNewEntries
         {
             get { return _mirkoNewEntries ?? (_mirkoNewEntries = new ObservableCollectionEx<EntryViewModel>()); }
+        }
+
+        private IncrementalLoadingCollection<HotEntrySource, EntryViewModel> _hotEntries = null;
+        public IncrementalLoadingCollection<HotEntrySource, EntryViewModel> HotEntries
+        {
+            get { return _hotEntries ?? (_hotEntries = new IncrementalLoadingCollection<HotEntrySource, EntryViewModel>()); }
+        }
+
+        public int HotTimeSpan
+        {
+            get
+            {
+                if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("HotTimeSpan"))
+                    return (int)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["HotTimeSpan"];
+                else
+                    return 12;
+            }
+
+            set
+            {
+                if (HotTimeSpan != value)
+                {
+                    Windows.Storage.ApplicationData.Current.RoamingSettings.Values["HotTimeSpan"] = value;
+                    RaisePropertyChanged("HotTimeSpan");
+                }
+            }
         }
 
         private Meta _selectedHashtag = null;
@@ -224,10 +257,15 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand<string> _goToHashtagPage = null;
-        [JsonIgnore]
         public RelayCommand<string> GoToHashtagPage
         {
             get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand<string>(ExecuteGoToHashtagPage)); }
+        }
+
+        private RelayCommand _hotTimeSpanChanged = null;
+        public RelayCommand HotTimeSpanChanged
+        {
+            get { return _hotTimeSpanChanged ?? (_hotTimeSpanChanged = new RelayCommand(() => HotEntries.ClearAll())); }
         }
 
         private void ExecuteGoToHashtagPage(string tag)
@@ -391,14 +429,14 @@ namespace Mirko_v2.ViewModel
         private ListViewEx GetCurrentListView()
         {
             var frame = NavService.CurrentFrame();
-            ListViewEx listView = null;
             foreach (var lv in frame.GetDescendants<ListViewEx>())
             {
-                if ((string)lv.Tag == "LV" + CurrentPivotItem)
-                    listView = lv; break;
+                var tag = (string)lv.Tag;
+                if (tag == "LV" + CurrentPivotItem)
+                    return lv;
             }
 
-            return listView;
+            return null;
         }
 
         private IEnumerable<EntryViewModel> GetCurrentlyVisibleEntries(out int firstIndex)
@@ -414,6 +452,8 @@ namespace Mirko_v2.ViewModel
 
             if (CurrentPivotItem == 0)
                 return MirkoEntries.GetRange(firstIdx, lastIdx - firstIdx);
+            else if(CurrentPivotItem == 1)
+                return HotEntries.GetRange(firstIdx, lastIdx - firstIdx);
             else
                 return null;
         }
@@ -478,11 +518,14 @@ namespace Mirko_v2.ViewModel
 
                     if (pageName == "PivotPage")
                     {
-                        var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
-                        MirkoEntries.PrependRange(entries);
-
                         if (settings.ContainsKey("CurrentPivotItem"))
                             CurrentPivotItem = (int)settings["CurrentPivotItem"];
+
+                        var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
+                        if(CurrentPivotItem == 0)
+                            MirkoEntries.PrependRange(entries);
+                        else if(CurrentPivotItem == 1)
+                            HotEntries.PrependRange(entries);
 
                         if (settings.ContainsKey("FirstIndex"))
                         {

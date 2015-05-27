@@ -148,6 +148,13 @@ namespace Mirko_v2.ViewModel
 
         public bool CanGoBack()
         {
+            if (CurrentPageKey == "PivotPage")
+            {
+                var mainVM = CurrentFrame().DataContext as MainViewModel;
+                if (!mainVM.CanGoBack)
+                    return false;
+            }
+
             if (backStack.Count <= 1)
             {
                 Application.Current.Exit(); 

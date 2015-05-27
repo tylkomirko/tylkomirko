@@ -522,7 +522,7 @@ namespace WykopAPI
                 return null;
         }
 
-        public async Task<IEnumerable<Entry>> getHotEntries(int period, uint pageIndex)
+        public async Task<IEnumerable<Entry>> getHotEntries(int period, int pageIndex)
         {
             if (this.limitExceeded)
                 return null;
@@ -550,7 +550,7 @@ namespace WykopAPI
                 return null;
         }
 
-        public async Task<List<Entry>> getMyEntries(uint pageIndex)
+        public async Task<List<Entry>> getMyEntries(int pageIndex)
         {
             if (this.limitExceeded)
                 return null;

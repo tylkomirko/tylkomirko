@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -14,7 +15,7 @@ namespace Mirko_v2.Utils
 {
     public interface IIncrementalSource<T>
     {
-        Task<IEnumerable<T>> GetPagedItems(int pageSize);
+        Task<IEnumerable<T>> GetPagedItems(int pageSize, CancellationToken ct);
         void ClearCache();
     }
 
@@ -26,6 +27,7 @@ namespace Mirko_v2.Utils
         private int itemsPerPage;
         private bool hasMoreItems;
         private bool hasNoItems;
+        private CancellationTokenSource cancelToken;
         //private int currentPage;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
@@ -49,6 +51,9 @@ namespace Mirko_v2.Utils
 
         public void ClearAll()
         {
+            cancelToken.Cancel();
+            cancelToken.Dispose();
+
             Clear();
             source.ClearCache();
 
@@ -59,36 +64,46 @@ namespace Mirko_v2.Utils
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
             var dispatcher = Window.Current.Dispatcher;
+            cancelToken = new CancellationTokenSource();
+            
 
             return Task.Run<LoadMoreItemsResult>(
                 async () =>
                 {
-                    uint resultCount = 0;
-                    var result = await source.GetPagedItems(itemsPerPage);
-
-                    if (result == null || result.Count() == 0)
+                    try
                     {
-                        hasMoreItems = false;
+                        uint resultCount = 0;
+                        var result = await source.GetPagedItems(itemsPerPage, cancelToken.Token);
+
+                        if (result == null || result.Count() == 0)
+                        {
+                            hasMoreItems = false;
+                        }
+                        else
+                        {
+                            resultCount = (uint)result.Count();
+
+                            await dispatcher.RunAsync(
+                                CoreDispatcherPriority.Normal,
+                                () =>
+                                {
+                                    this.AddRange(result);
+
+                                    /*foreach (I item in result)
+                                        this.Add(item);
+                                     */
+                                });
+                        }
+
+                        return new LoadMoreItemsResult() { Count = resultCount };
+
                     }
-                    else
+                    catch(Exception)
                     {
-                        resultCount = (uint)result.Count();
-
-                        await dispatcher.RunAsync(
-                            CoreDispatcherPriority.Normal,
-                            () =>
-                            {
-                                this.AddRange(result);
-
-                                /*foreach (I item in result)
-                                    this.Add(item);
-                                 */
-                            });
+                        return new LoadMoreItemsResult() { Count = 0 };
                     }
 
-                    return new LoadMoreItemsResult() { Count = resultCount };
-
-                }).AsAsyncOperation<LoadMoreItemsResult>();
+                }, cancelToken.Token).AsAsyncOperation<LoadMoreItemsResult>();
         }
     }
 

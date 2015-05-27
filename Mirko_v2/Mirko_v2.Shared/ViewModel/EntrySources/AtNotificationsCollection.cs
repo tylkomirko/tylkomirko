@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WykopAPI.Models;
 using System.Linq;
+using System.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -19,7 +20,7 @@ namespace Mirko_v2.ViewModel
             
         }
 
-        public async Task<IEnumerable<NotificationViewModel>> GetPagedItems(int pageSize)
+        public async Task<IEnumerable<NotificationViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
         {
             var notificationsToReturn = new List<Notification>(pageSize);
             int entriesInCache = this.cache.Count();

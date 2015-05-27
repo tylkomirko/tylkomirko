@@ -1,18 +1,18 @@
 ﻿using Mirko_v2.Utils;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using System.Threading.Tasks;
 using WykopAPI.Models;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Threading;
+using System.Threading;
 
 namespace Mirko_v2.ViewModel
 {
-    public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
+    public class HotEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private List<Entry> cache = new List<Entry>(25);
+        private List<Entry> cache = new List<Entry>(50);
         private int pageIndex = 0;
 
         public void ClearCache()
@@ -21,14 +21,14 @@ namespace Mirko_v2.ViewModel
             pageIndex = 0;
         }
 
-        public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize)
+        public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
         {
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
             var entriesToReturn = new List<Entry>(pageSize);
             int entriesInCache = cache.Count();
             int missingEntries = pageSize - entriesInCache;
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
-            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
             if (entriesInCache > 0)
             {
@@ -44,39 +44,61 @@ namespace Mirko_v2.ViewModel
             }
 
             if (missingEntries > 0)
-            {                
-                var tag = mainVM.SelectedHashtag.Hashtag;
-                var entries = new List<Entry>(25);
+            {
+                var timeSpan = mainVM.HotTimeSpan;
+                var entries = new List<Entry>(50);
 
+                IEnumerable<Entry> newEntries = null;
                 if (App.ApiService.IsNetworkAvailable)
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
                     do
                     {
-                        var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
-                        if (newEntriesTemp != null)
+                        ct.ThrowIfCancellationRequested();
+
+                        if (timeSpan == 6 || timeSpan == 12)
                         {
-                            if (newEntriesTemp.Entries.Count > 0)
-                            {
-                                entries.AddRange(newEntriesTemp.Entries);
-                                await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
-                            }
-                            else
-                                break;
+                            newEntries = await App.ApiService.getHotEntries(timeSpan, pageIndex++);
                         }
                         else
                         {
-                            break;
+                            var newEntries_temp = await App.ApiService.getHotEntries(6, pageIndex++);
+                            var limitingTime = DateTime.Now.AddHours(-timeSpan);
+                            newEntries = newEntries_temp.Where(x => x.Date > limitingTime);
                         }
 
-                    } while (entries.Count <= missingEntries);
+                        if (newEntries != null)
+                        {
+                            if (newEntries.Count() == 0)
+                            {
+                                mainVM.HotEntries.HasMoreItems = false;
+                                if (mainVM.HotEntries.Count == 0)
+                                    mainVM.HotEntries.HasNoItems = true;
+                            }
+
+                            entries.AddRange(newEntries);
+                        }
+
+                    } while (entries.Count <= missingEntries && newEntries != null);
 
                     await StatusBarManager.HideProgress();
                 }
                 else
                 {
-                    return null;
+                    // offline mode
+                    if (mainVM.HotEntries.Count == 0)
+                    {
+                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                        var savedEntries = await mainVM.ReadCollection("HotEntries");
+                        await StatusBarManager.HideProgress();
+
+                        return savedEntries;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
 
                 var tmp = new List<Entry>(missingEntries);
@@ -96,9 +118,6 @@ namespace Mirko_v2.ViewModel
                 cache.AddRange(entries);
                 entries.Clear();
             }
-
-            if (entriesToReturn.Count == 0 && mainVM.TaggedEntries.Count == 0)
-                await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach (var entry in entriesToReturn)

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -78,8 +80,8 @@ namespace Mirko_v2.Pages
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
                 HideNewEntriesPopup();
-            //else if (CurrentPage == 1)
-            //    HideHotPopup();
+            else if (currentPage == 1)
+                HideTimeSpanIndicatorPopup();
         }
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
@@ -89,8 +91,25 @@ namespace Mirko_v2.Pages
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0 && CanShowNewEntriesPopup)
                 ShowNewEntriesPopup();
-            //else if (currentPage == 1)
-            //    HideHotPopup();
+            else if (currentPage == 1)
+                ShowTimeSpanIndicatorPopup();
+        }
+
+        private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var currentPage = MainPivot.SelectedIndex;
+            if (currentPage == 0)
+            {
+                if (TimeSpanIndicatorPopup.IsOpen)
+                    HideTimeSpanIndicatorPopup();
+            }
+            else if (currentPage == 1)
+            {
+                if (NewMirkoEntriesPopup.IsOpen)
+                    HideNewEntriesPopup();
+
+                ShowTimeSpanIndicatorPopup();
+            }
         }
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
@@ -99,8 +118,11 @@ namespace Mirko_v2.Pages
             var lv = sender as ListView;
 
             ObservableCollectionEx<EntryViewModel> items;
-            if ((string)lv.Tag == "LV0")
+            string tag = (string)lv.Tag;
+            if (tag == "LV0")
                 items = VM.MirkoEntries;
+            else if (tag == "LV1")
+                items = VM.HotEntries;
             else
                 return;
 
@@ -124,8 +146,92 @@ namespace Mirko_v2.Pages
         private void HideNewEntriesPopup()
         {
             this.NewMirkoEntriesPopup.IsOpen = false;
-
             this.PopupFadeOut.Begin();
+        }
+
+        private void ShowTimeSpanIndicatorPopup()
+        {
+            this.TimeSpanIndicatorGrid.Width = Window.Current.Bounds.Width;
+
+            this.TimeSpanIndicatorPopup.IsOpen = true;
+            this.TimeSpanIndicatorFadeIn.Begin();
+        }
+
+        private void HideTimeSpanIndicatorPopup()
+        {
+            this.TimeSpanIndicatorPopup.IsOpen = false;
+            this.TimeSpanIndicatorFadeOut.Begin();
+        }
+
+        private void TimeSpanIndicatorGrid_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ShowTimeSpanSelectionPopup();
+        }
+
+        private void TimeSpanSelectionPopup_Loaded(object sender, RoutedEventArgs e)
+        {
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+        }
+
+        private void TimeSpanSelectionPopup_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+        }
+
+        private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        {
+            if(TimeSpanSelectionPopup.IsOpen)
+            {
+                e.Handled = true;
+                HideTimeSpanSelectionPopup();
+            }
+        }
+
+        private void TimeSpanSelectionListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var selectedIndex = TimeSpanSelectionListBox.SelectedIndex;
+            var panel = TimeSpanSelectionListBox.ItemsPanelRoot;
+
+            for (int i = 0; i < panel.Children.Count; i++)
+            {
+                var lvItem = panel.Children[i] as ListViewItem;
+                var tb = lvItem.GetDescendant<TextBlock>();
+
+                if(i == selectedIndex)
+                    tb.Foreground = App.Current.Resources["HashtagForeground"] as SolidColorBrush;
+                else
+                    tb.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+            }
+        }
+
+        private void TimeSpanSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            HideTimeSpanSelectionPopup();
+        }
+
+        private void ShowTimeSpanSelectionPopup()
+        {
+            AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+            this.TimeSpanSelectionListBox.Width = Window.Current.Bounds.Width;
+            this.TimeSpanSelectionListBox.Height = 5000;//Window.Current.Bounds.Height;
+
+            this.TimeSpanSelectionPopup.IsOpen = true;
+            //this.TimeSpanSelectionFadeIn.Begin();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.CanGoBack = false;
+        }
+
+        private void HideTimeSpanSelectionPopup()
+        {
+            AppBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            this.TimeSpanSelectionPopup.IsOpen = false;
+            //this.TimeSpanSelectionFadeIn.Begin();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.CanGoBack = true;
         }
         #endregion
 
