@@ -77,9 +77,10 @@ namespace Mirko_v2.ViewModel
         {
             // check new entries
             var currentPage = NavService.CurrentPageKey;
-            if(currentPage == "PivotPage" )
+            if(currentPage == "PivotPage")
             {
-
+                if (CurrentPivotItem == 0)
+                    await CheckNewMirkoEntries();
             } 
             else if(currentPage == "HashtagEntriesPage")
             {
@@ -271,9 +272,68 @@ namespace Mirko_v2.ViewModel
                 settingsVM.Delete();
             }
         }
+
+        private RelayCommand _addNewMirkoEntries = null;
+        public RelayCommand AddNewMirkoEntries
+        {
+            get { return _addNewMirkoEntries ?? (_addNewMirkoEntries = new RelayCommand(ExecuteAddNewMirkoEntries)); }
+        }
+
+        private async void ExecuteAddNewMirkoEntries()
+        {
+            await DispatcherHelper.RunAsync(() => 
+            {
+                MirkoEntries.PrependRange(MirkoNewEntries);
+                MirkoNewEntries.Clear();
+            });
+        }
         #endregion
 
         #region Functions
+        private async Task CheckNewMirkoEntries()
+        {
+            await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
+
+            EntryViewModel firstEntry = null;
+
+            if (MirkoNewEntries.Count > 0)
+            {
+                firstEntry = MirkoNewEntries.First();
+            }
+            else if (MirkoEntries.Count > 0)
+            {
+                firstEntry = MirkoEntries.First();
+            }
+            else
+            {
+                await StatusBarManager.HideProgress();
+                return;
+            }
+
+            uint firstEntryID = firstEntry.Data.ID;
+            int pageIndex = 0;
+            var entriesToSend = new List<EntryViewModel>(20);
+
+            while (true)
+            {
+                var newEntries = await App.ApiService.getEntries(pageIndex++);
+
+                if (newEntries == null || newEntries.First().ID <= firstEntryID)
+                    break;
+
+                var unique = newEntries.Where(x => x.ID > firstEntryID);
+
+                foreach (var uniqueEntry in unique)
+                    entriesToSend.Add(new EntryViewModel(uniqueEntry));
+
+                if (unique.Count() < newEntries.Count())
+                    break;
+            }
+
+            await DispatcherHelper.RunAsync(() => MirkoNewEntries.PrependRange(entriesToSend));
+            await StatusBarManager.HideProgress();
+        }
+
         private async Task CheckNewHashtagEntries()
         {
             await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
@@ -295,7 +355,7 @@ namespace Mirko_v2.ViewModel
             }
 
             uint firstEntryID = firstEntry.Data.ID;
-            int pageIndex = 1;
+            int pageIndex = 0;
             var entriesToSend = new List<EntryViewModel>(20);
 
             while (true)

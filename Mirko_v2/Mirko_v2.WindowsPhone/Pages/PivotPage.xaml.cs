@@ -2,6 +2,7 @@
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
+using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -13,14 +14,33 @@ namespace Mirko_v2.Pages
     public sealed partial class PivotPage : UserControl, IHaveAppBar
     {
         public ItemsPresenter ItemsPresenter;
-
         private Storyboard ShowPivotContent;
-
         private bool HasEntryAnimationPlayed = false;
+        private bool CanShowNewEntriesPopup = false;
 
         public PivotPage()
         {
             this.InitializeComponent();
+
+            var VM = this.DataContext as MainViewModel;
+            VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
+        }
+
+        private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(MainPivot.SelectedIndex != 0) return;
+
+            var col = sender as ObservableCollectionEx<EntryViewModel>;
+            if (col.Count > 0)
+            {
+                CanShowNewEntriesPopup = true;
+                ShowNewEntriesPopup();
+            }
+            else
+            {
+                CanShowNewEntriesPopup = false;
+                HideNewEntriesPopup();
+            }
         }
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
@@ -55,24 +75,22 @@ namespace Mirko_v2.Pages
         {
             AppBar.Hide();
 
-            /*
-            var CurrentPage = MainPivot.SelectedIndex;
-            if (CurrentPage == 0)
+            var currentPage = MainPivot.SelectedIndex;
+            if (currentPage == 0)
                 HideNewEntriesPopup();
-            else if (CurrentPage == 1)
-                HideHotPopup();
-             * */
+            //else if (CurrentPage == 1)
+            //    HideHotPopup();
         }
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
             AppBar.Show();
-            /*
-            if (CurrentPage == 0 && App.MainViewModel.MirkoNewEntries.Count > 0)
+
+            var currentPage = MainPivot.SelectedIndex;
+            if (currentPage == 0 && CanShowNewEntriesPopup)
                 ShowNewEntriesPopup();
-            else if (CurrentPage == 1)
-                ShowHotPopup();
-             * */
+            //else if (currentPage == 1)
+            //    HideHotPopup();
         }
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
@@ -93,6 +111,23 @@ namespace Mirko_v2.Pages
                 VM.IndexToScrollTo = -1;
             }
         }
+
+        #region Popups
+        private void ShowNewEntriesPopup()
+        {
+            this.PopupGrid.Width = Window.Current.Bounds.Width;
+
+            this.NewMirkoEntriesPopup.IsOpen = true;
+            this.PopupFadeIn.Begin();
+        }
+
+        private void HideNewEntriesPopup()
+        {
+            this.NewMirkoEntriesPopup.IsOpen = false;
+
+            this.PopupFadeOut.Begin();
+        }
+        #endregion
 
         #region AppBar
         private CommandBar AppBar = null;

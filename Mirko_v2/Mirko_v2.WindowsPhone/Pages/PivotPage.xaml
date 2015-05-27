@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -64,6 +66,7 @@
 
         <Popup x:Name="NewMirkoEntriesPopup"
                VerticalOffset="103.5">
+            
             <Popup.Resources>
                 <Storyboard x:Name="PopupFadeIn">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
@@ -85,6 +88,12 @@
                   Opacity="{StaticResource AppHeaderOpacity}"
                   Background="#67a7d2"
                   Height="49">
+
+                <i:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="Tapped">
+                        <core:InvokeCommandAction Command="{Binding AddNewMirkoEntries}" />
+                    </core:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
 
                 <TextBlock x:Name="PopupTB"
                            Style="{StaticResource BaseTextBlockStyle}"
