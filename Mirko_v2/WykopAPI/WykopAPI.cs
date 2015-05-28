@@ -81,6 +81,37 @@ namespace WykopAPI
             }
         }
 
+        public int CallCount
+        {
+            get
+            {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+                if (settings.ContainsKey("CallCount"))
+                    return (int)settings["CallCount"];
+                else
+                    return 0;
+            }
+
+            set
+            {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+                if(settings.ContainsKey("CallCountUpdateTime"))
+                {
+                    var time = DateTime.FromBinary((long)settings["CallCountUpdateTime"]);
+                    if (DateTime.Now - time > new TimeSpan(1, 0, 0))
+                        settings["CallCount"] = 0;
+                    else
+                        settings["CallCount"] = value;
+                }
+                else
+                {
+                    settings["CallCount"] = value;
+                }
+
+                settings["CallCountUpdateTime"] = DateTime.Now.ToBinary();
+                RaisePropertyChanged();
+            }
+        }
 
         private readonly ILogger _log;
 
@@ -237,6 +268,8 @@ namespace WykopAPI
                 if (stream == null)
                     return null;
 
+                CallCount++;
+
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
@@ -312,6 +345,8 @@ namespace WykopAPI
             {
                 if (stream == null)
                     return null;
+
+                CallCount++;
 
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
