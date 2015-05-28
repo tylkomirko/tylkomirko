@@ -1,22 +1,8 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2.Common;
-using Mirko_v2.Utils;
-using Mirko_v2.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -119,7 +105,20 @@ namespace Mirko_v2.Controls
             singleTap = false;
 
             if (DataContext != null)
-                (DataContext as EntryViewModel).VoteCommand.Execute(null);
+            {
+                var entryVM = DataContext as EntryViewModel;
+                if(entryVM != null)
+                {
+                    entryVM.VoteCommand.Execute(null);
+                }
+                else
+                {
+                    var commentVM = DataContext as CommentViewModel;
+                    if (commentVM != null)
+                        commentVM.VoteCommand.Execute(null);
+
+                }
+            }
         }
 
         public void HashtagTapped(string tag, TextBlock tb)
@@ -131,6 +130,28 @@ namespace Mirko_v2.Controls
             VM.PrepareHashtagFlyout(ref mf, tag);            
 
             mf.ShowAt(tb);
+        }
+
+        private void VoteTB_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (e != null)
+                e.Handled = true;
+
+            if (DataContext != null)
+            {
+                var entryVM = DataContext as EntryViewModel;
+                if (entryVM != null)
+                {
+                    entryVM.VoteCommand.Execute(null);
+                }
+                else
+                {
+                    var commentVM = DataContext as CommentViewModel;
+                    if (commentVM != null)
+                        commentVM.VoteCommand.Execute(null);
+
+                }
+            }
         }
     }
 }

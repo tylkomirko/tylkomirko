@@ -75,11 +75,20 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteVoteCommand()
         {
+            await StatusBarManager.ShowProgress();
             var reply = await App.ApiService.voteEntry(id: Data.ID, upVote: !Data.Voted);
+            if(reply != null)
+            {
+                Data.VoteCount = (uint)reply.vote;
+                Data.Voted = !Data.Voted;
+                Data.Voters = reply.Voters;
 
-            Data.VoteCount = (uint)reply.vote;
-            Data.Voted = !Data.Voted;
-            Data.Voters = reply.Voters;
+                await StatusBarManager.ShowText(Data.Voted ? "Dodano plusa." : "Cofnięto plusa.");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Nie udało się oddać głosu.");
+            }
         }
 
         private RelayCommand _replyCommand = null;

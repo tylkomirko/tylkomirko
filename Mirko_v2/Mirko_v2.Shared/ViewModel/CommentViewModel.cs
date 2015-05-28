@@ -1,9 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Mirko_v2.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -36,11 +34,20 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteVoteCommand()
         {
-            var reply = await App.ApiService.voteEntry(id: Data.EntryID, commentID: Data.ID, upVote: !Data.Voted);
+            await StatusBarManager.ShowProgress();
+            var reply = await App.ApiService.voteEntry(id: Data.EntryID, commentID: Data.ID, upVote: !Data.Voted, isItEntry: false);
+            if (reply != null)
+            {
+                Data.VoteCount = (uint)reply.vote;
+                Data.Voted = !Data.Voted;
+                Data.Voters = reply.Voters;
 
-            Data.VoteCount = (uint)reply.vote;
-            Data.Voted = !Data.Voted;
-            Data.Voters = reply.Voters;
+                await StatusBarManager.ShowText(Data.Voted ? "Dodano plusa." : "Cofnięto plusa.");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Nie udało się oddać głosu.");
+            }
         }
     }
 }

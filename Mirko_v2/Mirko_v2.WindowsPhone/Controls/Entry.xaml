@@ -153,18 +153,11 @@
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
                    FontWeight="SemiBold"
-                   
+                   Tapped="VoteTB_Tapped"
                    FontSize="15.0"
                    Foreground="{Binding Data.Voted, Converter={StaticResource UserVotedToBrush}}"
                    Visibility="{Binding Data.VoteCount, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                 <Run Text="+"/><Run Text="{Binding Data.VoteCount}" />
-            
-            <i:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="Tapped">
-                    <core:InvokeCommandAction Command="{Binding VoteCommand}" />
-                </core:EventTriggerBehavior>                                           
-            </i:Interaction.Behaviors>
-            
         </TextBlock>
 
         <RichTextBlock x:Name="BodyRTB"
