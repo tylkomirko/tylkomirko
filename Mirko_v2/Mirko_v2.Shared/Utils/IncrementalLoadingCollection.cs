@@ -59,9 +59,12 @@ namespace Mirko_v2.Utils
 
         public void ClearAll()
         {
-            cancelToken.Cancel();
-            cancelToken.Dispose();
-            cancelToken = null;
+            if (cancelToken != null)
+            {
+                cancelToken.Cancel();
+                cancelToken.Dispose();
+                cancelToken = null;
+            }
 
             Clear();
             source.ClearCache();
