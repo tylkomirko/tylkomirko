@@ -422,7 +422,7 @@ namespace Mirko_v2.ViewModel
             }
 
             uint firstEntryID = firstEntry.Data.ID;
-            int pageIndex = 0;
+            int pageIndex = 1;
             var entriesToSend = new List<EntryViewModel>(20);
 
             while (true)

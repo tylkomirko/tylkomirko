@@ -14,12 +14,12 @@ namespace Mirko_v2.ViewModel
     public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
     {
         private List<Entry> cache = new List<Entry>(25);
-        private int pageIndex = 0;
+        private int pageIndex = 1;
 
         public void ClearCache()
         {
             cache.Clear();
-            pageIndex = 0;
+            pageIndex = 1;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
