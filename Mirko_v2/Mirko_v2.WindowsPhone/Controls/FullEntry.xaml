@@ -56,7 +56,8 @@
         </Grid.RowDefinitions>
         
         <local:Entry Grid.Row="0"
-                     IsHot="{Binding ElementName=root, Path=IsHot}"/>
+                     IsHot="{Binding ElementName=root, Path=IsHot}"
+                     LargeEmbed="{Binding ElementName=root, Path=LargeEmbed}"/>
         
         <Border x:Name="CommentCountBorder"
                 Grid.Row="1"

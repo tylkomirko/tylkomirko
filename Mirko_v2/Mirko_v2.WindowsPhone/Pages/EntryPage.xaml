@@ -31,6 +31,7 @@
                            Fill="Transparent"
                            Height="140" />
                 <controls:Entry DataContext="{Binding}"
+                                LargeEmbed="True"
                                 IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
             </StackPanel>
         </ListView.Header>

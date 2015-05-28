@@ -72,6 +72,18 @@ namespace Mirko_v2.Controls
             DependencyProperty.Register("IsHot", typeof(bool), typeof(FullEntry), new PropertyMetadata(false));
         #endregion
 
+        #region LargeEmbed
+        public bool LargeEmbed
+        {
+            get { return (bool)GetValue(LargeEmbedProperty); }
+            set { SetValue(LargeEmbedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for LargeEmbed.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LargeEmbedProperty =
+            DependencyProperty.Register("LargeEmbed", typeof(bool), typeof(FullEntry), new PropertyMetadata(false));
+        #endregion
+
         #region Blacklist
         private ObservableCollectionEx<BlacklistHelper.Block> _blacklistBlocks = null;
         public ObservableCollectionEx<BlacklistHelper.Block> BlacklistBlocks
