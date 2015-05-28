@@ -287,14 +287,19 @@
                 Margin="10,-140,0,0"
                 Header="ulubione"
                 Tag="2">
-                <ListView x:Name="FavListView"
-                          ItemsSource="{Binding FavEntries}"
-                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                          IsItemClickEnabled="False">
+                <controls:ListViewEx x:Name="FavListView"
+                                     ScrollingDown="ListView_ScrollingDown"
+                                     ScrollingUp="ListView_ScrollingUp"
+                                     Loaded="ListView_Loaded"
+                                     ItemsSource="{Binding FavEntries}"
+                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IsItemClickEnabled="False"
+                                     Tag="LV2">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <controls:Entry />
+                            <controls:FullEntry />
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
@@ -308,7 +313,7 @@
                                    Fill="Transparent" />
                     </ListView.Footer>
 
-                </ListView>
+                </controls:ListViewEx>
             </PivotItem>
 
 
@@ -318,14 +323,19 @@
                 Margin="10,-140,0,0"
                 Header="mój wykop"
                 Tag="3">
-                <ListView x:Name="MyListView"
-                          ItemsSource="{Binding MyEntries}"
-                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                          IsItemClickEnabled="False">
+                <controls:ListViewEx x:Name="MyListView"
+                                     ScrollingDown="ListView_ScrollingDown"
+                                     ScrollingUp="ListView_ScrollingUp"
+                                     Loaded="ListView_Loaded"
+                                     ItemsSource="{Binding MyEntries}"
+                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IsItemClickEnabled="False"
+                                     Tag="LV3">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <controls:Entry />
+                            <controls:FullEntry />
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
@@ -339,7 +349,7 @@
                                    Fill="Transparent" />
                     </ListView.Footer>
 
-                </ListView>
+                </controls:ListViewEx>
             </PivotItem>
         </Pivot>
     </Grid>

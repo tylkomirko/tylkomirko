@@ -109,6 +109,14 @@ namespace Mirko_v2.Pages
                     HideNewEntriesPopup();
 
                 ShowTimeSpanIndicatorPopup();
+            } 
+            else
+            {
+                if (NewMirkoEntriesPopup.IsOpen)
+                    HideNewEntriesPopup();
+
+                if (TimeSpanIndicatorPopup.IsOpen)
+                    HideTimeSpanIndicatorPopup();
             }
         }
 
@@ -117,17 +125,19 @@ namespace Mirko_v2.Pages
             var VM = this.DataContext as MainViewModel;
             var lv = sender as ListView;
 
-            ObservableCollectionEx<EntryViewModel> items;
+            ObservableCollectionEx<EntryViewModel> items = null;
             string tag = (string)lv.Tag;
             if (tag == "LV0")
                 items = VM.MirkoEntries;
             else if (tag == "LV1")
                 items = VM.HotEntries;
-            else
-                return;
+            else if (tag == "LV2")
+                items = VM.FavEntries;
+            else if (tag == "LV3")
+                items = VM.MyEntries;
 
             var idx = VM.IndexToScrollTo;
-            if (idx != -1 && items.Count - 1 >= idx)
+            if (idx != -1 && items != null && items.Count - 1 >= idx)
             {
                 lv.ScrollIntoView(items[idx], ScrollIntoViewAlignment.Leading);
                 VM.IndexToScrollTo = -1;

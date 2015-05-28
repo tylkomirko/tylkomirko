@@ -30,6 +30,8 @@ namespace Mirko_v2.ViewModel
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
 
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+
             if (entriesInCache > 0)
             {
                 int itemsToMove;
@@ -45,7 +47,6 @@ namespace Mirko_v2.ViewModel
 
             if (missingEntries > 0)
             {
-                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 var entries = new List<Entry>(50);
 
                 IEnumerable<Entry> newEntries = null;
@@ -53,11 +54,16 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
+                    var lastID = mainVM.MirkoEntries.LastID;
                     do
                     {
                         newEntries = await App.ApiService.getEntries(pageIndex++);
                         if (newEntries != null)
-                            entries.AddRange(newEntries);
+                        {
+                            entries.AddRange(newEntries.Where(x => x.ID < lastID));
+                            if (entries.Count > 0)
+                                lastID = entries.Last().ID;
+                        }
 
                     } while (entries.Count <= missingEntries && newEntries != null);
 
@@ -97,6 +103,9 @@ namespace Mirko_v2.ViewModel
                 cache.AddRange(entries);
                 entries.Clear();
             }
+
+            if (entriesToReturn.Count > 0)
+                mainVM.MirkoEntries.LastID = entriesToReturn.Last().ID;
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach(var entry in entriesToReturn)

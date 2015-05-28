@@ -68,7 +68,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\FavEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\HotEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MyEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\IResumable.cs" />

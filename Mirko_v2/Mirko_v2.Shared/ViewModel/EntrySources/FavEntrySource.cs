@@ -1,25 +1,22 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WykopAPI.Models;
-using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Threading;
-using System.Threading;
 
 namespace Mirko_v2.ViewModel
 {
-    public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
+    public class FavEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private List<Entry> cache = new List<Entry>(25);
-        private int pageIndex = 0;
+        private List<Entry> cache = new List<Entry>(50);
+        private bool entriesDownloaded = false;
 
         public void ClearCache()
         {
             cache.Clear();
-            pageIndex = 0;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
@@ -29,7 +26,6 @@ namespace Mirko_v2.ViewModel
             int missingEntries = pageSize - entriesInCache;
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
-            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
             if (entriesInCache > 0)
             {
@@ -45,42 +41,47 @@ namespace Mirko_v2.ViewModel
             }
 
             if (missingEntries > 0)
-            {                
-                var tag = mainVM.SelectedHashtag.Hashtag;
-                var entries = new List<Entry>(25);
+            {
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var entries = new List<Entry>(50);
 
-                if (App.ApiService.IsNetworkAvailable)
+                IEnumerable<Entry> newEntries = null;
+                if (App.ApiService.IsNetworkAvailable && !entriesDownloaded)
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
-                    var lastID = mainVM.TaggedEntries.LastID;
-                    do
+                    newEntries = await App.ApiService.getFavourites();
+                    if (newEntries != null)
                     {
-                        var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
-                        if (newEntriesTemp != null)
+                        entriesDownloaded = true;
+                        if (newEntries.Count() == 0)
                         {
-                            if (newEntriesTemp.Entries.Count > 0)
-                            {
-                                entries.AddRange(newEntriesTemp.Entries);
-                                if (entries.Count > 0)
-                                    lastID = entries.Last().ID;
-                                await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
-                            }
-                            else
-                                break;
+                            mainVM.FavEntries.HasNoItems = true;
+                            mainVM.FavEntries.HasMoreItems = false;
                         }
                         else
                         {
-                            break;
+                            entries.AddRange(newEntries);
                         }
-
-                    } while (entries.Count <= missingEntries);
+                    }
 
                     await StatusBarManager.HideProgress();
                 }
-                else
+                else if(!App.ApiService.IsNetworkAvailable)
                 {
-                    return null;
+                    // offline mode
+                    if(mainVM.FavEntries.Count == 0)
+                    {
+                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                        var savedEntries = await mainVM.ReadCollection("FavEntries");
+                        await StatusBarManager.HideProgress();
+
+                        return savedEntries;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
 
                 var tmp = new List<Entry>(missingEntries);
@@ -101,14 +102,8 @@ namespace Mirko_v2.ViewModel
                 entries.Clear();
             }
 
-            if (entriesToReturn.Count == 0 && mainVM.TaggedEntries.Count == 0)
-                await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
-
-            if (entriesToReturn.Count > 0)
-                mainVM.TaggedEntries.LastID = entriesToReturn.Last().ID;
-
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
-            foreach (var entry in entriesToReturn)
+            foreach(var entry in entriesToReturn)
                 VMs.Add(new EntryViewModel(entry));
 
             return VMs;

@@ -349,15 +349,16 @@ namespace WykopAPI
                     foreach (var item in array)
                     {
                         var r = item.CreateReader();
-
-                        try
+                        var title = item["title"];
+                        if(title != null)
+                        {
+                            // filter out front page entries.
+                            r.Skip();
+                        }
+                        else
                         {
                             var i = serializer.Deserialize<T>(r);
                             list.Add(i);
-                        }
-                        catch (JsonException)
-                        {
-                            r.Skip();
                         }
                     }
                 }
@@ -962,12 +963,12 @@ namespace WykopAPI
 
         #region Favourites
 
-        public async Task<List<Entry>> getFavourites(uint pageIndex)
+        public async Task<List<Entry>> getFavourites()
         {
             if (this.limitExceeded)
                 return null;
 
-            string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page,0";
 
             return await deserialize<List<Entry>>(URL);
         }

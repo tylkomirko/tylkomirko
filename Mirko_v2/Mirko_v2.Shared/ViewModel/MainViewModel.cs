@@ -149,6 +149,18 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private IncrementalLoadingCollection<FavEntrySource, EntryViewModel> _favEntries = null;
+        public IncrementalLoadingCollection<FavEntrySource, EntryViewModel> FavEntries
+        {
+            get { return _favEntries ?? (_favEntries = new IncrementalLoadingCollection<FavEntrySource, EntryViewModel>()); }
+        }
+
+        private IncrementalLoadingCollection<MyEntrySource, EntryViewModel> _myEntries = null;
+        public IncrementalLoadingCollection<MyEntrySource, EntryViewModel> MyEntries
+        {
+            get { return _myEntries ?? (_myEntries = new IncrementalLoadingCollection<MyEntrySource, EntryViewModel>()); }
+        }
+
         private Meta _selectedHashtag = null;
         public Meta SelectedHashtag
         {
@@ -443,6 +455,21 @@ namespace Mirko_v2.ViewModel
             set { _indexToScrollTo = value; }
         }
 
+        private ObservableCollectionEx<EntryViewModel> CurrentCollection()
+        {
+            ObservableCollectionEx<EntryViewModel> collection = null;
+            if (CurrentPivotItem == 0)
+                collection = MirkoEntries;
+            else if (CurrentPivotItem == 1)
+                collection = HotEntries;
+            else if (CurrentPivotItem == 2)
+                collection = FavEntries;
+            else if (CurrentPivotItem == 3)
+                collection = MyEntries;
+
+            return collection;
+        }
+
         private ListViewEx GetCurrentListView()
         {
             var frame = NavService.CurrentFrame();
@@ -467,12 +494,7 @@ namespace Mirko_v2.ViewModel
 
             var lastIdx = listView.VisibleItems_LastIdx() + 2;
 
-            if (CurrentPivotItem == 0)
-                return MirkoEntries.GetRange(firstIdx, lastIdx - firstIdx);
-            else if(CurrentPivotItem == 1)
-                return HotEntries.GetRange(firstIdx, lastIdx - firstIdx);
-            else
-                return null;
+            return CurrentCollection().GetRange(firstIdx, lastIdx - firstIdx);
         }
 
         public async Task SaveState(string pageName)
@@ -539,10 +561,28 @@ namespace Mirko_v2.ViewModel
                             CurrentPivotItem = (int)settings["CurrentPivotItem"];
 
                         var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
-                        if(CurrentPivotItem == 0)
+                        var lastID = entries.Last().Data.ID;
+
+                        if (CurrentPivotItem == 0)
+                        {
                             MirkoEntries.PrependRange(entries);
-                        else if(CurrentPivotItem == 1)
+                            MirkoEntries.LastID = lastID;
+                        }
+                        else if (CurrentPivotItem == 1)
+                        {
                             HotEntries.PrependRange(entries);
+                            HotEntries.LastID = lastID;
+                        }
+                        else if (CurrentPivotItem == 2)
+                        {
+                            FavEntries.PrependRange(entries);
+                            FavEntries.LastID = lastID;
+                        }
+                        else if (CurrentPivotItem == 3)
+                        {
+                            MyEntries.PrependRange(entries);
+                            MyEntries.LastID = lastID;
+                        }
 
                         if (settings.ContainsKey("FirstIndex"))
                         {
