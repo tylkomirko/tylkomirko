@@ -53,6 +53,7 @@
                                            Fill="Transparent"
                                            Height="140" />
                                 <controls:Entry DataContext="{Binding}"
+                                                LargeEmbed="True"
                                                 IsTapEnabled="False"/>
                             </StackPanel>
                         </ListView.Header>
