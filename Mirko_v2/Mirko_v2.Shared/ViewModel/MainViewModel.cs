@@ -354,6 +354,21 @@ namespace Mirko_v2.ViewModel
                 MirkoNewEntries.Clear();
             });
         }
+
+        private RelayCommand _addNewTaggedEntries = null;
+        public RelayCommand AddNewTaggedEntries
+        {
+            get { return _addNewTaggedEntries ?? (_addNewTaggedEntries = new RelayCommand(ExecuteAddNewTaggedEntries)); }
+        }
+
+        private async void ExecuteAddNewTaggedEntries()
+        {
+            await DispatcherHelper.RunAsync(() =>
+            {
+                TaggedEntries.PrependRange(TaggedNewEntries);
+                TaggedNewEntries.Clear();
+            });
+        }
         #endregion
 
         #region Functions
