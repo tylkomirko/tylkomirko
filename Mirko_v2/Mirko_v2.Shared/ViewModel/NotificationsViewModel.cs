@@ -95,22 +95,46 @@ namespace Mirko_v2.ViewModel
                     }
                 }
 
-                // FIXME
-                //var json = EntryNavigationParameterExtensions.fromNotification(n, hashtag);
-                //NavigateTo(this, new PageNavigationEventArgs(typeof(FullscreenEntry), json));
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var entryID = n.Data.Entry.ID;
+                EntryViewModel entryVM = mainVM.OtherEntries.SingleOrDefault(x => x.Data.ID == entryID);
+
+                NavService.NavigateTo("EntryPage");
+
+                if(entryVM == null)
+                {
+                    await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                    mainVM.SelectedEntry = null;
+                    var entry = await App.ApiService.getEntry(entryID);
+
+                    if (entry != null)
+                    {
+                        entryVM = new EntryViewModel(entry);
+                        mainVM.OtherEntries.Add(entryVM);
+
+                        await StatusBarManager.HideProgress();
+                    }
+                    else
+                    {
+                        await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                    }
+                }
+
+                mainVM.SelectedEntry = entryVM;
+                await ExecuteDeleteHashtagNotification(n.Data.ID);
             }
             else if (HashtagNotificationsCount > 1)
             {
                 // check if all notifications relate to the same hashtag
 
                 int nonZeroesFound = 0;
-                string hashtag = null;
+                HashtagInfoContainer hashtag = null;
                 foreach (var item in HashtagsCollection)
                 {
                     if (item.Count != 0)
                     {
                         nonZeroesFound++;
-                        hashtag = item.Name;
+                        hashtag = item;
 
                         if (nonZeroesFound >= 2)
                             break;
@@ -119,8 +143,9 @@ namespace Mirko_v2.ViewModel
 
                 if (nonZeroesFound <= 1) // all notifications belong to one tag
                 {
-                    //NavigateTo(this, new PageNavigationEventArgs(typeof(HashtagNotificationsPage), hashtag));
-                    // FIXME
+                    CurrentHashtag = hashtag;
+                    CurrentHashtagNotifications = HashtagsDictionary[hashtag.Name];
+                    NavService.NavigateTo("HashtagNotificationsPage");
                 }
                 else
                 {
