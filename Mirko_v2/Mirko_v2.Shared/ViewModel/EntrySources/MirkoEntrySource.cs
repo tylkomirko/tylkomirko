@@ -10,16 +10,12 @@ namespace Mirko_v2.ViewModel
 {
     public class MirkoEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private int pageIndex = 0;
-
         public void ClearCache()
         {
-            pageIndex = 0;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
         {
-            var entriesToReturn = new List<Entry>(45);
             var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
             if (App.ApiService.IsNetworkAvailable)
@@ -28,9 +24,9 @@ namespace Mirko_v2.ViewModel
 
                 IEnumerable<Entry> newEntries = null;
 
-                if (pageIndex == 0)
+                if (mainVM.MirkoEntries.Count == 0)
                 {
-                    newEntries = await App.ApiService.getEntries(pageIndex++);
+                    newEntries = await App.ApiService.getEntries(0);
                 }
                 else
                 {
@@ -40,10 +36,16 @@ namespace Mirko_v2.ViewModel
                         newEntries = tmp.Skip(1);
                 }
 
-                if (newEntries != null)
-                    entriesToReturn.AddRange(newEntries);
-
                 await StatusBarManager.HideProgress();
+
+                if (newEntries != null)
+                {
+                    var VMs = new List<EntryViewModel>(newEntries.Count());
+                    foreach (var entry in newEntries)
+                        VMs.Add(new EntryViewModel(entry));
+
+                    return VMs;
+                }
             }
             else
             {
@@ -62,11 +64,7 @@ namespace Mirko_v2.ViewModel
                 }
             }
 
-            var VMs = new List<EntryViewModel>(entriesToReturn.Count);
-            foreach (var entry in entriesToReturn)
-                VMs.Add(new EntryViewModel(entry));
-
-            return VMs;
+            return null;
         }
     }
 }

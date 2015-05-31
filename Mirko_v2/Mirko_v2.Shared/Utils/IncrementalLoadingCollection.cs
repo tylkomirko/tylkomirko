@@ -28,7 +28,6 @@ namespace Mirko_v2.Utils
         private int itemsPerPage;
         private bool hasMoreItems;
         private bool hasNoItems;
-        private uint lastID = uint.MaxValue;
         private CancellationTokenSource cancelToken;
         //private int currentPage;
 
@@ -51,25 +50,20 @@ namespace Mirko_v2.Utils
             set { hasNoItems = value; base.OnPropertyChanged(new PropertyChangedEventArgs("HasNoItems")); }
         }
 
-        public uint LastID
-        {
-            get { return lastID; }
-            set { lastID = value; }
-        }
-
         public void ClearAll()
         {
-            cancelToken.Cancel();
-            cancelToken.Dispose();
-            cancelToken = null;
+            if (cancelToken != null)
+            {
+                cancelToken.Cancel();
+                cancelToken.Dispose();
+                cancelToken = null; 
+            }
 
             Clear();
             source.ClearCache();
 
             HasMoreItems = true;
             DispatcherHelper.CheckBeginInvokeOnUI(() => HasNoItems = false);
-
-            lastID = uint.MaxValue;
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)

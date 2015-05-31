@@ -1,13 +1,12 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Utils;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WykopAPI.Models;
-using GalaSoft.MvvmLight.Ioc;
-using System.Threading;
-using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -69,16 +68,15 @@ namespace Mirko_v2.ViewModel
                             newEntries = newEntries_temp.Where(x => x.Date > limitingTime);
                         }
 
-                        if (newEntries != null)
-                        {
-                            if (newEntries.Count() == 0)
-                            {
-                                mainVM.HotEntries.HasMoreItems = false;
-                                if (mainVM.HotEntries.Count == 0)
-                                    DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasNoItems = true);
-                            }
-
+                        if (newEntries != null)                            
                             entries.AddRange(newEntries);
+
+                        if (pageIndex >= 12)
+                        {
+                            mainVM.HotEntries.HasMoreItems = false;
+                            if (mainVM.HotEntries.Count == 0)
+                                DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasNoItems = true);
+                            break;
                         }
 
                     } while (entries.Count <= missingEntries && newEntries != null);

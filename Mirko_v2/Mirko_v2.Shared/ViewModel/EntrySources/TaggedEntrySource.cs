@@ -53,7 +53,6 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
-                    var lastID = mainVM.TaggedEntries.LastID;
                     do
                     {
                         var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
@@ -62,8 +61,6 @@ namespace Mirko_v2.ViewModel
                             if (newEntriesTemp.Entries.Count > 0)
                             {
                                 entries.AddRange(newEntriesTemp.Entries);
-                                if (entries.Count > 0)
-                                    lastID = entries.Last().ID;
                                 await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
                             }
                             else
@@ -103,9 +100,6 @@ namespace Mirko_v2.ViewModel
 
             if (entriesToReturn.Count == 0 && mainVM.TaggedEntries.Count == 0)
                 await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
-
-            if (entriesToReturn.Count > 0)
-                mainVM.TaggedEntries.LastID = entriesToReturn.Last().ID;
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach (var entry in entriesToReturn)

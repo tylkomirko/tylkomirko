@@ -794,15 +794,17 @@ namespace Mirko_v2.ViewModel
 
             // now the rest
             var atNotifications = newNotifications.Where(x => x.Type != NotificationType.PM);
-            this.AtNotificationsCount = (uint)atNotifications.Count();
-
             if (atNotifications.Count() > 0)
             {
                 var VMs = new List<NotificationViewModel>();
                 foreach (var n in atNotifications)
                     VMs.Add(new NotificationViewModel(n));
 
-                await DispatcherHelper.RunAsync(() => this.AtNotifications.PrependRange(VMs));
+                await DispatcherHelper.RunAsync(() => 
+                {
+                    this.AtNotificationsCount = (uint)atNotifications.Count();
+                    this.AtNotifications.PrependRange(VMs);
+                });
                 VMs = null;
             }
         }

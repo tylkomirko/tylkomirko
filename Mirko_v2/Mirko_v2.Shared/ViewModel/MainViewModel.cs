@@ -576,28 +576,14 @@ namespace Mirko_v2.ViewModel
                             CurrentPivotItem = (int)settings["CurrentPivotItem"];
 
                         var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
-                        var lastID = entries.Last().Data.ID;
-
                         if (CurrentPivotItem == 0)
-                        {
                             MirkoEntries.PrependRange(entries);
-                            MirkoEntries.LastID = lastID;
-                        }
                         else if (CurrentPivotItem == 1)
-                        {
                             HotEntries.PrependRange(entries);
-                            HotEntries.LastID = lastID;
-                        }
                         else if (CurrentPivotItem == 2)
-                        {
                             FavEntries.PrependRange(entries);
-                            FavEntries.LastID = lastID;
-                        }
                         else if (CurrentPivotItem == 3)
-                        {
                             MyEntries.PrependRange(entries);
-                            MyEntries.LastID = lastID;
-                        }
 
                         if (settings.ContainsKey("FirstIndex"))
                         {

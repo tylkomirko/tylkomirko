@@ -51,17 +51,11 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
-                    var lastID = mainVM.MyEntries.LastID;
                     do
                     {
                         newEntries = await App.ApiService.getMyEntries(pageIndex++);
                         if (newEntries != null)
-                        {
-                            entries.AddRange(newEntries.Where(x => x.ID < lastID));
-                            if (entries.Count > 0)
-                                lastID = entries.Last().ID;
-                        }
-
+                            entries.AddRange(newEntries);
                     } while (entries.Count <= missingEntries && newEntries != null);
 
                     await StatusBarManager.HideProgress();
@@ -100,9 +94,6 @@ namespace Mirko_v2.ViewModel
                 cache.AddRange(entries);
                 entries.Clear();
             }
-
-            if (entriesToReturn.Count > 0)
-                mainVM.MyEntries.LastID = entriesToReturn.Last().ID;
 
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
             foreach (var entry in entriesToReturn)

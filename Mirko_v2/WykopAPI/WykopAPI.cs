@@ -598,7 +598,7 @@ namespace WykopAPI
 
         public async Task<List<Entry>> getMyEntries(int pageIndex)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
@@ -606,9 +606,9 @@ namespace WykopAPI
             return await deserializeList<Entry>(URL);
         }
 
-        public async Task<List<Entry>> getMyEntries(int firstID, uint pageIndex)
+        public async Task<List<Entry>> getMyEntries(uint firstID, int pageIndex)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             var URL = "mywykop/index/firstid/" + firstID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
