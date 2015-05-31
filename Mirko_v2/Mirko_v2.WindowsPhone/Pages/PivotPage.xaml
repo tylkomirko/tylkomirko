@@ -13,47 +13,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="AppBar">
-
-            <CommandBar Opacity="{StaticResource AppBarOpacity}"
-                        ClosedDisplayMode="Compact">
-
-                <CommandBar.Resources>
-                    <Storyboard x:Name="AppBarAnimation">
-                        <DoubleAnimation Storyboard.TargetName="AppBar"
-                                     Storyboard.TargetProperty="Opacity"
-                                     From="0.0"
-                                     To="{StaticResource AppBarOpacity}"
-                                     Duration="0:0:0.5" />
-                    </Storyboard>
-                </CommandBar.Resources>
-
-                <AppBarButton Label="dodaj"
-                          Icon="Add"
-                          Command="{Binding AddNewEntryCommand}"
-                          Visibility="{Binding ElementName=LogoutButton, Path=Visibility}" />
-
-                <AppBarButton Label="do góry"
-                          Icon="Up"
-                          Click="ScrollUpButton_Click" />
-
-                <CommandBar.SecondaryCommands>
-                    <AppBarButton Label="ustawienia"
-                              Command="{Binding SettingsCommand}"/>
-                    <AppBarButton Label="wyloguj"
-                              x:Name="LogoutButton"
-                              Visibility="{Binding Settings.UserInfo, Mode=OneWay, Source={StaticResource Locator},
-                                           Converter={StaticResource NullToVisibility}}"
-                              Command="{Binding LogInOutCommand}"/>
-                    <AppBarButton Label="zaloguj"
-                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"
-                              Command="{Binding LogInOutCommand}"/>
-                </CommandBar.SecondaryCommands>
-            </CommandBar>
-
-        </DataTemplate> 
-        
+    <UserControl.Resources>        
         <DataTemplate x:Name="EntryTemplate">
             <controls:FullEntry />
         </DataTemplate>

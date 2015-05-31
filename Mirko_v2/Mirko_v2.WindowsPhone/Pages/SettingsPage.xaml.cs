@@ -1,5 +1,4 @@
-﻿using Mirko_v2.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,14 +14,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Mirko_v2
+namespace Mirko_v2.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : UserControl
     {
         public SettingsPage()
         {
@@ -33,21 +29,6 @@ namespace Mirko_v2
                 DayMode.Checked += ThemeRadioButton_Checked;
                 NightMode.Checked += ThemeRadioButton_Checked;
             };
-        }
-
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-            await StatusBarManager.ShowStatusBar();
         }
 
         private async void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)

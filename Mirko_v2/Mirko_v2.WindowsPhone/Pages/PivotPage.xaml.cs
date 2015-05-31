@@ -1,10 +1,12 @@
-﻿using Mirko_v2.Controls;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -265,8 +267,54 @@ namespace Mirko_v2.Pages
                 Label = "nowy",
             };
 
+            var settings = new AppBarButton()
+            {
+                Label = "ustawienia",
+            };
+            settings.SetBinding(AppBarButton.CommandProperty, new Binding() 
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("SettingsCommand"),
+            });
+
+            var logout = new AppBarButton()
+            {
+                Label = "wyloguj",
+            };
+            logout.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("LogInOutCommand"),
+            });
+            logout.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Mode = BindingMode.OneWay,
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
+
+            var login = new AppBarButton()
+            {
+                Label = "zaloguj",
+            };
+            login.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("LogInOutCommand"),
+            });
+            login.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = logout,
+                Path = new PropertyPath("Visibility"),
+                Converter = App.Current.Resources["InvertVisibility"] as IValueConverter,
+            });
+
             c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(up);
+            c.SecondaryCommands.Add(settings);
+            c.SecondaryCommands.Add(login);
+            c.SecondaryCommands.Add(logout);
             AppBar = c;
 
             return c;

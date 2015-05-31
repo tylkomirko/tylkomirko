@@ -17,25 +17,23 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Mirko_v2.Utils;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Mirko_v2
+namespace Mirko_v2.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class LoginPage : Page
+    public sealed partial class LoginPage : UserControl, IHaveAppBar
     {
+        private AppBarButton LoginButton = null;
+
         public LoginPage()
         {
             this.InitializeComponent();
-
             Messenger.Default.Register<LoginShowFlyoutMessage>(this, LoginShowFlyoutAction);
         }
 
         private void LoginShowFlyoutAction(LoginShowFlyoutMessage obj)
         {
-            if(obj.FlyoutType == LoginShowFlyoutMessage.FlyoutTypeEnum.Error)
+            if (obj.FlyoutType == LoginShowFlyoutMessage.FlyoutTypeEnum.Error)
             {
                 ShowErrorFlyoutWithText(obj.ErrorMessage);
             }
@@ -43,15 +41,6 @@ namespace Mirko_v2
             {
                 ShowPermissionFlyout(obj.PermissionsTitle, obj.Permissions);
             }
-        }
-
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
         }
 
         private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -133,6 +122,27 @@ namespace Mirko_v2
         {
             var flyout = this.Resources["PermissionFlyout"] as Flyout;
             flyout.Hide();
+        }
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar();
+            c.IsSticky = true;
+
+            var login = new AppBarButton()
+            {
+                Name = "LoginButton",
+                Icon = new SymbolIcon(Symbol.Accept),
+                Label = "zaloguj",
+                IsEnabled = false,
+            };
+            login.Click += LoginButton_Click;
+
+            LoginButton = login;
+
+            c.PrimaryCommands.Add(login);
+
+            return c;
         }
     }
 }
