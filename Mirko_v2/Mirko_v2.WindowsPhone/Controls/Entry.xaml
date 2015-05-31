@@ -185,6 +185,7 @@
               Visibility="{Binding Path=EmbedVM.EmbedData, Converter={StaticResource NullToVisibility}}">
             
             <controls:EntryEmbed x:Name="EmbedPreview"
+                                 Margin="0,3,0,0"
                                  MaxHeight="250"
                                  MaxWidth="250"
                                  HorizontalAlignment="Left"
