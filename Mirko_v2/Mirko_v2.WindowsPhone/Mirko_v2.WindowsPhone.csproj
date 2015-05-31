@@ -16,6 +16,9 @@
     <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
     <NuGetPackageImportStamp>8527b617</NuGetPackageImportStamp>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <AppxBundle>Never</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -166,13 +169,42 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Logo.scale-240.png" />
-    <Content Include="Assets\SmallLogo.scale-240.png" />
-    <Content Include="Assets\SplashScreen.scale-240.png" />
-    <Content Include="Assets\Square71x71Logo.scale-240.png" />
-    <Content Include="Assets\StoreLogo.scale-240.png" />
-    <Content Include="Assets\WideLogo.scale-240.png" />
+    <Content Include="Assets\appbar.code.xml.png" />
+    <Content Include="Assets\appbar.eye.hide.png" />
+    <Content Include="Assets\appbar.eye.png" />
+    <Content Include="Assets\appbar.grade.c.png" />
+    <Content Include="Assets\appbar.smiley.glasses.png" />
+    <Content Include="Assets\appbar.social.twitter.hashtag.png" />
+    <Content Include="Assets\appbar.text.bold.png" />
+    <Content Include="Assets\appbar.text.italic.png" />
+    <Content Include="Assets\czacha.png" />
+    <Content Include="Assets\gif_icon.png" />
+    <Content Include="Assets\medium_badge.png" />
+    <Content Include="Assets\mirko_icon_150x150.scale-100.png" />
+    <Content Include="Assets\mirko_icon_150x150.scale-140.png" />
+    <Content Include="Assets\mirko_icon_24x24.scale-100.png" />
+    <Content Include="Assets\mirko_icon_24x24.scale-140.png" />
+    <Content Include="Assets\mirko_icon_310x150.scale-100.png" />
+    <Content Include="Assets\mirko_icon_310x150.scale-140.png" />
+    <Content Include="Assets\mirko_icon_44x44.scale-100.png" />
+    <Content Include="Assets\mirko_icon_44x44.scale-140.png" />
+    <Content Include="Assets\mirko_icon_71x71.scale-100.png" />
+    <Content Include="Assets\mirko_icon_71x71.scale-140.png" />
+    <Content Include="Assets\mirko_icon_99x99.scale-100.png" />
+    <Content Include="Assets\mirko_icon_99x99.scale-140.png" />
+    <Content Include="Assets\mirko_logo.png" />
+    <Content Include="Assets\refresh.png" />
+    <Content Include="Assets\reply.png" />
+    <Content Include="Assets\SampleAv.jpg" />
+    <Content Include="Assets\small_badge.png" />
+    <Content Include="Assets\SplashScreen.scale-140.png" />
+    <Content Include="Assets\store_logo_70x70.scale-140.png" />
+    <Content Include="Assets\ust_l.png" />
+    <Content Include="Assets\ust_transparent.png" />
+    <Content Include="Assets\video_icon.png" />
+    <Content Include="Assets\wide_badge.png" />
     <Content Include="FodyWeavers.xml" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="AddAttachmentPage.xaml">
