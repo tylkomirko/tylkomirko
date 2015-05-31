@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WykopAPI.Models;
 using GalaSoft.MvvmLight.Ioc;
 using System.Threading;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -74,7 +75,7 @@ namespace Mirko_v2.ViewModel
                             {
                                 mainVM.HotEntries.HasMoreItems = false;
                                 if (mainVM.HotEntries.Count == 0)
-                                    mainVM.HotEntries.HasNoItems = true;
+                                    DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasNoItems = true);
                             }
 
                             entries.AddRange(newEntries);

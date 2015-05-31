@@ -59,12 +59,9 @@ namespace Mirko_v2.Utils
 
         public void ClearAll()
         {
-            if (cancelToken != null)
-            {
-                cancelToken.Cancel();
-                cancelToken.Dispose();
-                cancelToken = null;
-            }
+            cancelToken.Cancel();
+            cancelToken.Dispose();
+            cancelToken = null;
 
             Clear();
             source.ClearCache();
@@ -78,8 +75,7 @@ namespace Mirko_v2.Utils
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
             var dispatcher = Window.Current.Dispatcher;
-            if(cancelToken == null)
-                cancelToken = new CancellationTokenSource();            
+            cancelToken = new CancellationTokenSource();
 
             return Task.Run<LoadMoreItemsResult>(
                 async () =>
