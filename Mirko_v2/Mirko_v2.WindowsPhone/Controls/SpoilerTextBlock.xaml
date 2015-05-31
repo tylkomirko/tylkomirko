@@ -24,7 +24,7 @@
         <StackPanel>
             <TextBlock x:Name="HiddenTextBlock"
                        Foreground="{ThemeResource SpoilerForeground}"
-                       Text="pokaż spoiler"
+                       Text="POKAŻ SPOILER"
                        Margin="8,4,8,4"
                        FontFamily="Monospace"
                        TextWrapping="Wrap"
