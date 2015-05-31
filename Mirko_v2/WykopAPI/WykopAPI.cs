@@ -544,18 +544,28 @@ namespace WykopAPI
             }
         }
 
-        public async Task<IEnumerable<Entry>> getEntries(uint id, uint pageIndex)
+        public async Task<IEnumerable<Entry>> getEntries(uint id, int pageIndex)
         {
             if (this.limitExceeded)
                 return null;
 
-            var URL = "stream/index/firstid/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            if (UserInfo != null)
+            {
+                var URL = "stream/index/firstid/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-            var result = await deserialize<List<Entry>>(URL);
-            if (result != null)
-                return result.Where(x => !x.Blacklisted);
+                var result = await deserialize<List<Entry>>(URL);
+                if (result != null)
+                    return result.Where(x => !x.Blacklisted);
+                else
+                    return null;
+            }
             else
-                return null;
+            {
+                var URL = "stream/index/firstid/" + id + "/appkey," + this.APPKEY + ",page," + pageIndex;
+
+                var result = await deserialize<List<Entry>>(URL);
+                return result;
+            }
         }
 
         public async Task<IEnumerable<Entry>> getHotEntries(int period, int pageIndex)

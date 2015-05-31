@@ -1,114 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
-using WykopAPI.Models;
+﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko_v2.Utils;
-using GalaSoft.MvvmLight.Ioc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
     public class MirkoEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private List<Entry> cache = new List<Entry>(50);
         private int pageIndex = 0;
 
         public void ClearCache()
         {
-            cache.Clear();
             pageIndex = 0;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
         {
-            var entriesToReturn = new List<Entry>(pageSize);
-            int entriesInCache = cache.Count();
-            int missingEntries = pageSize - entriesInCache;
-            int downloadedEntriesCount = 0;
-            missingEntries = Math.Max(0, missingEntries);
-
+            var entriesToReturn = new List<Entry>(45);
             var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
-            if (entriesInCache > 0)
+            if (App.ApiService.IsNetworkAvailable)
             {
-                int itemsToMove;
-                if (entriesInCache >= pageSize)
-                    itemsToMove = pageSize;
-                else
-                    itemsToMove = entriesInCache;
-
-                entriesToReturn.AddRange(cache.GetRange(0, itemsToMove));
-
-                this.cache.RemoveRange(0, itemsToMove);
-            }
-
-            if (missingEntries > 0)
-            {
-                var entries = new List<Entry>(50);
+                await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
                 IEnumerable<Entry> newEntries = null;
-                if (App.ApiService.IsNetworkAvailable)
+
+                if (pageIndex == 0)
                 {
-                    await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
+                    newEntries = await App.ApiService.getEntries(pageIndex++);
+                }
+                else
+                {
+                    var lastID = mainVM.MirkoEntries.Last().Data.ID;
+                    var tmp = await App.ApiService.getEntries(lastID, 0);
+                    if(tmp != null)
+                        newEntries = tmp.Skip(1);
+                }
 
-                    var lastID = mainVM.MirkoEntries.LastID;
-                    do
-                    {
-                        newEntries = await App.ApiService.getEntries(pageIndex++);
-                        if (newEntries != null)
-                        {
-                            entries.AddRange(newEntries.Where(x => x.ID < lastID));
-                            if (entries.Count > 0)
-                                lastID = entries.Last().ID;
-                        }
+                if (newEntries != null)
+                    entriesToReturn.AddRange(newEntries);
 
-                    } while (entries.Count <= missingEntries && newEntries != null);
-
+                await StatusBarManager.HideProgress();
+            }
+            else
+            {
+                // offline mode
+                if (mainVM.MirkoEntries.Count == 0)
+                {
+                    await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                    var savedEntries = await mainVM.ReadCollection("MirkoEntries");
                     await StatusBarManager.HideProgress();
+
+                    return savedEntries;
                 }
                 else
                 {
-                    // offline mode
-                    if(mainVM.MirkoEntries.Count == 0)
-                    {
-                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
-                        var savedEntries = await mainVM.ReadCollection("MirkoEntries");
-                        await StatusBarManager.HideProgress();
-
-                        return savedEntries;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return null;
                 }
-
-                var tmp = new List<Entry>(missingEntries);
-                if (entries.Count >= missingEntries)
-                {
-                    tmp.AddRange(entries.GetRange(0, missingEntries));
-                    entries.RemoveRange(0, missingEntries);
-                }
-                else
-                {
-                    downloadedEntriesCount = entries.Count;
-                    tmp.AddRange(entries);
-                    entries.RemoveRange(0, downloadedEntriesCount);
-                }
-
-                entriesToReturn.AddRange(tmp);
-                cache.AddRange(entries);
-                entries.Clear();
             }
 
-            if (entriesToReturn.Count > 0)
-                mainVM.MirkoEntries.LastID = entriesToReturn.Last().ID;
-
             var VMs = new List<EntryViewModel>(entriesToReturn.Count);
-            foreach(var entry in entriesToReturn)
+            foreach (var entry in entriesToReturn)
                 VMs.Add(new EntryViewModel(entry));
 
             return VMs;
