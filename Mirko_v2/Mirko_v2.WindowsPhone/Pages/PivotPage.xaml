@@ -52,7 +52,11 @@
                 </CommandBar.SecondaryCommands>
             </CommandBar>
 
-        </DataTemplate>       
+        </DataTemplate> 
+        
+        <DataTemplate x:Name="EntryTemplate">
+            <controls:FullEntry />
+        </DataTemplate>
     </UserControl.Resources>
     
     <Grid x:Name="PivotPageGrid"
@@ -107,7 +111,7 @@
         </Popup>
 
         <Popup x:Name="TimeSpanIndicatorPopup"
-               VerticalOffset="-40">
+               VerticalOffset="-42">
 
             <Popup.Resources>
                 <Storyboard x:Name="TimeSpanIndicatorFadeIn">
@@ -132,7 +136,7 @@
                   Tapped="TimeSpanIndicatorGrid_Tapped">
                 <TextBlock Foreground="{ThemeResource HashtagForeground}"
                            Margin="75,0,0,0"
-                           FontSize="17"
+                           FontSize="18"
                            Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}">                    
                 </TextBlock>
             </Grid>
@@ -201,26 +205,17 @@
                BorderBrush="{ThemeResource PivotHeaderBackground}">
 
             <!--Pivot item one-->
-            <PivotItem
-                x:Uid="MirkoPivotItem"
-                Margin="10,0,0,0"
-                Header="mirko"
-                Tag="0">
+            <PivotItem Margin="10,0,0,0">
                 <controls:ListViewEx x:Name="MirkoListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
                                      ItemsSource="{Binding MirkoEntries}"
+                                     ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IsItemClickEnabled="False"
                                      Tag="LV0">
-                    
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <controls:FullEntry />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
 
                     <ListView.Header>
                         <Rectangle Height="135"
@@ -236,10 +231,7 @@
             </PivotItem>
 
             <!--Pivot item two-->
-            <PivotItem x:Uid="HotPivotItem"
-                       Margin="10,-140,0,0"
-                       Header="gorące"
-                       Tag="1">
+            <PivotItem Margin="10,-140,0,0">
                 <controls:ListViewEx x:Name="HotListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
@@ -282,26 +274,17 @@
             </PivotItem>
 
             <!--Pivot item three-->
-            <PivotItem
-                x:Uid="FavPivotItem"
-                Margin="10,-140,0,0"
-                Header="ulubione"
-                Tag="2">
+            <PivotItem Margin="10,-140,0,0">
                 <controls:ListViewEx x:Name="FavListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
                                      ItemsSource="{Binding FavEntries}"
+                                     ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IsItemClickEnabled="False"
                                      Tag="LV2">
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <controls:FullEntry />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
 
                     <ListView.Header>
                         <Rectangle Height="135"
@@ -318,26 +301,17 @@
 
 
             <!--Pivot item four-->
-            <PivotItem
-                x:Uid="MyPivotItem"
-                Margin="10,-140,0,0"
-                Header="mój wykop"
-                Tag="3">
+            <PivotItem Margin="10,-140,0,0">
                 <controls:ListViewEx x:Name="MyListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
                                      ItemsSource="{Binding MyEntries}"
+                                     ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IsItemClickEnabled="False"
                                      Tag="LV3">
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <controls:FullEntry />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
 
                     <ListView.Header>
                         <Rectangle Height="135"

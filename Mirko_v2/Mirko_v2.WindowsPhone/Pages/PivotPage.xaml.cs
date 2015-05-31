@@ -36,7 +36,8 @@ namespace Mirko_v2.Pages
             if (col.Count > 0)
             {
                 CanShowNewEntriesPopup = true;
-                ShowNewEntriesPopup();
+                if(AppBar.IsOpen) // it's kinda ugly.
+                    ShowNewEntriesPopup();
             }
             else
             {
