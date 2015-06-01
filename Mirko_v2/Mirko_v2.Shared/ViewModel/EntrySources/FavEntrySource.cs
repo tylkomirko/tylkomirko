@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,11 @@ namespace Mirko_v2.ViewModel
                 {
                     if (newEntries.Count() == 0)
                     {
-                        mainVM.FavEntries.HasNoItems = true;
-                        mainVM.FavEntries.HasMoreItems = false;
+                        await DispatcherHelper.RunAsync(() =>
+                        {
+                            mainVM.FavEntries.HasNoItems = true;
+                            mainVM.FavEntries.HasMoreItems = false;
+                        });
                     }
 
                     var VMs = new List<EntryViewModel>(newEntries.Count);

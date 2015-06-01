@@ -214,11 +214,9 @@
                                    Fill="Transparent" />
 
                             <TextBlock x:Name="NoItemsTB"
+                                       Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
                                        Text="Brak wpisów."
-                                       FontSize="18"
-                                       FontWeight="Light"
-                                       Foreground="LightGray"
                                        Visibility="{Binding HotEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
 
                         </StackPanel>
@@ -247,8 +245,15 @@
                                      Tag="LV2">
 
                     <ListView.Header>
-                        <Rectangle Height="135"
-                                   Fill="Transparent" />
+                        <StackPanel>
+                            <Rectangle Height="220"
+                                       Fill="Transparent" />
+
+                            <TextBlock Style="{StaticResource TextBlockNoItems}"
+                                       Margin="0,8,0,0"
+                                       Text="Brak wpisów."
+                                       Visibility="{Binding FavEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
+                        </StackPanel>
                     </ListView.Header>
 
                     <ListView.Footer>
@@ -274,8 +279,15 @@
                                      Tag="LV3">
 
                     <ListView.Header>
-                        <Rectangle Height="135"
-                                   Fill="Transparent" />
+                        <StackPanel>
+                            <Rectangle Height="220"
+                                       Fill="Transparent" />
+
+                            <TextBlock Style="{StaticResource TextBlockNoItems}"
+                                       Margin="0,8,0,0"
+                                       Text="Brak wpisów."
+                                       Visibility="{Binding MyEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
+                        </StackPanel>
                     </ListView.Header>
 
                     <ListView.Footer>

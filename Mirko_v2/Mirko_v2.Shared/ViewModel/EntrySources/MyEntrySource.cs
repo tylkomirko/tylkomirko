@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,17 @@ namespace Mirko_v2.ViewModel
                         newEntries = await App.ApiService.getMyEntries(pageIndex++);
                         if (newEntries != null)
                             entries.AddRange(newEntries);
-                    } while (entries.Count <= missingEntries && newEntries != null);
+
+                        if (newEntries == null || newEntries.Count() == 0)
+                        {
+                            await DispatcherHelper.RunAsync(() => mainVM.MyEntries.HasMoreItems = false);
+                            if(mainVM.MyEntries.Count == 0 && pageIndex == 2)
+                                await DispatcherHelper.RunAsync(() => mainVM.MyEntries.HasNoItems = true);
+
+                            break;
+                        }
+
+                    } while (entries.Count <= missingEntries);
 
                     await StatusBarManager.HideProgress();
                 }

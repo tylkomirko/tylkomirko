@@ -343,7 +343,7 @@ namespace WykopAPI
 
             using (var stream = await getAsync(URL, post))
             {
-                if (stream == null)
+                if (stream == null || stream.Length == 0 || stream.Length == 2) // length 2 equals []. essentialy an empty response.
                     return null;
 
                 CallCount++;
@@ -379,7 +379,7 @@ namespace WykopAPI
                             return null;
                         }
                     }
-
+                    
                     JArray array = JArray.Load(reader);
                     foreach (var item in array)
                     {
