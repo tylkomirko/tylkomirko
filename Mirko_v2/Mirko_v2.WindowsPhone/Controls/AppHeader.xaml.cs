@@ -26,6 +26,8 @@ namespace Mirko_v2.Controls
         private PaintedButton CurrentlyPaintedButton = PaintedButton.None;
         private BindingExpression CurrentlyPaintedButtonBinding = null;
 
+        private bool NavigatedToLoginPage = false;
+
         private DispatcherTimer Timer = null;
 
         public AppHeader()
@@ -80,9 +82,19 @@ namespace Mirko_v2.Controls
 
                 this.PMTB.Foreground = fill;
             }
+            else if(currentPage == "LoginPage")
+            {
+                LeaveStreams.Begin();
+                NavigatedToLoginPage = true;
+            }
             else
             {
                 CurrentlyPaintedButton = PaintedButton.None;
+                if (NavigatedToLoginPage)
+                {
+                    Timer.Start();
+                    NavigatedToLoginPage = false;
+                }
             }
         }
 
@@ -241,7 +253,7 @@ namespace Mirko_v2.Controls
         #region Animations
         private void Timer_Tick(object sender, object e)
         {
-            if (NotificationsPanel.Opacity == 0)
+            if (NotificationsPanel.Opacity == 0 && App.ApiService.UserInfo != null)
             {
                 EnterNotifications.Begin();
                 LeaveStreams.Begin();

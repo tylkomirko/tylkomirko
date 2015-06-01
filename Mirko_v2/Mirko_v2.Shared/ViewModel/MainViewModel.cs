@@ -103,6 +103,12 @@ namespace Mirko_v2.ViewModel
                 await SaveCollection(HotEntries, "HotEntries");
         }
 
+        private RelayCommand _timerCallbackCommand = null;
+        public RelayCommand TimerCallbackCommand
+        {
+            get { return _timerCallbackCommand ?? (_timerCallbackCommand = new RelayCommand(() => TimerCallback(null))); }
+        }
+
         #region Properties
         private bool _canGoBack = true;
         public bool CanGoBack

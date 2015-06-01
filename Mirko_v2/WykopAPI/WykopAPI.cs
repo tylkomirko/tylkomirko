@@ -573,13 +573,23 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return null;
 
-            var URL = "stream/hot/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
+            if (UserInfo != null)
+            {
+                var URL = "stream/hot/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
 
-            var result = await deserialize<List<Entry>>(URL);
-            if (result != null)
-                return result.Where(x => !x.Blacklisted);
+                var result = await deserialize<List<Entry>>(URL);
+                if (result != null)
+                    return result.Where(x => !x.Blacklisted);
+                else
+                    return null;
+            }
             else
-                return null;
+            {
+                var URL = "stream/hot/appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
+
+                var result = await deserialize<List<Entry>>(URL);
+                return result;
+            }
         }
 
         public async Task<IEnumerable<Entry>> getHotEntries(int period, uint id, uint pageIndex)
@@ -1010,7 +1020,7 @@ namespace WykopAPI
 
         public async Task<List<Entry>> getFavourites()
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page,0";

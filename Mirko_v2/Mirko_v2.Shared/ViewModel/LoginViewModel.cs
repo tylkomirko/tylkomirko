@@ -195,6 +195,7 @@ namespace Mirko_v2.ViewModel
                 // navigate off to somewhere
                 SimpleIoc.Default.GetInstance<SettingsViewModel>().Save();
                 SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("PivotPage");
+                SimpleIoc.Default.GetInstance<MainViewModel>().TimerCallbackCommand.Execute(null);
             }
         }
 

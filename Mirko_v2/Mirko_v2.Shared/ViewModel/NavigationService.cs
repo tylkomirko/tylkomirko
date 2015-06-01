@@ -17,7 +17,7 @@ namespace Mirko_v2.ViewModel
         public NavigationService()
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-            framesWithoutHeader = new List<string>() { "EmbedPage", "SettingsPage", "LoginPage" };
+            framesWithoutHeader = new List<string>() { "EmbedPage", "SettingsPage", };
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
