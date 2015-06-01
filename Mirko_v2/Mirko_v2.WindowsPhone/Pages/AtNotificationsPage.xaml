@@ -45,8 +45,14 @@
                 </ListView.Transitions>
 
                 <ListView.Header>
-                    <Rectangle Height="90"
-                               Fill="Transparent" />
+                    <StackPanel>
+                        <Rectangle Height="90"
+                                   Fill="Transparent" />
+
+                        <TextBlock Text="Nie masz żadnych wiadomości."
+                                   Style="{StaticResource TextBlockNoItems}"
+                                   Visibility="{Binding AtNotifications.Count, Converter={StaticResource CountToVisibilityInv}}"/>
+                    </StackPanel>
                 </ListView.Header>
 
                 <ListView.Footer>

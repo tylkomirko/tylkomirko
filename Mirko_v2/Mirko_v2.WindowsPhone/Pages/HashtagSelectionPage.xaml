@@ -126,8 +126,15 @@
                 </ListView.Transitions>
 
                 <ListView.Header>
-                    <Rectangle Height="90"
-                               Fill="Transparent"/>
+                    <StackPanel>
+                        <Rectangle Height="90"
+                                   Fill="Transparent"/>
+                        
+                        <TextBlock Text="Nie obserwujesz żadnych tagów."
+                                   Style="{StaticResource TextBlockNoItems}"
+                                   Visibility="{Binding HashtagsCollection.Count, Converter={StaticResource CountToVisibilityInv}}"/>
+                        
+                    </StackPanel>
                 </ListView.Header>
 
                 <ListView.Footer>

@@ -56,8 +56,14 @@
                 </ListView.Transitions>
 
                 <ListView.Header>
-                    <Rectangle Height="92"
-                               Fill="Transparent"/>
+                    <StackPanel>
+                        <Rectangle Height="92"
+                                   Fill="Transparent"/>
+
+                        <TextBlock Text="Z nikim jeszcze nie rozmawiałeś."
+                                   Style="{StaticResource TextBlockNoItems}"
+                                   Visibility="{Binding ConversationsList.Count, Converter={StaticResource CountToVisibilityInv}}"/>
+                    </StackPanel>
                 </ListView.Header>
 
                 <ListView.Footer>

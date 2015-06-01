@@ -10,6 +10,7 @@
     <converters:BoolToVisibility x:Key="BoolToVisibility" />
     <converters:UpperCase x:Key="UpperCase" />
     <converters:CountToVisibility x:Key="CountToVisibility" />
+    <converters:CountToVisibilityInv x:Key="CountToVisibilityInv" />
     <converters:InvertVisibility x:Key="InvertVisibility" />
     <converters:CountToString x:Key="CountToString" />
     <converters:PMDirectionToVisibility x:Key="PMDirectionToVisibility" />

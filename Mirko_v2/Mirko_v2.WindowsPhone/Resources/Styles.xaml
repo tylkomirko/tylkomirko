@@ -1353,5 +1353,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    
+    <Style TargetType="TextBlock" x:Key="TextBlockNoItems">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="LightGray" />
+            <Setter Property="FontWeight" Value="Light" />
+        </Style.Setters>
+    </Style>
 
 </ResourceDictionary>
