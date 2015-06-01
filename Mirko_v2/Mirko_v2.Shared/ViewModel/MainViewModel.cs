@@ -343,6 +343,9 @@ namespace Mirko_v2.ViewModel
             {
                 // log out
                 settingsVM.Delete();
+                MyEntries.ClearAll();
+                FavEntries.ClearAll();
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Logout"));
             }
         }
 

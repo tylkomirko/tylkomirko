@@ -100,5 +100,19 @@ namespace WykopAPI
                 conversations = null;
             }
         }
+
+        public async Task DeleteConversations()
+        {
+            try
+            {
+                var file = await RootFolder.GetFileAsync("Conversations");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
+                _log.Info("Deleted Conversations.");
+            }
+            catch (Exception)
+            {
+            }
+        }
     }
 }

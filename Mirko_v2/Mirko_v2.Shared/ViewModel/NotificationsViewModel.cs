@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
 using System;
@@ -50,6 +51,28 @@ namespace Mirko_v2.ViewModel
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
             _updateHashtagDic = new SemaphoreSlim(1);
             NavService = nav;
+
+            Messenger.Default.Register<NotificationMessage>(this, async (o) =>
+            {
+                if (o.Notification == "Logout")
+                {
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        this.HashtagsCollection.Clear();
+                        this.HashtagsDictionary.Clear();
+                        this.ObservedHashtags.Clear();
+                        this.AtNotifications.ClearAll();
+                        this.PMNotifications.Clear();
+
+                        this.HashtagNotificationsCount = 0;
+                        this.AtNotificationsCount = 0;
+                        this.PMNotificationsCount = 0;
+                    });
+
+                    await DeleteObservedTags();
+                    await App.ApiService.LocalStorage.DeleteConversations();
+                }
+            });
         }
 
         private async void TimerCallback(object state)
@@ -297,6 +320,19 @@ namespace Mirko_v2.ViewModel
             {
                 var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteLinesAsync(file, ObservedHashtags);
+            }
+        }
+
+        private async Task DeleteObservedTags()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            try
+            {
+                var file = await folder.GetFileAsync("ObservedTags");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception)
+            {
             }
         }
 
