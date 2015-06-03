@@ -350,9 +350,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NotificationsExtensions">
-      <HintPath>..\..\packages\NotificationsExtensions.Portable.1.0.3\lib\NotificationsExtensions.dll</HintPath>
-    </Reference>
     <Reference Include="WriteableBitmapEx.WinRT">
       <HintPath>..\..\packages\WriteableBitmapEx.1.5.0.0\lib\wpa81\WriteableBitmapEx.WinRT.dll</HintPath>
     </Reference>
@@ -361,6 +358,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NotificationsExtensions\NotificationsExtensions.csproj">
+      <Project>{c5721b58-be5e-4725-843c-6773d9688c31}</Project>
+      <Name>NotificationsExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WykopAPI\WykopAPI.csproj">
       <Project>{93a3f254-c9b1-4bec-8001-7a8abf648e27}</Project>
       <Name>WykopAPI</Name>

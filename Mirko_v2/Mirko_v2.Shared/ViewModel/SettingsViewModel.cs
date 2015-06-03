@@ -7,6 +7,10 @@ using System.Text;
 using System.Linq;
 using Windows.Storage;
 using Windows.Foundation.Collections;
+using GalaSoft.MvvmLight.Messaging;
+using NotificationsExtensions.BadgeContent;
+using Windows.UI.Notifications;
+using NotificationsExtensions.TileContent;
 
 namespace Mirko_v2.ViewModel
 {
@@ -74,7 +78,15 @@ namespace Mirko_v2.ViewModel
         public bool LiveTile
         {
             get { return RoamingValues.ContainsKey("LiveTile") ? (bool)RoamingValues["LiveTile"] : true; }
-            set { RoamingValues["LiveTile"] = value; }
+            set 
+            {
+                if (value)
+                    SetLiveTile();
+                else
+                    ClearLiveTile();
+
+                RoamingValues["LiveTile"] = value; 
+            }
         }
 
         public int HotTimeSpan
@@ -123,6 +135,17 @@ namespace Mirko_v2.ViewModel
             _youTubeApps = new List<string>(values.Length);
             foreach (YouTubeApp value in values)
                 _youTubeApps.Add(value.GetStringValue());
+
+            Messenger.Default.Register<NotificationMessage<uint>>(this, ReadMessage);
+        }
+
+        private void ReadMessage(NotificationMessage<uint> obj)
+        {
+            if(obj.Notification == "Update")
+            {
+                var count = obj.Content;
+                SetBadge(count);
+            }
         }
 
         public void Delete()
@@ -145,5 +168,44 @@ namespace Mirko_v2.ViewModel
             SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
         }
 
+        #region Badge/Livetile
+        public void SetBadge(uint count)
+        {
+            BadgeNumericNotificationContent badgeContent = new BadgeNumericNotificationContent(count);
+            BadgeUpdateManager.CreateBadgeUpdaterForApplication().Update(badgeContent.CreateNotification());
+        }
+
+        public void ClearBadge()
+        {
+            BadgeUpdateManager.CreateBadgeUpdaterForApplication().Clear();
+        }
+
+        public void SetLiveTile()
+        {
+            /* change tiles to badged ones */
+            var smallTile = TileContentFactory.CreateTileSquare71x71IconWithBadge();
+            smallTile.Branding = TileBranding.None;
+            smallTile.ImageIcon.Src = "Assets/small_badge.png";
+
+            var mediumTile = TileContentFactory.CreateTileSquare150x150IconWithBadge();
+            mediumTile.Branding = TileBranding.Name;
+            mediumTile.ImageIcon.Src = "Assets/medium_badge.png";
+
+            var wideTile = TileContentFactory.CreateTileWide310x150IconWithBadgeAndText();
+            wideTile.Branding = TileBranding.Name;
+            wideTile.Square150x150Content = mediumTile;
+            wideTile.ImageIcon.Src = "Assets/wide_badge.png";
+
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(smallTile.CreateNotification());
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(mediumTile.CreateNotification());
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(wideTile.CreateNotification());
+        }
+
+        public void ClearLiveTile()
+        {
+            ClearBadge();
+            TileUpdateManager.CreateTileUpdaterForApplication().Clear();
+        }
+        #endregion
     }
 }
