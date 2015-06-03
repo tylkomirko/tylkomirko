@@ -54,6 +54,7 @@ namespace Mirko_v2.ViewModel
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage<Notification>>(this, ReadMessage);
         }
 
         private async void ReadMessage(NotificationMessage obj)
@@ -84,6 +85,20 @@ namespace Mirko_v2.ViewModel
             {
                 var userName = obj.Content;
                 DeletePMNotifications(userName);
+            }
+        }
+
+        private void ReadMessage(NotificationMessage<Notification> obj)
+        {
+            if(obj.Notification == "Go to")
+            {
+                this.SelectedAtNotification = new NotificationViewModel(obj.Content);
+                GoToNotification.Execute(null);
+            }
+            else if (obj.Notification == "Remove")
+            {
+                var notification = obj.Content;
+                
             }
         }
 

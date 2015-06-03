@@ -34,7 +34,7 @@ namespace Mirko_v2.ViewModel
             }
         }
 
-        private void ReadMessage(NotificationMessage<string> obj)
+        private async void ReadMessage(NotificationMessage<string> obj)
         {
             if(obj.Notification == "Remove")
             {
@@ -44,6 +44,24 @@ namespace Mirko_v2.ViewModel
                     ConversationsList.Remove(conv);
 
                 SaveCommand.Execute(null);
+            } 
+            else if(obj.Notification == "Go to")
+            {
+                // there is a large chance this piece of code will run very shortly after the app is started.
+                if(ConversationsList.Count == 0)
+                {
+                    var tmp = await App.ApiService.getConversations();
+                    if (tmp == null) return;
+                    foreach (var item in tmp)
+                        ConversationsList.Add(new ConversationViewModel(item));
+                }
+
+                var conversation = ConversationsList.SingleOrDefault(x => x.Data.AuthorName == obj.Content);
+                if (conversation != null)
+                {
+                    CurrentConversation = conversation;
+                    GoToConversationPageCommand.Execute(null);
+                }
             }
         }
 
@@ -70,7 +88,15 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _goToConversationPageCommand = null;
         public RelayCommand GoToConversationPageCommand
         {
-            get { return _goToConversationPageCommand ?? (_goToConversationPageCommand = new RelayCommand(() => NavService.NavigateTo("ConversationPage"))); }
+            get { return _goToConversationPageCommand ?? (_goToConversationPageCommand = new RelayCommand(ExecuteGoToConversationPage)); }
+        }
+
+        private void ExecuteGoToConversationPage()
+        {
+            if (CurrentConversation.Messages.Count == 0)
+                CurrentConversation.UpdateMessagesCommand.Execute(null);
+
+            NavService.NavigateTo("ConversationPage");
         }
 
         private RelayCommand _saveCommand = null;

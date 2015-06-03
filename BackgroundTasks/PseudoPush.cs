@@ -1,4 +1,5 @@
-﻿using NotificationsExtensions.BadgeContent;
+﻿using Newtonsoft.Json;
+using NotificationsExtensions.BadgeContent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace BackgroundTasks
             if (notifications.Count > 0)
             {
                 SendToasts(notifications);
-                ApiService.UserInfo.LastToastDate = notifications.First().Date;
+                //ApiService.UserInfo.LastToastDate = notifications.First().Date;
             }
 
             UpdateBadge(hashtagCount.Count + notifications.Count);
@@ -436,33 +437,15 @@ namespace BackgroundTasks
 
             foreach (var notification in list)
             {
-                //LaunchParam launchParam = null;
-                /*
-                if (notification.Type == NotificationType.PM)
-                {
-                    launchParam = new LaunchParam() { Type = "pm", NotificationID = notification.id, Author = notification.author, AuthorSex = notification.author_sex, AuthorGroup = notification.author_group };
-                }
-                else if(notification.type == "entry_directed")
-                {
-                    launchParam = new LaunchParam() { Type = "entry", NotificationID = notification.id, EntryID = notification.entry.id };
-                }
-                else if (notification.type == "entry_comment_directed")
-                {
-                    launchParam = new LaunchParam() { Type = "entry_comment", NotificationID = notification.id, EntryID = notification.entry.id, CommentID = notification.comment.id };
-                }
-                else
-                {
-                    launchParam = new LaunchParam() { Type = "other", NotificationID = notification.id };
-                }*/
-
                 ToastTemplateType toastTemplate = ToastTemplateType.ToastText02;
                 XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(toastTemplate);
                 IXmlNode toastNode = toastXml.SelectSingleNode("/toast");
 
-                //((XmlElement)toastNode).SetAttribute("launch", launchParam.toString());
+                ((XmlElement)toastNode).SetAttribute("launch", JsonConvert.SerializeObject(notification, Newtonsoft.Json.Formatting.None));
 
                 XmlNodeList toastTextElements = toastXml.GetElementsByTagName("text");
-                toastTextElements[1].AppendChild(toastXml.CreateTextNode(notification.Text.Replace(@"""", "")));
+                var notificationText = notification.Text.Replace(@"""", "").Replace("  ", " ");
+                toastTextElements[1].AppendChild(toastXml.CreateTextNode(notificationText));
 
                 ToastNotification toast = new ToastNotification(toastXml);
                 notifier.Show(toast);

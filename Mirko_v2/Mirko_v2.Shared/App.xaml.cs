@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Pages;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -199,21 +201,45 @@ namespace Mirko_v2
                 SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
                 App.ApiService.LocalStorage.InitAction();
 
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                NavService.NavigateTo("PivotPage");
-
-                /*
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                if (!string.IsNullOrEmpty(e.Arguments))
                 {
-                    throw new Exception("Failed to create initial page");
+                    ProcessLaunchArguments(e.Arguments);
                 }
-                 * */
+                else
+                {
+                    NavService.NavigateTo("PivotPage");
+                }
+            }
+            else
+            {
+                ProcessLaunchArguments(e.Arguments);
             }
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private void ProcessLaunchArguments(string args)
+        {
+            if (string.IsNullOrEmpty(args)) return;
+
+            var notification = JsonConvert.DeserializeObject<WykopAPI.Models.Notification>(args);
+            if(notification.Type == WykopAPI.Models.NotificationType.EntryDirected || notification.Type == WykopAPI.Models.NotificationType.CommentDirected)
+            {
+                Messenger.Default.Send<NotificationMessage<WykopAPI.Models.Notification>>
+                    (new NotificationMessage<WykopAPI.Models.Notification>(notification, "Go to"));
+            }
+            else if(notification.Type == WykopAPI.Models.NotificationType.PM)
+            {
+                NavService.InsertMainPage();
+
+                var msgVM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
+                Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(notification.AuthorName, "Go to"));
+            }
+            else
+            {
+                NavService.NavigateTo("AtNotificationsPage");
+            }
         }
 
 #if WINDOWS_PHONE_APP
