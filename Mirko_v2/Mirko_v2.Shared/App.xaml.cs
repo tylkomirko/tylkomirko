@@ -202,13 +202,9 @@ namespace Mirko_v2
                 App.ApiService.LocalStorage.InitAction();
 
                 if (!string.IsNullOrEmpty(e.Arguments))
-                {
                     ProcessLaunchArguments(e.Arguments);
-                }
                 else
-                {
                     NavService.NavigateTo("PivotPage");
-                }
             }
             else
             {
@@ -223,17 +219,18 @@ namespace Mirko_v2
         {
             if (string.IsNullOrEmpty(args)) return;
 
+            NavService.InsertMainPage();
+
             var notification = JsonConvert.DeserializeObject<WykopAPI.Models.Notification>(args);
             if(notification.Type == WykopAPI.Models.NotificationType.EntryDirected || notification.Type == WykopAPI.Models.NotificationType.CommentDirected)
             {
+                var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>(); // make sure it exists
                 Messenger.Default.Send<NotificationMessage<WykopAPI.Models.Notification>>
                     (new NotificationMessage<WykopAPI.Models.Notification>(notification, "Go to"));
             }
             else if(notification.Type == WykopAPI.Models.NotificationType.PM)
             {
-                NavService.InsertMainPage();
-
-                var msgVM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
+                var VM = SimpleIoc.Default.GetInstance<MessagesViewModel>(); // make sure it exists
                 Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(notification.AuthorName, "Go to"));
             }
             else

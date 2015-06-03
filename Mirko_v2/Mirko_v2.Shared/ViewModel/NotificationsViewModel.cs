@@ -95,11 +95,6 @@ namespace Mirko_v2.ViewModel
                 this.SelectedAtNotification = new NotificationViewModel(obj.Content);
                 GoToNotification.Execute(null);
             }
-            else if (obj.Notification == "Remove")
-            {
-                var notification = obj.Content;
-                
-            }
         }
 
         private async void TimerCallback(object state)
