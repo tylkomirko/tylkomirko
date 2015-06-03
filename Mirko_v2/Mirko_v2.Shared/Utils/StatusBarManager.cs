@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
@@ -42,6 +43,12 @@ namespace Mirko_v2.Utils
         public static void Init()
         {
             var statusBar = StatusBar.GetForCurrentView();
+
+            if (App.Current.RequestedTheme == ApplicationTheme.Light)
+            {
+                statusBar.BackgroundColor = Colors.White;
+                statusBar.ForegroundColor = Colors.LightBlue; // fixme
+            }
 
             statusBar.BackgroundOpacity = 0.9;
             statusBar.ProgressIndicator.Text = " ";

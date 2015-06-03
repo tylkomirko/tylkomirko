@@ -300,8 +300,6 @@ namespace Mirko_v2
                 localSettings["VM"] = resumableVM.GetName();
             }
 
-            SimpleIoc.Default.GetInstance<SettingsViewModel>().Save();
-
             deferral.Complete();
         }
 

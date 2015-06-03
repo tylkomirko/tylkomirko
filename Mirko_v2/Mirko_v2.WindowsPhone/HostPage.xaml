@@ -19,11 +19,12 @@
         
         <controls:AppHeader Grid.Row="0"
                             Canvas.ZIndex="1"
-                            Background="Black"
+                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                             Opacity="{StaticResource AppHeaderOpacity}"
                             Margin="0,20,0,0"
                             x:Name="AppHeader"/>
-        <Frame Grid.Row="1" 
+        <Frame Grid.Row="1"
+               Background="Transparent"
                x:Name="MainFrame"/>
     </Grid>  
 

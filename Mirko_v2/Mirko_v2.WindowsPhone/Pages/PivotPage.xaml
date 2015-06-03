@@ -161,8 +161,7 @@
                HorizontalAlignment="Stretch"
                SelectedIndex="{Binding CurrentPivotItem, Mode=TwoWay}"
                SelectionChanged="MainPivot_SelectionChanged"
-			   Style="{StaticResource CustomPivotStyle}" 
-               BorderBrush="{ThemeResource PivotHeaderBackground}">
+			   Style="{StaticResource CustomPivotStyle}">
 
             <!--Pivot item one-->
             <PivotItem Margin="10,0,0,0">

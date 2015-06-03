@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Windows.Storage;
+using Windows.Foundation.Collections;
 
 namespace Mirko_v2.ViewModel
 {
@@ -31,16 +33,57 @@ namespace Mirko_v2.ViewModel
             set { Set(() => UserInfo, ref _userInfo, value); }
         }
 
-        public bool FirstRun { get; set; }
-        public bool NightMode { get; set; }
-        public double FontScaleFactor { get; set; }
-        public bool ShowAvatars { get; set; }
-        public bool OnlyWIFIDownload { get; set; }
-        public bool ShowPlus18 { get; set; }
-        public bool TransparentTile { get; set; }
+        private readonly IPropertySet RoamingValues = Windows.Storage.ApplicationData.Current.RoamingSettings.Values;
 
-        public bool IsBlacklistEnabled { get; set; }
-        public int HotTimeSpan { get; set; }
+        public bool FirstRun
+        {
+            get { return RoamingValues.ContainsKey("FirstRun") ? (bool)RoamingValues["FirstRun"] : true; }
+            set { RoamingValues["FirstRun"] = value; }
+        }
+
+        public bool NightMode 
+        {
+            get { return RoamingValues.ContainsKey("NightMode") ? (bool)RoamingValues["NightMode"] : true; }
+            set { RoamingValues["NightMode"] = value; }
+        }
+
+        public double FontScaleFactor
+        {
+            get { return RoamingValues.ContainsKey("FontScaleFactor") ? (double)RoamingValues["FontScaleFactor"] : 1.0; }
+            set { RoamingValues["FontScaleFactor"] = value; }
+        }
+
+        public bool ShowAvatars
+        {
+            get { return RoamingValues.ContainsKey("ShowAvatars") ? (bool)RoamingValues["ShowAvatars"] : false; }
+            set { RoamingValues["ShowAvatars"] = value; }
+        }
+
+        public bool OnlyWIFIDownload
+        {
+            get { return RoamingValues.ContainsKey("OnlyWIFIDownload") ? (bool)RoamingValues["OnlyWIFIDownload"] : false; }
+            set { RoamingValues["OnlyWIFIDownload"] = value; }
+        }
+
+        public bool ShowPlus18
+        {
+            get { return RoamingValues.ContainsKey("ShowPlus18") ? (bool)RoamingValues["ShowPlus18"] : false; }
+            set { RoamingValues["ShowPlus18"] = value; }
+        }
+
+        public bool LiveTile
+        {
+            get { return RoamingValues.ContainsKey("LiveTile") ? (bool)RoamingValues["LiveTile"] : true; }
+            set { RoamingValues["LiveTile"] = value; }
+        }
+
+        public int HotTimeSpan
+        {
+            get { return RoamingValues.ContainsKey("HotTimeSpan") ? (int)RoamingValues["HotTimeSpan"] : 12; }
+            set { RoamingValues["HotTimeSpan"] = value; }
+        }
+
+        //public bool IsBlacklistEnabled { get; set; }
 
         private List<string> _youTubeApps;
         public List<string> YouTubeApps
@@ -48,119 +91,46 @@ namespace Mirko_v2.ViewModel
             get { return _youTubeApps; }
         }
 
-        private YouTubeApp _selectedYouTubeApp = YouTubeApp.IE;
         public YouTubeApp SelectedYouTubeApp
         {
-            get { return _selectedYouTubeApp; }
-            set { Set(() => SelectedYouTubeApp, ref _selectedYouTubeApp, value);}
+            get
+            {
+                if(RoamingValues.ContainsKey("YouTubeApp"))
+                {
+                    YouTubeApp temp = YouTubeApp.IE;
+                    Enum.TryParse<YouTubeApp>((string)RoamingValues["YouTubeApp"], false, out temp);
+                    return temp;
+                }
+                else
+                {
+                    return YouTubeApp.IE;
+                }
+            }
+
+            set
+            {
+                RoamingValues["YouTubeApp"] = value.ToString();
+            }
         }
 
         public SettingsViewModel()
         {
-            Windows.Storage.ApplicationData.Current.DataChanged += (s, o) => Load();
+            UserInfo = App.ApiService.UserInfo;
+
             App.ApiService.PropertyChanged += (s, e) => UserInfo = App.ApiService.UserInfo;
 
             var values = Enum.GetValues(typeof(YouTubeApp));
             _youTubeApps = new List<string>(values.Length);
             foreach (YouTubeApp value in values)
                 _youTubeApps.Add(value.GetStringValue());
-
-            Load();
-        }
-
-        public void Load()
-        {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            var roamingValues = roamingSettings.Values;
-
-            if (roamingValues.ContainsKey("FirstRun"))
-                FirstRun = (bool)roamingValues["FirstRun"];
-            else
-                FirstRun = true;
-
-            if (roamingValues.ContainsKey("NightMode"))
-                NightMode = (bool)roamingValues["NightMode"];
-            else
-                NightMode = true;
-
-            if (roamingValues.ContainsKey("FontScaleFactor"))
-                FontScaleFactor = (double)roamingValues["FontScaleFactor"];
-            else
-                FontScaleFactor = 1.0;
-
-            if (roamingValues.ContainsKey("ShowAvatars"))
-                ShowAvatars = (bool)roamingValues["ShowAvatars"];
-            else
-                ShowAvatars = false;
-
-            if (roamingValues.ContainsKey("OnlyWIFIDownload"))
-                OnlyWIFIDownload = (bool)roamingValues["OnlyWIFIDownload"];
-            else
-                OnlyWIFIDownload = true;
-
-            if (roamingValues.ContainsKey("TransparentTile"))
-                TransparentTile = (bool)roamingValues["TransparentTile"];
-            else
-                TransparentTile = true;
-
-            if (roamingValues.ContainsKey("IsBlacklistEnabled"))
-                IsBlacklistEnabled = (bool)roamingValues["IsBlacklistEnabled"];
-            else
-                IsBlacklistEnabled = true;
-
-            if (roamingValues.ContainsKey("HotTimeSpan"))
-                HotTimeSpan = (int)roamingValues["HotTimeSpan"];
-            else
-                HotTimeSpan = 24;
-
-            if (roamingValues.ContainsKey("ShowPlus18"))
-                ShowPlus18 = (bool)roamingValues["ShowPlus18"];
-            else
-                ShowPlus18 = false;
-
-            if (roamingValues.ContainsKey("YouTubeApp"))
-                Enum.TryParse<YouTubeApp>((string)roamingValues["YouTubeApp"], false, out _selectedYouTubeApp);
-            else
-                SelectedYouTubeApp = YouTubeApp.IE;
-
-            UserInfo = App.ApiService.UserInfo;
-        }
-
-        public void Save()
-        {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            var roamingValues = roamingSettings.Values;
-
-            roamingValues["FirstRun"] = FirstRun;
-            roamingValues["NightMode"] = NightMode;
-            roamingValues["FontScaleFactor"] = FontScaleFactor;
-            roamingValues["ShowAvatars"] = ShowAvatars;
-            roamingValues["OnlyWIFIDownload"] = OnlyWIFIDownload;
-            roamingValues["TransparentTile"] = TransparentTile;
-
-            roamingValues["IsBlacklistEnabled"] = IsBlacklistEnabled;
-
-            roamingValues["HotTimeSpan"] = HotTimeSpan;
-            roamingValues["ShowPlus18"] = ShowPlus18;
-
-            roamingValues["YouTubeApp"] = SelectedYouTubeApp.ToString();           
         }
 
         public void Delete()
         {
-            var roamingSettings = Windows.Storage.ApplicationData.Current.RoamingSettings;
-            var roamingValues = roamingSettings.Values;
-
-            roamingSettings.DeleteContainer("UserInfo");
-            roamingValues.Clear();
+            Windows.Storage.ApplicationData.Current.RoamingSettings.DeleteContainer("UserInfo");
+            RoamingValues.Clear();
 
             App.ApiService.UserInfo = null;
-        }
-
-        private RelayCommand _saveCommand = null;
-        public RelayCommand SaveCommand
-        {
-            get { return _saveCommand ?? (_saveCommand = new RelayCommand(() => Save())); }
         }
 
         private RelayCommand<int> _youTubeAppChanged = null;
@@ -173,7 +143,6 @@ namespace Mirko_v2.ViewModel
         {
             var values = Enum.GetValues(typeof(YouTubeApp)).Cast<YouTubeApp>();
             SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
-            Save();
         }
 
     }
