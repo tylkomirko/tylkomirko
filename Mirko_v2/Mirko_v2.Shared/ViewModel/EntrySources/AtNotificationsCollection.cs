@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WykopAPI.Models;
 using System.Linq;
 using System.Threading;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace Mirko_v2.ViewModel
 {
@@ -27,6 +28,7 @@ namespace Mirko_v2.ViewModel
             int missingEntries = pageSize - entriesInCache;
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
+            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
 
             if (entriesInCache > 0)
             {
@@ -62,7 +64,16 @@ namespace Mirko_v2.ViewModel
                     if (temp == null || (temp != null && temp.Count == 0 && pageIndex == 2))
                         return null;
 
-                    var unique = temp.Where(x => x.ID < lastID && supportedTypes.Contains(x.Type));
+                    IEnumerable<Notification> unique = null;
+                    if (VM.AtNotifications.Count > 0)
+                    {
+                        var currentIDs = VM.AtNotifications.Select(x => x.Data.ID);
+                        unique = temp.Where(x => supportedTypes.Contains(x.Type)).Where(x => !currentIDs.Contains(x.ID));
+                    }
+                    else
+                    {
+                        unique = temp.Where(x => x.ID < lastID && supportedTypes.Contains(x.Type));
+                    }
 
                     if (unique.Count() == 0)
                         break;

@@ -200,7 +200,17 @@ namespace Mirko_v2.ViewModel
 
         private void ExecuteAtTappedCommand()
         {
-            NavService.NavigateTo("AtNotificationsPage");
+            if(AtNotificationsCount == 1)
+            {
+                var notificationVM = AtNotifications.First();
+
+                SelectedAtNotification = notificationVM;
+                GoToNotification.Execute(null);
+            }
+            else
+            {
+                NavService.NavigateTo("AtNotificationsPage");
+            }
         }
 
         private RelayCommand _pmTappedCommand = null;
@@ -736,6 +746,17 @@ namespace Mirko_v2.ViewModel
                 mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
 
             NavService.NavigateTo("EntryPage");
+
+            await DispatcherHelper.RunAsync(() => 
+            {
+                if(SelectedAtNotification.Data.IsNew)
+                {
+                    if (AtNotificationsCount >= 1)
+                        AtNotificationsCount--;
+
+                    SelectedAtNotification.Data.IsNew = false;
+                }
+            });
             SelectedAtNotification.MarkAsReadCommand.Execute(null);
         }
 
