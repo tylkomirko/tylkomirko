@@ -12,13 +12,20 @@ using System.Collections.ObjectModel;
 using Windows.Storage;
 using System.IO;
 using Windows.Storage.Pickers;
+using System.Threading.Tasks;
+using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
     public class ConversationViewModel : ViewModelBase, IFileOpenPickerContinuable
     {
         public Conversation Data { get; set; }
-        public ObservableCollectionEx<PMViewModel> Messages { get; set; }
+        private ObservableCollectionEx<PMViewModel> _messages = null;
+        public ObservableCollectionEx<PMViewModel> Messages
+        {
+            get { return _messages ?? (_messages = new ObservableCollectionEx<PMViewModel>()); }
+        }
 
         private NewEntry _newEntry = null;
         public NewEntry NewEntry
@@ -39,11 +46,10 @@ namespace Mirko_v2.ViewModel
             Data = d;
             if (Data.Messages != null)
             {
-                Messages = new ObservableCollectionEx<PMViewModel>();
                 foreach (var pm in Data.Messages)
-                    Messages.Add(new PMViewModel(pm));
+                    this.Messages.Add(new PMViewModel(pm));
 
-                ProcessMessages(Messages);
+                ProcessMessages();
                 Data.Messages = null;
             }
 
@@ -72,6 +78,57 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private RelayCommand _updateMessagesCommand = null;
+        public RelayCommand UpdateMessagesCommand
+        {
+            get { return _updateMessagesCommand ?? (_updateMessagesCommand = new RelayCommand(async () => await ExecuteUpdateMessagesCommand())); }
+        }
+
+        private async Task ExecuteUpdateMessagesCommand()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "Pobieram...");
+
+            await StatusBarManager.ShowProgress();
+            var pms = await App.ApiService.getPMs(Data.AuthorName);
+            if (pms == null || pms.Count == 0)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "");
+                await StatusBarManager.HideProgress();
+                return;
+            }
+
+            if(this.Messages.Count > 0)
+            {
+                var lastDate = this.Messages.Last().Data.Date;
+                var newMessages = pms.Where(x => x.Date > lastDate);
+
+                await DispatcherHelper.RunAsync(() => 
+                {
+                    foreach (var pm in newMessages)
+                        this.Messages.Add(new PMViewModel(pm));
+                });
+            }
+            else
+            {
+                await DispatcherHelper.RunAsync(() =>
+                {
+                    foreach (var pm in pms)
+                        this.Messages.Add(new PMViewModel(pm));
+                });
+            }
+
+            await DispatcherHelper.RunAsync(() =>
+            {
+                Data.LastUpdate = this.Messages.Last().Data.Date;
+                Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
+                ProcessMessages();
+            });
+
+            Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Clear PM"));
+
+            await StatusBarManager.HideProgress();
+        }
+
         private RelayCommand _loadLastMessageCommand = null;
         public RelayCommand LoadLastMessageCommand
         {
@@ -82,18 +139,33 @@ namespace Mirko_v2.ViewModel
         {
             if (!string.IsNullOrEmpty(Data.LastMessage)) return;
 
-            var userName = Data.AuthorName;
-            Data.LastMessage = "Pobieram...";
-            var pms = await App.ApiService.getPMs(userName);
-            if (pms == null) return;
+            await ExecuteUpdateMessagesCommand();
 
-            Messages = new ObservableCollectionEx<PMViewModel>();
-            foreach (var pm in pms)
-                Messages.Add(new PMViewModel(pm));
+            if (this.Messages.Count > 0)
+                Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
+            else
+                Data.LastMessage = "";
+        }
 
-            var lastPMText = pms.Last().Text;
+        private RelayCommand _deleteConversation = null;
+        public RelayCommand DeleteConversation
+        {
+            get { return _deleteConversation ?? (_deleteConversation = new RelayCommand(ExecuteDeleteConversation)); }
+        }
 
-            Data.LastMessage = HTMLUtils.HTMLtoTEXT(lastPMText);
+        private async void ExecuteDeleteConversation()
+        {
+            await StatusBarManager.ShowProgress();
+            bool success = await App.ApiService.deleteConversation(Data.AuthorName);
+            if(success)
+            {
+                Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Remove"));
+                await StatusBarManager.ShowText("Rozmowa została usunięta.");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Nie udało się usunąć rozmowy.");
+            }
         }
 
         private RelayCommand _addAttachment = null;
@@ -108,12 +180,13 @@ namespace Mirko_v2.ViewModel
             navService.NavigateTo("AddAttachmentPage", "PM");
         }
 
-        private void ProcessMessages(ObservableCollectionEx<PMViewModel> pms)
+        private void ProcessMessages()
         {
-            var maxIndex = pms.Count - 1;
+            var maxIndex = this.Messages.Count - 1;
             var previousAuthor = "";
+            var pms = this.Messages;
 
-            for (int i = 0; i < pms.Count; i++)
+            for (int i = 0; i < this.Messages.Count; i++)
             {
                 var pm = pms[i];
                 var pmData = pm.Data;

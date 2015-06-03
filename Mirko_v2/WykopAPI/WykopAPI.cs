@@ -970,7 +970,17 @@ namespace WykopAPI
                 post.Add("embed", newEntry.Embed);
 
             var result = await deserialize<List<bool>>(URL, post, newEntry.FileStream, newEntry.FileName);
-            return result[0];
+            return result != null ? result[0] : false;
+        }
+
+        public async Task<bool> deleteConversation(string userName)
+        {
+            if (this.limitExceeded)
+                return false;
+
+            string URL = "pm/DeleteConversation/" + userName + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            var result = await deserialize<List<bool>>(URL);
+            return result != null ? result[0] : false;
         }
         #endregion
 

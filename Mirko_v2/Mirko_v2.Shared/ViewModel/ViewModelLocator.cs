@@ -67,7 +67,7 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<FontsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>(() => { return new NotificationsViewModel(NavService); });
             SimpleIoc.Default.Register<CacheViewModel>();
-            SimpleIoc.Default.Register<MessagesViewModel>();
+            SimpleIoc.Default.Register<MessagesViewModel>(() => { return new MessagesViewModel(NavService); });
             SimpleIoc.Default.Register<AddEntryViewModel>();
         }
 

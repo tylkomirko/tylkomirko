@@ -52,33 +52,47 @@ namespace Mirko_v2.ViewModel
             _updateHashtagDic = new SemaphoreSlim(1);
             NavService = nav;
 
-            Messenger.Default.Register<NotificationMessage>(this, async (o) =>
+            Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
+        }
+
+        private async void ReadMessage(NotificationMessage obj)
+        {
+            if (obj.Notification == "Logout")
             {
-                if (o.Notification == "Logout")
+                await DispatcherHelper.RunAsync(() =>
                 {
-                    await DispatcherHelper.RunAsync(() =>
-                    {
-                        this.HashtagsCollection.Clear();
-                        this.HashtagsDictionary.Clear();
-                        this.ObservedHashtags.Clear();
-                        this.AtNotifications.ClearAll();
-                        this.PMNotifications.Clear();
+                    this.HashtagsCollection.Clear();
+                    this.HashtagsDictionary.Clear();
+                    this.ObservedHashtags.Clear();
+                    this.AtNotifications.ClearAll();
+                    this.PMNotifications.Clear();
 
-                        this.HashtagNotificationsCount = 0;
-                        this.AtNotificationsCount = 0;
-                        this.PMNotificationsCount = 0;
-                    });
+                    this.HashtagNotificationsCount = 0;
+                    this.AtNotificationsCount = 0;
+                    this.PMNotificationsCount = 0;
+                });
 
-                    await DeleteObservedTags();
-                    await App.ApiService.LocalStorage.DeleteConversations();
-                }
-            });
+                await DeleteObservedTags();
+                await App.ApiService.LocalStorage.DeleteConversations();
+            } 
+        }
+
+        private void ReadMessage(NotificationMessage<string> obj)
+        {
+            if(obj.Notification == "Clear PM")
+            {
+                var userName = obj.Content;
+                DeletePMNotifications(userName);
+            }
         }
 
         private async void TimerCallback(object state)
         {
             await CheckHashtagNotifications();
             await CheckNotifications();
+
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
         }
 
         #region AppHeader commands
@@ -199,16 +213,25 @@ namespace Mirko_v2.ViewModel
         {
             if (PMNotifications.Count == 1)
             {
-                var conversation = PMNotifications.First();
-                /*
-                var param = new PMNavigationParameter()
-                {
-                    UserName = conversation.author,
-                    Sex = conversation.author_sex,
-                    Group = conversation.author_group,
-                };
+                var notification = PMNotifications.First();
+                var userName = notification.AuthorName;
+                var pmVM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
 
-                NavigateTo(this, new PageNavigationEventArgs(typeof(PMPage), param.toString()));*/
+                var conversation = pmVM.ConversationsList.FirstOrDefault(x => x.Data.AuthorName == userName);
+                if (conversation != null)
+                {
+                    pmVM.CurrentConversation = conversation;
+                    if (conversation.Messages.Count == 0)
+                        conversation.UpdateMessagesCommand.Execute(null);
+
+                    NavService.NavigateTo("ConversationPage");
+
+                    DeletePMNotification.Execute(notification.ID);
+                }
+                else
+                {
+                    NavService.NavigateTo("ConversationsPage");
+                }
             }
             else
             {
@@ -744,7 +767,45 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<Notification> PMNotifications
         {
             get { return _pmNotifications ?? (_pmNotifications = new ObservableCollectionEx<Notification>()); }
-        }       
+        }
+
+        private RelayCommand<uint> _deletePMNotification = null;
+        public RelayCommand<uint> DeletePMNotification
+        {
+            get { return _deletePMNotification ?? (_deletePMNotification = new RelayCommand<uint>(async (id) => await ExecuteDeletePMNotification(id))); }
+        }
+
+        private async Task ExecuteDeletePMNotification(uint ID)
+        {
+            try
+            {
+                var notification = PMNotifications.Single(x => x.ID == ID);
+
+                if (notification != null && notification.IsNew)
+                {
+                    await App.ApiService.markAsReadNotification(ID);
+
+                    var conversations = SimpleIoc.Default.GetInstance<MessagesViewModel>().ConversationsList;
+                    var conversation = conversations.SingleOrDefault(x => x.Data.AuthorName == notification.AuthorName);
+                    await DispatcherHelper.RunAsync(() => 
+                    {
+                        PMNotifications.Remove(notification);
+                        if (conversation != null)
+                            conversation.Data.Status = ConversationStatus.Read;
+                    });
+                }
+            }
+            catch (Exception) { }
+        }
+
+        private void DeletePMNotifications(string userName)
+        {
+            var notifications = PMNotifications.Where(x => x.AuthorName == userName);
+            if (notifications == null) return;
+
+            foreach (var notification in notifications)
+                DeletePMNotification.Execute(notification.ID);
+        }
         #endregion
 
         private async Task CheckNotifications()
@@ -799,23 +860,28 @@ namespace Mirko_v2.ViewModel
             foreach (var item in pmNotifications)
             {
                 var userName = item.AuthorName;
-                //if (userName == App.NotificationsViewModel.CurrentUserName)
-                //    continue;
-                // FIXME?
-
-                var conversation = pmVM.ConversationsList.First(x => x.Data.AuthorName == userName);
+                var conversation = pmVM.ConversationsList.FirstOrDefault(x => x.Data.AuthorName == userName);
 
                 if (conversation != null)
                 {
                     if (conversation.Data.Status != ConversationStatus.New)
-                        conversation.Data.Status = ConversationStatus.New;
+                        await DispatcherHelper.RunAsync(() => conversation.Data.Status = ConversationStatus.New);
                 }
                 else
                 {
-                    var conv = new Conversation();
-                    conv.AuthorName = userName;
-                    conv.Status = ConversationStatus.New;
-                    pmVM.ConversationsList.Insert(0, new ConversationViewModel(conv));
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        var conv = new Conversation()
+                        {
+                            AuthorName = userName,
+                            AuthorAvatarURL = item.AuthorAvatarURL,
+                            AuthorGroup = item.AuthorGroup,
+                            AuthorSex = item.AuthorSex,
+                            LastUpdate = item.Date,
+                            Status = ConversationStatus.New,
+                        };
+                        pmVM.ConversationsList.Insert(0, new ConversationViewModel(conv));
+                    });
                 }
 
                 tempPMnotifications.Add(item);

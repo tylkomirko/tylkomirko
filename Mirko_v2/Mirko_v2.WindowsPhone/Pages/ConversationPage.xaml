@@ -12,7 +12,13 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    DataContext="{Binding Messages.CurrentConversation, Mode=OneWay, Source={StaticResource Locator}}">
+    DataContext="{Binding Messages, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding SaveCommand}" />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
 
     <UserControl.Resources>
         <MenuFlyout x:Name="DeleteAttachmentFlyout">
@@ -106,6 +112,7 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot"
+          DataContext="{Binding CurrentConversation}"
           Margin="0,25.6,0,0">
 
         <Grid.RowDefinitions>

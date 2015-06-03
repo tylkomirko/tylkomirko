@@ -49,12 +49,6 @@
                       ItemClick="ListView_ItemClick"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">
 
-                <ListView.Transitions>
-                    <TransitionCollection>
-                        <EdgeUIThemeTransition Edge="Right" />
-                    </TransitionCollection>
-                </ListView.Transitions>
-
                 <ListView.Header>
                     <StackPanel>
                         <Rectangle Height="92"
@@ -73,7 +67,7 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-
+                        
                         <Grid Margin="0,0,0,13">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -84,6 +78,19 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="Holding">
+                                    <utils:OpenMenuFlyout />
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+
+                            <FlyoutBase.AttachedFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="usuń rozmowę"
+                                                    Command="{Binding DeleteConversation}"/>
+                                </MenuFlyout>
+                            </FlyoutBase.AttachedFlyout>
 
                             <TextBlock Grid.Column="0"
                                        Grid.Row="0"

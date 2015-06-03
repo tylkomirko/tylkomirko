@@ -44,7 +44,7 @@ namespace Mirko_v2.Pages
 
             this.ListView.Loaded += (s, args) =>
             {
-                if (this.ListView.ItemsSource != null)
+                if (this.ListView.ItemsSource != null && this.ListView.Items.Count > 0)
                     this.ListView.ScrollIntoView(this.ListView.Items.Last(), ScrollIntoViewAlignment.Leading);
             };
         }
