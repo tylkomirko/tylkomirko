@@ -1,16 +1,15 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Utils;
+using NotificationsExtensions.BadgeContent;
+using NotificationsExtensions.TileContent;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Windows.Storage;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
-using GalaSoft.MvvmLight.Messaging;
-using NotificationsExtensions.BadgeContent;
 using Windows.UI.Notifications;
-using NotificationsExtensions.TileContent;
 
 namespace Mirko_v2.ViewModel
 {
@@ -38,6 +37,12 @@ namespace Mirko_v2.ViewModel
         }
 
         private readonly IPropertySet RoamingValues = Windows.Storage.ApplicationData.Current.RoamingSettings.Values;
+
+        public bool PseudoPush
+        {
+            get { return RoamingValues.ContainsKey("PseudoPush") ? (bool)RoamingValues["PseudoPush"] : false; }
+            set { RoamingValues["PseudoPush"] = value; }
+        }
 
         public bool FirstRun
         {
@@ -166,6 +171,27 @@ namespace Mirko_v2.ViewModel
         {
             var values = Enum.GetValues(typeof(YouTubeApp)).Cast<YouTubeApp>();
             SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
+        }
+
+        private RelayCommand<bool> _pseudoPushToggled = null;
+        public RelayCommand<bool> PseudoPushToggled
+        {
+            get { return _pseudoPushToggled ?? (_pseudoPushToggled = new RelayCommand<bool>(ExecutePseudoPushToggled)); }
+        }
+
+        private async void ExecutePseudoPushToggled(bool isOn)
+        {
+            if(isOn)
+            {
+                await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.PseudoPush).FullName,
+                                        "PseudoPush",
+                                        new TimeTrigger(30, false),
+                                        new SystemCondition(SystemConditionType.InternetAvailable));
+            }
+            else
+            {
+                BackgroundTasksUtils.UnregisterTask("PseudoPush");
+            }
         }
 
         #region Badge/Livetile

@@ -4,7 +4,6 @@ namespace WykopAPI
 {
     public class UserInfo
     {
-        public bool IsPushEnabled { get; set; }
         public bool IsAppRunning { get; set; }
 
         public string UserKey { get; set; }

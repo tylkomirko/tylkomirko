@@ -358,6 +358,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BackgroundTasks\BackgroundTasks.csproj">
+      <Project>{c7f467f4-8af6-44f2-b10e-4b671ffacfa6}</Project>
+      <Name>BackgroundTasks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NotificationsExtensions\NotificationsExtensions.csproj">
       <Project>{c5721b58-be5e-4725-843c-6773d9688c31}</Project>
       <Name>NotificationsExtensions</Name>

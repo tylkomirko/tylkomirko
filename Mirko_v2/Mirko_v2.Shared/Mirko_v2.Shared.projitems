@@ -43,6 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\VotersConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\YouTubeApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Cryptography.cs" />

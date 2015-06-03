@@ -185,7 +185,6 @@ namespace WykopAPI
                 UserInfo.UserName = (string)values["UserName"];
 
                 UserInfo.IsAppRunning = (bool)values["IsAppRunning"];
-                UserInfo.IsPushEnabled = (bool)values["IsPushEnabled"];
 
                 UserInfo.AtNotificationsCount = (int)values["AtNotificationsCount"];
                 UserInfo.HashtagNotificationsCount = (int)values["HashtagNotificationsCount"];
@@ -195,7 +194,7 @@ namespace WykopAPI
             }
         }
 
-        private void SaveUserInfo()
+        public void SaveUserInfo()
         {
             if (UserInfo != null)
             {
@@ -212,7 +211,6 @@ namespace WykopAPI
                 values["UserName"] = UserInfo.UserName;
 
                 values["IsAppRunning"] = UserInfo.IsAppRunning;
-                values["IsPushEnabled"] = UserInfo.IsPushEnabled;
 
                 values["AtNotificationsCount"] = UserInfo.AtNotificationsCount;
                 values["HashtagNotificationsCount"] = UserInfo.HashtagNotificationsCount;

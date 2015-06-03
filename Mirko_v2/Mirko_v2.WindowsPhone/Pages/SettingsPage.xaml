@@ -108,11 +108,20 @@
                     -->
 
                     <ToggleSwitch x:Name="EnablePush"
-                                  IsOn="{Binding UserInfo.IsPushEnabled, Mode=TwoWay}"
+                                  IsOn="{Binding PseudoPush, Mode=TwoWay}"
                                   OffContent="Pseudo-push"
                                   OnContent="Pseudo-push"
                                   OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
-                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}"/>
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}">
+
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Toggled">
+                                <core:InvokeCommandAction Command="{Binding PseudoPushToggled}"
+                                                          CommandParameter="{Binding ElementName=EnablePush, Path=IsOn}"/>
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                    </ToggleSwitch>
 
                     <ToggleSwitch x:Name="OnlyWIFI"
                                   Margin="0,20,0,0"
@@ -120,7 +129,7 @@
                                   OffContent="Pobieraj obrazy tylko przez Wi-Fi"
                                   OnContent="Pobieraj obrazy tylko przez Wi-Fi"
                                   OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
-                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}"/>
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
 
                     <ToggleSwitch x:Name="ShowPlus18"
                                   Margin="0,20,0,0"
