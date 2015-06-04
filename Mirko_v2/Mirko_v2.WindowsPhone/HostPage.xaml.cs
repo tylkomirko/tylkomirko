@@ -1,4 +1,8 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.ViewModel;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -13,8 +17,18 @@ namespace Mirko_v2
         public HostPage()
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>() as NavigationService;
+            navService.Navigating += NavService_Navigating;
+        }
+
+        private void NavService_Navigating(object source, Utils.StringEventArgs newPage)
+        {
+            if(newPage.String == "SettingsPage")
+                MainFrame.Background = Application.Current.Resources["SettingsBackground"] as SolidColorBrush;
+            else
+                MainFrame.Background = Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
         }
 
         /// <summary>
