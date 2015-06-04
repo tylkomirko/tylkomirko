@@ -1,29 +1,15 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
-using GalaSoft.MvvmLight.Views;
-using Mirko_v2.Pages;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
@@ -215,15 +201,7 @@ namespace Mirko_v2
             // Ensure the current window is active
             Window.Current.Activate();
 
-            //if (!Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey("FirstRun"))
-            //{
-                await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
-                    "Cleaner",
-                    new MaintenanceTrigger(60 * 24, false),
-                    new SystemCondition(SystemConditionType.UserNotPresent));
-
-                Windows.Storage.ApplicationData.Current.LocalSettings.Values["FirstRun"] = false;
-            //}
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Init"));
         }
 
         private void ProcessLaunchArguments(string args)

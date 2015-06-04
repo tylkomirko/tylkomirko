@@ -50,7 +50,7 @@ namespace Mirko_v2.ViewModel
             set { RoamingValues["FirstRun"] = value; }
         }
 
-        public bool NightMode 
+        public bool NightMode
         {
             get { return RoamingValues.ContainsKey("NightMode") ? (bool)RoamingValues["NightMode"] : true; }
             set { RoamingValues["NightMode"] = value; }
@@ -83,14 +83,14 @@ namespace Mirko_v2.ViewModel
         public bool LiveTile
         {
             get { return RoamingValues.ContainsKey("LiveTile") ? (bool)RoamingValues["LiveTile"] : true; }
-            set 
+            set
             {
                 if (value)
                     SetLiveTile();
                 else
                     ClearLiveTile();
 
-                RoamingValues["LiveTile"] = value; 
+                RoamingValues["LiveTile"] = value;
             }
         }
 
@@ -112,7 +112,7 @@ namespace Mirko_v2.ViewModel
         {
             get
             {
-                if(RoamingValues.ContainsKey("YouTubeApp"))
+                if (RoamingValues.ContainsKey("YouTubeApp"))
                 {
                     YouTubeApp temp = YouTubeApp.IE;
                     Enum.TryParse<YouTubeApp>((string)RoamingValues["YouTubeApp"], false, out temp);
@@ -141,12 +141,26 @@ namespace Mirko_v2.ViewModel
             foreach (YouTubeApp value in values)
                 _youTubeApps.Add(value.GetStringValue());
 
+            Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<uint>>(this, ReadMessage);
+        }
+
+        private async void ReadMessage(NotificationMessage obj)
+        {
+            if (obj.Notification == "Init")
+            {
+                await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
+                    "Cleaner",
+                    new MaintenanceTrigger(60 * 24, false),
+                    new SystemCondition(SystemConditionType.UserNotPresent));
+
+                PseudoPushToggled.Execute(null);
+            }
         }
 
         private void ReadMessage(NotificationMessage<uint> obj)
         {
-            if(obj.Notification == "Update")
+            if (obj.Notification == "Update")
             {
                 var count = obj.Content;
                 SetBadge(count);
@@ -173,15 +187,15 @@ namespace Mirko_v2.ViewModel
             SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
         }
 
-        private RelayCommand<bool> _pseudoPushToggled = null;
-        public RelayCommand<bool> PseudoPushToggled
+        private RelayCommand _pseudoPushToggled = null;
+        public RelayCommand PseudoPushToggled
         {
-            get { return _pseudoPushToggled ?? (_pseudoPushToggled = new RelayCommand<bool>(ExecutePseudoPushToggled)); }
+            get { return _pseudoPushToggled ?? (_pseudoPushToggled = new RelayCommand(ExecutePseudoPushToggled)); }
         }
 
-        private async void ExecutePseudoPushToggled(bool isOn)
+        private async void ExecutePseudoPushToggled()
         {
-            if(isOn)
+            if (PseudoPush)
             {
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.PseudoPush).FullName,
                                         "PseudoPush",
