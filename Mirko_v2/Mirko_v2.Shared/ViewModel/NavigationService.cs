@@ -103,6 +103,9 @@ namespace Mirko_v2.ViewModel
 
         public void NavigateTo(string key)
         {
+            if (string.IsNullOrEmpty(key) || CurrentPageKey == key)
+                return;
+
             var currentFrame = Window.Current.Content as Frame;
 
             if(!navigatedToRootPage)
