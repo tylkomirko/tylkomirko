@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Threading;
+using System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,10 +21,13 @@ namespace Mirko_v2.Pages
             };
         }
 
-        private async void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
+        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            var msgBox = new MessageDialog("Zmiana stylu wymaga restartu aplikacji.", "Achtung!");
-            await msgBox.ShowAsync();
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            {
+                var msgBox = new MessageDialog("Zmiana stylu wymaga restartu aplikacji.", "Achtung!");
+                await msgBox.ShowAsync();
+            });
         }
     }
 }
