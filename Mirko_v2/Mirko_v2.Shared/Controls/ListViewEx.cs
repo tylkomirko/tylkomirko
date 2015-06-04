@@ -19,22 +19,24 @@ namespace Mirko_v2.Controls
             DependencyProperty.Register("AppBar", typeof(CommandBar), typeof(ListViewEx), new PropertyMetadata(null));
         #endregion
 
+        private ScrollViewer ScrollViewer = null;
+
         public ListViewEx()
         {
             base.Loaded += ListViewEx_Loaded;
-            base.Unloaded += ListViewEx_Unloaded;
+            //base.Unloaded += ListViewEx_Unloaded;
         }
 
         private void ListViewEx_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            var ScrollViewer = this.GetDescendant<ScrollViewer>();
-            if (ScrollViewer != null)
-                ScrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+            if (ScrollViewer == null)
+                ScrollViewer = this.GetDescendant<ScrollViewer>();
+
+            ScrollViewer.ViewChanged += ScrollViewer_ViewChanged;
         }
 
         private void ListViewEx_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) // is this necessary?
         {
-            var ScrollViewer = this.GetDescendant<ScrollViewer>();
             if (ScrollViewer != null)
                 ScrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
         }
