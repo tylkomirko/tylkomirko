@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Mirko_v2.Utils
 {
@@ -47,7 +48,7 @@ namespace Mirko_v2.Utils
             if (App.Current.RequestedTheme == ApplicationTheme.Light)
             {
                 statusBar.BackgroundColor = Colors.White;
-                statusBar.ForegroundColor = Colors.LightBlue; // fixme
+                statusBar.ForegroundColor = (Application.Current.Resources["LogoFill"] as SolidColorBrush).Color;
             }
 
             statusBar.BackgroundOpacity = 0.9;
