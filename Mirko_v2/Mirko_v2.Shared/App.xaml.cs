@@ -215,15 +215,15 @@ namespace Mirko_v2
             // Ensure the current window is active
             Window.Current.Activate();
 
-            if (!Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey("FirstRun"))
-            {
+            //if (!Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey("FirstRun"))
+            //{
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
                     "Cleaner",
                     new MaintenanceTrigger(60 * 24, false),
                     new SystemCondition(SystemConditionType.UserNotPresent));
 
                 Windows.Storage.ApplicationData.Current.LocalSettings.Values["FirstRun"] = false;
-            }
+            //}
         }
 
         private void ProcessLaunchArguments(string args)

@@ -22,36 +22,34 @@ namespace BackgroundTasks
         private async Task CleanImageCache()
         {
             var localFolder = ApplicationData.Current.TemporaryFolder;
-            StorageFolder folder = null;
+            StorageFolder folder = await localFolder.GetFolderAsync("ImageCache");
 
-            try
+            folder = await localFolder.GetFolderAsync("ImageCache");
+
+            if (folder != null)
             {
-                folder = await localFolder.GetFolderAsync("ImageCache");
+                var files = await folder.GetFilesAsync();
+                var fileSizeTasks = files.Select(async x => (await x.GetBasicPropertiesAsync()).Size);
+                var sizes = await Task.WhenAll(fileSizeTasks);
+                ulong size = (ulong)sizes.Sum(l => (long)l);
 
-                if (folder != null)
+                var sortedFiles = files.OrderBy(x => x.DateCreated);
+
+                int i = 0;
+                while (size >= ThresholdSize)
                 {
-                    var properties = await folder.GetBasicPropertiesAsync();
-                    ulong size = properties.Size;
+                    var file = sortedFiles.ElementAt(i);
+                    var fileProps = await file.GetBasicPropertiesAsync();
 
-                    var files = await folder.GetFilesAsync();
-                    var sortedFiles = files.OrderBy(x => x.DateCreated);
-
-                    int i = 0;
-                    while(size >= ThresholdSize)
+                    try
                     {
-                        var file = sortedFiles.ElementAt(i);
-                        var fileProps = await file.GetBasicPropertiesAsync();
-
                         await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
                         size -= fileProps.Size;
+                    }
+                    catch (Exception) { }
 
-                        i++;
-                    }                    
+                    i++;
                 }
-            }
-            catch (Exception e)
-            {                
-                
             }
         }
     }

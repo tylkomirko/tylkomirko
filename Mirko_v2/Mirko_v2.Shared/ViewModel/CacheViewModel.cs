@@ -1,22 +1,24 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using MetroLog;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Windows.Storage;
+using System.IO;
 using System.Linq;
-using MetroLog;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopAPI.Models;
-using System.IO;
-using Newtonsoft.Json;
+using Windows.Foundation;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Mirko_v2.ViewModel
 {
     public class CacheViewModel : ViewModelBase
     {
         private readonly TimeSpan FileLifeSpan = new TimeSpan(24, 0, 0);
+        private StorageFolder ImageCacheFolder = null;
         private Timer SaveTimer = null;
         private readonly ILogger Logger = null;
 
@@ -143,5 +145,133 @@ namespace Mirko_v2.ViewModel
             Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
         }
         #endregion
+        
+        private async Task<InMemoryRandomAccessStream> DrawGIFOverlay(IBuffer buffer)
+        {
+            var stream = new InMemoryRandomAccessStream();
+            await stream.WriteAsync(buffer);
+            stream.Seek(0);
+            var image = await new WriteableBitmap(1, 1).FromStream(stream);
+
+            var gifOverlay = await new WriteableBitmap(1, 1).FromContent(new Uri("ms-appx:///Assets/gif_icon.png"));
+
+            var startPoint = new Point()
+            {
+                X = (image.PixelWidth - gifOverlay.PixelWidth) / 2,
+                Y = (image.PixelHeight - gifOverlay.PixelHeight) / 2,
+            };
+
+            image.Blit(new Rect(startPoint.X, startPoint.Y, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
+                gifOverlay,
+                new Rect(0, 0, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
+                WriteableBitmapExtensions.BlendMode.Alpha);
+
+            await image.ToStreamAsJpeg(stream);
+            return stream;
+        }
+
+        private async Task<InMemoryRandomAccessStream> DrawVideoOverlay(IBuffer buffer)
+        {
+            var stream = new InMemoryRandomAccessStream();
+            await stream.WriteAsync(buffer);
+            stream.Seek(0);
+            var image = await new WriteableBitmap(1, 1).FromStream(stream);
+
+            var gifOverlay = await new WriteableBitmap(1, 1).FromContent(new Uri("ms-appx:///Assets/video_icon.png"));
+
+            var startPoint = new Point()
+            {
+                X = (image.PixelWidth - gifOverlay.PixelWidth) / 2,
+                Y = (image.PixelHeight - gifOverlay.PixelHeight) / 2,
+            };
+
+            image.Blit(new Rect(startPoint.X, startPoint.Y, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
+                gifOverlay,
+                new Rect(0, 0, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
+                WriteableBitmapExtensions.BlendMode.Alpha);
+
+            await image.ToStreamAsJpeg(stream);
+            return stream;
+        }
+
+        private static async Task<InMemoryRandomAccessStream> ReadImage(IBuffer buffer)
+        {
+            var stream = new InMemoryRandomAccessStream();
+            await stream.WriteAsync(buffer);
+            stream.Seek(0);
+
+            return stream;
+        }
+
+        public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL)
+        {
+            if (previewURL == null || fullURL == null) return null;
+
+            string fileName = "";
+            Uri uri = new Uri(previewURL);
+            fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
+            previewURL = previewURL.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
+
+            if (ImageCacheFolder == null)
+            {
+                var localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+                ImageCacheFolder = await localFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
+            }
+
+            StorageFile file = null;
+
+            // check if file exists
+            if (CachedImages.Contains(fileName))
+            {
+                // read from file
+                try
+                {
+                    file = await ImageCacheFolder.GetFileAsync(fileName);
+                    var stream = await file.OpenAsync(FileAccessMode.Read);
+                    return stream;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            if (!App.ApiService.IsNetworkAvailable)
+                return null;
+
+            try
+            {
+                using (var response = await App.ApiService.httpClient.GetAsync(previewURL))
+                {
+                    var pixels = await response.Content.ReadAsByteArrayAsync();
+                    InMemoryRandomAccessStream stream = null;
+                    if (fullURL.EndsWith(".gif") || fullURL.Contains("gfycat"))
+                        stream = await DrawGIFOverlay(pixels.AsBuffer());
+                    else if (fullURL.Contains("youtube") || fullURL.Contains("youtu.be"))
+                        stream = await DrawVideoOverlay(pixels.AsBuffer());
+                    else
+                        stream = await ReadImage(pixels.AsBuffer());
+
+                    // and now save
+                    file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                    using (var fileStream = await file.OpenStreamForWriteAsync())
+                    {
+                        var saveStream = stream.AsStream();
+                        saveStream.Position = 0;
+                        await saveStream.CopyToAsync(fileStream);
+
+                        CachedImages.Add(fileName);
+                    }
+
+                    stream.Seek(0);
+                    return stream;
+                }
+            }
+            catch (Exception)
+            {
+                // display error of a kind.
+                return null;
+            }
+        }
     }
 }
