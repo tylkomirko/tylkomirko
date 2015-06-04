@@ -1,4 +1,5 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
 using Windows.System;
@@ -13,9 +14,14 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class EntryEmbed : UserControl
     {
+        private static SettingsViewModel Settings = null;
+
         public EntryEmbed()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
+
+            if (Settings == null)
+                Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
         }
 
         private void UserControl_Tapped(object sender, TappedRoutedEventArgs e)
@@ -23,7 +29,15 @@ namespace Mirko_v2.Controls
             e.Handled = true;
             if(DataContext != null)
             {
-                (DataContext as EmbedViewModel).OpenEmbedCommand.Execute(null);
+                if (Image.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
+                {
+                    Image.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    AttachmentTB.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                }
+                else
+                {
+                    (DataContext as EmbedViewModel).OpenEmbedCommand.Execute(null);
+                }
             }
         }
 
@@ -63,6 +77,22 @@ namespace Mirko_v2.Controls
                 me.Pause();
             else if (me.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Paused)
                 me.Play();
+        }
+
+        private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (args.NewValue == null) return;
+
+            var embed = args.NewValue as EmbedViewModel;
+            var data = embed.EmbedData;
+
+            if (data == null) return;
+
+            if(data.NSFW && !Settings.ShowPlus18)
+            {
+                Image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                AttachmentTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            }
         }
     }
 }

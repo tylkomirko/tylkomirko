@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntriesNumeral.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NotificationsCountToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PMDirectionToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />

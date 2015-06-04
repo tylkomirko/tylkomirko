@@ -27,5 +27,6 @@
     <converters:CountToBool x:Key="CountToBool" />
     <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
     <converters:HotTimeSpanIndexConverter x:Key="HotTimeSpanIndexConverter" />
+    <converters:NSFWToString x:Key="NSFWToString" />
 
 </ResourceDictionary>

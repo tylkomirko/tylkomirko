@@ -13,7 +13,8 @@
     d:DesignWidth="400"
     
     IsTapEnabled="True"
-    Tapped="UserControl_Tapped">   
+    Tapped="UserControl_Tapped"
+    DataContextChanged="UserControl_DataContextChanged">   
 
     <Grid x:Name="EntryEmbedGrid"
           HorizontalAlignment="Stretch">
@@ -43,7 +44,7 @@
                  FontSize="16.0"
                  Foreground="Gray" />
             
-            <Run Text=""
+            <Run Text="{Binding EmbedData, Converter={StaticResource NSFWToString}}"
                  FontSize="13.0"
                  Foreground="{ThemeResource AttachmentNameForeground}" />
         </TextBlock>

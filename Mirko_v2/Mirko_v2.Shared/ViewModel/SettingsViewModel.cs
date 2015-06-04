@@ -71,7 +71,11 @@ namespace Mirko_v2.ViewModel
         public bool OnlyWIFIDownload
         {
             get { return RoamingValues.ContainsKey("OnlyWIFIDownload") ? (bool)RoamingValues["OnlyWIFIDownload"] : false; }
-            set { RoamingValues["OnlyWIFIDownload"] = value; }
+            set 
+            { 
+                RoamingValues["OnlyWIFIDownload"] = value;
+                Messenger.Default.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(value, "OnlyWIFI"));
+            }
         }
 
         public bool ShowPlus18

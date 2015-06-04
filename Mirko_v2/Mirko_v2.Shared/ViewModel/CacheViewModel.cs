@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
 using System;
 using System.Collections.Generic;
@@ -18,14 +20,25 @@ namespace Mirko_v2.ViewModel
     public class CacheViewModel : ViewModelBase
     {
         private readonly TimeSpan FileLifeSpan = new TimeSpan(24, 0, 0);
-        private StorageFolder ImageCacheFolder = null;
         private Timer SaveTimer = null;
         private readonly ILogger Logger = null;
+
+        // image cache
+        private StorageFolder ImageCacheFolder = null;
+        private bool OnlyWIFIDownload = false;
 
         public CacheViewModel()
         {
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
             SaveTimer = new Timer(SaveTimerCallback, null, 45*1000, 0); // 45 seconds
+
+            Messenger.Default.Register<NotificationMessage<bool>>(this, ReadMessage);
+        }
+
+        private void ReadMessage(NotificationMessage<bool> obj)
+        {
+            if(obj.Notification == "OnlyWIFI")
+                OnlyWIFIDownload = obj.Content;
         }
 
         private async void SaveTimerCallback(object state)
@@ -73,6 +86,9 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteInitCommand()
         {
+            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            OnlyWIFIDownload = settingsVM.OnlyWIFIDownload;
+
             bool needToDownload = false;
             var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
 
@@ -145,7 +161,8 @@ namespace Mirko_v2.ViewModel
             Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
         }
         #endregion
-        
+
+        #region Image cache
         private async Task<InMemoryRandomAccessStream> DrawGIFOverlay(IBuffer buffer)
         {
             var stream = new InMemoryRandomAccessStream();
@@ -230,13 +247,14 @@ namespace Mirko_v2.ViewModel
                     var stream = await file.OpenAsync(FileAccessMode.Read);
                     return stream;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Logger.Error("Error reading file. ", e);
                     return null;
                 }
             }
 
-            if (!App.ApiService.IsNetworkAvailable)
+            if (!App.ApiService.IsNetworkAvailable || (OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable))
                 return null;
 
             try
@@ -267,11 +285,12 @@ namespace Mirko_v2.ViewModel
                     return stream;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // display error of a kind.
+                Logger.Error("Error downloading image.", e);
                 return null;
             }
         }
+        #endregion
     }
 }
