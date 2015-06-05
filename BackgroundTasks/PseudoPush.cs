@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
-using NotificationsExtensions.BadgeContent;
+﻿using MetroLog;
+using Newtonsoft.Json;
+using NotificationsExtensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,28 +13,47 @@ namespace BackgroundTasks
 {
     public sealed class PseudoPush : IBackgroundTask
     {
+        private readonly ILogger Logger = null;
         private WykopAPI.WykopAPI ApiService;
+
+        public PseudoPush()
+        {
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<PseudoPush>();
+        }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
 
+            Logger.Trace("PseudoPush started.");
+
             ApiService = new WykopAPI.WykopAPI();
 
             if (ApiService.UserInfo == null ||
-                string.IsNullOrEmpty(ApiService.UserInfo.UserName) || string.IsNullOrEmpty(ApiService.UserInfo.AccountKey)) return;
+                string.IsNullOrEmpty(ApiService.UserInfo.UserName) || 
+                string.IsNullOrEmpty(ApiService.UserInfo.AccountKey)) 
+                return;
 
             // everything is fine, let's log in and check notifications
             var hashtagCount = await ApiService.getHashtagNotificationsCount();
             var notifications = await GetNotifications();
 
-            if (notifications.Count > 0)
+            if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("LiveTile"))
             {
-                SendToasts(notifications);
-                //ApiService.UserInfo.LastToastDate = notifications.First().Date;
+                var liveTile = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["LiveTile"];
+                if (liveTile)
+                    NotificationsManager.SetLiveTile();
             }
 
-            UpdateBadge(hashtagCount.Count + notifications.Count);
+            if (notifications.Count > 0)
+            {
+                Logger.Trace(notifications.Count + " new notifications.");
+
+                SendToasts(notifications);
+                ApiService.UserInfo.LastToastDate = notifications.First().Date;
+            }
+
+            NotificationsManager.SetBadge((uint)(hashtagCount.Count + notifications.Count));
             ApiService.SaveUserInfo();
             ApiService.Dispose();
 
@@ -73,44 +93,6 @@ namespace BackgroundTasks
 
             return notifications;
         }
-
-        /*
-        private async Task ReadJSON()
-        {
-            StorageFile jsonFile = null;
-            var localFolder = ApplicationData.Current.LocalFolder;
-
-            try
-            {
-                jsonFile = await localFolder.GetFileAsync("PseudoPush.json");
-            }
-            catch (Exception) { }
-
-            if (jsonFile == null)
-                return;
-
-            using (Stream s = await jsonFile.OpenStreamForReadAsync())
-            using (StreamReader sr = new StreamReader(s))
-            using (JsonReader reader = new JsonTextReader(sr))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                Data = serializer.Deserialize<BackgroundTasksHelper.PseudoPushData>(reader);
-            }
-        }
-
-        private async Task WriteJSON()
-        {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var file = await localFolder.CreateFileAsync("PseudoPush.json", CreationCollisionOption.ReplaceExisting);
-
-            using (var writeStream = await file.OpenStreamForWriteAsync())
-            using (var writer = new StreamWriter(writeStream))
-            using (var jsonWriter = new JsonTextWriter(writer))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(jsonWriter, Data);
-            }
-        }*/
 
         #region LIVETILE
         /*
@@ -450,12 +432,6 @@ namespace BackgroundTasks
                 ToastNotification toast = new ToastNotification(toastXml);
                 notifier.Show(toast);
             }
-        }
-
-        private void UpdateBadge(int count)
-        {
-            BadgeNumericNotificationContent badgeContent = new BadgeNumericNotificationContent((uint)count);
-            BadgeUpdateManager.CreateBadgeUpdaterForApplication().Update(badgeContent.CreateNotification());
         }
         #endregion
     }

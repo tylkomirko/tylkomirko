@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetroLog;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
@@ -8,11 +9,19 @@ namespace BackgroundTasks
 {
     public sealed class Cleaner : IBackgroundTask
     {
+        private readonly ILogger Logger = null;
         private const ulong ThresholdSize = 10 * 1024 * 1024;
+
+        public Cleaner()
+        {
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<Cleaner>();
+        }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
+
+            Logger.Trace("Image cache cleaner started.");
 
             await CleanImageCache();
 
@@ -50,6 +59,8 @@ namespace BackgroundTasks
 
                     i++;
                 }
+
+                Logger.Trace("Removed " + i + " images.");
             }
         }
     }

@@ -2,14 +2,12 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Utils;
-using NotificationsExtensions.BadgeContent;
-using NotificationsExtensions.TileContent;
+using NotificationsExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
-using Windows.UI.Notifications;
 
 namespace Mirko_v2.ViewModel
 {
@@ -90,9 +88,9 @@ namespace Mirko_v2.ViewModel
             set
             {
                 if (value)
-                    SetLiveTile();
+                    NotificationsManager.SetLiveTile();
                 else
-                    ClearLiveTile();
+                    NotificationsManager.ClearLiveTile();
 
                 RoamingValues["LiveTile"] = value;
             }
@@ -153,6 +151,11 @@ namespace Mirko_v2.ViewModel
         {
             if (obj.Notification == "Init")
             {
+                if (LiveTile)
+                    NotificationsManager.SetLiveTile();
+                else
+                    NotificationsManager.ClearLiveTile();
+
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
                     "Cleaner",
                     new MaintenanceTrigger(60 * 24, false),
@@ -167,7 +170,7 @@ namespace Mirko_v2.ViewModel
             if (obj.Notification == "Update")
             {
                 var count = obj.Content;
-                SetBadge(count);
+                NotificationsManager.SetBadge(count);
             }
         }
 
@@ -211,45 +214,5 @@ namespace Mirko_v2.ViewModel
                 BackgroundTasksUtils.UnregisterTask("PseudoPush");
             }
         }
-
-        #region Badge/Livetile
-        public void SetBadge(uint count)
-        {
-            BadgeNumericNotificationContent badgeContent = new BadgeNumericNotificationContent(count);
-            BadgeUpdateManager.CreateBadgeUpdaterForApplication().Update(badgeContent.CreateNotification());
-        }
-
-        public void ClearBadge()
-        {
-            BadgeUpdateManager.CreateBadgeUpdaterForApplication().Clear();
-        }
-
-        public void SetLiveTile()
-        {
-            /* change tiles to badged ones */
-            var smallTile = TileContentFactory.CreateTileSquare71x71IconWithBadge();
-            smallTile.Branding = TileBranding.None;
-            smallTile.ImageIcon.Src = "Assets/small_badge.png";
-
-            var mediumTile = TileContentFactory.CreateTileSquare150x150IconWithBadge();
-            mediumTile.Branding = TileBranding.Name;
-            mediumTile.ImageIcon.Src = "Assets/medium_badge.png";
-
-            var wideTile = TileContentFactory.CreateTileWide310x150IconWithBadgeAndText();
-            wideTile.Branding = TileBranding.Name;
-            wideTile.Square150x150Content = mediumTile;
-            wideTile.ImageIcon.Src = "Assets/wide_badge.png";
-
-            TileUpdateManager.CreateTileUpdaterForApplication().Update(smallTile.CreateNotification());
-            TileUpdateManager.CreateTileUpdaterForApplication().Update(mediumTile.CreateNotification());
-            TileUpdateManager.CreateTileUpdaterForApplication().Update(wideTile.CreateNotification());
-        }
-
-        public void ClearLiveTile()
-        {
-            ClearBadge();
-            TileUpdateManager.CreateTileUpdaterForApplication().Clear();
-        }
-        #endregion
     }
 }
