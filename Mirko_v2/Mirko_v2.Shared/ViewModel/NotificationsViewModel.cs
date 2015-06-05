@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using MetroLog;
 using Mirko_v2.Utils;
 using System;
 using System.Collections;
@@ -43,6 +44,8 @@ namespace Mirko_v2.ViewModel
 
     public class NotificationsViewModel : ViewModelBase
     {
+        private readonly ILogger Logger = null;
+
         private Timer Timer = null;
         private NavigationService NavService = null;
 
@@ -51,6 +54,8 @@ namespace Mirko_v2.ViewModel
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
             _updateHashtagDic = new SemaphoreSlim(1);
             NavService = nav;
+
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<NotificationsViewModel>();
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
@@ -375,8 +380,9 @@ namespace Mirko_v2.ViewModel
                 var file = await folder.GetFileAsync("ObservedTags");
                 await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Error("Couldn't delete ObservedTags.", e);
             }
         }
 
@@ -411,7 +417,10 @@ namespace Mirko_v2.ViewModel
                     await UpdateHashtagDictionary();
                 }
             }
-            catch (Exception) { }
+            catch (Exception e) 
+            {
+                Logger.Error("Couldn't delete hashtag notification with ID " + ID, e);
+            }
         }
 
         private RelayCommand<string> _deleteHashtagNotifications = null;
@@ -687,6 +696,10 @@ namespace Mirko_v2.ViewModel
                     sortedGroups = null;
                 }
             }
+            catch(Exception e)
+            {
+                Logger.Error("Error updating HashtagDictionary: ", e);
+            }
             finally
             {
                 _updateHashtagDic.Release();
@@ -819,7 +832,7 @@ namespace Mirko_v2.ViewModel
 
                     var conversations = SimpleIoc.Default.GetInstance<MessagesViewModel>().ConversationsList;
                     var conversation = conversations.SingleOrDefault(x => x.Data.AuthorName == notification.AuthorName);
-                    await DispatcherHelper.RunAsync(() => 
+                    await DispatcherHelper.RunAsync(() =>
                     {
                         PMNotifications.Remove(notification);
                         if (conversation != null)
@@ -827,7 +840,10 @@ namespace Mirko_v2.ViewModel
                     });
                 }
             }
-            catch (Exception) { }
+            catch (Exception e)
+            {
+                Logger.Error("Error deleting PM notification ID " + ID, e);
+            }
         }
 
         private void DeletePMNotifications(string userName)

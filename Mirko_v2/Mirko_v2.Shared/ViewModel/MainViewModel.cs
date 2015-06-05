@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using MetroLog;
 using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
@@ -35,6 +36,7 @@ namespace Mirko_v2.ViewModel
         /// </summary>
         /// 
 
+        private readonly ILogger Logger = null;
         private NavigationService NavService = null;
         private Timer Timer = null;
         private bool StartedOffline = false;
@@ -42,6 +44,8 @@ namespace Mirko_v2.ViewModel
         public MainViewModel(NavigationService nav)
         {
             NavService = nav;
+
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<MainViewModel>();
 
             Timer = new Timer(TimerCallback, null, 60 * 1000, 60 * 1000);
 
@@ -249,9 +253,9 @@ namespace Mirko_v2.ViewModel
                     serializer.Serialize(jsonWriter, items);
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
-
+                Logger.Error("Error while saving collection to " + filename, e);
             }
         }
 
@@ -272,8 +276,9 @@ namespace Mirko_v2.ViewModel
                     return serializer.Deserialize<List<EntryViewModel>>(jsonReader);
                 }
             } 
-            catch(Exception)
+            catch(Exception e)
             {
+                Logger.Error("Error reading collection from " + filename, e);
                 return null;
             }
         }
@@ -558,9 +563,9 @@ namespace Mirko_v2.ViewModel
                     settings["CurrentPivotItem"] = CurrentPivotItem;
                     settings["FirstIndex"] = firstVisibleIndex;
                 }
-            } catch(Exception)
+            } catch(Exception e)
             {
-
+                Logger.Error("Error saving state: ", e);
             }
         }
 
@@ -611,8 +616,9 @@ namespace Mirko_v2.ViewModel
 
                 return true; // success!
 
-            } catch(Exception)
+            } catch(Exception e)
             {
+                Logger.Error("Error loading state: ", e);
                 return false;
             }
         }
