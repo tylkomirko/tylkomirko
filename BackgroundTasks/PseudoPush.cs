@@ -38,13 +38,6 @@ namespace BackgroundTasks
             var hashtagCount = await ApiService.getHashtagNotificationsCount();
             var notifications = await GetNotifications();
 
-            if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("LiveTile"))
-            {
-                var liveTile = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["LiveTile"];
-                if (liveTile)
-                    NotificationsManager.SetLiveTile();
-            }
-
             if (notifications.Count > 0)
             {
                 Logger.Trace(notifications.Count + " new notifications.");

@@ -55,6 +55,9 @@ namespace WykopAPI
         {
             try
             {
+                if (RootFolder == null)
+                    await Init();
+
                 var file = await RootFolder.GetFileAsync("Conversations");
                 var props = await file.GetBasicPropertiesAsync();
                 if (DateTime.Now - props.DateModified > new TimeSpan(6, 0, 0))

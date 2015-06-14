@@ -89,6 +89,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MessagesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PMViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\StatsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
 </Project>
