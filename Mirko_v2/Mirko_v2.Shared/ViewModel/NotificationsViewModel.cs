@@ -521,8 +521,23 @@ namespace Mirko_v2.ViewModel
             await DispatcherHelper.RunAsync(() =>
             {
                 HashtagFlipEntries.Clear();
-                for (int i = 0; i < CurrentHashtagNotifications.Count; i++)
-                    HashtagFlipEntries.Add(null);
+                foreach(var notification in CurrentHashtagNotifications)
+                {
+                    var n = notification.Data;
+
+                    HashtagFlipEntries.Add(new EntryViewModel()
+                    {
+                        Data = new Entry() 
+                        { 
+                            ID = n.Entry.ID,
+                            AuthorName = n.AuthorName,
+                            AuthorGroup = n.AuthorGroup,
+                            AuthorSex = n.AuthorSex,
+                            AuthorAvatarURL = n.AuthorAvatarURL,
+                            Date = n.Date,
+                        },
+                    });
+                }
             });
 
             NavService.NavigateTo("HashtagFlipPage");
@@ -538,16 +553,11 @@ namespace Mirko_v2.ViewModel
 
         private async Task ExecuteHashtagFlipSelectionChanged(int currentIndex)
         {
-            if (currentIndex == -1 || HashtagFlipEntries[currentIndex] != null) return;
+            if (currentIndex == -1 || HashtagFlipEntries[currentIndex].Data.Text != null) return;
             await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
 
-            Notification notification = null;
-            if (currentIndex > CurrentHashtagNotifications.Count)
-                notification = CurrentHashtagNotifications.Last().Data;
-            else
-                notification = CurrentHashtagNotifications[currentIndex].Data;
-
-            var entry = await App.ApiService.getEntry(notification.Entry.ID);
+            var currentEntryID = HashtagFlipEntries[currentIndex].Data.ID;
+            var entry = await App.ApiService.getEntry(currentEntryID);
             if (entry != null)
             {
                 var entryVM = new EntryViewModel(entry);
@@ -558,7 +568,9 @@ namespace Mirko_v2.ViewModel
                 });
                 await StatusBarManager.HideProgress();
 
-                await ExecuteDeleteHashtagNotification(notification.ID);
+                var notification = CurrentHashtagNotifications.SingleOrDefault(x => x.Data.Entry.ID == currentEntryID);
+                if(notification != null)
+                    await ExecuteDeleteHashtagNotification(notification.Data.ID);
             }
             else
             {
