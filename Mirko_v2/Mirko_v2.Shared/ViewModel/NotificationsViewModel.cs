@@ -593,7 +593,7 @@ namespace Mirko_v2.ViewModel
                 var newNotifications = notifications.Where(x => x.IsNew && x.ID > this.NewestHashtagNotificationID);
                 notificationsList.AddRange(newNotifications);
 
-                if (!notifications.Last().IsNew)
+                if (!notifications.Last().IsNew || pageIndex == 10)
                     break;
             }
 
