@@ -13,6 +13,26 @@ namespace Mirko_v2.ViewModel
 {
     public class NavigationService : INavigationService, IDisposable
     {
+        struct CachedPage
+        {
+            public UserControl Page;
+            public CommandBar AppBar;
+        };
+
+        private const int cachedPagesCount = 4;
+        private bool navigatedToRootPage = false;
+        private Page rootPage = null;
+        private Frame rootPageFrame = null;
+        private AppHeader rootPageHeader = null;
+
+        private readonly StackList<Type> backStack = new StackList<Type>();
+        private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
+        private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
+        private readonly List<string> framesWithoutHeader = null;
+
+        public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
+        public event NavigatingEventHandler Navigating;
+
 #if WINDOWS_PHONE_APP
         public NavigationService()
         {
@@ -29,10 +49,7 @@ namespace Mirko_v2.ViewModel
                     var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
                     if (VM.CurrentHashtagNotifications.Count == 0)
                     {
-                        var currentFrame = Window.Current.Content as Frame;
-                        var backStack = currentFrame.BackStack;
-
-                        var entry = backStack.FirstOrDefault(x => x.SourcePageType == typeof(HashtagNotificationsPage));
+                        var entry = backStack.First(typeof(HashtagNotificationsPage));
                         if(entry != null)
                             backStack.Remove(entry);
                     }
@@ -43,26 +60,6 @@ namespace Mirko_v2.ViewModel
             }
         }
 #endif
-
-        struct CachedPage
-        {
-            public UserControl Page;
-            public CommandBar AppBar;
-        };
-
-        private const int cachedPagesCount = 4;
-        private bool navigatedToRootPage = false;
-        private Page rootPage = null;
-        private Frame rootPageFrame = null;
-        private AppHeader rootPageHeader = null;
-
-        private readonly Stack<Type> backStack = new Stack<Type>();
-        private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
-        private readonly List<string> framesWithoutHeader = null;
-
-        public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
-        public event NavigatingEventHandler Navigating;
 
         public object CurrentData { get; set; }
 
@@ -158,7 +155,7 @@ namespace Mirko_v2.ViewModel
                     return false;
             }
 
-            if (backStack.Count <= 1)
+            if (backStack.Count() <= 1)
             {
                 Application.Current.Exit(); 
                 return false;
