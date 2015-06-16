@@ -64,8 +64,8 @@ namespace Mirko_v2.ViewModel
                         else
                         {
                             var newEntries_temp = await App.ApiService.getHotEntries(6, pageIndex++);
-                            var limitingTime = DateTime.Now.AddHours(-timeSpan);
-                            newEntries = newEntries_temp.Where(x => x.Date > limitingTime);
+                            var limitingTime = DateTime.UtcNow.AddHours(-timeSpan);
+                            newEntries = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
                         }
 
                         if (newEntries != null)                            

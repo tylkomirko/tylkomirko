@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Mirko_v2;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
 namespace Mirko.Converters
@@ -15,8 +17,9 @@ namespace Mirko.Converters
             if (value == null)
                 return "";
 
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
             DateTime entryTime = (DateTime)value;
+            entryTime = entryTime.Subtract(App.OffsetUTCInPoland);
             string result = string.Empty;
 
             var diff = now - entryTime;

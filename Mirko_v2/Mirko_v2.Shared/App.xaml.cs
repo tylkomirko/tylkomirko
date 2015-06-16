@@ -5,6 +5,7 @@ using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -58,6 +59,41 @@ namespace Mirko_v2
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         private Mirko_v2.ViewModel.NavigationService NavService = null;
+
+        private static TimeSpan _offsetUTCInPoland;
+        public static TimeSpan OffsetUTCInPoland
+        {
+            get 
+            {
+                if (_offsetUTCInPoland.Hours == 0) // offset not set
+                    _offsetUTCInPoland = CalculateOffetUTCInPoland();
+                return _offsetUTCInPoland;
+            }
+        }
+
+        private static TimeSpan CalculateOffetUTCInPoland()
+        {
+            // contains start and end dates (in UTC)
+            Tuple<DateTime,DateTime>[] daylightRanges = 
+            {
+                Tuple.Create<DateTime,DateTime>(new DateTime(2015, 03, 29, 1, 0, 0, DateTimeKind.Utc), new DateTime(2015, 10, 25, 2, 0, 0, DateTimeKind.Utc)),
+                Tuple.Create<DateTime,DateTime>(new DateTime(2016, 03, 27, 1, 0, 0, DateTimeKind.Utc), new DateTime(2016, 10, 30, 2, 0, 0, DateTimeKind.Utc)),
+                Tuple.Create<DateTime,DateTime>(new DateTime(2017, 03, 26, 1, 0, 0, DateTimeKind.Utc), new DateTime(2017, 10, 29, 2, 0, 0, DateTimeKind.Utc)),
+                Tuple.Create<DateTime,DateTime>(new DateTime(2018, 03, 25, 1, 0, 0, DateTimeKind.Utc), new DateTime(2018, 10, 28, 2, 0, 0, DateTimeKind.Utc)),
+                Tuple.Create<DateTime,DateTime>(new DateTime(2019, 03, 31, 1, 0, 0, DateTimeKind.Utc), new DateTime(2019, 10, 27, 2, 0, 0, DateTimeKind.Utc)),
+            };
+
+            var currentTime = DateTime.UtcNow;
+            var tupleIndex = currentTime.Year - 2015;
+            if(tupleIndex >= daylightRanges.Count())
+                return new TimeSpan(1, 0, 0);
+
+            var tuple = daylightRanges[tupleIndex];
+            if (currentTime > tuple.Item1 && currentTime < tuple.Item2)
+                return new TimeSpan(2, 0, 0);
+            else
+                return new TimeSpan(1, 0, 0);
+        }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
