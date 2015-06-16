@@ -64,6 +64,30 @@ namespace Mirko_v2.ViewModel
                 SelectedEntry = e;
                 SelectedEntryIsHot = true;
             });
+
+            Messenger.Default.Register<EntryViewModel>(this, "Update", (e) =>
+            {
+                ObservableCollectionEx<EntryViewModel> col = null;
+
+                if (CurrentPivotItem == 0)
+                    col = MirkoEntries;
+                else if (CurrentPivotItem == 1)
+                    col = HotEntries;
+                else if (CurrentPivotItem == 2)
+                    col = FavEntries;
+                else
+                    col = MyEntries;
+
+                SelectedEntry = e;
+
+                var ID = e.Data.ID;
+                var oldEntry = col.SingleOrDefault(x => x.Data.ID == ID);
+                if(oldEntry != null)
+                {
+                    var index = col.GetIndex(oldEntry);
+                    col.Replace(index, e);
+                }
+            });
         }
 
         private async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)

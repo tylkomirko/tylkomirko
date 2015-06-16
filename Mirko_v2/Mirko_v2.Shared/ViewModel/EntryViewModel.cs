@@ -128,6 +128,32 @@ namespace Mirko_v2.ViewModel
             throw new System.NotImplementedException();
         }
 
+        private RelayCommand _refreshCommand = null;
+        [JsonIgnore]
+        public RelayCommand RefreshCommand
+        {
+            get { return _refreshCommand ?? (_refreshCommand = new RelayCommand(ExecuteRefreshCommand)); }
+        }
+
+        private async void ExecuteRefreshCommand()
+        {
+            if (Data == null) return;
+
+            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+            var newEntry = await App.ApiService.getEntry(Data.ID);
+            if (newEntry == null)
+            {
+                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+            }
+            else
+            {
+                var newVM = new EntryViewModel(newEntry);
+                Messenger.Default.Send<EntryViewModel>(newVM, "Update");
+
+                await StatusBarManager.HideProgress();
+            }
+        }
+
         private RelayCommand _deleteCommand = null;
         [JsonIgnore]
         public RelayCommand DeleteCommand

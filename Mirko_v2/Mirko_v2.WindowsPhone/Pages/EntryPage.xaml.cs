@@ -50,6 +50,13 @@ namespace Mirko_v2.Pages
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar() { IsOpen = true };
+            var refresh = new AppBarButton()
+            {
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+                Label = "odśwież",
+            };
+            refresh.Click += RefreshButton_Click;
+
             var up = new AppBarButton()
             {
                 Icon = new SymbolIcon(Symbol.Up),
@@ -64,10 +71,18 @@ namespace Mirko_v2.Pages
             };
 
             //c.PrimaryCommands.Add(add);
+            c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);
             AppBar = c;
 
             return c;
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            var entryVM = this.ListView.DataContext as EntryViewModel;
+            if(entryVM != null)
+                entryVM.RefreshCommand.Execute(null);
         }
 
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
