@@ -17,6 +17,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\PullToRefreshListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolInverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />

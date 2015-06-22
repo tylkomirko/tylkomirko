@@ -309,7 +309,7 @@ namespace Mirko_v2.ViewModel
         #endregion
 
         #region Commands
-        private RelayCommand _addNewEntryCommand;
+        private RelayCommand _addNewEntryCommand = null;
         public RelayCommand AddNewEntryCommand
         {
             get { return _addNewEntryCommand ?? (_addNewEntryCommand = new RelayCommand(ExecuteAddNewEntryCommand)); }
@@ -318,6 +318,17 @@ namespace Mirko_v2.ViewModel
         private void ExecuteAddNewEntryCommand()
         {
             throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _refreshMirkoEntries = null;
+        public RelayCommand RefreshMirkoEntries
+        {
+            get { return _refreshMirkoEntries ?? (_refreshMirkoEntries = new RelayCommand(ExecuteRefreshMirkoEntries)); }
+        }
+
+        private void ExecuteRefreshMirkoEntries()
+        {
+            
         }
 
         private RelayCommand<string> _goToHashtagPage = null;
