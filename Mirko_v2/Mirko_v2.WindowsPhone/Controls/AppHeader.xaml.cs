@@ -54,33 +54,33 @@ namespace Mirko_v2.Controls
             if (CurrentlyPaintedButton != PaintedButton.None)
             {
                 if (CurrentlyPaintedButton == PaintedButton.Hash)
-                    this.HashTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+                    this.HashCounter.SetBinding(NotificationCounter.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
                 else if(CurrentlyPaintedButton == PaintedButton.At)
-                    this.AtTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+                    this.AtCounter.SetBinding(NotificationCounter.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
                 else if(CurrentlyPaintedButton == PaintedButton.PM)
-                    this.PMTB.SetBinding(TextBlock.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
+                    this.PMCounter.SetBinding(NotificationCounter.ForegroundProperty, CurrentlyPaintedButtonBinding.ParentBinding);
             }
 
             if (currentPage == "HashtagSelectionPage")
             {
-                CurrentlyPaintedButtonBinding = this.HashTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButtonBinding = this.HashCounter.GetBindingExpression(NotificationCounter.ForegroundProperty);
                 CurrentlyPaintedButton = PaintedButton.Hash;
 
-                this.HashTB.Foreground = fill;
+                this.HashCounter.Foreground = fill;
             }
             else if (currentPage == "AtNotificationsPage")
             {
-                CurrentlyPaintedButtonBinding = this.AtTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButtonBinding = this.AtCounter.GetBindingExpression(NotificationCounter.ForegroundProperty);
                 CurrentlyPaintedButton = PaintedButton.At;
 
-                this.AtTB.Foreground = fill;
+                this.AtCounter.Foreground = fill;
             }
             else if (currentPage == "ConversationsPage")
             {
-                CurrentlyPaintedButtonBinding = this.PMTB.GetBindingExpression(TextBlock.ForegroundProperty);
+                CurrentlyPaintedButtonBinding = this.PMCounter.GetBindingExpression(NotificationCounter.ForegroundProperty);
                 CurrentlyPaintedButton = PaintedButton.PM;
 
-                this.PMTB.Foreground = fill;
+                this.PMCounter.Foreground = fill;
             }
             else if(currentPage == "LoginPage")
             {

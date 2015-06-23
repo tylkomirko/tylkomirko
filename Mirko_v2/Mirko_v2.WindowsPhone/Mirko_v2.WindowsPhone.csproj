@@ -105,6 +105,9 @@
     <Compile Include="Controls\FullEntry.xaml.cs">
       <DependentUpon>FullEntry.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NotificationCounter.xaml.cs">
+      <DependentUpon>NotificationCounter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ConversationsPage.xaml.cs">
       <DependentUpon>ConversationsPage.xaml</DependentUpon>
     </Compile>
@@ -232,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FullEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NotificationCounter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

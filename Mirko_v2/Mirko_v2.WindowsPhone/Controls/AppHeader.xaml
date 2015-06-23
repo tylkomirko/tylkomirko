@@ -254,14 +254,10 @@
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
                 
-                <TextBlock x:Name="HashTB"
-                           Style="{StaticResource BodyTextBlockStyle}"
-                           FontSize="28"
-                           Foreground="{Binding HashtagNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
-                           VerticalAlignment="Center">
-                    <Run Text="#" FontWeight="SemiBold" />
-                    <Run Text="{Binding HashtagNotificationsCount, Converter={StaticResource CountToString}}" />
-                </TextBlock>
+                <controls:NotificationCounter x:Name="HashCounter"
+                                              Prefix="#"
+                                              Foreground="{Binding HashtagNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
+                                              Count="{Binding HashtagNotificationsCount}" />
             </Grid>
 
 
@@ -273,15 +269,11 @@
                         <core:InvokeCommandAction Command="{Binding AtTappedCommand}" />
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
-
-                <TextBlock x:Name="AtTB"
-                           Style="{StaticResource BodyTextBlockStyle}"
-                           FontSize="28"
-                           Foreground="{Binding AtNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
-                           VerticalAlignment="Center">
-                    <Run Text="@" FontWeight="SemiBold" />
-                    <Run Text="{Binding AtNotificationsCount, Converter={StaticResource CountToString}}" />
-                </TextBlock>
+                
+                <controls:NotificationCounter x:Name="AtCounter"
+                                              Prefix="@"
+                                              Foreground="{Binding AtNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
+                                              Count="{Binding AtNotificationsCount}" />
             </Grid>
 
             <Grid Margin="35,5,35,5"
@@ -293,15 +285,10 @@
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
 
-                <TextBlock x:Name="PMTB"
-                           Style="{StaticResource BodyTextBlockStyle}"
-                           FontSize="28"
-                           Foreground="{Binding PMNotifications.Count, Converter={StaticResource NotificationsCountToBrush}}"
-                           IsColorFontEnabled="False"
-                           VerticalAlignment="Center">
-                    <Run Text="&#x2709;" FontWeight="SemiBold" />
-                    <Run Text="{Binding PMNotifications.Count, Converter={StaticResource CountToString}}" />
-                </TextBlock>
+                <controls:NotificationCounter x:Name="PMCounter"
+                                              Prefix="&#x2709;"
+                                              Foreground="{Binding PMNotifications.Count, Converter={StaticResource NotificationsCountToBrush}}"
+                                              Count="{Binding PMNotifications.Count}" />
             </Grid>
 
         </StackPanel>
