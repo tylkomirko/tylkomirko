@@ -1,8 +1,12 @@
 ﻿using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
+using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -152,6 +156,19 @@ namespace Mirko_v2.Controls
 
                 }
             }
+        }
+
+        private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)
+        {
+            var inlines = this.VotersTB.Inlines;
+            var entryVM = this.DataContext as EntryViewModel;
+
+            foreach(var voter in entryVM.Data.Voters)
+            {
+                inlines.Add(new Run() { Text = voter.AuthorName + " ", FontWeight = FontWeights.SemiLight, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13 });
+            }
+
+            this.VotersTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
     }
 }

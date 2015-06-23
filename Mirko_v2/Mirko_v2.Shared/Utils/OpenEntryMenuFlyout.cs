@@ -66,6 +66,9 @@ namespace Mirko_v2.Utils
                 makeFlyoutItemInvisible("separator"); // FIXME
             }
 
+            if (entryData.VoteCount == 0)
+                makeFlyoutItemInvisible("voters");
+
             flyoutBase.ShowAt(src);
 
             return null;

@@ -53,6 +53,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -71,7 +72,11 @@
                                 Tag="unplus"
                                 Command="{Binding VoteCommand}"
                                 Visibility="Collapsed"/>
-                
+
+                <MenuFlyoutItem Text="pokaż plusujących"
+                                Tag="voters"
+                                Click="MenuFlyoutItem_ShowVoters_Click"/>
+
                 <MenuFlyoutItem Text="odpowiedz"
                                 Tag="reply"
                                 Command="{Binding ReplyCommand}"/>
@@ -191,6 +196,14 @@
                                  HorizontalAlignment="Left"
                                  DataContext="{Binding EmbedVM}"/>
         </Grid>
+        
+        <TextBlock x:Name="VotersTB"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"
+                   Grid.Row="3"
+                   Margin="5,0,0,0"
+                   TextWrapping="WrapWholeWords"
+                   Visibility="Collapsed"/>
 
         <Grid x:Name="RightSpacer"
               Grid.Column="3"

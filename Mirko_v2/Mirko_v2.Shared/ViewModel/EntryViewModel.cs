@@ -188,6 +188,8 @@ namespace Mirko_v2.ViewModel
                 Comments.AddRange(comments);
                 Data.CommentCount = entry.CommentCount;
                 Data.VoteCount = entry.VoteCount;
+                Data.Voters.Clear();
+                Data.Voters.AddRange(entry.Voters);
 
                 comments = null;
             }
