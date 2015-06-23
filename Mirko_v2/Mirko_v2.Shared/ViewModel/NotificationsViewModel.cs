@@ -426,10 +426,10 @@ namespace Mirko_v2.ViewModel
         private RelayCommand<string> _deleteHashtagNotifications = null;
         public RelayCommand<string> DeleteHashtagNotifications
         {
-            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>(ExecuteDeleteHashtagNotifications)); }
+            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>(async (string h) => await ExecuteDeleteHashtagNotifications(h))); }
         }
 
-        private async void ExecuteDeleteHashtagNotifications(string hashtag)
+        private async Task ExecuteDeleteHashtagNotifications(string hashtag)
         {
             if (!HashtagsDictionary.ContainsKey(hashtag)) return;
 
@@ -454,6 +454,33 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteDeleteAllHashtagNotifications()
         {
             await App.ApiService.readHashtagNotifications();
+        }
+
+        private RelayCommand<string> _unobserveHashtag = null;
+        public RelayCommand<string> UnobserveHashtag
+        {
+            get { return _unobserveHashtag ?? (_unobserveHashtag = new RelayCommand<string>(ExecuteUnobserveHashtag)); }
+        }
+
+        private async void ExecuteUnobserveHashtag(string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag)) return;
+
+            if (HashtagsDictionary.ContainsKey(hashtag) && HashtagsDictionary[hashtag].Count > 0)
+                await ExecuteDeleteHashtagNotifications(hashtag);
+
+            var success = await App.ApiService.unobserveTag(hashtag);
+            if (success)
+            {
+                await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
+                await UpdateHashtagDictionary();
+
+                await StatusBarManager.ShowText("Przestałeś obserwować " + hashtag);
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Coś poszło nie tak...");
+            }
         }
 
         private RelayCommand _goToHashtagNotificationsPage = null;

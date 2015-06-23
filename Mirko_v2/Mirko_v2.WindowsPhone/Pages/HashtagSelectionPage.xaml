@@ -38,7 +38,13 @@
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="usuń powiadomienia"
+                                                Visibility="{Binding Count, Converter={StaticResource CountToVisibility}}"
                                                 Command="{Binding DeleteHashtagNotifications, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{Binding Name}"/>
+                                
+                                <MenuFlyoutItem Text="przestań obserwować"
+                                                Command="{Binding UnobserveHashtag, 
                                                 Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
                                                 CommandParameter="{Binding Name}"/>
                             </MenuFlyout>
