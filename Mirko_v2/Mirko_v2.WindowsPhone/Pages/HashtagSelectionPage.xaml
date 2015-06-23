@@ -79,7 +79,10 @@
 
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="przestań obserwować" />
+                                <MenuFlyoutItem Text="przestań obserwować"
+                                                Command="{Binding UnobserveHashtag, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{Binding Name}"/>
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
 
