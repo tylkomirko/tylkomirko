@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PropertyChanged;
 using System.Collections.Generic;
 
 namespace WykopAPI.Models
@@ -15,6 +16,7 @@ namespace WykopAPI.Models
         public int Links { get; set; }
     }
 
+    [ImplementPropertyChanged]
     public class Meta
     {
         [JsonProperty("tag")]

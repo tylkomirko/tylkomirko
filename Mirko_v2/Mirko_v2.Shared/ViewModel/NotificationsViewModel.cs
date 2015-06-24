@@ -456,6 +456,30 @@ namespace Mirko_v2.ViewModel
             await App.ApiService.readHashtagNotifications();
         }
 
+        private RelayCommand<string> _observeHashtag = null;
+        public RelayCommand<string> ObserveHashtag
+        {
+            get { return _observeHashtag ?? (_observeHashtag = new RelayCommand<string>(ExecuteObserveHashtag)); }
+        }
+
+        private async void ExecuteObserveHashtag(string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag)) return;
+
+            var success = await App.ApiService.observeTag(hashtag);
+            if (success)
+            {
+                await DispatcherHelper.RunAsync(() => ObservedHashtags.Add(hashtag));
+                await UpdateHashtagDictionary();
+
+                await StatusBarManager.ShowText("Obserwujesz " + hashtag + ".");
+            }
+            else
+            {
+                await StatusBarManager.ShowText("Coś poszło nie tak...");
+            }
+        }
+
         private RelayCommand<string> _unobserveHashtag = null;
         public RelayCommand<string> UnobserveHashtag
         {
@@ -475,7 +499,7 @@ namespace Mirko_v2.ViewModel
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
                 await UpdateHashtagDictionary();
 
-                await StatusBarManager.ShowText("Przestałeś obserwować " + hashtag);
+                await StatusBarManager.ShowText("Przestałeś obserwować " + hashtag + ".");
             }
             else
             {

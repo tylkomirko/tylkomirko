@@ -227,46 +227,6 @@ namespace Mirko_v2.ViewModel
             }*/
         }
 
-        private RelayCommand _observeHashtag = null;
-        [JsonIgnore]
-        public RelayCommand ObserveHashtag
-        {
-            get { return _observeHashtag ?? (_observeHashtag = new RelayCommand(ExecuteObserveHashtag)); }
-        }
-
-        private async void ExecuteObserveHashtag()
-        {
-            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
-
-            await StatusBarManager.ShowProgress();
-            if(observedTags.Contains(TappedHashtag))
-            {
-                var success = await App.ApiService.unobserveTag(TappedHashtag);
-                if (success)
-                {
-                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został usunięty.");
-                    observedTags.Remove(TappedHashtag);
-                }
-                else
-                {
-                    await StatusBarManager.ShowText("Nie udało się usunąć tagu " + TappedHashtag + ".");
-                }
-            }
-            else
-            {
-                var success = await App.ApiService.observeTag(TappedHashtag);
-                if (success)
-                {
-                    await StatusBarManager.ShowText("Tag " + TappedHashtag + " został dodany.");
-                    observedTags.Add(TappedHashtag);
-                }
-                else
-                {
-                    await StatusBarManager.ShowText("Nie udało się dodać tagu " + TappedHashtag + ".");
-                }
-            }
-        }
-
         private RelayCommand _blacklistHashtag = null;
         [JsonIgnore]
         public RelayCommand BlacklistHashtag

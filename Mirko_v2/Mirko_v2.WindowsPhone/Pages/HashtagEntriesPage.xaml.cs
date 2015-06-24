@@ -1,10 +1,12 @@
-﻿using Mirko_v2.Controls;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -70,10 +72,18 @@ namespace Mirko_v2.Pages
 
         #region AppBar
         private CommandBar AppBar = null;
+        private AppBarToggleButton ObserveButton = null;
 
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar();
+
+            var observe = new AppBarToggleButton()
+            {
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/appbar.eye.png") },
+                Label = "obserwuj",
+            };
+            observe.Click += Observe_Click;
 
             var up = new AppBarButton()
             {
@@ -82,10 +92,46 @@ namespace Mirko_v2.Pages
             };
             up.Click += ScrollUp_Click;
 
+            c.PrimaryCommands.Add(observe);
             c.PrimaryCommands.Add(up);
 
             AppBar = c;
+            ObserveButton = observe;
+            ObserveButton.Loaded += (s, e) =>
+            {
+                var notificationsVM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                if (notificationsVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
+                {
+                    ObserveButton.IsChecked = true;
+                    ObserveButton.Label = "nie obserwuj";
+                }
+                else
+                {
+                    ObserveButton.IsChecked = false;
+                    ObserveButton.Label = "obserwuj";
+                }
+            };
+
             return c;
+        }
+
+        private void Observe_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as AppBarToggleButton;
+            var notificationsVM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+
+            if(button.IsChecked.Value)
+            {
+                notificationsVM.ObserveHashtag.Execute(mainVM.SelectedHashtag.Hashtag);
+                ObserveButton.Label = "nie obserwuj";
+            }
+            else
+            {
+                notificationsVM.UnobserveHashtag.Execute(mainVM.SelectedHashtag.Hashtag);
+                ObserveButton.Label = "obserwuj";
+            }
         }
 
         private void ScrollUp_Click(object sender, RoutedEventArgs e)
