@@ -108,6 +108,7 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Center"
                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                 Style="{StaticResource ListBoxNoBorder}"
                  ItemContainerStyle="{StaticResource ListBoxItemStyle}"                     
                  SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}, Path=CurrentPivotItem, Mode=TwoWay}"
                  SelectionChanged="StreamsPanel_SelectionChanged">
