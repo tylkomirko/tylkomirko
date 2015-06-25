@@ -71,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DebugViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\FavEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\HotEntrySource.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PaymentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PMViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\StatsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
 </Project>

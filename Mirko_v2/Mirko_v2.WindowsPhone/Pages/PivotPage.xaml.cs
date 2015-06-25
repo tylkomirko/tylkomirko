@@ -310,11 +310,22 @@ namespace Mirko_v2.Pages
                 Converter = App.Current.Resources["InvertVisibility"] as IValueConverter,
             });
 
+            var debug = new AppBarButton()
+            {
+                Label = "debug",
+            };
+            debug.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("GoToDebugPage"),
+            });
+
             c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(up);
             c.SecondaryCommands.Add(settings);
             c.SecondaryCommands.Add(login);
             c.SecondaryCommands.Add(logout);
+            c.SecondaryCommands.Add(debug);
             AppBar = c;
 
             return c;

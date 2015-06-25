@@ -111,6 +111,9 @@
     <Compile Include="Pages\ConversationsPage.xaml.cs">
       <DependentUpon>ConversationsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\DebugPage.xaml.cs">
+      <DependentUpon>DebugPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\HashtagEntriesPage.xaml.cs">
       <DependentUpon>HashtagEntriesPage.xaml</DependentUpon>
     </Compile>
@@ -243,6 +246,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ConversationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DebugPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

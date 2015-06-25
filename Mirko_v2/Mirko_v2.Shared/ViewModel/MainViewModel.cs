@@ -389,6 +389,12 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private RelayCommand _goToDebugPage;
+        public RelayCommand GoToDebugPage
+        {
+            get { return _goToDebugPage ?? (_goToDebugPage = new RelayCommand(() => NavService.NavigateTo("DebugPage"))); }
+        }
+
         private RelayCommand _addNewMirkoEntries = null;
         public RelayCommand AddNewMirkoEntries
         {
