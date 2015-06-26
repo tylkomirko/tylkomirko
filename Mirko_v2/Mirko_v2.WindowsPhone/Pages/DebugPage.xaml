@@ -5,36 +5,77 @@
     xmlns:local="using:Mirko_v2.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Debug, Mode=OneWay, Source={StaticResource Locator}}">
     
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <UserControl.Resources>
+        <DataTemplate x:Key="ListViewHeader">
+            <TextBlock Text="{Binding}"
+                       Style="{StaticResource HeaderTextBlockStyle}"
+                       Foreground="Gray"
+                       FontSize="20" />
+        </DataTemplate>
         
-        <ListView Grid.Row="0"
-                  Header="Zadania w tle:"
+        <DataTemplate x:Key="ListViewItem">
+            <TextBlock Text="{Binding}"
+                       TextWrapping="Wrap"
+                       Style="{StaticResource BodyTextBlockStyle}"
+                       FontSize="16" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <i:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding UpdateCommand}" />
+        </core:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+
+    <ScrollViewer>
+        <Grid Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Row="0"
+                  HeaderTemplate="{StaticResource ListViewHeader}"
+                  Header="Zarejestrowane zadania w tle:"
+                  ItemTemplate="{StaticResource ListViewItem}"
                   ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                  ItemsSource="{Binding RegisteredBackgroundTasks}">
-            
-            <ListView.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               Foreground="Gray"
-                               FontSize="18" />
-                </DataTemplate>
-            </ListView.HeaderTemplate>
-            
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               FontSize="16" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            
-        </ListView>
-    </Grid>
+                  ItemsSource="{Binding RegisteredBackgroundTasks}" />
+
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Ostatnie uruchomienie zadań w tle:"
+                       Style="{StaticResource HeaderTextBlockStyle}"
+                       Foreground="Gray"
+                       FontSize="20" />
+
+                <TextBlock FontSize="16"
+                       Style="{StaticResource BodyTextBlockStyle}">
+                <Run Text="PseudoPush:" />
+                <Run Text="{Binding PseudoPushLastTime}" />
+                </TextBlock>
+
+                <TextBlock FontSize="16"
+                       Style="{StaticResource BodyTextBlockStyle}">
+                <Run Text="Cleaner:" />
+                <Run Text="{Binding CleanerLastTime}" />
+                </TextBlock>
+            </StackPanel>
+
+            <ListView Grid.Row="2"
+                      Visibility="Collapsed"
+                  HeaderTemplate="{StaticResource ListViewHeader}"
+                  Header="Zapisane logi:"
+                  ItemTemplate="{StaticResource ListViewItem}"
+                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                  ItemsSource="{Binding Logs}" />
+
+        </Grid>
+    </ScrollViewer>
 </UserControl>

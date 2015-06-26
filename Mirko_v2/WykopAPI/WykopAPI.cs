@@ -1,4 +1,5 @@
 ﻿using MetroLog;
+using MetroLog.Targets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PropertyChanged;

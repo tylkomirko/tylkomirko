@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using MetroLog;
+using MetroLog.Targets;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using Newtonsoft.Json;
@@ -109,6 +111,15 @@ namespace Mirko_v2
                 bool nightMode = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["NightMode"];
                 RequestedTheme = nightMode ? ApplicationTheme.Dark : ApplicationTheme.Light;
             }
+
+            var configuration = new LoggingConfiguration();
+#if DEBUG
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new DebugTarget());
+#endif
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget() { RetainDays = 7 });
+            configuration.IsEnabled = true;
+
+            LogManagerFactory.DefaultConfiguration = configuration;
         }
 
         private Frame CreateRootFrame()

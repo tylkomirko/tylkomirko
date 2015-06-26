@@ -1,6 +1,8 @@
 ﻿using MetroLog;
+using MetroLog.Targets;
 using Newtonsoft.Json;
 using NotificationsExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +20,15 @@ namespace BackgroundTasks
 
         public PseudoPush()
         {
+            var configuration = new LoggingConfiguration();
+#if DEBUG
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new DebugTarget());
+#endif
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget() { RetainDays = 7 });
+            configuration.IsEnabled = true;
+
+            LogManagerFactory.DefaultConfiguration = configuration;
+
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<PseudoPush>();
         }
 
@@ -30,18 +41,24 @@ namespace BackgroundTasks
             ApiService = new WykopAPI.WykopAPI();
 
             if (ApiService.UserInfo == null ||
-                string.IsNullOrEmpty(ApiService.UserInfo.UserName) || 
-                string.IsNullOrEmpty(ApiService.UserInfo.AccountKey)) 
+                string.IsNullOrEmpty(ApiService.UserInfo.UserName) ||
+                string.IsNullOrEmpty(ApiService.UserInfo.AccountKey))
+            {
+                Logger.Trace("UserInfo is null. Terminating.");
+
+                deferral.Complete();
                 return;
+            }
 
             // everything is fine, let's log in and check notifications
             var hashtagCount = await ApiService.getHashtagNotificationsCount();
             var notifications = await GetNotifications();
 
+            Logger.Trace(hashtagCount.Count + " hashtag notifications");
+            Logger.Trace(notifications.Count + " new notifications");
+
             if (notifications.Count > 0)
             {
-                Logger.Trace(notifications.Count + " new notifications.");
-
                 SendToasts(notifications);
                 ApiService.UserInfo.LastToastDate = notifications.First().Date;
             }
@@ -49,6 +66,8 @@ namespace BackgroundTasks
             NotificationsManager.SetBadge((uint)(hashtagCount.Count + notifications.Count));
             ApiService.SaveUserInfo();
             ApiService.Dispose();
+
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values["PseudoPushLastTime"] = DateTime.Now.ToBinary();
 
             deferral.Complete();
         }

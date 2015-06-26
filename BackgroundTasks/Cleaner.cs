@@ -1,4 +1,5 @@
 ﻿using MetroLog;
+using MetroLog.Targets;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,15 @@ namespace BackgroundTasks
 
         public Cleaner()
         {
+            var configuration = new LoggingConfiguration();
+#if DEBUG
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new DebugTarget());
+#endif
+            configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget() { RetainDays = 7 });
+            configuration.IsEnabled = true;
+
+            LogManagerFactory.DefaultConfiguration = configuration;
+
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<Cleaner>();
         }
 
@@ -24,6 +34,8 @@ namespace BackgroundTasks
             Logger.Trace("Image cache cleaner started.");
 
             await CleanImageCache();
+
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values["CleanerLastTime"] = DateTime.Now.ToBinary();
 
             deferral.Complete();
         }
