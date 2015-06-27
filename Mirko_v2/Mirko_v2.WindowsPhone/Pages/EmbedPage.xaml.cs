@@ -27,9 +27,6 @@ namespace Mirko_v2.Pages
 
         private void ImageScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            img.Height = Window.Current.Bounds.Height;
-            img.Width = Window.Current.Bounds.Width;
-
             var x = ImageScrollViewer.ScrollableWidth / 2;
             var y = ImageScrollViewer.ScrollableHeight / 2;
 
@@ -67,11 +64,6 @@ namespace Mirko_v2.Pages
         {
             var bitmap = args.NewValue as BitmapImage;
             if (bitmap == null) return;
-
-            var xScale = (bitmap.PixelWidth * 4) / Window.Current.Bounds.Width;
-            var yScale = (bitmap.PixelHeight * 4) / Window.Current.Bounds.Height;
-            var maxScale = (new List<double>(2) { xScale, yScale }).Max();
-            ImageScrollViewer.MaxZoomFactor = (float)maxScale;
 
             Ring.IsActive = false;
             Ring.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
