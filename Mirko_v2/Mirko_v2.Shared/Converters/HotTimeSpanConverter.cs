@@ -33,6 +33,8 @@ namespace Mirko.Converters
                 return 2;
             else if (timespan == 12)
                 return 3;
+            else if (timespan == 24)
+                return 4;
             else
                 return 3;
         }
@@ -49,6 +51,8 @@ namespace Mirko.Converters
                 return 6;
             else if (index == 3)
                 return 12;
+            else if (index == 4)
+                return 24;
             else
                 return 12;
         }

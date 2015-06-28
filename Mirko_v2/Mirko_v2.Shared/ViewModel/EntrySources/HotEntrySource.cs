@@ -57,7 +57,7 @@ namespace Mirko_v2.ViewModel
                     {
                         ct.ThrowIfCancellationRequested();
 
-                        if (timeSpan == 6 || timeSpan == 12)
+                        if (timeSpan >= 6)
                         {
                             newEntries = await App.ApiService.getHotEntries(timeSpan, pageIndex++);
                         }

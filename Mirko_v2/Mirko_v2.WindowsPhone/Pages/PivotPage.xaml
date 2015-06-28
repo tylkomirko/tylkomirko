@@ -128,7 +128,7 @@
                 </i:Interaction.Behaviors>
                 
                 <ListView.Header>
-                    <Rectangle Height="300"
+                    <Rectangle Height="270"
                                Fill="Transparent" />
                 </ListView.Header>
                 
@@ -148,6 +148,7 @@
                     <x:String>z ostatnich 3 godzin</x:String>
                     <x:String>z ostatnich 6 godzin</x:String>
                     <x:String>z ostatnich 12 godzin</x:String>
+                    <x:String>z ostatnich 24 godzin</x:String>
                 </ListView.Items>
 
             </ListView>
