@@ -172,10 +172,12 @@
                                      ItemsSource="{Binding MirkoEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IsItemClickEnabled="False"
+                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7"
                                      Tag="LV0">
-
+                    
                     <ListView.Header>
                         <Rectangle Height="135"
                                    Fill="Transparent" />
@@ -198,6 +200,8 @@
                                      ItemsSource="{Binding HotEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7"
                                      IsItemClickEnabled="False"
                                      Tag="LV1">
 
@@ -240,6 +244,8 @@
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7"
                                      IsItemClickEnabled="False"
                                      Tag="LV2">
 
@@ -274,6 +280,8 @@
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7"
                                      IsItemClickEnabled="False"
                                      Tag="LV3">
 

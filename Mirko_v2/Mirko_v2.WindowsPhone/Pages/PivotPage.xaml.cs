@@ -78,7 +78,7 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
-            AppBar.Hide();
+            //AppBar.Hide();
 
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
@@ -89,7 +89,7 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
-            AppBar.Show();
+            //AppBar.Show();
 
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0 && CanShowNewEntriesPopup)
@@ -126,7 +126,9 @@ namespace Mirko_v2.Pages
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var VM = this.DataContext as MainViewModel;
-            var lv = sender as ListView;
+            var lv = sender as ListViewEx;
+
+            lv.AppBar = AppBar;
 
             ObservableCollectionEx<EntryViewModel> items = null;
             string tag = (string)lv.Tag;

@@ -1,5 +1,6 @@
 ﻿using Mirko_v2.Utils;
 using System;
+using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -42,8 +43,8 @@ namespace Mirko_v2.Controls
         }
 
         #region Scrolling detection
-        private const int OffsetDelta = 24;
-        private const int CounterTrigger = 6;
+        private const int OffsetDelta = 30;
+        private const int CounterTrigger = 10;
 
         private bool ScrollingDownCalled = false;
         private bool ScrollingUpCalled = false;
@@ -51,8 +52,8 @@ namespace Mirko_v2.Controls
         private int ScrollingUpCounter = 0;
         private int ScrollingDownCounter = 0;
 
-        private int PreviousOffset = 0;
-        private int Offset = 0;
+        private double PreviousOffset = 0;
+        private double Offset = 0;
 
         public event EventHandler ScrollingDown;
         public delegate void ScrollingDownEventHandler(object sender, EventArgs args);
@@ -62,16 +63,17 @@ namespace Mirko_v2.Controls
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var sV = sender as ScrollViewer;
-            var newOffset = Convert.ToInt32(sV.VerticalOffset) / 2;
+            //var newOffset = Convert.ToInt32(sV.VerticalOffset) / 2;
+            var newOffset = sV.VerticalOffset;
 
             PreviousOffset = Offset;
             Offset = newOffset;
 
             var delta = Offset - PreviousOffset;
-            // Debug.WriteLine("delta: " + delta);
+            //Debug.WriteLine("delta: " + delta);
 
             bool callAction = false;
-            if (delta > 2)
+            if (delta > 40)
             {
                 if (delta > OffsetDelta)
                 {
@@ -86,7 +88,7 @@ namespace Mirko_v2.Controls
 
                 if (callAction && !ScrollingDownCalled)
                 {
-                    //Debug.WriteLine("scrolling down");
+                    Debug.WriteLine("scrolling down");
 
                     if (AppBar != null)
                     {
@@ -104,7 +106,7 @@ namespace Mirko_v2.Controls
                     ScrollingUpCounter = 0;
                 }
             }
-            else if (delta < -2)
+            else if (delta < -40)
             {
                 if (delta < -OffsetDelta || newOffset == 0)
                 {
@@ -119,7 +121,7 @@ namespace Mirko_v2.Controls
 
                 if (callAction && !ScrollingUpCalled)
                 {
-                    //Debug.WriteLine("scrolling up");
+                    Debug.WriteLine("scrolling up");
 
                     if (AppBar != null)
                     {
