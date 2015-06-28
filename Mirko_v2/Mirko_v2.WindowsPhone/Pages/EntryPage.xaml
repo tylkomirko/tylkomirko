@@ -22,7 +22,9 @@
                          Loaded="ListView_Loaded"
                          ScrollingDown="ListView_ScrollingDown"
                          ScrollingUp="ListView_ScrollingUp"
-                         VirtualizingStackPanel.VirtualizationMode="Recycling">
+                         VirtualizingStackPanel.VirtualizationMode="Recycling"
+                         IncrementalLoadingThreshold="6"
+                         DataFetchSize="7">
         
 
         <ListView.Header>
