@@ -68,10 +68,19 @@ namespace Mirko_v2.ViewModel
                             newEntries = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
                         }
 
-                        if (newEntries != null)                            
-                            entries.AddRange(newEntries);
+                        if (newEntries != null)
+                        {
+                            if (mainVM.HotEntries.Count > 0)
+                            {
+                                // this is to avoid duplicates.
+                                var currentIDs = mainVM.HotEntries.Select(x => x.Data.ID);
+                                newEntries = newEntries.Where(x => !currentIDs.Contains(x.ID));
+                            }
 
-                        if (pageIndex >= 12)
+                            entries.AddRange(newEntries);
+                        }
+
+                        if (pageIndex >= 12 || (newEntries != null && newEntries.Count() == 0))
                         {
                             mainVM.HotEntries.HasMoreItems = false;
                             if (mainVM.HotEntries.Count == 0 && entries.Count == 0)
