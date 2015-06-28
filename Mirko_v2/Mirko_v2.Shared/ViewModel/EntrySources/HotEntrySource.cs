@@ -74,7 +74,7 @@ namespace Mirko_v2.ViewModel
                         if (pageIndex >= 12)
                         {
                             mainVM.HotEntries.HasMoreItems = false;
-                            if (mainVM.HotEntries.Count == 0)
+                            if (mainVM.HotEntries.Count == 0 && entries.Count == 0)
                                 DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasNoItems = true);
                             break;
                         }
