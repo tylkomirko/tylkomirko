@@ -78,8 +78,6 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
         {
-            //AppBar.Hide();
-
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
                 HideNewEntriesPopup();
@@ -89,8 +87,6 @@ namespace Mirko_v2.Pages
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
-            //AppBar.Show();
-
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0 && CanShowNewEntriesPopup)
                 ShowNewEntriesPopup();
