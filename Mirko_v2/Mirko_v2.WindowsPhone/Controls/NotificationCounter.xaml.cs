@@ -11,7 +11,7 @@ namespace Mirko_v2.Controls
     {
         private int targetValue;
         private int currentValue;
-        private const int threshold = 10;
+        private const int threshold = 5;
         private const int flipsMax = 5; // number of flips in fast animation
         private int flipsCounter = 0;
 
