@@ -26,9 +26,23 @@ namespace Mirko.Converters
             if (diff.Days > 0)
             {
                 if (diff.Days == 1)
+                {
                     result = "1 dzień temu";
+                }
+                else if (diff.Days > 31)
+                {
+                    var months = diff.Days / 31;
+                    if (months == 1)
+                        result = "1 miesiąc temu";
+                    else if (months == 2 || months == 3 || months == 4)
+                        result = months + " miesiące temu";
+                    else
+                        result = months + " miesięcy temu";
+                }
                 else
+                {
                     result = diff.Days + " dni temu";
+                }
             }
             else if (diff.Hours > 0)
             {
