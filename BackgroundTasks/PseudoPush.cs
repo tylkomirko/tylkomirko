@@ -91,8 +91,9 @@ namespace BackgroundTasks
                 temp = await ApiService.getNotifications(pageIndex++);
                 if (temp == null) 
                     break;
-
+                
                 var newNotifications = temp.Where(x => x.IsNew).Where(x => supportedTypes.Contains(x.Type)).Where(x => x.Date > lastToast);
+                //var newNotifications = temp.Where(x => x.Type == NotificationType.EntryDirected).Take(1);
                 if (newNotifications.Count() == 0)
                     break;
                 else
@@ -438,8 +439,38 @@ namespace BackgroundTasks
                 ((XmlElement)toastNode).SetAttribute("launch", JsonConvert.SerializeObject(notification, Newtonsoft.Json.Formatting.None));
 
                 XmlNodeList toastTextElements = toastXml.GetElementsByTagName("text");
-                var notificationText = notification.Text.Replace(@"""", "").Replace("  ", " ");
-                toastTextElements[1].AppendChild(toastXml.CreateTextNode(notificationText));
+                if (notification.Type == NotificationType.EntryDirected)
+                {
+                    string headline = "@" + notification.AuthorName + " woła Cię";
+                    string body = notification.Entry.Text;
+
+                    toastTextElements[0].AppendChild(toastXml.CreateTextNode(headline));
+                    toastTextElements[1].AppendChild(toastXml.CreateTextNode(body));
+                }
+                else if(notification.Type == NotificationType.CommentDirected)
+                {
+                    string headline = "@" + notification.AuthorName;
+                    headline += (notification.AuthorSex == UserSex.Female) ? " napisała" : " napisał";
+                    headline += " do Ciebie w komentarzu.";
+
+                    string body = notification.Entry.Text;
+
+                    toastTextElements[0].AppendChild(toastXml.CreateTextNode(headline));
+                    toastTextElements[1].AppendChild(toastXml.CreateTextNode(body));
+                }
+                else if (notification.Type == NotificationType.PM)
+                {
+                    string headline = "Nowa prywatna wiadomość";
+                    string body = "od @" + notification.AuthorName;
+
+                    toastTextElements[0].AppendChild(toastXml.CreateTextNode(headline));
+                    toastTextElements[1].AppendChild(toastXml.CreateTextNode(body));
+                }
+                else
+                {
+                    var notificationText = notification.Text.Replace(@"""", "").Replace("  ", " ");
+                    toastTextElements[1].AppendChild(toastXml.CreateTextNode(notificationText));
+                }
 
                 ToastNotification toast = new ToastNotification(toastXml);
                 notifier.Show(toast);
