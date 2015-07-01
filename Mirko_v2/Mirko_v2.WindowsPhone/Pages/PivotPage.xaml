@@ -166,18 +166,23 @@
 
             <!--Pivot item one-->
             <PivotItem Margin="10,0,0,0">
-                <controls:ListViewEx x:Name="MirkoListView"
-                                     ScrollingDown="ListView_ScrollingDown"
-                                     ScrollingUp="ListView_ScrollingUp"
-                                     Loaded="ListView_Loaded"
-                                     ItemsSource="{Binding MirkoEntries}"
-                                     ItemTemplate="{StaticResource EntryTemplate}"
-                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                     IsItemClickEnabled="False"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                     IncrementalLoadingThreshold="6"
-                                     DataFetchSize="7"
-                                     Tag="LV0">
+                <controls:PullToRefreshListView x:Name="MirkoListView"
+                                                ScrollingDown="ListView_ScrollingDown"
+                                                ScrollingUp="ListView_ScrollingUp"
+                                                Loaded="ListView_Loaded"
+                                                RefreshCommand="{Binding RefreshMirkoEntries}"
+                                                Foreground="{ThemeResource EntryBodyForeground}"
+                                                PullText="Przytrzymaj żeby odświeżyć..."
+                                                RefreshText="Puść żeby odświeżyć."
+                                                ArrowColor="White"
+                                                ItemsSource="{Binding MirkoEntries}"
+                                                ItemTemplate="{StaticResource EntryTemplate}"
+                                                ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                                IsItemClickEnabled="False"
+                                                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                IncrementalLoadingThreshold="6"
+                                                DataFetchSize="7"
+                                                Tag="LV0">                   
                     
                     <ListView.Header>
                         <Rectangle Height="135"
@@ -189,7 +194,7 @@
                                    Fill="Transparent" />
                     </ListView.Footer>
 
-                </controls:ListViewEx>
+                </controls:PullToRefreshListView>
             </PivotItem>
 
             <!--Pivot item two-->

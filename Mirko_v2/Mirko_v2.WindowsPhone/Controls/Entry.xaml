@@ -179,8 +179,8 @@
                        IsTextScaleFactorEnabled="False"
                        IsDoubleTapEnabled="True"
                        TextWrapping="Wrap"
-                       HorizontalAlignment="Stretch"
                        FontSize="14.0"
+                       Foreground="{ThemeResource EntryBodyForeground}"
                        utils:Properties.Html="{Binding Data.Text}"/>
 
         <Grid x:Name="EmbedPreviewGrid"

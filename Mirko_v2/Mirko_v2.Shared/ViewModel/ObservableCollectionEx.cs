@@ -20,8 +20,15 @@ namespace Mirko_v2.ViewModel
 
         public void PrependRange(IEnumerable<T> col)
         {
-            if (col != null)
+            if (col != null && col.Count() > 0)
             {
+                var moveEventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, this.Items, col.Count(), 0);
+                base.OnCollectionChanged(moveEventArgs);
+
+                foreach (var item in col)
+                    base.Insert(0, item);
+
+                /*
                 int length = col.Count() - 1;
                 for (int i = length; i >= 0; i--)
                 {
@@ -31,7 +38,7 @@ namespace Mirko_v2.ViewModel
 
                 var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 base.OnCollectionChanged(eventArgs);
-                base.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                base.OnPropertyChanged(new PropertyChangedEventArgs("Count"));*/
             }
         }
 

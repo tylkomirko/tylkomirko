@@ -23,6 +23,7 @@
             <SolidColorBrush x:Key="SpoilerBackground" Color="#3C3C3C" />
             <SolidColorBrush x:Key="SpoilerForeground" Color="#EDF4FB" />
 
+            <SolidColorBrush x:Key="EntryBodyForeground" Color="White" />
             <SolidColorBrush x:Key="UsernameForeground" Color="#6cb0dd" />
             <SolidColorBrush x:Key="UsernameSpoilerForeground" Color="#c0c0c0" />
             <SolidColorBrush x:Key="HashtagForeground" Color="#6cb0dd" />
@@ -88,6 +89,7 @@
             <SolidColorBrush x:Key="SpoilerBackground" Color="#6cb0dd" />
             <SolidColorBrush x:Key="SpoilerForeground" Color="White" />
 
+            <SolidColorBrush x:Key="EntryBodyForeground" Color="Black" />
             <SolidColorBrush x:Key="UsernameForeground" Color="#6cb0dd" />
             <SolidColorBrush x:Key="UsernameSpoilerForeground" Color="#404040" />
             <SolidColorBrush x:Key="HashtagForeground" Color="#6cb0dd" />

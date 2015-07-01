@@ -326,9 +326,10 @@ namespace Mirko_v2.ViewModel
             get { return _refreshMirkoEntries ?? (_refreshMirkoEntries = new RelayCommand(ExecuteRefreshMirkoEntries)); }
         }
 
-        private void ExecuteRefreshMirkoEntries()
+        private async void ExecuteRefreshMirkoEntries()
         {
-            
+            await CheckNewMirkoEntries();
+            AddNewMirkoEntries.Execute(null);
         }
 
         private RelayCommand<string> _goToHashtagPage = null;

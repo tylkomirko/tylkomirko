@@ -10,8 +10,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Mirko_v2.Controls
 {
-    // broken
-    public class PullToRefreshListView : ListView
+    public class PullToRefreshListView : ListViewEx
     {
         private const string ScrollViewerControl = "ScrollViewer";
         private const string ContainerGrid = "ContainerGrid";
@@ -85,14 +84,14 @@ namespace Mirko_v2.Controls
             base.OnApplyTemplate();
             scrollViewer = (ScrollViewer)GetTemplateChild(ScrollViewerControl);
             scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
-            //scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshHeaderHeight);
+            scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshHeaderHeight);
             var transform = new CompositeTransform();
             transform.TranslateY = -RefreshHeaderHeight;
-            //scrollViewer.RenderTransform = transform;
+            scrollViewer.RenderTransform = transform;
 
             containerGrid = (Grid)GetTemplateChild(ContainerGrid);
             pullToRefreshIndicator = (Border)GetTemplateChild(PullToRefreshIndicator);
-            //SizeChanged += OnSizeChanged;
+            SizeChanged += OnSizeChanged;
         }
 
         /// <summary>
@@ -241,6 +240,5 @@ namespace Mirko_v2.Controls
                 RefreshCommand.Execute(null);
             }
         }
-
     }
 }
