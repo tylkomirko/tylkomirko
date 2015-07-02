@@ -25,20 +25,9 @@ namespace Mirko_v2.ViewModel
                 var moveEventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, this.Items, col.Count(), 0);
                 base.OnCollectionChanged(moveEventArgs);
 
-                foreach (var item in col)
+                var reversed = col.Reverse();
+                foreach (var item in col.Reverse())
                     base.Insert(0, item);
-
-                /*
-                int length = col.Count() - 1;
-                for (int i = length; i >= 0; i--)
-                {
-                    var item = col.ElementAt(i);
-                    base.Items.Insert(0, item);
-                }
-
-                var eventArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                base.OnCollectionChanged(eventArgs);
-                base.OnPropertyChanged(new PropertyChangedEventArgs("Count"));*/
             }
         }
 
