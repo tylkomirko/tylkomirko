@@ -50,12 +50,15 @@ namespace Mirko_v2.ViewModel
             SaveTimer = null;
         }
 
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+
         #region Properties
-        private List<string> _cachedImages = null;
+        private List<string> CachedImages = null;
+        /*
         public List<string> CachedImages
         {
             get { return _cachedImages ?? (_cachedImages = new List<string>()); }
-        }
+        }*/
 
         private ObservableCollectionEx<string> _popularHashtags = null;
         public ObservableCollectionEx<string> PopularHashtags
@@ -91,19 +94,6 @@ namespace Mirko_v2.ViewModel
 
             bool needToDownload = false;
             var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-
-            // CachedImages
-            try
-            {
-                var folder = await tempFolder.GetFolderAsync("ImageCache");
-                var files = await folder.GetFilesAsync();
-                Logger.Info(files.Count + " images in cache.");
-                CachedImages.AddRange(files.Select(x => x.Name));
-                files = null;
-            }
-            catch (Exception)
-            {
-            }
 
             // PopularTags
             try
@@ -220,6 +210,25 @@ namespace Mirko_v2.ViewModel
             return stream;
         }
 
+        private async Task BuildImageCache()
+        {
+            if (CachedImages != null)
+                return;
+
+            try
+            {
+                var folder = await Windows.Storage.ApplicationData.Current.TemporaryFolder.GetFolderAsync("ImageCache");
+                var files = await folder.GetFilesAsync();
+                Logger.Info(files.Count + " images in cache.");
+
+                CachedImages = new List<string>(files.Select(x => x.Name));
+                files = null;
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL)
         {
             if (previewURL == null || fullURL == null) return null;
@@ -233,6 +242,13 @@ namespace Mirko_v2.ViewModel
             {
                 var localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
                 ImageCacheFolder = await localFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
+            }
+
+            if(CachedImages == null)
+            {
+                await _semaphore.WaitAsync();
+                await BuildImageCache();
+                _semaphore.Release();
             }
 
             StorageFile file = null;

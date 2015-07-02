@@ -1,7 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko_v2.ViewModel;
-using System;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -15,14 +13,6 @@ namespace Mirko_v2.Controls
         public CachedImage()
         {
             this.InitializeComponent();
-        }
-
-        public void ImageLoaded()
-        {
-            this.ImageFadeIn.Begin();
-
-            this.Ring.IsActive = false;
-            this.Ring.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
         #region Uri depedency property
@@ -43,8 +33,10 @@ namespace Mirko_v2.Controls
 
             var control = d as CachedImage;
             var fullURL = (control.DataContext as EmbedViewModel).EmbedData.URL;
-
             var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
+
+            control.Ring.IsActive = true;
+            control.Ring.Visibility = Visibility.Visible;
             var stream = await cacheVM.GetImageStream(url, fullURL);
 
             if(stream != null)
@@ -52,6 +44,7 @@ namespace Mirko_v2.Controls
                 var bitmap = new BitmapImage();
                 bitmap.SetSource(stream);
                 control.Image.Source = bitmap;
+                control.Ring.Visibility = Visibility.Collapsed;
 
                 //stream.Dispose(); // when to dispose?
             }
