@@ -456,6 +456,18 @@ namespace Mirko_v2.ViewModel
             await App.ApiService.readHashtagNotifications();
         }
 
+        private RelayCommand _deleteCurrentHashtagNotifications = null;
+        public RelayCommand DeleteCurrentHashtagNotifications
+        {
+            get { return _deleteCurrentHashtagNotifications ?? (_deleteCurrentHashtagNotifications = new RelayCommand(ExecuteDeleteCurrentHashtagNotifications)); }
+        }
+
+        private void ExecuteDeleteCurrentHashtagNotifications()
+        {
+            DeleteHashtagNotifications.Execute(CurrentHashtag.Name);
+            NavService.GoBack();
+        }
+
         private RelayCommand<string> _observeHashtag = null;
         public RelayCommand<string> ObserveHashtag
         {
