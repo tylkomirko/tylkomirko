@@ -328,6 +328,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteRefreshMirkoEntries()
         {
+            Logger.Trace("RefreshMirkoEntries");
             await CheckNewMirkoEntries();
             AddNewMirkoEntries.Execute(null);
         }
