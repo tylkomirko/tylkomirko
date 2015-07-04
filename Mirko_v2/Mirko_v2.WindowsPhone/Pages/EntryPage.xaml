@@ -6,26 +6,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:q="using:QKit"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <controls:ListViewEx x:Name="ListView"
-                         Grid.Row="1"
-                         Margin="0,-132.5,0,0"
-                         HorizontalAlignment="Stretch"
-                         DataContext="{Binding SelectedEntry}"
-                         ItemsSource="{Binding Comments}"
-                         ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                         IsItemClickEnabled="False"
-                         Loaded="ListView_Loaded"
-                         ScrollingDown="ListView_ScrollingDown"
-                         ScrollingUp="ListView_ScrollingUp"
-                         VirtualizingStackPanel.VirtualizationMode="Recycling"
-                         IncrementalLoadingThreshold="6"
-                         DataFetchSize="7">
-        
+    <q:MultiSelectListView x:Name="ListView"
+                           Grid.Row="1"
+                           Margin="0,-132.5,0,0"
+                           HorizontalAlignment="Stretch"
+                           DataContext="{Binding SelectedEntry}"
+                           ItemsSource="{Binding Comments}"
+                           IsItemClickEnabled="False"
+                           Loaded="ListView_Loaded"
+                           SelectionModeChanged="ListView_SelectionModeChanged"
+                           VirtualizingStackPanel.VirtualizationMode="Recycling"
+                           IncrementalLoadingThreshold="6"
+                           DataFetchSize="7">       
 
         <ListView.Header>
             <StackPanel Margin="0,0,0,0">
@@ -52,5 +50,5 @@
                        Height="64" />
         </ListView.Footer>
 
-    </controls:ListViewEx>
+    </q:MultiSelectListView>
 </UserControl>

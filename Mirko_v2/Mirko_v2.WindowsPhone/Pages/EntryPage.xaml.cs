@@ -44,16 +44,44 @@ namespace Mirko_v2.Pages
             AppBar.Show();
         }
 
+        private void ListView_SelectionModeChanged(object sender, RoutedEventArgs e)
+        {
+            if(ListView.SelectionMode == ListViewSelectionMode.Multiple)
+            {
+                //AppBar.MakeButtonInvisible();
+            }
+        }
+
         #region AppBar
         private CommandBar AppBar = null;
 
         public CommandBar CreateCommandBar()
         {
-            var c = new CommandBar() { IsOpen = true };
+            var c = new CommandBar();
+
+            // buttons only visible in comment selection mode
+            var comment = new AppBarButton()
+            {
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
+                Label = "odpowiedz",
+                Tag = "reply",
+                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+            };
+
+            var delete = new AppBarButton()
+            {
+                Icon = new SymbolIcon(Symbol.Delete),
+                Label = "usuń",
+                Tag = "delete",
+                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+            };
+
+            // regular buttons
             var refresh = new AppBarButton()
             {
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
                 Label = "odśwież",
+                Tag = "refresh"
             };
             refresh.Click += RefreshButton_Click;
 
@@ -61,6 +89,7 @@ namespace Mirko_v2.Pages
             {
                 Icon = new SymbolIcon(Symbol.Up),
                 Label = "w górę",
+                Tag = "up"
             };
             up.Click += ScrollUpButton_Click;
 
@@ -70,6 +99,8 @@ namespace Mirko_v2.Pages
                 Label = "nowy",
             };
 
+            c.PrimaryCommands.Add(comment);
+            c.PrimaryCommands.Add(delete);
             //c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);

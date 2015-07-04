@@ -15,7 +15,7 @@ namespace Mirko_v2.Utils
             var src = sender as Controls.Entry;
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(src.GetDescendant<Grid>("EntryGrid"));
 
-            var entryData = (src.DataContext as EntryViewModel).Data;
+            var entryData = (src.DataContext as EntryBaseViewModel).DataBase;
 
             var userInfo = App.ApiService.UserInfo;
             if (userInfo == null || userInfo.UserName == null)
@@ -55,7 +55,11 @@ namespace Mirko_v2.Utils
                 makeFlyoutItemVisible("unplus");
             }
 
-            if (entryData.Favourite)
+            if (entryData is EntryComment)
+            {
+                makeFlyoutItemInvisible("favourite");
+            }
+            else if (entryData is Entry && (entryData as Entry).Favourite)
             {
                 makeFlyoutItemInvisible("favourite");
                 makeFlyoutItemVisible("unfavourite");

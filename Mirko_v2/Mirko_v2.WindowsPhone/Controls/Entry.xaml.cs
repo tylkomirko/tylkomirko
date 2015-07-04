@@ -101,6 +101,19 @@ namespace Mirko_v2.Controls
             }
         }
 
+        private void VoteTB_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (e != null)
+                e.Handled = true;
+
+            if (DataContext != null)
+            {
+                var entryVM = DataContext as EntryBaseViewModel;
+                if (entryVM != null)
+                    entryVM.VoteCommand.Execute(null);
+            }
+        }
+
         private void UserControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             if (e != null)
@@ -110,18 +123,9 @@ namespace Mirko_v2.Controls
 
             if (DataContext != null)
             {
-                var entryVM = DataContext as EntryViewModel;
+                var entryVM = DataContext as EntryBaseViewModel;
                 if(entryVM != null)
-                {
                     entryVM.VoteCommand.Execute(null);
-                }
-                else
-                {
-                    var commentVM = DataContext as CommentViewModel;
-                    if (commentVM != null)
-                        commentVM.VoteCommand.Execute(null);
-
-                }
             }
         }
 
@@ -130,40 +134,18 @@ namespace Mirko_v2.Controls
             if (string.IsNullOrEmpty(tag) || tb == null) return;
 
             var mf = Resources["HashtagFlyout"] as MenuFlyout;
-            var VM = DataContext as EntryViewModel;
+            var VM = DataContext as EntryBaseViewModel;
             VM.PrepareHashtagFlyout(ref mf, tag);            
 
             mf.ShowAt(tb);
         }
 
-        private void VoteTB_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (e != null)
-                e.Handled = true;
-
-            if (DataContext != null)
-            {
-                var entryVM = DataContext as EntryViewModel;
-                if (entryVM != null)
-                {
-                    entryVM.VoteCommand.Execute(null);
-                }
-                else
-                {
-                    var commentVM = DataContext as CommentViewModel;
-                    if (commentVM != null)
-                        commentVM.VoteCommand.Execute(null);
-
-                }
-            }
-        }
-
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)
         {
             var inlines = this.VotersTB.Inlines;
-            var entryVM = this.DataContext as EntryViewModel;
+            var entryVM = this.DataContext as EntryBaseViewModel;
 
-            foreach(var voter in entryVM.Data.Voters)
+            foreach(var voter in entryVM.DataBase.Voters)
             {
                 inlines.Add(new Run() { Text = voter.AuthorName + " ", FontWeight = FontWeights.SemiLight, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13 });
             }

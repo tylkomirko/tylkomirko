@@ -24,7 +24,7 @@ namespace WykopAPI.Models
     };
 
     [ImplementPropertyChanged]
-    public class Entry
+    public class EntryBase
     {
         [JsonProperty("id")]
         public uint ID { get; set; }
@@ -51,11 +51,6 @@ namespace WykopAPI.Models
         [JsonProperty("embed")]
         public Embed Embed { get; set; }
 
-        [JsonProperty("comment_count")]
-        public uint CommentCount { get; set; }
-        [JsonProperty("comments")]
-        public List<EntryComment> Comments { get; set; }
-
         [JsonProperty("vote_count")]
         public uint VoteCount { get; set; }
         [JsonProperty("voters")]
@@ -63,6 +58,15 @@ namespace WykopAPI.Models
         [JsonProperty("user_vote")]
         [JsonConverter(typeof(BoolConverter))]
         public bool Voted { get; set; }
+    }
+
+    [ImplementPropertyChanged]
+    public class Entry : EntryBase
+    {
+        [JsonProperty("comment_count")]
+        public uint CommentCount { get; set; }
+        [JsonProperty("comments")]
+        public List<EntryComment> Comments { get; set; }
 
         [JsonProperty("user_favorite")]
         public bool Favourite { get; set; }

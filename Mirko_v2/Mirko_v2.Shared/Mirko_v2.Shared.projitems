@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandBarUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Cryptography.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DebugViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryBaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\FavEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\HotEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MyEntrySource.cs" />
