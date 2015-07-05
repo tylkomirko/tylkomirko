@@ -371,11 +371,13 @@ namespace Mirko_v2
             var viewModelName = (string)settings["VM"];
 
             bool resumed = false;
+            IResumable viewModel = null;
             if (viewModelName == "MainViewModel")
-            {
-                var resumableVM = SimpleIoc.Default.GetInstance<MainViewModel>() as IResumable;
-                resumed = await resumableVM.LoadState(pageKey);
-            }
+                viewModel = SimpleIoc.Default.GetInstance<MainViewModel>();
+            else if(viewModelName == "ProfilesViewModel")
+                viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+
+            resumed = await viewModel.LoadState(pageKey);
 
             if(resumed)
             {

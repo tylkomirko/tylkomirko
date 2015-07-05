@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PullToRefreshListView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BlacklistToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolInverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />
@@ -35,6 +36,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NotificationsCountToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ObservedToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PMDirectionToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
@@ -78,6 +81,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\FavEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\HotEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MyEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\UserEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\IResumable.cs" />
@@ -94,6 +98,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MessagesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PaymentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PMViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfilesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfileViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>

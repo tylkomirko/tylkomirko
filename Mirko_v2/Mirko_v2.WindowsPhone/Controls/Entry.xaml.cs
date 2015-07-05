@@ -129,6 +129,18 @@ namespace Mirko_v2.Controls
             }
         }
 
+        private void AuthorTB_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (e != null)
+                e.Handled = true;
+
+            var tb = sender as TextBlock;
+            if (tb == null) return;
+
+            var username = tb.Text;
+            ProfileTapped(username);
+        }
+
         public void HashtagTapped(string tag, TextBlock tb)
         {
             if (string.IsNullOrEmpty(tag) || tb == null) return;
@@ -138,6 +150,14 @@ namespace Mirko_v2.Controls
             VM.PrepareHashtagFlyout(ref mf, tag);            
 
             mf.ShowAt(tb);
+        }
+
+        public void ProfileTapped(string username)
+        {
+            if (string.IsNullOrEmpty(username)) return;
+
+            var VM = DataContext as EntryBaseViewModel;
+            VM.GoToProfilePage(username);
         }
 
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)

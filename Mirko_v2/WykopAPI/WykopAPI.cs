@@ -1,8 +1,6 @@
 ﻿using MetroLog;
-using MetroLog.Targets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -808,12 +806,12 @@ namespace WykopAPI
         #endregion
 
         #region User profile
-        public async Task<Profile> getProfile(string username)
+        public async Task<Profile> getProfile(string user)
         {
             if (this.limitExceeded)
                 return null;
 
-            string URL = "profile/index/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "profile/index/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             return await deserialize<Profile>(URL);
         }
 
@@ -824,7 +822,7 @@ namespace WykopAPI
 
             string URL = "profile/observe/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> unobserveUser(string user)
@@ -834,7 +832,16 @@ namespace WykopAPI
 
             string URL = "profile/unobserve/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
+        }
+
+        public async Task<List<Entry>> getUserEntries(string user, int pageIndex)
+        {
+            if (this.limitExceeded)
+                return null;
+
+            string URL = "profile/entries/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            return await deserialize<List<Entry>>(URL);
         }
         #endregion
 

@@ -22,6 +22,7 @@ namespace Mirko_v2.ViewModel
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage<Profile>>(this, ReadMessage);
         }
 
         private void ReadMessage(NotificationMessage obj)
@@ -62,6 +63,26 @@ namespace Mirko_v2.ViewModel
                     CurrentConversation = conversation;
                     GoToConversationPageCommand.Execute(null);
                 }
+            }
+        }
+
+        private void ReadMessage(NotificationMessage<Profile> obj)
+        {
+            if(obj.Notification == "Go to")
+            {
+                var p = obj.Content;
+
+                var conv = new Conversation()
+                {
+                    AuthorName = p.Login,
+                    AuthorAvatarURL = p.AvatarURL,
+                    AuthorGroup = p.Group,
+                    AuthorSex = p.Sex,
+                };
+
+                var convVM = new ConversationViewModel(conv);
+                CurrentConversation = convVM;
+                GoToConversationPageCommand.Execute(null);
             }
         }
 

@@ -28,5 +28,8 @@
     <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
     <converters:HotTimeSpanIndexConverter x:Key="HotTimeSpanIndexConverter" />
     <converters:NSFWToString x:Key="NSFWToString" />
+    <converters:NumberSeparator x:Key="NumberSeparator" />
+    <converters:ObservedToText x:Key="ObservedToText" />
+    <converters:BlacklistToText x:Key="BlacklistToText" />
 
 </ResourceDictionary>

@@ -194,7 +194,7 @@ namespace Mirko_v2.Utils
                 IsTapEnabled = false,
             };
 
-            //textBlock.Tapped += Userprofile_Tapped;
+            textBlock.Tapped += Userprofile_Tapped;
             container.Child = textBlock;
 
             s.Inlines.Add(container);
@@ -287,7 +287,6 @@ namespace Mirko_v2.Utils
         }
          * */
 
-        /*
         static void Userprofile_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
@@ -296,13 +295,9 @@ namespace Mirko_v2.Utils
             var control = tb.GetAntecedent<Controls.Entry>();
             if (control == null) return;
 
-            control.TappedHashtag = tb.Text;
-
-            var mf = control.Resources["HashtagFlyout"] as FlyoutBase;
-
-            mf.ShowAt(tb);
+            var username = tb.Text;
+            control.ProfileTapped(username);
         }
-        */
 
         static void Hashtag_Tapped(object sender, TappedRoutedEventArgs e)
         {
