@@ -104,9 +104,11 @@
                                        VerticalAlignment="Bottom"
                                        Margin="5,0,0,3.5"
                                        TextTrimming="CharacterEllipsis"
-                                       Text="{Binding Data.LastUpdate, Converter={StaticResource DateConverter}}"
                                        FontSize="15"
-                                       Foreground="#404040" />
+                                       Foreground="#404040">
+                                <Run Text="{Binding Data.LastUpdate, Converter={StaticResource DateConverter}}"/>
+                                <Run Text="temu"/>
+                            </TextBlock>
 
                             <TextBlock Grid.ColumnSpan="2"
                                        Grid.Row="1"

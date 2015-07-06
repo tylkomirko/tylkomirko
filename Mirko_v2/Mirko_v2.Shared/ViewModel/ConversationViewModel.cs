@@ -69,11 +69,28 @@ namespace Mirko_v2.ViewModel
             if (success)
             {
                 await StatusBarManager.ShowText("Wiadomość została wysłana.");
+
+                var newMessage = new PM()
+                {
+                    Text = NewEntry.Text,
+                    Date = DateTime.Now,
+                    Direction = MessageDirection.Sent,
+                    Status = ConversationStatus.Read,
+                };
+
+                // TODO: embed support
+
                 Data.LastMessage = NewEntry.Text;
-                Data.LastUpdate = DateTime.Now;
+                Data.LastUpdate = newMessage.Date;
+                Messages.Add(new PMViewModel(newMessage));
+                ProcessMessages();
+
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));
             }
             else
             {
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Fail"));
                 await StatusBarManager.ShowText("Wiadomość nie została wysłana.");
             }
         }
@@ -97,36 +114,27 @@ namespace Mirko_v2.ViewModel
                 return;
             }
 
+            IEnumerable<PM> newMessages = null;
             if(this.Messages.Count > 0)
-            {
-                var lastDate = this.Messages.Last().Data.Date;
-                var newMessages = pms.Where(x => x.Date > lastDate);
-
-                await DispatcherHelper.RunAsync(() => 
-                {
-                    foreach (var pm in newMessages)
-                        this.Messages.Add(new PMViewModel(pm));
-                });
-            }
+                newMessages = FilterMessages(pms);
             else
-            {
-                await DispatcherHelper.RunAsync(() =>
-                {
-                    foreach (var pm in pms)
-                        this.Messages.Add(new PMViewModel(pm));
-                });
-            }
+                newMessages = pms;
 
             await DispatcherHelper.RunAsync(() =>
             {
+                foreach (var pm in newMessages)
+                    this.Messages.Add(new PMViewModel(pm));
+
                 Data.LastUpdate = this.Messages.Last().Data.Date;
                 Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
                 ProcessMessages();
             });
 
-            Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Clear PM"));
+            Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Clear PM")); // clear PM notification
 
             await StatusBarManager.HideProgress();
+
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));
         }
 
         private RelayCommand _loadLastMessageCommand = null;
@@ -216,6 +224,39 @@ namespace Mirko_v2.ViewModel
                 if (pms[maxIndex].Data.Direction == MessageDirection.Sent)
                     pms[maxIndex].ShowArrow = false;
             }
+        }
+
+        private IEnumerable<PM> FilterMessages(List<PM> col)
+        {
+            var lastDate = this.Messages.Last().Data.Date;
+            var newMsg = col.Where(x => x.Date >= lastDate).ToList();
+            var ret = this.Messages.Select(x => x.Data).ToList();
+            ret.AddRange(newMsg);
+
+            // first find duplicates
+            var duplicates = ret
+                .GroupBy(i => i.Text)
+                .Where(g => g.Count() > 1)
+                .Select(g => g);
+
+            // now group them
+            foreach(var group in duplicates)
+            {
+                var key = group.Key;
+
+                var firstMessage = group.First();
+                var direction = firstMessage.Direction;
+                var date = firstMessage.Date;
+
+                var messagesToRemove = group.
+                    Where(x => x.Direction == direction).
+                    Where(x => Math.Abs(x.Date.Subtract(date).TotalSeconds) <= 120.0);
+
+                foreach (var msg in messagesToRemove)
+                    newMsg.Remove(msg);
+            }
+
+            return newMsg;
         }
 
         private RelayCommand _openPicker = null;

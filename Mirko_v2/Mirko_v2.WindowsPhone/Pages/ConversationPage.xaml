@@ -64,6 +64,14 @@
                                                  Margin="5,0,5,5"
                                                  DataContext="{Binding EmbedVM}"/>
                         </Grid>
+                        
+                        <TextBlock FontSize="12.5"
+                                   Foreground="LightGray"
+                                   Margin="0,0,6,6"
+                                   TextAlignment="Right">
+                            <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+                            <Run Text="temu"/>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -91,6 +99,14 @@
                                                  DataContext="{Binding EmbedVM}"/>
 
                         </Grid>
+
+                        <TextBlock FontSize="12.5"
+                                   Foreground="LightGray"
+                                   Margin="0,0,6,6"
+                                   TextAlignment="Right">
+                            <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+                            <Run Text="temu"/>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
 
@@ -173,7 +189,9 @@
                       ItemsSource="{Binding Messages}"
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       ItemTemplateSelector="{StaticResource PMTemplateSelector}"
-                      VirtualizingStackPanel.VirtualizationMode="Recycling">
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                      IncrementalLoadingThreshold="6"
+                      DataFetchSize="7">
 
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="Loaded">
@@ -199,7 +217,7 @@
                 </ListView.ItemContainerTransitions>
 
                 <ListView.Footer>
-                    <StackPanel Margin="35,0,10,92">
+                    <StackPanel Margin="35,0,0,92">
                         <Border BorderThickness="0"
                                 Background="{ThemeResource SentMessageBackground}">
                             <TextBox x:Name="TextBox"

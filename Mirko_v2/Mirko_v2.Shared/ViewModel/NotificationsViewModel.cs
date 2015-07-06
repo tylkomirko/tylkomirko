@@ -108,7 +108,7 @@ namespace Mirko_v2.ViewModel
             await CheckNotifications();
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
-            Messenger.Default.Send<NotificationMessage<uint>>(new NotificationMessage<uint>(HashtagNotificationsCount + AtNotificationsCount + PMNotificationsCount, "Update"));
+            Messenger.Default.Send<NotificationMessage<uint>>(new NotificationMessage<uint>(HashtagNotificationsCount + AtNotificationsCount + (uint)PMNotifications.Count, "Update"));
         }
 
         #region AppHeader commands

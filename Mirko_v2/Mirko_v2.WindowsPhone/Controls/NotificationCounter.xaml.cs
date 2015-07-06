@@ -44,7 +44,6 @@ namespace Mirko_v2.Controls
             if (count != null)
             {
                 c.targetValue = (int)count.Value;
-                if (c.targetValue == 0) return;
 
                 if (Math.Abs(c.currentValue - c.targetValue) < threshold)
                     c.SlowFlip_1.Begin();
@@ -77,7 +76,7 @@ namespace Mirko_v2.Controls
             else
                 return;
 
-            NumberTB.Text = currentValue.ToString();
+            NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
             SlowFlip_2.Begin();
         }
 
@@ -102,7 +101,7 @@ namespace Mirko_v2.Controls
             else
                 return;
 
-            NumberTB.Text = currentValue.ToString();
+            NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
             FastFlip_2.Begin();
         }
 

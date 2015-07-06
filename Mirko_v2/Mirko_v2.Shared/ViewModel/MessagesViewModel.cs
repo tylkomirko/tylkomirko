@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Ioc;
 using Windows.Storage;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -33,6 +34,11 @@ namespace Mirko_v2.ViewModel
                 if (currentPage == "ConversationPage" && CurrentConversation != null)
                     CurrentConversation.UpdateMessagesCommand.Execute(null);
             }
+            else if(obj.Notification == "Sort-Save")
+            {
+                SortConversationList();
+                SaveCommand.Execute(null);
+            } 
         }
 
         private async void ReadMessage(NotificationMessage<string> obj)
@@ -132,8 +138,8 @@ namespace Mirko_v2.ViewModel
             foreach(var conv in ConversationsList)
             {
                 Conversation tmp = conv.Data;
-                if(conv.Messages != null)
-                    tmp.Messages = new List<PM>(conv.Messages.Select(x => x.Data));
+                if (conv.Messages != null)
+                    await DispatcherHelper.RunAsync(() => tmp.Messages = new List<PM>(conv.Messages.Select(x => x.Data)));
                 list.Add(tmp);
             }
 
