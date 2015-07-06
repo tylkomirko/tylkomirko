@@ -128,8 +128,7 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot"
-          DataContext="{Binding CurrentConversation}"
-          Margin="0,25.6,0,0">
+          DataContext="{Binding CurrentConversation}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
