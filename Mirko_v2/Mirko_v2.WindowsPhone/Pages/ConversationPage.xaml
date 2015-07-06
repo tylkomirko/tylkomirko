@@ -192,12 +192,6 @@
                       IncrementalLoadingThreshold="6"
                       DataFetchSize="7">
 
-                <i:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="Loaded">
-                        <core:InvokeCommandAction Command="{Binding CheckIfOnline}" />
-                    </core:EventTriggerBehavior>
-                </i:Interaction.Behaviors>
-
                 <ListView.Header>
                     <Rectangle Height="160"
                                Fill="Transparent"/>
