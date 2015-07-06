@@ -244,7 +244,7 @@ namespace Mirko_v2.ViewModel
                 var pmVM = SimpleIoc.Default.GetInstance<MessagesViewModel>();
 
                 var conversation = pmVM.ConversationsList.FirstOrDefault(x => x.Data.AuthorName == userName);
-                if (conversation != null)
+                if (conversation.Data != null)
                 {
                     pmVM.CurrentConversation = conversation;
                     conversation.UpdateMessagesCommand.Execute(null);
