@@ -247,8 +247,7 @@ namespace Mirko_v2.ViewModel
                 if (conversation != null)
                 {
                     pmVM.CurrentConversation = conversation;
-                    if (conversation.Messages.Count == 0)
-                        conversation.UpdateMessagesCommand.Execute(null);
+                    conversation.UpdateMessagesCommand.Execute(null);
 
                     NavService.NavigateTo("ConversationPage");
 
