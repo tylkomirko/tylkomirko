@@ -128,6 +128,11 @@
                 <controls:Entry />
             </DataTemplate>
         </ListView.ItemTemplate>
-        
+
+        <ListView.Footer>
+            <Rectangle Fill="Transparent"
+                       Height="64" />
+        </ListView.Footer>
+
     </controls:ListViewEx>
 </UserControl>
