@@ -72,7 +72,7 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<CacheViewModel>();
             SimpleIoc.Default.Register<MessagesViewModel>(() => { return new MessagesViewModel(NavService); });
             SimpleIoc.Default.Register<AddEntryViewModel>();
-            SimpleIoc.Default.Register<DebugViewModel>();
+            SimpleIoc.Default.Register<DebugViewModel>(true);
             SimpleIoc.Default.Register<ProfilesViewModel>(() => { return new ProfilesViewModel(NavService); });
         }
 

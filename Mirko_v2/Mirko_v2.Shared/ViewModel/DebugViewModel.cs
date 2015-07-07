@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
 using System;
 using System.Globalization;
@@ -14,6 +15,8 @@ namespace Mirko_v2.ViewModel
 {
     public class DebugViewModel : ViewModelBase
     {
+        private readonly ILogger Logger = null;
+
         private ObservableCollectionEx<string> _registeredBackgroundTasks;
         public ObservableCollectionEx<string> RegisteredBackgroundTasks
         {
@@ -34,10 +37,42 @@ namespace Mirko_v2.ViewModel
             set { Set(() => CleanerLastTime, ref _cleanerLastTime, value); }
         }
 
+        private int _imgCacheHits = 0;
+        public int ImgCacheHits
+        {
+            get { return _imgCacheHits; }
+            set { Set(() => ImgCacheHits, ref _imgCacheHits, value); }
+        }
+
+        private float _imgCacheSaved = 0;
+        public float ImgCacheSaved
+        {
+            get { return _imgCacheSaved; }
+            set { Set(() => ImgCacheSaved, ref _imgCacheSaved, value); }
+        }
+
         private ObservableCollectionEx<string> _logs = null;
         public ObservableCollectionEx<string> Logs
         {
             get { return _logs ?? (_logs = new ObservableCollectionEx<string>()); }
+        }
+
+        public DebugViewModel()
+        {
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<DebugViewModel>();
+            Messenger.Default.Register<NotificationMessage<ulong>>(this, ReadMessage);
+        }
+
+        private void ReadMessage(NotificationMessage<ulong> obj)
+        {
+            if (obj.Notification == "ImgCacheHit")
+            {
+                ImgCacheHits++;
+                ImgCacheSaved += obj.Content / 1024;
+
+                Logger.Info("Image cache hits: " + ImgCacheHits);
+                Logger.Info("Bandwidth saved: " + ImgCacheSaved + " KB");
+            }
         }
 
         private RelayCommand _updateCommand = null;

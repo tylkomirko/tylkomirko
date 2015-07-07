@@ -261,6 +261,8 @@ namespace Mirko_v2.ViewModel
                 {
                     file = await ImageCacheFolder.GetFileAsync(fileName);
                     var stream = await file.OpenAsync(FileAccessMode.Read);
+                    Messenger.Default.Send<NotificationMessage<ulong>>(new NotificationMessage<ulong>(stream.Size, "ImgCacheHit"));
+
                     return stream;
                 }
                 catch (Exception e)

@@ -68,6 +68,26 @@
                 </TextBlock>
             </StackPanel>
 
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Cache obrazów:"
+                       Style="{StaticResource HeaderTextBlockStyle}"
+                       Foreground="Gray"
+                       FontSize="20" />
+
+                <TextBlock FontSize="16"
+                       Style="{StaticResource BodyTextBlockStyle}">
+                <Run Text="Trafień:" />
+                <Run Text="{Binding ImgCacheHits}" />
+                </TextBlock>
+
+                <TextBlock FontSize="16"
+                       Style="{StaticResource BodyTextBlockStyle}">
+                <Run Text="Zaoszczędzony transfer:" />
+                <Run Text="{Binding ImgCacheSaved}" />
+                <Run Text="KB"/>
+                </TextBlock>
+            </StackPanel>
+
             <ListView Grid.Row="2"
                       Visibility="Collapsed"
                   HeaderTemplate="{StaticResource ListViewHeader}"
