@@ -89,7 +89,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\IResumable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\AtNotificationsCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\AtNotificationsSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MirkoEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\TaggedEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />

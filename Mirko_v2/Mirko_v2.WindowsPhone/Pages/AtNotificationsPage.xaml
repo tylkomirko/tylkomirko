@@ -49,9 +49,9 @@
                         <Rectangle Height="90"
                                    Fill="Transparent" />
 
-                        <TextBlock Text="Nie masz żadnych wiadomości."
+                        <TextBlock Text="Nie masz żadnych powiadomień."
                                    Style="{StaticResource TextBlockNoItems}"
-                                   Visibility="{Binding AtNotifications.Count, Converter={StaticResource CountToVisibilityInv}}"/>
+                                   Visibility="{Binding AtNotifications.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
                     </StackPanel>
                 </ListView.Header>
 

@@ -1,12 +1,12 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using WykopAPI.Models;
 using System.Linq;
 using System.Threading;
-using GalaSoft.MvvmLight.Ioc;
+using System.Threading.Tasks;
+using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -76,7 +76,11 @@ namespace Mirko_v2.ViewModel
                     }
 
                     if (unique.Count() == 0)
+                    {
+                        if(entries.Count == 0 && VM.AtNotifications.Count == 0)
+                            DispatcherHelper.CheckBeginInvokeOnUI(() => VM.AtNotifications.HasNoItems = true);
                         break;
+                    }
 
                     entries.AddRange(unique);
 
