@@ -1,6 +1,8 @@
 ﻿using Mirko_v2.Controls;
+using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using Windows.UI;
@@ -312,7 +314,6 @@ namespace Mirko_v2.Utils
         }
         #endregion HTML
 
-
         #region Notification text
         public static Notification GetNotification(DependencyObject obj)
         {
@@ -454,6 +455,54 @@ namespace Mirko_v2.Utils
             return p;
         }
 
+        #endregion
+
+        #region Voters
+        public static ObservableCollection<Voter> GetVoters(DependencyObject obj)
+        {
+            return (ObservableCollection<Voter>)obj.GetValue(VotersProperty);
+        }
+
+        public static void SetVoters(DependencyObject obj, ObservableCollection<Voter> value)
+        {
+            obj.SetValue(VotersProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for Voters.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VotersProperty =
+            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<Voter>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
+
+        private static void VotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var votersCollection = e.NewValue as ObservableCollection<Voter>;
+            if (votersCollection == null || votersCollection.Count == 0) return;
+
+            var blocks = (d as RichTextBlock).Blocks;
+            blocks.Clear();
+
+            var header = new Paragraph() { LineHeight = 8 };
+            header.Inlines.Add(new Run() { Text = "\u2015\u2015", Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 });
+            blocks.Add(header);
+
+            var voters = new Paragraph();
+
+            var count = votersCollection.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var voter = votersCollection[i];
+
+                var voterInline = new Run() { Text = voter.AuthorName, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 };
+                voters.Inlines.Add(voterInline);
+
+                if (i < count - 1)
+                {
+                    var separatorInline = new Run() { Text = ", ", Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 };
+                    voters.Inlines.Add(separatorInline);
+                }
+            }
+
+            blocks.Add(voters);
+        }        
         #endregion
     }
 }

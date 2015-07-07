@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:Mirko_v2.Utils"
     xmlns:controls="using:Mirko_v2.Controls"
+    xmlns:wp="using:Mirko_v2.Controls.WrapPanel"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
@@ -32,6 +33,12 @@
             <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" Command="{Binding BlacklistHashtag}" />
             <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed" />
         </MenuFlyout>
+
+        <DataTemplate x:Key="VotersDataTemplate">
+            <TextBlock Text="{Binding AuthorName}"
+                       Foreground="Gray"
+                       FontSize="13" />
+        </DataTemplate>
     </UserControl.Resources>
 
     <!--
@@ -204,13 +211,13 @@
                                  DataContext="{Binding EmbedVM}"/>
         </Grid>
         
-        <TextBlock x:Name="VotersTB"
-                   Grid.Column="1"
-                   Grid.ColumnSpan="2"
-                   Grid.Row="3"
-                   Margin="5,0,0,0"
-                   TextWrapping="WrapWholeWords"
-                   Visibility="Collapsed"/>
+        <RichTextBlock x:Name="VotersRTB"
+                       Grid.Column="1"
+                       Grid.ColumnSpan="2"
+                       Grid.Row="3"
+                       Margin="5,0,0,0"
+                       utils:Properties.Voters="{Binding Data.Voters}"
+                       Visibility="Collapsed" />       
 
         <Grid x:Name="RightSpacer"
               Grid.Column="3"

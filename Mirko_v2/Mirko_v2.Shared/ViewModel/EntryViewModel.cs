@@ -142,7 +142,7 @@ namespace Mirko_v2.ViewModel
                 Data.CommentCount = entry.CommentCount;
                 Data.VoteCount = entry.VoteCount;
                 Data.Voters.Clear();
-                Data.Voters.AddRange(entry.Voters);
+                //Data.Voters.AddRange(entry.Voters); FIXME!!!!!!
 
                 comments = null;
             }

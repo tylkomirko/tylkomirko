@@ -2,6 +2,7 @@
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace WykopAPI.Models
 {
@@ -54,7 +55,7 @@ namespace WykopAPI.Models
         [JsonProperty("vote_count")]
         public uint VoteCount { get; set; }
         [JsonProperty("voters")]
-        public List<Voter> Voters { get; set; }
+        public ObservableCollection<Voter> Voters { get; set; }
         [JsonProperty("user_vote")]
         [JsonConverter(typeof(BoolConverter))]
         public bool Voted { get; set; }

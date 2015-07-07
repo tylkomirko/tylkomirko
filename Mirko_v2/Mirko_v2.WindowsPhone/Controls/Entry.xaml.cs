@@ -162,15 +162,7 @@ namespace Mirko_v2.Controls
 
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)
         {
-            var inlines = this.VotersTB.Inlines;
-            var entryVM = this.DataContext as EntryBaseViewModel;
-
-            foreach(var voter in entryVM.DataBase.Voters)
-            {
-                inlines.Add(new Run() { Text = voter.AuthorName + " ", FontWeight = FontWeights.SemiLight, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13 });
-            }
-
-            this.VotersTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
     }
 }

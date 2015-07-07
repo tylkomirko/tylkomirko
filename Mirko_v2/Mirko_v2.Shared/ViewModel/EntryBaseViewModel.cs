@@ -6,6 +6,7 @@ using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
@@ -60,7 +61,7 @@ namespace Mirko_v2.ViewModel
             {
                 DataBase.VoteCount = (uint)reply.vote;
                 DataBase.Voted = !DataBase.Voted;
-                DataBase.Voters = reply.Voters;
+                DataBase.Voters = new ObservableCollectionEx<Voter>(reply.Voters);
 
                 await StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }
