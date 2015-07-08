@@ -577,6 +577,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteGoToFlipPage()
         {
+            System.Diagnostics.Debug.WriteLine("ExecuteGoToFlipPage");
             if (SelectedHashtagNotification == null) return;
             var index = CurrentHashtagNotifications.GetIndex(SelectedHashtagNotification);
 
@@ -600,6 +601,8 @@ namespace Mirko_v2.ViewModel
                         },
                     });
                 }
+
+                HashtagFlipCurrentEntry = HashtagFlipEntries[index];
             });
 
             NavService.NavigateTo("HashtagFlipPage");
@@ -615,6 +618,7 @@ namespace Mirko_v2.ViewModel
 
         private async Task ExecuteHashtagFlipSelectionChanged(int currentIndex)
         {
+            System.Diagnostics.Debug.WriteLine("ExecuteHashtagFlipSelectionChanged: currentIndex = " + currentIndex);
             if (currentIndex == -1 || HashtagFlipEntries[currentIndex].Data.Text != null) return;
             await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
 
@@ -623,11 +627,7 @@ namespace Mirko_v2.ViewModel
             if (entry != null)
             {
                 var entryVM = new EntryViewModel(entry);
-                await DispatcherHelper.RunAsync(() =>
-                {
-                    HashtagFlipEntries.Replace(currentIndex, entryVM);
-                    HashtagFlipCurrentEntry = entryVM;
-                });
+                await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(currentIndex, entryVM));
                 await StatusBarManager.HideProgress();
 
                 var notification = CurrentHashtagNotifications.SingleOrDefault(x => x.Data.Entry.ID == currentEntryID);
