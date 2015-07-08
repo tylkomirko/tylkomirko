@@ -13,6 +13,7 @@
 
     <Grid x:Name="MainGrid"
           Loaded="MainGrid_Loaded">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -23,6 +24,7 @@
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                             Opacity="{StaticResource AppHeaderOpacity}"
                             x:Name="AppHeader"/>
+        
         <Frame Grid.Row="1"
                Background="Transparent"
                x:Name="MainFrame"/>

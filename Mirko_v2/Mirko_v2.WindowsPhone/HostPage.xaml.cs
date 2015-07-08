@@ -31,30 +31,6 @@ namespace Mirko_v2
                 MainFrame.Background = Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            // TODO: Prepare page for display here.
-
-            // TODO: If your application contains multiple pages, ensure that you are
-            // handling the hardware Back button by registering for the
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
-            // If you are using the NavigationHelper provided by some templates,
-            // this event is handled for you.
-        }
-
-        private void AppHeader_Loaded(object sender, RoutedEventArgs e)
-        {
-            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            var statusBarDimensions = statusBar.OccludedRect;
-
-            AppHeader.Margin = new Thickness(0, statusBarDimensions.Bottom, 0, 0);
-        }
-
         private void MainGrid_Loaded(object sender, RoutedEventArgs e)
         {
             var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
