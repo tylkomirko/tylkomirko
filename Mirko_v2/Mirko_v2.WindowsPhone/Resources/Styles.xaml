@@ -1435,13 +1435,12 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    
-    <Style TargetType="TextBlock" x:Key="TextBlockNoItems">
+
+
+    <Style TargetType="TextBlock" x:Key="TextBlockNoItems" BasedOn="{StaticResource SubheaderTextBlockStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="22" />
             <Setter Property="Foreground" Value="LightGray" />
-            <Setter Property="FontWeight" Value="Light" />
         </Style.Setters>
     </Style>
 </ResourceDictionary>

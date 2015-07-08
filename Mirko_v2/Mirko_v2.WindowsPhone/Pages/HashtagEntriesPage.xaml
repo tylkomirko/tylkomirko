@@ -13,8 +13,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,25.6,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -116,7 +115,9 @@
                              ScrollingUp="ListView_ScrollingUp"
                              ItemsSource="{Binding TaggedEntries}"
                              IsItemClickEnabled="False"
-                             VirtualizingStackPanel.VirtualizationMode="Recycling">
+                             VirtualizingStackPanel.VirtualizationMode="Recycling"
+                             IncrementalLoadingThreshold="6"
+                             DataFetchSize="7">
 
             <ListView.ItemTemplate>
                 <DataTemplate>

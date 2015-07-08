@@ -98,8 +98,7 @@
         </local:HashtagSelectionPageTemplateSelector>
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,25.6,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
