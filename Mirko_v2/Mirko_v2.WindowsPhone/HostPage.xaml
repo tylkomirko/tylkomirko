@@ -11,7 +11,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     utils:PageOrientation.SupportedOrientations="Portrait">
 
-    <Grid>
+    <Grid x:Name="MainGrid"
+          Loaded="MainGrid_Loaded">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -21,7 +22,6 @@
                             Canvas.ZIndex="1"
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                             Opacity="{StaticResource AppHeaderOpacity}"
-                            Margin="0,20,0,0"
                             x:Name="AppHeader"/>
         <Frame Grid.Row="1"
                Background="Transparent"

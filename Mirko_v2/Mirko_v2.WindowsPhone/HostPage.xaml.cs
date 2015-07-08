@@ -46,5 +46,21 @@ namespace Mirko_v2
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
         }
+
+        private void AppHeader_Loaded(object sender, RoutedEventArgs e)
+        {
+            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            var statusBarDimensions = statusBar.OccludedRect;
+
+            AppHeader.Margin = new Thickness(0, statusBarDimensions.Bottom, 0, 0);
+        }
+
+        private void MainGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            var statusBarDimensions = statusBar.OccludedRect;
+
+            MainGrid.Margin = new Thickness(0, statusBarDimensions.Height, 0, 0);
+        }
     }
 }
