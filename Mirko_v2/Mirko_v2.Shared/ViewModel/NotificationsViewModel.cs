@@ -819,43 +819,50 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteGoToNotification()
         {
             var notification = SelectedAtNotification.Data;
-            if (notification.Type != NotificationType.EntryDirected && notification.Type != NotificationType.CommentDirected)
-                return;
 
-            var entryID = notification.Entry.ID;
-            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
-            var otherEntries = mainVM.OtherEntries;
-            var entryVM = otherEntries.SingleOrDefault(x => x.Data.ID == entryID);
+            if (notification.Type == NotificationType.EntryDirected || notification.Type == NotificationType.CommentDirected)
+            {
+                var entryID = notification.Entry.ID;
+                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var otherEntries = mainVM.OtherEntries;
+                var entryVM = otherEntries.SingleOrDefault(x => x.Data.ID == entryID);
 
-            if(entryVM != null)
-            {
-                mainVM.SelectedEntry = entryVM;
-            }
-            else
-            {
-                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
-                var entryData = await App.ApiService.getEntry(entryID);
-                if(entryData == null)
+                if (entryVM != null)
                 {
-                    await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                    mainVM.SelectedEntry = entryVM;
                 }
                 else
                 {
-                    await StatusBarManager.HideProgress();
-                    entryVM = new EntryViewModel(entryData);
-                    await DispatcherHelper.RunAsync(() => otherEntries.Add(entryVM));
-                    mainVM.SelectedEntry = entryVM;
+                    await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                    var entryData = await App.ApiService.getEntry(entryID);
+                    if (entryData == null)
+                    {
+                        await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                    }
+                    else
+                    {
+                        await StatusBarManager.HideProgress();
+                        entryVM = new EntryViewModel(entryData);
+                        await DispatcherHelper.RunAsync(() => otherEntries.Add(entryVM));
+                        mainVM.SelectedEntry = entryVM;
+                    }
                 }
+
+                if (notification.Type == NotificationType.CommentDirected)
+                    mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
+
+                NavService.NavigateTo("EntryPage");
+            }
+            else if(notification.Type == NotificationType.Observe || notification.Type == NotificationType.Unobserve)
+            {
+                var profilesVM = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+
+                profilesVM.GoToProfile.Execute(notification.AuthorName);
             }
 
-            if (notification.Type == NotificationType.CommentDirected)
-                mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
-
-            NavService.NavigateTo("EntryPage");
-
-            await DispatcherHelper.RunAsync(() => 
+            await DispatcherHelper.RunAsync(() =>
             {
-                if(SelectedAtNotification.Data.IsNew)
+                if (SelectedAtNotification.Data.IsNew)
                 {
                     if (AtNotificationsCount >= 1)
                         AtNotificationsCount--;
