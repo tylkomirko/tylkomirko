@@ -10,7 +10,7 @@ namespace Mirko.Converters
             var timeSpan = (int)value;
             string output = (timeSpan == 1) ? "z ostatniej godziny" : "z ostatnich " + timeSpan + " godzin";
 
-            return output + " \u25BE";
+            return output;//" \u25BE";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

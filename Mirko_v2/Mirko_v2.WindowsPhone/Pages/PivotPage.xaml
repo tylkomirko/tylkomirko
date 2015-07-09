@@ -71,7 +71,7 @@
         </Popup>
 
         <Popup x:Name="TimeSpanIndicatorPopup"
-               VerticalOffset="-42">
+               VerticalOffset="-32">
 
             <Popup.Resources>
                 <Storyboard x:Name="TimeSpanIndicatorFadeIn">
@@ -96,8 +96,9 @@
                   Tapped="TimeSpanIndicatorGrid_Tapped">
                 <TextBlock Foreground="{ThemeResource HashtagForeground}"
                            Margin="75,0,0,0"
-                           FontSize="18"
-                           Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}">                    
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           FontSize="18">
+                    <Run Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
                 </TextBlock>
             </Grid>
         </Popup>
@@ -220,7 +221,7 @@
 
                     <ListView.Header>
                         <StackPanel>
-                            <Rectangle Height="220"
+                            <Rectangle Height="230"
                                    Fill="Transparent" />
 
                             <TextBlock x:Name="NoItemsTB"
