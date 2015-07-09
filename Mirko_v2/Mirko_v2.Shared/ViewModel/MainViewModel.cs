@@ -65,6 +65,12 @@ namespace Mirko_v2.ViewModel
                 SelectedEntryIsHot = true;
             });
 
+            Messenger.Default.Register<NotificationMessage>(this, (e) =>
+            {
+                if (e.Notification == "Login")
+                    TimerCallback(null);
+            });
+
             Messenger.Default.Register<EntryViewModel>(this, "Update", (e) =>
             {
                 ObservableCollectionEx<EntryViewModel> col = null;
@@ -129,12 +135,6 @@ namespace Mirko_v2.ViewModel
                 await SaveCollection(MirkoEntries, "MirkoEntries");
             else if(CurrentPivotItem == 1)
                 await SaveCollection(HotEntries, "HotEntries");
-        }
-
-        private RelayCommand _timerCallbackCommand = null;
-        public RelayCommand TimerCallbackCommand
-        {
-            get { return _timerCallbackCommand ?? (_timerCallbackCommand = new RelayCommand(() => TimerCallback(null))); }
         }
 
         #region Properties

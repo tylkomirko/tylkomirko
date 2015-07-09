@@ -81,7 +81,11 @@ namespace Mirko_v2.ViewModel
 
                 await DeleteObservedTags();
                 await App.ApiService.LocalStorage.DeleteConversations();
-            } 
+            }
+            else if(obj.Notification == "Login")
+            {
+                TimerCallback(null);
+            }
         }
 
         private void ReadMessage(NotificationMessage<string> obj)
