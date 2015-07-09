@@ -193,7 +193,7 @@ namespace Mirko_v2.Utils
             {
                 Text = p,
                 Foreground = brush,
-                IsTapEnabled = false,
+                IsTapEnabled = true,
             };
 
             textBlock.Tapped += Userprofile_Tapped;
@@ -297,7 +297,7 @@ namespace Mirko_v2.Utils
             var control = tb.GetAntecedent<Controls.Entry>();
             if (control == null) return;
 
-            var username = tb.Text;
+            var username = tb.Text.Remove(0, 1); // skip '@'
             control.ProfileTapped(username);
         }
 
