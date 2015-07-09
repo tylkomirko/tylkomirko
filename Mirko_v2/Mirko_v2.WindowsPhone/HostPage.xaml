@@ -11,8 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     utils:PageOrientation.SupportedOrientations="Portrait">
 
-    <Grid x:Name="MainGrid"
-          Loaded="MainGrid_Loaded">
+    <Grid x:Name="MainGrid">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

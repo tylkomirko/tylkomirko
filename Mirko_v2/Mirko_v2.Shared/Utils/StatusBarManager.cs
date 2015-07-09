@@ -41,15 +41,29 @@ namespace Mirko_v2.Utils
             await sb.HideAsync();
         });
 
-        public static void Init()
+        public static void Paint(Color? foreground = null, Color? background = null)
         {
             var statusBar = StatusBar.GetForCurrentView();
 
             if (App.Current.RequestedTheme == ApplicationTheme.Light)
             {
-                statusBar.BackgroundColor = Colors.White;
-                statusBar.ForegroundColor = (Application.Current.Resources["LogoFill"] as SolidColorBrush).Color;
+                background = Colors.White;
+                foreground = (Application.Current.Resources["LogoFill"] as SolidColorBrush).Color;
             }
+            else
+            {
+                background = Colors.Black;
+                foreground = Colors.White;
+            }
+
+            statusBar.ForegroundColor = foreground;
+            statusBar.BackgroundColor = background;
+        }
+
+        public static void Init()
+        {
+            var statusBar = StatusBar.GetForCurrentView();
+            Paint();
 
             statusBar.BackgroundOpacity = 0.9;
             statusBar.ProgressIndicator.Text = " ";

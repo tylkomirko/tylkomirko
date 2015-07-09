@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Utils;
 using System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -18,6 +19,11 @@ namespace Mirko_v2.Pages
             {
                 DayMode.Checked += ThemeRadioButton_Checked;
                 NightMode.Checked += ThemeRadioButton_Checked;
+            };
+
+            this.Unloaded += async (s, e) =>
+            {
+                await StatusBarManager.ShowStatusBar();
             };
         }
 

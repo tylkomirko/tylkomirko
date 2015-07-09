@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko_v2.ViewModel;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -21,7 +22,20 @@ namespace Mirko_v2
 
             var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>() as NavigationService;
             navService.Navigating += NavService_Navigating;
+
+            Windows.UI.ViewManagement.StatusBar.GetForCurrentView().Hiding += StatusBar_Moving;
+            Windows.UI.ViewManagement.StatusBar.GetForCurrentView().Showing += StatusBar_Moving;
+            MainGrid.Loaded += (s, e) => StatusBar_Moving(StatusBar.GetForCurrentView(), null);
         }
+
+        private void StatusBar_Moving(StatusBar sender, object args)
+        {
+            var statusBar = sender as StatusBar;
+            var statusBarDimensions = statusBar.OccludedRect;
+
+            MainGrid.Margin = new Thickness(0, statusBarDimensions.Height, 0, 0);
+        }
+
 
         private void NavService_Navigating(object source, Utils.StringEventArgs newPage)
         {
@@ -29,14 +43,6 @@ namespace Mirko_v2
                 MainFrame.Background = Application.Current.Resources["SettingsBackground"] as SolidColorBrush;
             else
                 MainFrame.Background = Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
-        }
-
-        private void MainGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            var statusBarDimensions = statusBar.OccludedRect;
-
-            MainGrid.Margin = new Thickness(0, statusBarDimensions.Height, 0, 0);
         }
     }
 }
