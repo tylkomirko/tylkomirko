@@ -31,6 +31,12 @@ namespace Mirko_v2.Pages
         public CommandBar CreateCommandBar()
         {
             var c = new CommandBar();
+            c.SetBinding(CommandBar.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
 
             var observe = new AppBarToggleButton()
             {

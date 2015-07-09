@@ -43,6 +43,14 @@ namespace Mirko_v2.ViewModel
 
                     return VMs;
                 }
+                else
+                {
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        mainVM.FavEntries.HasNoItems = true;
+                        mainVM.FavEntries.HasMoreItems = false;
+                    });
+                }
             }
             else if (!App.ApiService.IsNetworkAvailable)
             {

@@ -88,16 +88,25 @@ namespace Mirko_v2.ViewModel
         {
             TappedHashtag = tag;
 
-            var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
-            if (observedTags.Contains(tag))
+            if (App.ApiService.UserInfo == null)
             {
                 MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
+                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
             }
             else
             {
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
+                var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+                if (observedTags.Contains(tag))
+                {
+                    MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
+                    MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
+                }
+                else
+                {
+                    MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
+                    MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
+                }
             }
 
             /*

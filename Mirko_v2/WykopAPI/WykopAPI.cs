@@ -811,7 +811,12 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return null;
 
-            string URL = "profile/index/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL;
+            if(UserInfo != null)
+                URL = "profile/index/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            else
+                URL = "profile/index/" + user + "/appkey," + this.APPKEY;
+
             return await deserialize<Profile>(URL);
         }
 
@@ -840,7 +845,12 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return null;
 
-            string URL = "profile/entries/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            string URL;
+            if (UserInfo != null)
+                URL = "profile/entries/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            else
+                URL = "profile/entries/" + user + "/appkey," + this.APPKEY + ",page," + pageIndex;
+
             return await deserialize<List<Entry>>(URL);
         }
         #endregion
