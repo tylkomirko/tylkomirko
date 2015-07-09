@@ -13,6 +13,21 @@ namespace Mirko_v2.ViewModel
         public FontsViewModel()
         {
             SettingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            SettingsVM.PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName == "FontScaleFactor")
+                {
+                    base.RaisePropertyChanged("EntryFontSize");
+                    base.RaisePropertyChanged("AuthorFontSize");
+                    base.RaisePropertyChanged("AuthorSexFontSize");
+                    base.RaisePropertyChanged("DateFontSize");
+                    base.RaisePropertyChanged("VoteFontSize");
+                    base.RaisePropertyChanged("CommentsBarFontSize");
+                    base.RaisePropertyChanged("EmbedSymbolFontSize");
+                    base.RaisePropertyChanged("AttachmentFontSize");
+                    base.RaisePropertyChanged("PMFontSize");
+                }
+            };
         }
 
         private const double EntryBasicFontSize = 14.0;
@@ -27,74 +42,47 @@ namespace Mirko_v2.ViewModel
 
         public double EntryFontSize
         {
-            get
-            {
-                return EntryBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return EntryBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double AuthorFontSize
         {
-            get
-            {
-                return AuthorBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return AuthorBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double AuthorSexFontSize
         {
-            get
-            {
-                return AuthorSexBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return AuthorSexBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double DateFontSize
         {
-            get
-            {
-                return DateBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return DateBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double VoteFontSize
         {
-            get
-            {
-                return VoteBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return VoteBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double CommentsBarFontSize
         {
-            get
-            {
-                return CommentsBarBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return CommentsBarBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double EmbedSymbolFontSize
         {
-            get
-            {
-                return EmbedSymbolBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return EmbedSymbolBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double AttachmentFontSize
         {
-            get
-            {
-                return AttachmentBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return AttachmentBasicFontSize * SettingsVM.FontScaleFactor; }
         }
 
         public double PMFontSize
         {
-            get
-            {
-                return PMBasicFontSize * SettingsVM.FontScaleFactor;
-            }
+            get { return PMBasicFontSize * SettingsVM.FontScaleFactor; }
         }
     }
 }

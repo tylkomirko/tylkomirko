@@ -41,11 +41,11 @@
                    IsColorFontEnabled="False">
             
             <Run Text="&#x1f4ce;"
-                 FontSize="16.0"
+                 FontSize="{Binding Fonts.EmbedSymbolFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                  Foreground="Gray" />
             
             <Run Text="{Binding EmbedData, Converter={StaticResource NSFWToString}}"
-                 FontSize="13.0"
+                 FontSize="{Binding Fonts.AttachmentFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                  Foreground="{ThemeResource AttachmentNameForeground}" />
         </TextBlock>
 

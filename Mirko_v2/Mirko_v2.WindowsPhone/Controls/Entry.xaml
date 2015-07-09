@@ -136,7 +136,7 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        
-                       FontSize="18.0"
+                       FontSize="{Binding Fonts.AuthorSexFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Text="{Binding Data.AuthorSex, Converter={StaticResource SexToText}}"
                        Foreground="{Binding Data.AuthorSex, Converter={StaticResource SexToColor}}" />
 
@@ -147,7 +147,7 @@
                        VerticalAlignment="Center"
                        TextTrimming="CharacterEllipsis"
                        
-                       FontSize="15.0"
+                       FontSize="{Binding Fonts.AuthorFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Text="{Binding Data.AuthorName}"
                        Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
                        Tapped="AuthorTB_Tapped"/>
@@ -158,7 +158,7 @@
                        TextTrimming="CharacterEllipsis"
                        HorizontalAlignment="Left"
                        
-                       FontSize="12.0"
+                       FontSize="{Binding Fonts.DateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Foreground="Gray">
                 <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}"/>
                 <Run Text="temu"/>
@@ -168,12 +168,12 @@
         <TextBlock x:Name="VoteTB"
                    Grid.Column="2"
                    Grid.Row="0"
-                   Margin="0,0,0,0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
                    FontWeight="SemiBold"
                    Tapped="VoteTB_Tapped"
-                   FontSize="15.0"
+                   
+                   FontSize="{Binding Fonts.VoteFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                    Foreground="{Binding Data.Voted, Converter={StaticResource UserVotedToBrush}}"
                    Visibility="{Binding Data.VoteCount, Converter={StaticResource CountToVisibility}, FallbackValue=Collapsed}">
                 <Run Text="+"/><Run Text="{Binding Data.VoteCount}" />
@@ -189,7 +189,8 @@
                        IsTextScaleFactorEnabled="False"
                        IsDoubleTapEnabled="True"
                        TextWrapping="Wrap"
-                       FontSize="14.0"
+                       
+                       FontSize="{Binding Fonts.EntryFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Foreground="{ThemeResource EntryBodyForeground}"
                        utils:Properties.Html="{Binding Data.Text}"/>
 

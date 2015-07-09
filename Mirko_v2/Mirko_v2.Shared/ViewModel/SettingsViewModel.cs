@@ -57,7 +57,7 @@ namespace Mirko_v2.ViewModel
         public double FontScaleFactor
         {
             get { return RoamingValues.ContainsKey("FontScaleFactor") ? (double)RoamingValues["FontScaleFactor"] : 1.0; }
-            set { RoamingValues["FontScaleFactor"] = value; }
+            set { RoamingValues["FontScaleFactor"] = value; base.RaisePropertyChanged("FontScaleFactor"); }
         }
 
         public bool ShowAvatars

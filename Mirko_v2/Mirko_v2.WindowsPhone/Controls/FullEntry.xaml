@@ -33,7 +33,7 @@
                 <TextBlock x:Name="HiddenCommentsTB"
                            Foreground="Gray"
                            Margin="0,0,20,0"
-                           FontSize="14.0">
+                           FontSize="{Binding Fonts.EntryFontSize, Mode=OneWay, Source={StaticResource Locator}}">
 
                     <Run Text="{Binding Text}" />
                     <Run Text="  &#x20E0;  " FontFamily="Segoe UI Symbol" />
@@ -69,7 +69,7 @@
             
             <TextBlock Foreground="{ThemeResource CommentsBarForeground}"
                        Margin="12,4,0,4"
-                       FontSize="13.0">
+                       FontSize="{Binding Fonts.CommentsBarFontSize, Mode=OneWay, Source={StaticResource Locator}}">
                 <Run Text="POKAŻ KOMENTARZE (" /><Run Text="{Binding Data.CommentCount}" Foreground="{ThemeResource CommentsBarCountForeground}"/><Run Text=")" />
             </TextBlock>
             

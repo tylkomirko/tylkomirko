@@ -217,7 +217,7 @@
                                      PlaceholderText="Twoja wiadomość..."
                                      InputScope="Chat"
                                      AcceptsReturn="True"
-                                     FontSize="15.0"
+                                     FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                      Margin="12,7,12,7"
                                      GotFocus="TextBox_GotFocus"
                                      LostFocus="TextBox_LostFocus"
