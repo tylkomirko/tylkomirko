@@ -77,7 +77,7 @@ namespace Mirko_v2.Pages
                 AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
                 DeleteSelectedButton.IsEnabled = true;
             }
-            else if(ListView.SelectionMode == ListViewSelectionMode.Single)
+            else
             {
                 AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
                 DeleteSelectedButton.IsEnabled = false;
