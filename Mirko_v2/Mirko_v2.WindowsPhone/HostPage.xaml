@@ -9,8 +9,9 @@
     xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    utils:PageOrientation.SupportedOrientations="Portrait">
-
+    RequestedTheme="{Binding Settings.SelectedTheme, Mode=OneWay, Source={StaticResource Locator}}"
+    utils:PageOrientation.SupportedOrientations="Portrait">   
+    
     <Grid x:Name="MainGrid">
         
         <Grid.RowDefinitions>
@@ -22,10 +23,11 @@
                             Canvas.ZIndex="1"
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                             Opacity="{StaticResource AppHeaderOpacity}"
+                            LogoFill="{ThemeResource LogoFill}"
+                            AppHeaderSelectionBrush="{ThemeResource AppHeaderSelectionBrush}"
                             x:Name="AppHeader"/>
         
         <Frame Grid.Row="1"
-               Background="Transparent"
                x:Name="MainFrame"/>
     </Grid>  
 

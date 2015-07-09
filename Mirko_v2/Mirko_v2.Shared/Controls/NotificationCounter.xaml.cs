@@ -36,6 +36,26 @@ namespace Mirko_v2.Controls
         // Using a DependencyProperty as the backing store for Count.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CountProperty =
             DependencyProperty.Register("Count", typeof(uint), typeof(NotificationCounter), new PropertyMetadata(0, CountChanged));
+        
+        public SolidColorBrush NoNotificationsBrush
+        {
+            get { return (SolidColorBrush)GetValue(NoNotificationsBrushProperty); }
+            set { SetValue(NoNotificationsBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for NoNotificationsBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NoNotificationsBrushProperty =
+            DependencyProperty.Register("NoNotificationsBrush", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null));
+        
+        public SolidColorBrush NotificationsBrush
+        {
+            get { return (SolidColorBrush)GetValue(NotificationsBrushProperty); }
+            set { SetValue(NotificationsBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for NotificationsBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NotificationsBrushProperty =
+            DependencyProperty.Register("NotificationsBrush", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null));
 
         private static void CountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -49,9 +69,12 @@ namespace Mirko_v2.Controls
                     c.SlowFlip_1.Begin();
                 else
                     c.FastFlip_1.Begin();
+
+                c.Foreground = c.targetValue > 0 ? c.NotificationsBrush : c.NoNotificationsBrush;
             }
         }
 
+        
         new public SolidColorBrush Foreground
         {
             get { return (SolidColorBrush)GetValue(ForegroundProperty); }
@@ -60,11 +83,45 @@ namespace Mirko_v2.Controls
 
         // Using a DependencyProperty as the backing store for Foreground.  This enables animation, styling, binding, etc...
         new public static readonly DependencyProperty ForegroundProperty =
-            DependencyProperty.Register("Foreground", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null));
+            DependencyProperty.Register("Foreground", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null, ForegroundChanged));
+
+        private static void ForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var c = d as NotificationCounter;
+            var b = e.NewValue as SolidColorBrush;
+
+            c.PrefixTB.Foreground = b;
+            c.NumberTB.Foreground = b;
+        }
+
+        public bool OverrideForeground
+        {
+            get { return (bool)GetValue(OverrideForegroundProperty); }
+            set { SetValue(OverrideForegroundProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for OverrideForeground.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OverrideForegroundProperty =
+            DependencyProperty.Register("OverrideForeground", typeof(bool), typeof(NotificationCounter), new PropertyMetadata(false, OverrideForegroundChanged));
+
+        private static void OverrideForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var c = d as NotificationCounter;
+
+            bool @override = (bool)e.NewValue;
+            if(!@override)
+                c.Foreground = c.Count > 0 ? c.NotificationsBrush : c.NoNotificationsBrush;
+        }        
 
         public NotificationCounter()
         {
             this.InitializeComponent();
+            GalaSoft.MvvmLight.Ioc.SimpleIoc.Default.GetInstance<Mirko_v2.ViewModel.SettingsViewModel>().ThemeChanged += NotificationCounter_ThemeChanged;
+        }
+
+        private void NotificationCounter_ThemeChanged(object sender, EventArgs e)
+        {
+            Foreground = Count > 0 ? NotificationsBrush : NoNotificationsBrush;
         }
 
         private void SlowFlip_1_Completed(object sender, object e)

@@ -11,8 +11,8 @@
             <vm:ViewModelLocator x:Key="Locator" />
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles.xaml"/>
                 <ResourceDictionary Source="Resources/Brushes.xaml"/>
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
                 <ResourceDictionary Source="Resources/Converters.xaml"/>
                 <ResourceDictionary Source="Resources/Common.xaml"/>
                 <ResourceDictionary Source="Resources/PullToRefreshListView.xaml"/>

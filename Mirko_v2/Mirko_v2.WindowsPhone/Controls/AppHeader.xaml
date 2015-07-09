@@ -236,7 +236,8 @@
                     
                     <controls:NotificationCounter x:Name="HashCounter"
                                                   Prefix="#"
-                                                  Foreground="{Binding HashtagNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
                                                   Count="{Binding HashtagNotificationsCount}" />
                 </Grid>
                 
@@ -251,7 +252,8 @@
                     
                     <controls:NotificationCounter x:Name="AtCounter"
                                                   Prefix="@"
-                                                  Foreground="{Binding AtNotificationsCount, Converter={StaticResource NotificationsCountToBrush}}"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
                                                   Count="{Binding AtNotificationsCount}" />
                 </Grid>
 
@@ -266,7 +268,8 @@
                     
                     <controls:NotificationCounter x:Name="PMCounter"
                                                   Prefix="&#x2709;"
-                                                  Foreground="{Binding PMNotifications.Count, Converter={StaticResource NotificationsCountToBrush}}"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
                                                   Count="{Binding PMNotifications.Count}" />
                 </Grid>
             </StackPanel>

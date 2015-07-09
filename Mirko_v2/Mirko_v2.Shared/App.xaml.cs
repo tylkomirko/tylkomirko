@@ -106,12 +106,6 @@ namespace Mirko_v2
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
 
-            if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("NightMode"))
-            {
-                bool nightMode = (bool)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["NightMode"];
-                RequestedTheme = nightMode ? ApplicationTheme.Dark : ApplicationTheme.Light;
-            }
-
             var configuration = new LoggingConfiguration();
 #if DEBUG
             configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new DebugTarget());

@@ -71,13 +71,11 @@
                    Padding="0,0,10,0"
                    FontWeight="SemiBold"
                    IsColorFontEnabled="False"
-                   Foreground="{Binding ElementName=MainControl, Path=Foreground}"
                    Text="{Binding ElementName=MainControl, Path=Prefix}" />
 
         <TextBlock x:Name="NumberTB"
                    Style="{StaticResource BodyTextBlockStyle}"
-                   FontSize="28"
-                   Foreground="{Binding ElementName=MainControl, Path=Foreground}">
+                   FontSize="28">
 
             <TextBlock.Projection>
                 <PlaneProjection CenterOfRotationX="0.5" RotationX="0" />

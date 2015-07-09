@@ -46,9 +46,8 @@
 
             <Color x:Key="HotEntriesPopupBackground">#3D3D3D</Color>
             <Color x:Key="HotEntriesPopupForeground">White</Color>
-            <Color x:Key="HotEntriesFocusedPopupForeground">Gray</Color>
+            <Color x:Key="HotEntriesFocusedPopupForeground">Gray</Color>            
             
-            <SolidColorBrush x:Key="SettingsBackground" Color="#1C1C1C" />
             <SolidColorBrush x:Key="SettingsPageNameForeground" Color="#808080" />
 
             <SolidColorBrush x:Key="SliderTrackDecreaseBackgroundThemeBrush" Color="#6cb0dd" />
@@ -112,9 +111,8 @@
 
             <Color x:Key="HotEntriesPopupBackground">White</Color>
             <Color x:Key="HotEntriesPopupForeground">Gray</Color>
-            <Color x:Key="HotEntriesFocusedPopupForeground">Gray</Color>
+            <Color x:Key="HotEntriesFocusedPopupForeground">Gray</Color>            
             
-            <SolidColorBrush x:Key="SettingsBackground" Color="White" />
             <SolidColorBrush x:Key="SettingsPageNameForeground" Color="Black" />
 
             <SolidColorBrush x:Key="SliderTrackDecreaseBackgroundThemeBrush" Color="#6cb0dd" />

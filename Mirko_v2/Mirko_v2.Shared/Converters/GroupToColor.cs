@@ -27,7 +27,7 @@ namespace Mirko.Converters
                     c = Color.FromArgb(255, 187, 0, 0);
                     break;
                 case UserGroup.Admin: // biali
-                    if (settingsVM.NightMode)
+                    if (settingsVM.SelectedTheme == Windows.UI.Xaml.ElementTheme.Dark)
                         c = Color.FromArgb(255, 255, 255, 255);
                     else
                         c = Color.FromArgb(255, 0, 0, 0);

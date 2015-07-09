@@ -8,7 +8,6 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
-    Background="{ThemeResource SettingsBackground}"
     DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}">
     
     <UserControl.Resources>
@@ -20,8 +19,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,0,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -64,7 +62,6 @@
                              Content="#tylkodzienny"
                              FontFamily="Segoe"
                              FontSize="20"
-                             IsChecked="{Binding NightMode, Mode=TwoWay, Converter={StaticResource BoolInverter}}"
                              Foreground="{ThemeResource RadioButtonForeground}"
                              Style="{StaticResource RadioButtonStyle1}"/>
 
@@ -73,7 +70,6 @@
                              Content="#tylkonocny"
                              FontFamily="Segoe"
                              FontSize="20"
-                             IsChecked="{Binding NightMode, Mode=TwoWay}"
                              Foreground="{ThemeResource RadioButtonForeground}"
                              Style="{StaticResource RadioButtonStyle1}" />
 

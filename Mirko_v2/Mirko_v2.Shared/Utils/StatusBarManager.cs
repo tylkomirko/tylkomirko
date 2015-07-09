@@ -1,4 +1,6 @@
-﻿using GalaSoft.MvvmLight.Threading;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.ViewModel;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,29 +43,28 @@ namespace Mirko_v2.Utils
             await sb.HideAsync();
         });
 
-        public static void Paint(Color? foreground = null, Color? background = null)
+        public static void Paint(ElementTheme theme)
         {
             var statusBar = StatusBar.GetForCurrentView();
 
-            if (App.Current.RequestedTheme == ApplicationTheme.Light)
+            if (theme == ElementTheme.Light)
             {
-                background = Colors.White;
-                foreground = (Application.Current.Resources["LogoFill"] as SolidColorBrush).Color;
+                statusBar.BackgroundColor = Colors.White;
+                statusBar.ForegroundColor = (Color)Application.Current.Resources["StatusBarForegroundLight"];
             }
             else
             {
-                background = Colors.Black;
-                foreground = Colors.White;
+                statusBar.BackgroundColor = Colors.Black;
+                statusBar.ForegroundColor = Colors.White;
             }
-
-            statusBar.ForegroundColor = foreground;
-            statusBar.BackgroundColor = background;
         }
 
         public static void Init()
         {
             var statusBar = StatusBar.GetForCurrentView();
-            Paint();
+            var settingsVM = SimpleIoc.Default.GetInstance<Mirko_v2.ViewModel.SettingsViewModel>();
+            settingsVM.ThemeChanged += (s, args) => Paint((args as ThemeChangedEventArgs).Theme);
+            Paint(settingsVM.SelectedTheme);
 
             statusBar.BackgroundOpacity = 0.9;
             statusBar.ProgressIndicator.Text = " ";

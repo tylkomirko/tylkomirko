@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
 using System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -18,14 +19,18 @@ namespace Mirko_v2.Pages
             this.Loaded += async (s, e) =>
             {
                 await StatusBarManager.HideStatusBar();
-                DayMode.Checked += ThemeRadioButton_Checked;
-                NightMode.Checked += ThemeRadioButton_Checked;
+                var VM = this.DataContext as SettingsViewModel;
+
+                if (VM.SelectedTheme == ElementTheme.Dark)
+                    NightMode.IsChecked = true;
+                else
+                    DayMode.IsChecked = true;
+
+                DayMode.Checked += (se, args) => VM.SelectedTheme = ElementTheme.Light;
+                NightMode.Checked += (se, args) => VM.SelectedTheme = ElementTheme.Dark;
             };
 
-            this.Unloaded += async (s, e) =>
-            {
-                await StatusBarManager.ShowStatusBar();
-            };
+            this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBar();
         }
 
         private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)

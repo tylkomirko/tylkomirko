@@ -8,9 +8,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
 
 namespace Mirko_v2.ViewModel
 {
+    public class ThemeChangedEventArgs : EventArgs
+    {
+        public ElementTheme Theme { get; set; }
+
+        public ThemeChangedEventArgs(ElementTheme t)
+        {
+            Theme = t;
+        }
+    };
+
     public enum YouTubeApp
     {
         [StringValue("Internet Explorer")]
@@ -34,6 +45,9 @@ namespace Mirko_v2.ViewModel
             set { Set(() => UserInfo, ref _userInfo, value); }
         }
 
+        public delegate void ThemeChangedEventHandler(object sender, ThemeChangedEventArgs e);
+        public event ThemeChangedEventHandler ThemeChanged;     
+
         private readonly IPropertySet RoamingValues = Windows.Storage.ApplicationData.Current.RoamingSettings.Values;
 
         public bool PseudoPush
@@ -48,10 +62,16 @@ namespace Mirko_v2.ViewModel
             set { RoamingValues["FirstRun"] = value; }
         }
 
-        public bool NightMode
+        public ElementTheme SelectedTheme
         {
-            get { return RoamingValues.ContainsKey("NightMode") ? (bool)RoamingValues["NightMode"] : true; }
-            set { RoamingValues["NightMode"] = value; }
+            get { return RoamingValues.ContainsKey("SelectedTheme") ? (ElementTheme)Enum.Parse(typeof(ElementTheme), (string)RoamingValues["SelectedTheme"]) : ElementTheme.Dark; }
+            set 
+            { 
+                RoamingValues["SelectedTheme"] = value.ToString(); 
+                base.RaisePropertyChanged("SelectedTheme"); 
+                if (ThemeChanged != null) 
+                    ThemeChanged(this, new ThemeChangedEventArgs(value)); 
+            }
         }
 
         public double FontScaleFactor
