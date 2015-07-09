@@ -220,8 +220,16 @@ namespace Mirko_v2.ViewModel
             {
                 var notificationVM = AtNotifications.First();
 
-                SelectedAtNotification = notificationVM;
-                GoToNotification.Execute(null);
+                if (notificationVM.Data.Type == NotificationType.EntryDirected 
+                    || notificationVM.Data.Type == NotificationType.CommentDirected)
+                {
+                    SelectedAtNotification = notificationVM;
+                    GoToNotification.Execute(null);
+                }
+                else
+                {
+                    NavService.NavigateTo("AtNotificationsPage");
+                }
             }
             else
             {
