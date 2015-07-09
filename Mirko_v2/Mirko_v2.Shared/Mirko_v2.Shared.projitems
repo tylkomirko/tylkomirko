@@ -16,10 +16,17 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\HyperlinkTextBlock.xaml.cs">
+      <DependentUpon>HyperlinkTextBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml.cs">
+      <DependentUpon>NotificationCounter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PullToRefreshListView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\WrapPanel\OrientedSize.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\WrapPanel\WrapPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml.cs">
+      <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BlacklistToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolInverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
@@ -104,5 +111,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfileViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\HyperlinkTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

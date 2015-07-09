@@ -69,15 +69,18 @@ namespace Mirko_v2.Controls
 
         private void SlowFlip_1_Completed(object sender, object e)
         {
+            bool doMoreFlips = true;
+
             if (currentValue < targetValue)
                 currentValue++;
             else if (currentValue > targetValue)
                 currentValue--;
             else
-                return;
+                doMoreFlips = false;
 
             NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
-            SlowFlip_2.Begin();
+            if(doMoreFlips)
+                SlowFlip_2.Begin();
         }
 
         private void SlowFlip_2_Completed(object sender, object e)
@@ -89,6 +92,7 @@ namespace Mirko_v2.Controls
         private void FastFlip_1_Completed(object sender, object e)
         {
             int diff = Math.Abs(currentValue - targetValue);
+            bool doMoreFlips = true;
             int random = 1;
 
             if (diff > 1)
@@ -99,10 +103,12 @@ namespace Mirko_v2.Controls
             else if (currentValue > targetValue)
                 currentValue -= random;
             else
-                return;
+                doMoreFlips = false;
 
             NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
-            FastFlip_2.Begin();
+
+            if(doMoreFlips)
+                FastFlip_2.Begin();
         }
 
         private void FastFlip_2_Completed(object sender, object e)

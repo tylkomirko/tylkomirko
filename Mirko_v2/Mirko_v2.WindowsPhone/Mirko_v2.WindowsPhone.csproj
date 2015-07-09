@@ -105,9 +105,6 @@
     <Compile Include="Controls\FullEntry.xaml.cs">
       <DependentUpon>FullEntry.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NotificationCounter.xaml.cs">
-      <DependentUpon>NotificationCounter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\ConversationsPage.xaml.cs">
       <DependentUpon>ConversationsPage.xaml</DependentUpon>
     </Compile>
@@ -123,14 +120,8 @@
     <Compile Include="Controls\HashtagSuggestionBox.xaml.cs">
       <DependentUpon>HashtagSuggestionBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HyperlinkTextBlock.xaml.cs">
-      <DependentUpon>HyperlinkTextBlock.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\LennyChooser.xaml.cs">
       <DependentUpon>LennyChooser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SpoilerTextBlock.xaml.cs">
-      <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AtNotificationsPage.xaml.cs">
       <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
@@ -245,10 +236,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\NotificationCounter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\ConversationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -269,15 +256,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\HyperlinkTextBlock.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\LennyChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SpoilerTextBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
