@@ -1,4 +1,5 @@
 ﻿using Mirko_v2.Utils;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -14,8 +15,21 @@ namespace Mirko_v2.Pages
         {
             this.InitializeComponent();
 
-            this.Loaded += async (s, e) => await StatusBarManager.HideStatusBar();
-            this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBar();
+            this.Loaded += async (s, e) =>
+            {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | 
+                    DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait | 
+                    DisplayOrientations.PortraitFlipped;
+
+                await StatusBarManager.HideStatusBar();
+            };
+
+            this.Unloaded += async (s, e) =>
+            {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
+
+                await StatusBarManager.ShowStatusBar();
+            };
         }
 
         private void ImageScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
