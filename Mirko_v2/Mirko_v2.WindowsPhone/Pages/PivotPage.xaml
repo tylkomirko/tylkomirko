@@ -175,6 +175,7 @@
                                                 PullText="Przytrzymaj żeby odświeżyć..."
                                                 RefreshText="Puść żeby odświeżyć."
                                                 ArrowColor="White"
+                                                TranslateOffset="18"
                                                 ItemsSource="{Binding MirkoEntries}"
                                                 ItemTemplate="{StaticResource EntryTemplate}"
                                                 ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"

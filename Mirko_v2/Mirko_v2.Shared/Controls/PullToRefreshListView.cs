@@ -35,9 +35,10 @@ namespace Mirko_v2.Controls
         public static readonly DependencyProperty RefreshHeaderHeightProperty = DependencyProperty.Register("RefreshHeaderHeight", typeof(double), typeof(PullToRefreshListView), new PropertyMetadata(40D));
         public static readonly DependencyProperty RefreshCommandProperty = DependencyProperty.Register("RefreshCommand", typeof(ICommand), typeof(PullToRefreshListView), new PropertyMetadata(null));
         public static readonly DependencyProperty ArrowColorProperty = DependencyProperty.Register("ArrowColor", typeof(Brush), typeof(PullToRefreshListView), new PropertyMetadata(new SolidColorBrush(Colors.Red)));
+        public static readonly DependencyProperty TranslateOffsetProperty = DependencyProperty.Register("TranslateOffset", typeof(double), typeof(PullToRefreshListView), new PropertyMetadata(0D));
 
 #if WINDOWS_PHONE_APP
-        private double offsetTreshhold = 40;
+        private double offsetTreshhold = 60;
 #endif
 #if WINDOWS_APP
         private double offsetTreshhold = 40;
@@ -79,6 +80,12 @@ namespace Mirko_v2.Controls
             set { SetValue(ArrowColorProperty, value); }
         }
 
+        public double TranslateOffset
+        {
+            get { return (double)GetValue(TranslateOffsetProperty); }
+            set { SetValue(TranslateOffsetProperty, value); }
+        }
+
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -86,7 +93,7 @@ namespace Mirko_v2.Controls
             scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
             scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshHeaderHeight);
             var transform = new CompositeTransform();
-            transform.TranslateY = -RefreshHeaderHeight;
+            transform.TranslateY = -RefreshHeaderHeight + TranslateOffset;
             scrollViewer.RenderTransform = transform;
 
             containerGrid = (Grid)GetTemplateChild(ContainerGrid);
@@ -193,7 +200,7 @@ namespace Mirko_v2.Controls
             if (containerGrid != null)
             {
                 Rect elementBounds = pullToRefreshIndicator.TransformToVisual(containerGrid).TransformBounds(new Rect(0.0, 0.0, pullToRefreshIndicator.Height, RefreshHeaderHeight));
-                var compressionOffset = elementBounds.Bottom;
+                var compressionOffset = elementBounds.Bottom - TranslateOffset;
 
                 if (compressionOffset > offsetTreshhold)
                 {

@@ -118,7 +118,13 @@
                                     </Grid.RowDefinitions>
                                     <Border Height="{TemplateBinding RefreshHeaderHeight}"
                                             x:Name="PullToRefreshIndicator"
-                                            Background="Transparent">
+                                            Background="Transparent"
+                                            RenderTransformOrigin="0.5,0.5">
+                                        
+                                        <Border.RenderTransform>
+                                            <TranslateTransform Y="0" />                                               
+                                        </Border.RenderTransform>
+                                        
                                         <Grid HorizontalAlignment="Center">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="auto" />
