@@ -43,7 +43,8 @@ namespace WykopAPI
                 Replace("<br />", "").
                 Replace("<br/>", "").
                 Replace("#<a href", "<a href").
-                Replace("@<a href", "<a href");
+                Replace("@<a href", "<a href").
+                Replace("</a></a>", "</a>");
 
             int idx = 0;
             ParserToken token = new ParserToken();
@@ -111,6 +112,16 @@ namespace WykopAPI
                     else // hyperlink
                     {
                         token.Type = TokenTypes.HYPERLINK;
+                        /* Sometimes, Wypok does really weird things. For example:
+                         * <a href="http://www.morele.net/glosniki-komputerowe-edifier-r1100-2-0-czarne-659158/" rel="nofollow"><a href="http://www.morele.net/glosniki-komputerowe-edifier-r1100-2-0-czarne-659158/" rel="nofollow">http://www.morele.net/glosniki-komputerowe-edifier-r1100-2-0-czarne-659158/</a></a>
+                         * It seems pretty retarded to me, but we have to get around it somehow.
+                         * The simplest way is to check if input contains the second (nested) <a href>. */
+
+                        var damnYouWypok = tagName + '>';
+                        var newIndex = input.IndexOf(damnYouWypok, questionMarkEnd);
+                        if (newIndex != -1)
+                            questionMarkEnd = newIndex + tagName.Length;
+
                         var descriptionStart = input.IndexOf('>', questionMarkEnd) + 1;
                         var descriptionEnd = input.IndexOf('<', descriptionStart);
                         var description = input.Between(descriptionStart, descriptionEnd);
