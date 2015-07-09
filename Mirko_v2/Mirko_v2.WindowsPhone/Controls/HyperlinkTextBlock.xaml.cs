@@ -1,4 +1,6 @@
-﻿using Mirko_v2.Common;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Common;
+using Mirko_v2.ViewModel;
 using System;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -52,17 +54,16 @@ namespace Mirko_v2.Controls
             if (index != -1)
             {
                 index += 14;
-                int id = 0;
+                uint id = 0;
 
                 var secondIndex = url.IndexOf('/', index);
 
                 if (secondIndex != -1)
-                    id = Convert.ToInt32(url.Substring(index, secondIndex - index));
+                    id = Convert.ToUInt32(url.Substring(index, secondIndex - index));
                 else
-                    id = Convert.ToInt32(url.Substring(index));
+                    id = Convert.ToUInt32(url.Substring(index));
 
-                //App.RootFrame.Navigate(typeof(FullscreenEntry), EntryNavigationParameterExtensions.fromEntryID(id));
-                //FIXME
+                SimpleIoc.Default.GetInstance<MainViewModel>().GoToEntryPage.Execute(id);
             }
             else
             {

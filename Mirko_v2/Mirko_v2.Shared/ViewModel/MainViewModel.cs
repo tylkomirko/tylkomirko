@@ -333,6 +333,40 @@ namespace Mirko_v2.ViewModel
             AddNewMirkoEntries.Execute(null);
         }
 
+        private RelayCommand<uint> _goToEntryPage = null;
+        public RelayCommand<uint> GoToEntryPage
+        {
+            get { return _goToEntryPage ?? (_goToEntryPage = new RelayCommand<uint>(ExecuteGoToEntryPage)); }
+        }
+
+        private async void ExecuteGoToEntryPage(uint entryID)
+        {
+            EntryViewModel entryVM = OtherEntries.SingleOrDefault(x => x.Data.ID == entryID);
+
+            NavService.NavigateTo("EntryPage");
+
+            if (entryVM == null)
+            {
+                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                SelectedEntry = null;
+                var entry = await App.ApiService.getEntry(entryID);
+
+                if (entry != null)
+                {
+                    entryVM = new EntryViewModel(entry);
+                    OtherEntries.Add(entryVM);
+
+                    await StatusBarManager.HideProgress();
+                }
+                else
+                {
+                    await StatusBarManager.ShowText("Nie uda³o siê pobraæ wpisu.");
+                }
+            }
+
+            SelectedEntry = entryVM;
+        }
+
         private RelayCommand<string> _goToHashtagPage = null;
         public RelayCommand<string> GoToHashtagPage
         {
