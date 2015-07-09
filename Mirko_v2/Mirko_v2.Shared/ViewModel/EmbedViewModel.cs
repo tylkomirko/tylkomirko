@@ -6,9 +6,7 @@ using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using WykopAPI.Models;
@@ -103,15 +101,19 @@ namespace Mirko_v2.ViewModel
             var folder = KnownFolders.SavedPictures;
             var fileName = Path.GetFileName(EmbedData.Source);
 
-            var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            using(var fileStream = await file.OpenStreamForWriteAsync())
+            try
             {
-                fileStream.Seek(0, SeekOrigin.Begin);
-                ImageStream.Seek(0, SeekOrigin.Begin);
-                await ImageStream.CopyToAsync(fileStream);
+                var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                using (var fileStream = await file.OpenStreamForWriteAsync())
+                {
+                    fileStream.Seek(0, SeekOrigin.Begin);
+                    ImageStream.Seek(0, SeekOrigin.Begin);
+                    await ImageStream.CopyToAsync(fileStream);
 
-                await StatusBarManager.ShowText("Zapisano obraz.");
+                    await StatusBarManager.ShowText("Zapisano obraz.");
+                }
             }
+            catch (Exception) { }
         }
 
         private RelayCommand _openEmbedCommand = null;

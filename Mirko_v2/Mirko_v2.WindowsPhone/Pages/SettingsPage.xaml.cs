@@ -15,8 +15,9 @@ namespace Mirko_v2.Pages
         {
             this.InitializeComponent();
 
-            this.Loaded += (s, e) =>
+            this.Loaded += async (s, e) =>
             {
+                await StatusBarManager.HideStatusBar();
                 DayMode.Checked += ThemeRadioButton_Checked;
                 NightMode.Checked += ThemeRadioButton_Checked;
             };

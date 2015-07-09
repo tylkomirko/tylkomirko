@@ -392,13 +392,7 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _settingsCommand;
         public RelayCommand SettingsCommand
         {
-            get { return _settingsCommand ?? (_settingsCommand = new RelayCommand(ExecuteSettingsCommand)); }
-        }
-
-        private async void ExecuteSettingsCommand()
-        {
-            NavService.NavigateTo("SettingsPage");
-            await StatusBarManager.HideStatusBar();
+            get { return _settingsCommand ?? (_settingsCommand = new RelayCommand(() => NavService.NavigateTo("SettingsPage"))); }
         }
 
         private RelayCommand _logInOutCommand;
