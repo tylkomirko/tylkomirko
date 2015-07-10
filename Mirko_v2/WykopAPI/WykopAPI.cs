@@ -632,7 +632,11 @@ namespace WykopAPI
             if (this.limitExceeded)
                 return null;
 
-            string URL = "entries/index/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL;
+            if(UserInfo != null)
+                URL = "entries/index/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            else
+                URL = "entries/index/" + id + "/appkey," + this.APPKEY;
 
             return await deserialize<Entry>(URL);
         }
