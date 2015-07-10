@@ -86,8 +86,7 @@
 
                 <MenuFlyoutItem Text="pokaż plusujących"
                                 Tag="voters"
-                                Click="MenuFlyoutItem_ShowVoters_Click"
-                                Visibility="{Binding VotersHidden, Converter={StaticResource BoolToVisibility}}"/>
+                                Click="MenuFlyoutItem_ShowVoters_Click"/>
 
                 <MenuFlyoutItem Text="odpowiedz"
                                 Tag="reply"

@@ -15,7 +15,8 @@ namespace Mirko_v2.Utils
             var src = sender as Controls.Entry;
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(src.GetDescendant<Grid>("EntryGrid"));
 
-            var entryData = (src.DataContext as EntryBaseViewModel).DataBase;
+            var entry = src.DataContext as EntryBaseViewModel;
+            var entryData = entry.DataBase;
 
             var userInfo = App.ApiService.UserInfo;
             if (userInfo == null || userInfo.UserName == null)
@@ -70,8 +71,10 @@ namespace Mirko_v2.Utils
                 makeFlyoutItemInvisible("separator"); // FIXME
             }
 
-            if (entryData.VoteCount == 0)
+            if (entryData.VoteCount == 0 || !entry.VotersHidden)
                 makeFlyoutItemInvisible("voters");
+            else
+                makeFlyoutItemVisible("voters");
 
             flyoutBase.ShowAt(src);
 
