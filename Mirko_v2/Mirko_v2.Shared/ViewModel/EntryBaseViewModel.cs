@@ -16,6 +16,7 @@ namespace Mirko_v2.ViewModel
         public EmbedViewModel EmbedVM { get; set; }
 
         private string _tappedHashtag = null;
+        [JsonIgnore]
         public string TappedHashtag
         {
             get { return _tappedHashtag; }
@@ -23,6 +24,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private bool _votersHidden = true;
+        [JsonIgnore]
         public bool VotersHidden
         {
             get { return _votersHidden; }
