@@ -104,9 +104,25 @@ namespace Mirko_v2.Pages
             //c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);
+
+            var share = new AppBarButton()
+            {
+                Label = "udostępnij"
+            };
+            share.Click += ShareButton_Click;
+
+            c.SecondaryCommands.Add(share);
+
             AppBar = c;
 
             return c;
+        }
+
+        private void ShareButton_Click(object sender, RoutedEventArgs e)
+        {
+            var entryVM = this.ListView.DataContext as EntryViewModel;
+            if (entryVM != null)
+                entryVM.ShareCommand.Execute(null);
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
