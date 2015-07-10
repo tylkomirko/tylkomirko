@@ -191,10 +191,11 @@ namespace Mirko_v2.Pages
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
-            e.Handled = true;
-
             if(TimeSpanSelectionPopup.IsOpen)
+            {
+                e.Handled = true;
                 HideTimeSpanSelectionPopup();
+            }
         }
 
         private void TimeSpanSelectionListBox_Loaded(object sender, RoutedEventArgs e)
