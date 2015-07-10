@@ -90,9 +90,9 @@
     <Compile Include="Models\Converters\NotificationTypeConverter.cs" />
     <Compile Include="Models\Converters\SexEnumConverter.cs" />
     <Compile Include="Models\Converters\StringToUIntConverter.cs" />
+    <Compile Include="Models\Converters\VotersConverter.cs" />
     <Compile Include="Models\Embed.cs" />
     <Compile Include="Models\Entry.cs" />
-    <Compile Include="Models\EntryComment.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Hashtag.cs" />
     <Compile Include="Models\NewEntry.cs" />

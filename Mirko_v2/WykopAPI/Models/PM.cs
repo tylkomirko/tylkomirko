@@ -2,6 +2,7 @@
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using WykopAPI.Models.Converters;
 
 namespace WykopAPI.Models
 {

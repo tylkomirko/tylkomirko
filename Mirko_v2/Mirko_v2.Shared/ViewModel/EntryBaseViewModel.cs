@@ -61,7 +61,7 @@ namespace Mirko_v2.ViewModel
             {
                 DataBase.VoteCount = (uint)reply.vote;
                 DataBase.Voted = !DataBase.Voted;
-                DataBase.Voters = new ObservableCollectionEx<Voter>(reply.Voters);
+                //DataBase.Voters = new ObservableCollectionEx<Voter>(reply.Voters);
 
                 await StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PropertyChanged;
 using System;
+using WykopAPI.Models.Converters;
 
 namespace WykopAPI.Models
 {

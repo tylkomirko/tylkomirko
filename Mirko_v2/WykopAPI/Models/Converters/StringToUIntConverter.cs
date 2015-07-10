@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WykopAPI.Models
+namespace WykopAPI.Models.Converters
 {
-    public class StringToUIntConverter : JsonConverter
+    class StringToUIntConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

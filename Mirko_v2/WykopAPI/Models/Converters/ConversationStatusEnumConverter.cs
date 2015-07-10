@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WykopAPI.Models
+namespace WykopAPI.Models.Converters
 {
-    public class ConversationStatusEnumConverter : JsonConverter
+    class ConversationStatusEnumConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

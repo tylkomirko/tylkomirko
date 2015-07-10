@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WykopAPI.Models
+namespace WykopAPI.Models.Converters
 {
-    public class SexEnumConverter : JsonConverter
+    class SexEnumConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

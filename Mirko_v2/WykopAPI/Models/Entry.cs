@@ -3,6 +3,7 @@ using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using WykopAPI.Models.Converters;
 
 namespace WykopAPI.Models
 {
@@ -55,7 +56,8 @@ namespace WykopAPI.Models
         [JsonProperty("vote_count")]
         public uint VoteCount { get; set; }
         [JsonProperty("voters")]
-        public ObservableCollection<Voter> Voters { get; set; }
+        [JsonConverter(typeof(VotersConverter))]
+        public ObservableCollection<string> Voters { get; set; }
         [JsonProperty("user_vote")]
         [JsonConverter(typeof(BoolConverter))]
         public bool Voted { get; set; }
@@ -91,5 +93,22 @@ namespace WykopAPI.Models
          public string violation_url { get; set; }
          public string app { get; set; } 
          * */
+    }
+
+    [ImplementPropertyChanged]
+    public class EntryComment : EntryBase
+    {
+        [JsonProperty("entry_id")]
+        public uint EntryID { get; set; }
+
+        /* Removed properties:
+         public string author_avatar_big { get; set; }
+         public string author_avatar_med { get; set; }
+         public string author_avatar_lo { get; set; }
+         public object source { get; set; }
+         public string type { get; set; }
+         public string app { get; set; }
+         public string violation_url { get; set; }
+         */
     }
 }

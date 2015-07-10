@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using WykopAPI.Models.Converters;
 
 namespace WykopAPI.Models
 {
