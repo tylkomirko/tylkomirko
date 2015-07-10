@@ -148,12 +148,9 @@ namespace Mirko_v2.ViewModel
 
         public bool CanGoBack()
         {
-            if (CurrentPageKey == "PivotPage")
-            {
-                var mainVM = CurrentFrame().DataContext as MainViewModel;
-                if (!mainVM.CanGoBack)
-                    return false;
-            }
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+            if (!mainVM.CanGoBack)
+                return false;
 
             if (backStack.Count() <= 1)
             {
