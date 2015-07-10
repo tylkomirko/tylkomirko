@@ -70,25 +70,7 @@ namespace Mirko_v2.ViewModel
             {
                 await StatusBarManager.ShowText("Wiadomość została wysłana.");
                 await ExecuteUpdateMessagesCommand();
-
-                /*
-                var newMessage = new PM()
-                {
-                    Text = NewEntry.Text,
-                    Date = DateTime.Now,
-                    Direction = MessageDirection.Sent,
-                    Status = ConversationStatus.Read,
-                };
-
-                // TODO: embed support
-
-                Data.LastMessage = NewEntry.Text;
-                Data.LastUpdate = newMessage.Date;
-                Messages.Add(new PMViewModel(newMessage));
-                ProcessMessages();
-
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));*/
             }
             else
             {
