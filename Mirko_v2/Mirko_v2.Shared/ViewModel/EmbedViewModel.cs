@@ -16,6 +16,7 @@ namespace Mirko_v2.ViewModel
     public class EmbedViewModel : ViewModelBase
     {
         public Embed EmbedData { get; set; }
+        public bool ImageShown { get; set; }
 
         private MemoryStream _imageStream = null;
         [JsonIgnore]

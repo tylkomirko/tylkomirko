@@ -20,7 +20,7 @@
           HorizontalAlignment="Stretch">
 
         <controls:CachedImage x:Name="Image"
-                              Uri="{Binding EmbedData.PreviewURL}"/>
+                              Embed="{Binding EmbedData}"/>
         
         <MediaElement x:Name="MediaElement"
                       MaxHeight="400"

@@ -92,14 +92,18 @@ namespace Mirko_v2.ViewModel
             set 
             { 
                 RoamingValues["OnlyWIFIDownload"] = value;
-                Messenger.Default.Send<NotificationMessage<bool>>(new NotificationMessage<bool>(value, "OnlyWIFI"));
+                base.RaisePropertyChanged("OnlyWIFIDownload");
             }
         }
 
         public bool ShowPlus18
         {
             get { return RoamingValues.ContainsKey("ShowPlus18") ? (bool)RoamingValues["ShowPlus18"] : false; }
-            set { RoamingValues["ShowPlus18"] = value; }
+            set 
+            { 
+                RoamingValues["ShowPlus18"] = value;
+                base.RaisePropertyChanged("ShowPlus18");
+            }
         }
 
         public bool LiveTile

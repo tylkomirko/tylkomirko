@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko_v2.ViewModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using WykopAPI.Models;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -10,53 +12,86 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class CachedImage : UserControl
     {
+        private static CacheViewModel Cache = null;
+
         public CachedImage()
         {
             this.InitializeComponent();
+
+            if(Cache == null)
+                Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
         }
 
-        #region Uri depedency property
-        public string Uri
+        private async Task LoadImage(string previewURL, string fullURL)
         {
-            get { return (string)GetValue(UriProperty); }
-            set { SetValue(UriProperty, value); }
-        }
+            Ring.IsActive = true;
+            Ring.Visibility = Visibility.Visible;
+            var stream = await Cache.GetImageStream(previewURL, fullURL);
 
-        // Using a DependencyProperty as the backing store for Uri.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UriProperty =
-            DependencyProperty.Register("Uri", typeof(string), typeof(CachedImage), new PropertyMetadata(null, new PropertyChangedCallback(UriChanged)));
-
-        private static async void UriChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var url = e.NewValue as string;
-            if (url == null) return;
-
-            var control = d as CachedImage;
-            var fullURL = (control.DataContext as EmbedViewModel).EmbedData.URL;
-            var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
-
-            control.Ring.IsActive = true;
-            control.Ring.Visibility = Visibility.Visible;
-            var stream = await cacheVM.GetImageStream(url, fullURL);
-
-            if(stream != null)
+            if (stream != null)
             {
                 var bitmap = new BitmapImage();
                 bitmap.SetSource(stream);
-                control.Image.Source = bitmap;
-                control.Ring.Visibility = Visibility.Collapsed;
+                Image.Source = bitmap;
+                Ring.Visibility = Visibility.Collapsed;
+                Image.Visibility = Visibility.Visible;
 
                 //stream.Dispose(); // when to dispose?
             }
             else
             {
-                control.Ring.Visibility = Visibility.Collapsed;
-                control.Ring.IsActive = false;
-                control.Image.Opacity = 1.0;
-                control.Image.Visibility = Visibility.Collapsed;
-                control.Visibility = Visibility.Collapsed; // none of this really works.
-            }           
+                Ring.Visibility = Visibility.Collapsed;
+                Ring.IsActive = false;
+                Image.Opacity = 1.0;
+                Image.Visibility = Visibility.Collapsed;
+                Visibility = Visibility.Collapsed; // none of this really works.
+            }
         }
-        #endregion
+
+        public new Visibility Visibility
+        {
+            get { return (Visibility)GetValue(VisibilityProperty); }
+            set { SetValue(VisibilityProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Visibility.  This enables animation, styling, binding, etc...
+        public static readonly new DependencyProperty VisibilityProperty =
+            DependencyProperty.Register("Visibility", typeof(Visibility), typeof(CachedImage), new PropertyMetadata(Visibility.Visible, VisibilityChanged));
+
+        private static async void VisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as CachedImage;
+
+            if ((Visibility)e.NewValue == Visibility.Visible)
+            {
+                if(control.Embed != null)
+                    await control.LoadImage(control.Embed.PreviewURL, control.Embed.URL);
+            }
+            else
+            {
+                control.Image.Visibility = Visibility.Collapsed;
+                control.Ring.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public Embed Embed
+        {
+            get { return (Embed)GetValue(EmbedProperty); }
+            set { SetValue(EmbedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Embed.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EmbedProperty =
+            DependencyProperty.Register("Embed", typeof(Embed), typeof(CachedImage), new PropertyMetadata(null, EmbedChanged));
+
+        private static async void EmbedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var embed = e.NewValue as Embed;
+            if (embed == null) return;
+
+            var control = d as CachedImage;
+            if (control.Visibility == Visibility.Visible)
+                await control.LoadImage(embed.PreviewURL, embed.URL);
+        }     
     }
 }

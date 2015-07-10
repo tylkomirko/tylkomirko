@@ -22,22 +22,55 @@ namespace Mirko_v2.Controls
 
             if (Settings == null)
                 Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+
+            App.ApiService.NetworkStatusChanged += (s, e) => HandleImageVisibility();
+            Settings.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "OnlyWIFIDownload" || e.PropertyName == "ShowPlus18")
+                    HandleImageVisibility();
+            };
+        }
+
+        private void HandleImageVisibility()
+        {
+            var VM = DataContext as EmbedViewModel;
+            if (VM == null || VM.EmbedData == null) return;
+
+            if (!App.ApiService.IsNetworkAvailable ||
+                (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable) ||
+                (VM.EmbedData.NSFW && !Settings.ShowPlus18))
+            {
+                Image.Visibility = Visibility.Collapsed;
+                AttachmentTB.Visibility = Visibility.Visible;
+
+                VM.ImageShown = false;
+            }
+            else
+            {
+                Image.Visibility = Visibility.Visible;
+                AttachmentTB.Visibility = Visibility.Collapsed;
+
+                VM.ImageShown = true;
+            }
         }
 
         private void UserControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
-            if(DataContext != null)
+
+            var VM = DataContext as EmbedViewModel;
+            if (VM == null) return;
+
+            if (!VM.ImageShown)
             {
-                if (Image.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
-                {
-                    Image.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    AttachmentTB.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                }
-                else
-                {
-                    (DataContext as EmbedViewModel).OpenEmbedCommand.Execute(null);
-                }
+                Image.Visibility = Visibility.Visible;
+                AttachmentTB.Visibility = Visibility.Collapsed;
+
+                VM.ImageShown = true;
+            }
+            else
+            {
+                VM.OpenEmbedCommand.Execute(null);
             }
         }
 
@@ -81,18 +114,10 @@ namespace Mirko_v2.Controls
 
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (args.NewValue == null) return;
-
             var embed = args.NewValue as EmbedViewModel;
-            var data = embed.EmbedData;
+            if (embed == null || embed.EmbedData == null || embed.ImageShown) return;
 
-            if (data == null) return;
-
-            if(data.NSFW && !Settings.ShowPlus18)
-            {
-                Image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                AttachmentTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            }
+            HandleImageVisibility();
         }
     }
 }

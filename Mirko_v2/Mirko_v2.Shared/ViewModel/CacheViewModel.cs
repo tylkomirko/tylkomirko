@@ -25,20 +25,11 @@ namespace Mirko_v2.ViewModel
 
         // image cache
         private StorageFolder ImageCacheFolder = null;
-        private bool OnlyWIFIDownload = false;
 
         public CacheViewModel()
         {
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
             SaveTimer = new Timer(SaveTimerCallback, null, 45*1000, 0); // 45 seconds
-
-            Messenger.Default.Register<NotificationMessage<bool>>(this, ReadMessage);
-        }
-
-        private void ReadMessage(NotificationMessage<bool> obj)
-        {
-            if(obj.Notification == "OnlyWIFI")
-                OnlyWIFIDownload = obj.Content;
         }
 
         private async void SaveTimerCallback(object state)
@@ -80,9 +71,6 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteInitCommand()
         {
-            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
-            OnlyWIFIDownload = settingsVM.OnlyWIFIDownload;
-
             bool needToDownload = false;
             var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
 
@@ -238,9 +226,6 @@ namespace Mirko_v2.ViewModel
             {
                 Logger.Error("Error reading file. ", e);
             }
-
-            if (!App.ApiService.IsNetworkAvailable || (OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable))
-                return null;
 
             try
             {
