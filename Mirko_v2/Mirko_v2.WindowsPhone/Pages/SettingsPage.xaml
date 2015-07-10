@@ -8,14 +8,14 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
+    d:DesignHeight="800"
     DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}">
     
     <UserControl.Resources>
         <DataTemplate x:Key="ToggleSwitchTemplate">
             <TextBlock Text="{Binding}"
                        FontSize="20"
-                       TextWrapping="Wrap"
-                       FontFamily="Segoe"/>
+                       TextWrapping="Wrap"/>
         </DataTemplate>
     </UserControl.Resources>
 
@@ -41,7 +41,7 @@
                        FontWeight="Light"
                        HorizontalAlignment="Left"
                        Foreground="{ThemeResource SettingsPageNameForeground}"
-                       FontFamily="Segoe"
+                       Style="{StaticResource HeaderTextBlockStyle}"
                        Text="ustawienia" />
         </Grid>
 
@@ -60,7 +60,6 @@
                 <RadioButton x:Name="DayMode"
                              Margin="0,-160,0,0"
                              Content="#tylkodzienny"
-                             FontFamily="Segoe"
                              FontSize="20"
                              Foreground="{ThemeResource RadioButtonForeground}"
                              Style="{StaticResource RadioButtonStyle1}"/>
@@ -68,7 +67,6 @@
                 <RadioButton x:Name="NightMode"
                              Margin="0,-90,0,0"
                              Content="#tylkonocny"
-                             FontFamily="Segoe"
                              FontSize="20"
                              Foreground="{ThemeResource RadioButtonForeground}"
                              Style="{StaticResource RadioButtonStyle1}" />
@@ -87,7 +85,6 @@
                             <DataTemplate>
                                 <TextBlock Text="{Binding}"
                                            Foreground="{ThemeResource SettingsSliderHeaderForeground}"
-                                           FontFamily="Segoe"
                                            FontSize="20"/>
                             </DataTemplate>
                         </Slider.HeaderTemplate>
@@ -155,8 +152,7 @@
                                    Text="Aplikacja YouTube"
                                    Margin="0,0,25,0"
                                    FontSize="20"
-                                   TextWrapping="Wrap"
-                                   FontFamily="Segoe"/>
+                                   TextWrapping="Wrap"/>
 
                         <ComboBox x:Name="YoutubeApp"
                                   Grid.Column="1"

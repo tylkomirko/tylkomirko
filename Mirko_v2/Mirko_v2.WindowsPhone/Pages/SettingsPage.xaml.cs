@@ -32,14 +32,5 @@ namespace Mirko_v2.Pages
 
             this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBar();
         }
-
-        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
-            {
-                var msgBox = new MessageDialog("Zmiana stylu wymaga restartu aplikacji.", "Achtung!");
-                await msgBox.ShowAsync();
-            });
-        }
     }
 }
