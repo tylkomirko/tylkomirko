@@ -33,9 +33,7 @@ namespace WykopAPI.Models.Converters
             foreach (var voter in voters)
                 fullVoters.Add(new Voter() { AuthorName = voter });
 
-            writer.WriteStartArray();
             serializer.Serialize(writer, fullVoters);
-            writer.WriteEndArray();
         }
     }
 }
