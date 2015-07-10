@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
+using Mirko_v2.Utils;
 using System;
 using System.IO;
 using System.Linq;
@@ -204,9 +205,12 @@ namespace Mirko_v2.ViewModel
         {
             if (previewURL == null || fullURL == null) return null;
 
-            string fileName = "";
             Uri uri = new Uri(previewURL);
-            fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
+
+            string fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
+            if (fileName.Length > 255) // sometimes, file names are really long
+                fileName = Cryptography.EncodeMD5(fileName);
+
             previewURL = previewURL.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
 
             if (ImageCacheFolder == null)
