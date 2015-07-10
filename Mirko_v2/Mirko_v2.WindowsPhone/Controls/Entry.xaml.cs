@@ -1,12 +1,9 @@
 ﻿using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
-using Windows.UI;
-using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -162,7 +159,20 @@ namespace Mirko_v2.Controls
 
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)
         {
-            VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            var VM = DataContext as EntryBaseViewModel;
+
+            VotersRTB.SetBinding(Utils.Properties.VotersProperty, new Binding()
+            {
+                Source = VM,
+                Path = new PropertyPath("Data.Voters"),
+            });
+
+            if (VM.DataBase.VoteCount != VM.DataBase.Voters.Count)
+                VM.RefreshCommand.Execute(null);
+
+            VotersRTB.Visibility = Visibility.Visible;
+
+            VM.VotersHidden = false;
         }
     }
 }

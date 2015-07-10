@@ -86,12 +86,15 @@ namespace Mirko_v2.ViewModel
 
                 SelectedEntry = e;
 
-                var ID = e.Data.ID;
-                var oldEntry = col.SingleOrDefault(x => x.Data.ID == ID);
+                var oldEntry = col.SingleOrDefault(x => x.Data.ID == e.Data.ID);
                 if(oldEntry != null)
                 {
-                    var index = col.GetIndex(oldEntry);
-                    col.Replace(index, e);
+                    oldEntry.Data.CommentCount = e.Data.CommentCount;
+                    oldEntry.Comments = e.Comments;
+                    oldEntry.Data.Date = e.Data.Date;
+                    oldEntry.Data.Text = e.Data.Text;
+                    oldEntry.Data.VoteCount = e.Data.VoteCount;
+                    oldEntry.Data.Voters = e.Data.Voters;
                 }
             });
         }

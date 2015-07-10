@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using WykopAPI.Models.Converters;
 
 namespace WykopAPI.Models
@@ -30,9 +31,11 @@ namespace WykopAPI.Models
 
     public class Vote
     {
-        public int vote { get; set; } // the fuck is this?
+        [JsonProperty("vote")]
+        public uint VoteCount { get; set; }
 
         [JsonProperty("voters")]
-        public List<Voter> Voters { get; set; }
+        [JsonConverter(typeof(VotersConverter))]
+        public ObservableCollection<string> Voters { get; set; }
     }
 }

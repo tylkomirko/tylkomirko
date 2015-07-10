@@ -458,27 +458,29 @@ namespace Mirko_v2.Utils
         #endregion
 
         #region Voters
-        public static ObservableCollection<Voter> GetVoters(DependencyObject obj)
+        public static ObservableCollection<string> GetVoters(DependencyObject obj)
         {
-            return (ObservableCollection<Voter>)obj.GetValue(VotersProperty);
+            return (ObservableCollection<string>)obj.GetValue(VotersProperty);
         }
 
-        public static void SetVoters(DependencyObject obj, ObservableCollection<Voter> value)
+        public static void SetVoters(DependencyObject obj, ObservableCollection<string> value)
         {
             obj.SetValue(VotersProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Voters.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VotersProperty =
-            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<Voter>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
+            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<string>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
 
         private static void VotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var votersCollection = e.NewValue as ObservableCollection<Voter>;
-            if (votersCollection == null || votersCollection.Count == 0) return;
+            var votersCollection = e.NewValue as ObservableCollection<string>;
+            if (votersCollection == null) return;
 
             var blocks = (d as RichTextBlock).Blocks;
             blocks.Clear();
+
+            if (votersCollection.Count == 0) return;
 
             var header = new Paragraph() { LineHeight = 8 };
             header.Inlines.Add(new Run() { Text = "\u2015\u2015", Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 });
@@ -491,7 +493,7 @@ namespace Mirko_v2.Utils
             {
                 var voter = votersCollection[i];
 
-                var voterInline = new Run() { Text = voter.AuthorName, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 };
+                var voterInline = new Run() { Text = voter, Foreground = new SolidColorBrush(Colors.Gray), FontSize = 13.5 };
                 voters.Inlines.Add(voterInline);
 
                 if (i < count - 1)

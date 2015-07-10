@@ -157,7 +157,7 @@ namespace Mirko_v2.Controls
                 if(IsHot && entry.Comments.Count == 0)
                 {
                     entry.Comments.CollectionChanged += Comments_CollectionChanged;
-                    entry.GetComments.Execute(null);
+                    entry.RefreshCommand.Execute(null);
                 }
                 else
                 {

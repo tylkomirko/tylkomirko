@@ -1,16 +1,8 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
-using Mirko_v2.Common;
-using Mirko_v2.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -22,7 +14,6 @@ namespace Mirko_v2.ViewModel
         
         public EntryViewModel()
         {
-
         }
 
         public EntryViewModel(Entry d) : base(d)
@@ -47,7 +38,7 @@ namespace Mirko_v2.ViewModel
             {
                 Messenger.Default.Send<EntryViewModel>(this, "Hot Entry UserControl");
                 if(Comments.Count == 0)
-                    GetComments.Execute(null);
+                    RefreshCommand.Execute(null);
             }
             else
             {
@@ -91,63 +82,6 @@ namespace Mirko_v2.ViewModel
         private void ExecuteEditCommand()
         {
             throw new System.NotImplementedException();
-        }
-
-        private RelayCommand _refreshCommand = null;
-        [JsonIgnore]
-        public RelayCommand RefreshCommand
-        {
-            get { return _refreshCommand ?? (_refreshCommand = new RelayCommand(ExecuteRefreshCommand)); }
-        }
-
-        private async void ExecuteRefreshCommand()
-        {
-            if (Data == null) return;
-
-            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
-            var newEntry = await App.ApiService.getEntry(Data.ID);
-            if (newEntry == null)
-            {
-                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
-            }
-            else
-            {
-                var newVM = new EntryViewModel(newEntry);
-                Messenger.Default.Send<EntryViewModel>(newVM, "Update");
-
-                await StatusBarManager.HideProgress();
-            }
-        }
-
-        private RelayCommand _getComments = null;
-        [JsonIgnore]
-        public RelayCommand GetComments
-        {
-            get { return _getComments ?? (_getComments = new RelayCommand(ExecuteGetComments)); }
-        }
-
-        private async void ExecuteGetComments()
-        {
-            await StatusBarManager.ShowTextAndProgress("Pobieram komentarze...");
-
-            var entry = await App.ApiService.getEntry(Data.ID);
-            if(entry != null)
-            {
-                var comments = new List<CommentViewModel>(entry.Comments.Count);
-                foreach(var c in entry.Comments)
-                    comments.Add(new CommentViewModel(c));
-
-                Comments.Clear();
-                Comments.AddRange(comments);
-                Data.CommentCount = entry.CommentCount;
-                Data.VoteCount = entry.VoteCount;
-                Data.Voters.Clear();
-                //Data.Voters.AddRange(entry.Voters); FIXME!!!!!!
-
-                comments = null;
-            }
-
-            await StatusBarManager.HideProgress();
         }
     }
 }

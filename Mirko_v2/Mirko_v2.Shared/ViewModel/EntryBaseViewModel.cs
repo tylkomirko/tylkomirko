@@ -1,13 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Common;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
 
@@ -23,6 +20,13 @@ namespace Mirko_v2.ViewModel
         {
             get { return _tappedHashtag; }
             set { Set(() => TappedHashtag, ref _tappedHashtag, value); }
+        }
+
+        private bool _votersHidden = true;
+        public bool VotersHidden
+        {
+            get { return _votersHidden; }
+            set { Set(() => VotersHidden, ref _votersHidden, value); }
         }
 
         public EntryBaseViewModel()
@@ -59,9 +63,9 @@ namespace Mirko_v2.ViewModel
 
             if (reply != null)
             {
-                DataBase.VoteCount = (uint)reply.vote;
+                DataBase.VoteCount = reply.VoteCount;
                 DataBase.Voted = !DataBase.Voted;
-                //DataBase.Voters = new ObservableCollectionEx<Voter>(reply.Voters);
+                DataBase.Voters = reply.Voters;
 
                 await StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }
@@ -81,6 +85,32 @@ namespace Mirko_v2.ViewModel
         private void ExecuteDeleteCommand()
         {
             throw new System.NotImplementedException();
+        }
+
+        private RelayCommand _refreshCommand = null;
+        [JsonIgnore]
+        public RelayCommand RefreshCommand
+        {
+            get { return _refreshCommand ?? (_refreshCommand = new RelayCommand(ExecuteRefreshCommand)); }
+        }
+
+        private async void ExecuteRefreshCommand()
+        {
+            if (DataBase == null) return;
+
+            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+            var newEntry = await App.ApiService.getEntry(DataBase.ID);
+            if (newEntry == null)
+            {
+                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+            }
+            else
+            {
+                var newVM = new EntryViewModel(newEntry);
+                Messenger.Default.Send<EntryViewModel>(newVM, "Update");
+
+                await StatusBarManager.HideProgress();
+            }
         }
 
         #region Hashtag
