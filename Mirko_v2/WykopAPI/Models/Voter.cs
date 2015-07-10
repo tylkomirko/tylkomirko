@@ -10,6 +10,7 @@ namespace WykopAPI.Models
     {
         [JsonProperty("author")]
         public string AuthorName { get; set; }
+        /*
         [JsonProperty("author_avatar")]
         public string AuthorAvatarURL { get; set; }
         [JsonProperty("author_group")]
@@ -20,7 +21,7 @@ namespace WykopAPI.Models
         public UserSex AuthorSex { get; set; }
 
         [JsonProperty("date")]
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; }*/
 
         /* Removed properties:
          public string author_avatar_big { get; set; }
