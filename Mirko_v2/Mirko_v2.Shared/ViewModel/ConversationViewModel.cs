@@ -69,7 +69,9 @@ namespace Mirko_v2.ViewModel
             if (success)
             {
                 await StatusBarManager.ShowText("Wiadomość została wysłana.");
+                await ExecuteUpdateMessagesCommand();
 
+                /*
                 var newMessage = new PM()
                 {
                     Text = NewEntry.Text,
@@ -86,7 +88,7 @@ namespace Mirko_v2.ViewModel
                 ProcessMessages();
 
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));*/
             }
             else
             {
