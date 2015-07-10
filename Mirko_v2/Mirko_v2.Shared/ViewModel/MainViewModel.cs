@@ -90,7 +90,8 @@ namespace Mirko_v2.ViewModel
                 if(oldEntry != null)
                 {
                     oldEntry.Data.CommentCount = e.Data.CommentCount;
-                    oldEntry.Comments = e.Comments;
+                    oldEntry.Comments.Clear();
+                    oldEntry.Comments.AddRange(e.Comments);
                     oldEntry.Data.Date = e.Data.Date;
                     oldEntry.Data.Text = e.Data.Text;
                     oldEntry.Data.VoteCount = e.Data.VoteCount;

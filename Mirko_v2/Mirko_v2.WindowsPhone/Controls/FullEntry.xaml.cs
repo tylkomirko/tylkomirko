@@ -1,20 +1,8 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2.Utils;
+﻿using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -154,7 +142,11 @@ namespace Mirko_v2.Controls
                 ListView.SetBinding(ListView.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Source = BlacklistBlocks });
                 BlacklistBlocks.Clear();
 
-                if(IsHot && entry.Comments.Count == 0)
+                if (entry.Data.CommentCount > 15)
+                {
+                    entry.GoToEntryPage(true);
+                }
+                else if (IsHot && entry.Comments.Count == 0)
                 {
                     entry.Comments.CollectionChanged += Comments_CollectionChanged;
                     entry.RefreshCommand.Execute(null);
