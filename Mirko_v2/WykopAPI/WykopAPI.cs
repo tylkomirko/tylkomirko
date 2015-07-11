@@ -281,7 +281,7 @@ namespace WykopAPI
                             _log.Warn("API ERROR " + errorCode + ", " + message);
 
                             if (MessageReceiver != null && (errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12))
-                                MessageReceiver(this, new MessageEventArgs("Kod " + errorCode + ": " + message));
+                                MessageReceiver(this, new MessageEventArgs(message, errorCode));
 
                             if (errorCode == 5) // limit exceeded
                             {
@@ -359,7 +359,7 @@ namespace WykopAPI
                             _log.Warn("API ERROR " + errorCode + ", " + message);
 
                             if (errorCode != 999 && MessageReceiver != null)
-                                MessageReceiver(this, new MessageEventArgs("Kod " + errorCode + ": " + message));
+                                MessageReceiver(this, new MessageEventArgs(message, errorCode));
 
                             if (errorCode == 5) // limit exceeded
                             {
@@ -445,9 +445,8 @@ namespace WykopAPI
 
             if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
             {
-                var message = response.StatusCode + ": " + response.ReasonPhrase;
                 if (MessageReceiver != null)
-                    MessageReceiver(this, new MessageEventArgs(message));
+                    MessageReceiver(this, new MessageEventArgs(response.ReasonPhrase, (int)response.StatusCode));
 
                 return null;
             }
@@ -457,7 +456,7 @@ namespace WykopAPI
             {
                 var message = "Serwer zwrócił pustą odpowiedź.";
                 if (MessageReceiver != null)
-                    MessageReceiver(this, new MessageEventArgs(message));
+                    MessageReceiver(this, new MessageEventArgs(message, 0));
             }
             return stream;
         }

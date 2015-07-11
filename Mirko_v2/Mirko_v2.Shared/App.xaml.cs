@@ -45,9 +45,10 @@ namespace Mirko_v2
             }
         }
 
-        static void ApiService_MessageReceiver(object sender, WykopAPI.MessageEventArgs e)
+        static async void ApiService_MessageReceiver(object sender, WykopAPI.MessageEventArgs e)
         {
-            
+            if (e.Code == 61)
+                await StatusBarManager.ShowText(e.Message);
         }
 
         static async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)

@@ -5,15 +5,22 @@ namespace WykopAPI
     public class MessageEventArgs : EventArgs
     {
         private readonly string _message;
+        private readonly int _code;
 
         public string Message
         {
             get { return this._message; }
         }
 
-        public MessageEventArgs(string _m)
+        public int Code
+        {
+            get { return this._code; }
+        }
+
+        public MessageEventArgs(string _m, int _c)
         {
             this._message = _m;
+            this._code = _c;
         }
     }
 
