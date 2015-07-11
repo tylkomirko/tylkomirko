@@ -168,33 +168,18 @@ namespace Mirko_v2.ViewModel
                 _youTubeApps.Add(value.GetStringValue());
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
-            Messenger.Default.Register<NotificationMessage<uint>>(this, ReadMessage);
         }
 
         private async void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Init")
             {
-                if (LiveTile)
-                    NotificationsManager.SetLiveTile();
-                else
-                    NotificationsManager.ClearLiveTile();
-
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
                     "Cleaner",
                     new MaintenanceTrigger(60 * 24, false),
                     new SystemCondition(SystemConditionType.UserNotPresent));
 
                 PseudoPushToggled.Execute(null);
-            }
-        }
-
-        private void ReadMessage(NotificationMessage<uint> obj)
-        {
-            if (obj.Notification == "Update")
-            {
-                var count = obj.Content;
-                NotificationsManager.SetBadge(count);
             }
         }
 

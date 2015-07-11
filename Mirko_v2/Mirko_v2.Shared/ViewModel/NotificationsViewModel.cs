@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using MetroLog;
 using Mirko_v2.Utils;
+using NotificationsExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,6 +63,12 @@ namespace Mirko_v2.ViewModel
             Messenger.Default.Register<NotificationMessage<Notification>>(this, ReadMessage);
         }
 
+        private void UpdateBadge()
+        {
+            uint count = HashtagNotificationsCount + AtNotificationsCount + (uint)PMNotifications.Count;
+            NotificationsManager.SetBadge(count);
+        }
+
         private async void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Logout")
@@ -112,7 +119,7 @@ namespace Mirko_v2.ViewModel
             await CheckNotifications();
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
-            Messenger.Default.Send<NotificationMessage<uint>>(new NotificationMessage<uint>(HashtagNotificationsCount + AtNotificationsCount + (uint)PMNotifications.Count, "Update"));
+            UpdateBadge();
         }
 
         #region AppHeader commands
@@ -426,6 +433,8 @@ namespace Mirko_v2.ViewModel
                     await App.ApiService.markAsReadNotification(ID);
                     await DispatcherHelper.RunAsync(() => collection.Remove(notification));
                     await UpdateHashtagDictionary();
+
+                    UpdateBadge();
                 }
             }
             catch (Exception e) 
@@ -875,6 +884,8 @@ namespace Mirko_v2.ViewModel
                 }
             });
             SelectedAtNotification.MarkAsReadCommand.Execute(null);
+
+            UpdateBadge();
         }
 
         private RelayCommand _deleteAllAtNotifications = null;
@@ -931,6 +942,8 @@ namespace Mirko_v2.ViewModel
                         if (conversation != null)
                             conversation.Data.Status = ConversationStatus.Read;
                     });
+
+                    UpdateBadge();
                 }
             }
             catch (Exception e)

@@ -25,7 +25,7 @@ namespace NotificationsExtensions
             smallTile.ImageIcon.Src = "Assets/small_badge.png";
 
             var mediumTile = TileContentFactory.CreateTileSquare150x150IconWithBadge();
-            mediumTile.Branding = TileBranding.Name;
+            mediumTile.Branding = TileBranding.None;
             mediumTile.ImageIcon.Src = "Assets/medium_badge.png";
 
             var wideTile = TileContentFactory.CreateTileWide310x150IconWithBadgeAndText();
