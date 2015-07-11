@@ -181,6 +181,7 @@ namespace Mirko_v2.Pages
 
         private void TimeSpanSelectionPopup_Loaded(object sender, RoutedEventArgs e)
         {
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
 
