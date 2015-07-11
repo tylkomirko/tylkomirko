@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WykopAPI.Models;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
@@ -16,7 +17,7 @@ namespace Mirko_v2.ViewModel
 
         public void ClearCache()
         {
-            pageIndex = 0;
+            pageIndex = 1;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
@@ -32,6 +33,13 @@ namespace Mirko_v2.ViewModel
 
                 if (newEntries != null)
                 {
+                    if (newEntries.Count == 0)
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() => profileVM.Entries.HasMoreItems = false);
+                        if(profileVM.Entries.Count == 0)
+                            DispatcherHelper.CheckBeginInvokeOnUI(() => profileVM.Entries.HasNoItems = true);
+                    }
+
                     var VMs = new List<EntryViewModel>(newEntries.Count());
                     foreach (var entry in newEntries)
                         VMs.Add(new EntryViewModel(entry));

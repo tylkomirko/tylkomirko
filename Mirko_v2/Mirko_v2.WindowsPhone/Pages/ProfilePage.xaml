@@ -31,6 +31,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -120,6 +121,14 @@
                     </TextBlock>
 
                 </Grid>
+                
+                <TextBlock Grid.Row="4"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Margin="0,10,0,0"
+                           Style="{StaticResource TextBlockNoItems}"
+                           Text="Brak wpisów."
+                           Visibility="{Binding Entries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
             </Grid>
         </ListView.Header>
         
