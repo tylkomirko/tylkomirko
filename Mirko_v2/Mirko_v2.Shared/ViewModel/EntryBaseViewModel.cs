@@ -23,12 +23,12 @@ namespace Mirko_v2.ViewModel
             set { Set(() => TappedHashtag, ref _tappedHashtag, value); }
         }
 
-        private bool _votersHidden = true;
+        private bool _showVoters = false;
         [JsonIgnore]
-        public bool VotersHidden
+        public bool ShowVoters
         {
-            get { return _votersHidden; }
-            set { Set(() => VotersHidden, ref _votersHidden, value); }
+            get { return _showVoters; }
+            set { Set(() => ShowVoters, ref _showVoters, value); }
         }
 
         public EntryBaseViewModel()

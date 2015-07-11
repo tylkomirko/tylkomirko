@@ -218,7 +218,9 @@
                        Grid.Row="3"
                        Margin="5,0,0,0"
                        IsTextSelectionEnabled="False"
-                       Visibility="Collapsed" />       
+                       Visibility="Collapsed"
+                       utils:Properties.Voters="{Binding Data.Voters}"
+                       utils:Properties.ShowVoters="{Binding ShowVoters}"/>       
 
         <Grid x:Name="RightSpacer"
               Grid.Column="3"

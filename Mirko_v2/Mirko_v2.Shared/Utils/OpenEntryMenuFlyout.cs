@@ -71,7 +71,7 @@ namespace Mirko_v2.Utils
                 makeFlyoutItemInvisible("separator"); // FIXME
             }
 
-            if (entryData.VoteCount == 0 || !entry.VotersHidden)
+            if (entryData.VoteCount == 0 || entry.ShowVoters)
                 makeFlyoutItemInvisible("voters");
             else
                 makeFlyoutItemVisible("voters");

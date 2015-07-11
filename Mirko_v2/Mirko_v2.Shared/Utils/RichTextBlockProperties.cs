@@ -458,26 +458,9 @@ namespace Mirko_v2.Utils
         #endregion
 
         #region Voters
-        public static ObservableCollection<string> GetVoters(DependencyObject obj)
+        private static void PrintVoters(RichTextBlock rtb, ObservableCollection<string> votersCollection)
         {
-            return (ObservableCollection<string>)obj.GetValue(VotersProperty);
-        }
-
-        public static void SetVoters(DependencyObject obj, ObservableCollection<string> value)
-        {
-            obj.SetValue(VotersProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for Voters.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VotersProperty =
-            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<string>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
-
-        private static void VotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var votersCollection = e.NewValue as ObservableCollection<string>;
-            if (votersCollection == null) return;
-
-            var blocks = (d as RichTextBlock).Blocks;
+            var blocks = rtb.Blocks;
             blocks.Clear();
 
             if (votersCollection.Count == 0) return;
@@ -504,7 +487,65 @@ namespace Mirko_v2.Utils
             }
 
             blocks.Add(voters);
-        }        
+        }
+
+        private static void ClearVoters(RichTextBlock rtb)
+        {
+            rtb.Blocks.Clear();
+        }
+
+        public static ObservableCollection<string> GetVoters(DependencyObject obj)
+        {
+            return (ObservableCollection<string>)obj.GetValue(VotersProperty);
+        }
+
+        public static void SetVoters(DependencyObject obj, ObservableCollection<string> value)
+        {
+            obj.SetValue(VotersProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for Voters.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VotersProperty =
+            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<string>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
+
+        private static void VotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var votersCollection = e.NewValue as ObservableCollection<string>;
+            if (votersCollection == null) return;
+
+            var rtb = d as RichTextBlock;
+
+            if (GetShowVoters(d))
+                PrintVoters(rtb, votersCollection);
+            else
+                ClearVoters(rtb);
+        }
+
+
+        public static bool GetShowVoters(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(ShowVotersProperty);
+        }
+
+        public static void SetShowVoters(DependencyObject obj, bool value)
+        {
+            obj.SetValue(ShowVotersProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for ShowVoters.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowVotersProperty =
+            DependencyProperty.RegisterAttached("ShowVoters", typeof(bool), typeof(Properties), new PropertyMetadata(false, ShowVotersChanged));
+
+        private static void ShowVotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var rtb = d as RichTextBlock;
+            var show = (bool)e.NewValue;
+
+            if (show)
+                PrintVoters(rtb, GetVoters(d));
+            else
+                ClearVoters(rtb);
+        }
         #endregion
     }
 }

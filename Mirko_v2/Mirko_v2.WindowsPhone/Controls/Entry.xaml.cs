@@ -172,7 +172,7 @@ namespace Mirko_v2.Controls
 
             VotersRTB.Visibility = Visibility.Visible;
 
-            VM.VotersHidden = false;
+            VM.ShowVoters = true;
         }
     }
 }
