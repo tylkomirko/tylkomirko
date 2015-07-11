@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
 using Mirko_v2.Utils;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -191,6 +192,14 @@ namespace Mirko_v2.ViewModel
 
         public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL = null)
         {
+            /*
+            var r = new Random();
+            if (r.Next(1, 8) % 2 == 0)
+            {
+                Debug.WriteLine("GetImageStream returns NULL");
+                return null;
+            }*/
+
             if (previewURL == null) return null;
 
             Uri uri = new Uri(previewURL);
@@ -244,12 +253,12 @@ namespace Mirko_v2.ViewModel
 
                     // and now save
                     file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-                    using (var fileStream = await file.OpenStreamForWriteAsync())
-                    {
-                        var saveStream = stream.AsStream();
-                        saveStream.Position = 0;
-                        await saveStream.CopyToAsync(fileStream);
-                    }
+                    var fileStream = await file.OpenStreamForWriteAsync();
+
+                    var saveStream = stream.AsStream();
+                    saveStream.Position = 0;
+                    await saveStream.CopyToAsync(fileStream);
+                    fileStream.Dispose();
 
                     stream.Seek(0);
                     return stream;

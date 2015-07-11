@@ -24,8 +24,10 @@ namespace Mirko_v2.Controls
 
         private async Task LoadImage(string previewURL, string fullURL = null)
         {
+            Image.Visibility = Visibility.Collapsed;
             Ring.IsActive = true;
             Ring.Visibility = Visibility.Visible;
+
             var stream = await Cache.GetImageStream(previewURL, fullURL);
 
             if (stream != null)
@@ -33,6 +35,7 @@ namespace Mirko_v2.Controls
                 var bitmap = new BitmapImage();
                 bitmap.SetSource(stream);
                 Image.Source = bitmap;
+                Grid.Visibility = Visibility.Visible;
                 Ring.Visibility = Visibility.Collapsed;
                 Image.Visibility = Visibility.Visible;
 
@@ -40,11 +43,7 @@ namespace Mirko_v2.Controls
             }
             else
             {
-                Ring.Visibility = Visibility.Collapsed;
-                Ring.IsActive = false;
-                Image.Opacity = 1.0;
-                Image.Visibility = Visibility.Collapsed;
-                Visibility = Visibility.Collapsed; // none of this really works.
+                Visibility = Visibility.Collapsed;
             }
         }
 
@@ -73,6 +72,7 @@ namespace Mirko_v2.Controls
             {
                 control.Image.Visibility = Visibility.Collapsed;
                 control.Ring.Visibility = Visibility.Collapsed;
+                control.Grid.Visibility = Visibility.Collapsed;
             }
         }
 
