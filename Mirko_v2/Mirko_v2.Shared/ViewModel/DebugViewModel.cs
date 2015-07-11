@@ -69,9 +69,6 @@ namespace Mirko_v2.ViewModel
             {
                 ImgCacheHits++;
                 ImgCacheSaved += obj.Content / 1024;
-
-                Logger.Info("Image cache hits: " + ImgCacheHits);
-                Logger.Info("Bandwidth saved: " + ImgCacheSaved + " KB");
             }
         }
 
