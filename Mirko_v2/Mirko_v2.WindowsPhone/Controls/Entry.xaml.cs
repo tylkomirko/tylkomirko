@@ -161,16 +161,8 @@ namespace Mirko_v2.Controls
         {
             var VM = DataContext as EntryBaseViewModel;
 
-            VotersRTB.SetBinding(Utils.Properties.VotersProperty, new Binding()
-            {
-                Source = VM,
-                Path = new PropertyPath("Data.Voters"),
-            });
-
             if (VM.DataBase.VoteCount != VM.DataBase.Voters.Count)
                 VM.RefreshCommand.Execute(null);
-
-            VotersRTB.Visibility = Visibility.Visible;
 
             VM.ShowVoters = true;
         }
