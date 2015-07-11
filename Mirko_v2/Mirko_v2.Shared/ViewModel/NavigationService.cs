@@ -42,7 +42,7 @@ namespace Mirko_v2.ViewModel
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
-            if (!e.Handled && CanGoBack())
+            if (CanGoBack())
             {
                 if (CurrentPageKey == "HashtagFlipPage")
                 {
