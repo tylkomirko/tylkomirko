@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2;
 using Mirko_v2.ViewModel;
 using System;
 using Windows.UI;
@@ -7,7 +6,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using WykopAPI.Models;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class GroupToColor : IValueConverter
     {

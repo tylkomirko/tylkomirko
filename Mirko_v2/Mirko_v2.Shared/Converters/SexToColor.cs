@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using WykopAPI.Models;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class SexToColor : IValueConverter
     {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Mirko_v2.Utils;
+using System;
 using Windows.UI.Xaml.Data;
-using Mirko_v2.Utils;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class YouTubeApp : IValueConverter
     {

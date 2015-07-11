@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using WykopAPI.Models;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
-    public class CommentListToVisibility: IValueConverter
+    public class CommentListToVisibility : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string str)
         {

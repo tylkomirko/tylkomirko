@@ -1,10 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2;
 using Mirko_v2.ViewModel;
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class FontSizeScaler : IValueConverter
     {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Windows.UI.Xaml.Data;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class CountToBool : IValueConverter
     {

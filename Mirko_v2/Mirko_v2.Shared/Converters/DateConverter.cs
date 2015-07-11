@@ -2,7 +2,7 @@
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class DateConverter : IValueConverter
     {

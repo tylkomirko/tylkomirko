@@ -4,9 +4,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using WykopAPI.Models;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
-    public class ConversationStatusToBrush: IValueConverter
+    public class ConversationStatusToBrush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

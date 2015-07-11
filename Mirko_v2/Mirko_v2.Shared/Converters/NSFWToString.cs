@@ -3,7 +3,7 @@ using System.Linq;
 using Windows.UI.Xaml.Data;
 using WykopAPI.Models;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
     public class NSFWToString : IValueConverter
     {

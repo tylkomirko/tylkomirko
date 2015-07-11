@@ -3,9 +3,9 @@ using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace Mirko.Converters
+namespace Mirko_v2.Converters
 {
-    public class UserVotedToBrush: IValueConverter
+    public class UserVotedToBrush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

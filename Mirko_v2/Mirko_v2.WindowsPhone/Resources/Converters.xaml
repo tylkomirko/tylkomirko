@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="using:Mirko.Converters"
+    xmlns:converters="using:Mirko_v2.Converters"
     xmlns:local="using:Mirko_v2.Resources">
 
     <converters:GroupToColor x:Key="GroupToColor" />
@@ -12,17 +12,13 @@
     <converters:CountToVisibility x:Key="CountToVisibility" />
     <converters:CountToVisibilityInv x:Key="CountToVisibilityInv" />
     <converters:InvertVisibility x:Key="InvertVisibility" />
-    <converters:CountToString x:Key="CountToString" />
-    <converters:PMDirectionToVisibility x:Key="PMDirectionToVisibility" />
     <converters:ConversationStatusToBrush x:Key="ConversationStatusToBrush" />
     <converters:UserVotedToBrush x:Key="UserVotedToBrush" />
     <converters:NewEntriesNumeral x:Key="NewEntriesNumeral" />
     <converters:FontSizeScaler x:Key="FontSizeScaler" />
     <converters:SexToText x:Key="SexToText" />
-    <converters:NotificationsCountToBrush x:Key="NotificationsCountToBrush" />
     <converters:NullToVisibility x:Key="NullToVisibility" />
     <converters:MoreThanOneToString x:Key="MoreThanOneToString" />
-    <converters:BoolInverter x:Key="BoolInverter" />
     <converters:YouTubeApp x:Key="YouTubeApp" />
     <converters:CountToBool x:Key="CountToBool" />
     <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
