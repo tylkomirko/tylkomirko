@@ -189,9 +189,9 @@ namespace Mirko_v2.ViewModel
             return stream;
         }
 
-        public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL)
+        public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL = null)
         {
-            if (previewURL == null || fullURL == null) return null;
+            if (previewURL == null) return null;
 
             Uri uri = new Uri(previewURL);
 
@@ -233,7 +233,9 @@ namespace Mirko_v2.ViewModel
                 {
                     var pixels = await response.Content.ReadAsByteArrayAsync();
                     InMemoryRandomAccessStream stream = null;
-                    if (fullURL.EndsWith(".gif") || fullURL.Contains("gfycat"))
+                    if(fullURL == null)
+                        stream = await ReadImage(pixels.AsBuffer());
+                    else if (fullURL.EndsWith(".gif") || fullURL.Contains("gfycat"))
                         stream = await DrawGIFOverlay(pixels.AsBuffer());
                     else if (fullURL.Contains("youtube") || fullURL.Contains("youtu.be"))
                         stream = await DrawVideoOverlay(pixels.AsBuffer());

@@ -22,7 +22,7 @@ namespace Mirko_v2.Controls
                 Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
         }
 
-        private async Task LoadImage(string previewURL, string fullURL)
+        private async Task LoadImage(string previewURL, string fullURL = null)
         {
             Ring.IsActive = true;
             Ring.Visibility = Visibility.Visible;
@@ -64,8 +64,10 @@ namespace Mirko_v2.Controls
 
             if ((Visibility)e.NewValue == Visibility.Visible)
             {
-                if(control.Embed != null)
+                if (control.Embed != null)
                     await control.LoadImage(control.Embed.PreviewURL, control.Embed.URL);
+                else if (control.URL != null)
+                    await control.LoadImage(control.URL);
             }
             else
             {
@@ -92,6 +94,26 @@ namespace Mirko_v2.Controls
             var control = d as CachedImage;
             if (control.Visibility == Visibility.Visible)
                 await control.LoadImage(embed.PreviewURL, embed.URL);
-        }     
+        }
+
+        public string URL
+        {
+            get { return (string)GetValue(URLProperty); }
+            set { SetValue(URLProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for URL.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty URLProperty =
+            DependencyProperty.Register("URL", typeof(string), typeof(CachedImage), new PropertyMetadata(null, URLChanged));
+
+        private static async void URLChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var url = e.NewValue as string;
+            if (url == null) return;
+
+            var control = d as CachedImage;
+            if (control.Visibility == Visibility.Visible)
+                await control.LoadImage(url);
+        }        
     }
 }
