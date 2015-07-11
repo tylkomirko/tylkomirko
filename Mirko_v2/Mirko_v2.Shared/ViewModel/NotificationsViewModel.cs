@@ -453,6 +453,8 @@ namespace Mirko_v2.ViewModel
         {
             if (!HashtagsDictionary.ContainsKey(hashtag)) return;
 
+            await StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
+
             var notifications = HashtagsDictionary[hashtag];
             var IDs = notifications.Select(x => x.Data.ID);
 
