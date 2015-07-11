@@ -93,9 +93,6 @@
     <Compile Include="Controls\AppHeader.xaml.cs">
       <DependentUpon>AppHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CachedImage.xaml.cs">
-      <DependentUpon>CachedImage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Entry.xaml.cs">
       <DependentUpon>Entry.xaml</DependentUpon>
     </Compile>
@@ -217,10 +214,6 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <Page Include="Controls\AppHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CachedImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
