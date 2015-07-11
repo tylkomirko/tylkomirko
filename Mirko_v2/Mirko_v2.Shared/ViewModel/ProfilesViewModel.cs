@@ -44,7 +44,6 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteGoToProfile(string username)
         {
             if (string.IsNullOrEmpty(username)) return;
-            if (CurrentProfile != null && CurrentProfile.Data.Login == username) return;
 
             if (Profiles.ContainsKey(username))
             {
