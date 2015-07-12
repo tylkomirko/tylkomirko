@@ -165,6 +165,7 @@ namespace Mirko_v2.Controls
                 VM.RefreshCommand.Execute(null);
 
             VM.ShowVoters = true;
+            VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
     }
 }
