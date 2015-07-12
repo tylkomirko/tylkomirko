@@ -369,8 +369,6 @@ namespace Mirko_v2.ViewModel
                 ObservableCollectionEx<NotificationViewModel> collection = null;
                 NotificationViewModel notification = null;
 
-                await StatusBarManager.ShowTextAndProgress("Usuwam powiadomienie...");
-
                 foreach(var col in HashtagsDictionary.Values)
                 {
                     var tmp = col.SingleOrDefault(x => x.Data.ID == ID);
@@ -390,8 +388,6 @@ namespace Mirko_v2.ViewModel
 
                     UpdateBadge();
                 }
-
-                await StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
             }
             catch (Exception e) 
             {
