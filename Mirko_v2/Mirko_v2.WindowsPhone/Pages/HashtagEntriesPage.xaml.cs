@@ -99,9 +99,9 @@ namespace Mirko_v2.Pages
             ObserveButton = observe;
             ObserveButton.Loaded += (s, e) =>
             {
-                var notificationsVM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+                var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
-                if (notificationsVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
+                if (cacheVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
                 {
                     ObserveButton.IsChecked = true;
                     ObserveButton.Label = "nie obserwuj";

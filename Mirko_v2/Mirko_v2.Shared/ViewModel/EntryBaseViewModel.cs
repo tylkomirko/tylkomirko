@@ -128,7 +128,7 @@ namespace Mirko_v2.ViewModel
             }
             else
             {
-                var observedTags = SimpleIoc.Default.GetInstance<NotificationsViewModel>().ObservedHashtags;
+                var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
                 if (observedTags.Contains(tag))
                 {
                     MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");

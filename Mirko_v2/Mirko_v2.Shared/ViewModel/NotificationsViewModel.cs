@@ -10,16 +10,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
-    public class HashtagInfoContainer : INotifyPropertyChanged
+    public class HashtagInfoContainer : INotifyPropertyChanged, IComparable
     {
         public string Name { get; set; }
 
@@ -32,6 +32,23 @@ namespace Mirko_v2.ViewModel
                 _count = value;
                 OnPropertyChanged();
             }
+        }
+
+        public HashtagInfoContainer(string name, uint count)
+        {
+            Name = name;
+            Count = count;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var second = (HashtagInfoContainer)obj;
+
+            var count = second.Count.CompareTo(this.Count);
+            if (count == 0)
+                return this.Name.CompareTo(second.Name);
+            else
+                return count;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -53,7 +70,6 @@ namespace Mirko_v2.ViewModel
         public NotificationsViewModel(NavigationService nav)
         {
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
-            _updateHashtagDic = new SemaphoreSlim(1);
             NavService = nav;
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<NotificationsViewModel>();
@@ -61,6 +77,9 @@ namespace Mirko_v2.ViewModel
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<Notification>>(this, ReadMessage);
+
+            ObservedHashtags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
+            ObservedHashtags.CollectionChanged += (s, e) => UpdateHashtagsCollection();
         }
 
         private void UpdateBadge()
@@ -86,7 +105,7 @@ namespace Mirko_v2.ViewModel
                     this.PMNotificationsCount = 0;
                 });
 
-                await DeleteObservedTags();
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Delete ObservedHashtags"));
                 await App.ApiService.LocalStorage.DeleteConversations();
             }
             else if(obj.Notification == "Login")
@@ -137,9 +156,6 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteHashtagTappedCommand()
         {
-            if (HashtagsCollection.Count == 0)
-                await UpdateHashtagDictionary();
-
             if (HashtagNotificationsCount == 0)
             {
                 NavService.NavigateTo("HashtagSelectionPage");
@@ -285,9 +301,7 @@ namespace Mirko_v2.ViewModel
         #endregion
 
         #region Hashtag
-        private SemaphoreSlim _updateHashtagDic = null;
-
-        private uint NewestHashtagNotificationID;
+        private ObservableCollectionEx<string> ObservedHashtags = null;
 
         private uint _hashtagNotificationsCount;
         public uint HashtagNotificationsCount
@@ -317,10 +331,10 @@ namespace Mirko_v2.ViewModel
             set { Set(() => SelectedHashtagNotification, ref _selectedHashtagNotification, value); }
         }
 
-        private ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> _hashtagsDictionary;
-        public ObservableDictionary<string, ObservableCollectionEx<NotificationViewModel>> HashtagsDictionary
+        private Dictionary<string, ObservableCollectionEx<NotificationViewModel>> _hashtagsDictionary;
+        public Dictionary<string, ObservableCollectionEx<NotificationViewModel>> HashtagsDictionary
         {
-            get { return _hashtagsDictionary ?? (_hashtagsDictionary = new ObservableDictionary<string,ObservableCollectionEx<NotificationViewModel>>()); }
+            get { return _hashtagsDictionary ?? (_hashtagsDictionary = new Dictionary<string, ObservableCollectionEx<NotificationViewModel>>()); }
         }
 
         private ObservableCollectionEx<HashtagInfoContainer> _hashtagsCollection;
@@ -342,68 +356,6 @@ namespace Mirko_v2.ViewModel
             set { Set(() => HashtagFlipCurrentEntry, ref _hashtagFlipCurrentEntry, value); }
         }
 
-        private List<string> _observedHashtags;
-        public List<string> ObservedHashtags // this VM is not the best for this, I know. but I can't think of a better one right now.
-        {
-            get { return _observedHashtags ?? (_observedHashtags = new List<string>()); }
-        }
-
-        private async Task DownloadObservedHashtags()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            var needToDownload = false;
-            try
-            {
-                var file = await folder.GetFileAsync("ObservedTags");
-                var props = await file.GetBasicPropertiesAsync();
-                if (DateTime.Now - props.DateModified > new TimeSpan(12, 0, 0))
-                {
-                    needToDownload = true;
-                }
-                else
-                {
-                    var fileContent = await FileIO.ReadLinesAsync(file);
-                    ObservedHashtags.Clear();
-                    ObservedHashtags.AddRange(fileContent);
-                }
-            }
-            catch (Exception)
-            {
-                needToDownload = true;
-            }
-
-            if (needToDownload)
-            {
-                var data = await App.ApiService.getUserObservedTags();
-                if (data != null)
-                {
-                    ObservedHashtags.Clear();
-                    ObservedHashtags.AddRange(data);
-                    data = null;
-                }
-            }
-
-            if(ObservedHashtags.Count > 0)
-            {
-                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteLinesAsync(file, ObservedHashtags);
-            }
-        }
-
-        private async Task DeleteObservedTags()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-            try
-            {
-                var file = await folder.GetFileAsync("ObservedTags");
-                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Couldn't delete ObservedTags.", e);
-            }
-        }
-
         private RelayCommand<uint> _deleteHashtagNotification = null;
         public RelayCommand<uint> DeleteHashtagNotification
         {
@@ -416,6 +368,8 @@ namespace Mirko_v2.ViewModel
             {
                 ObservableCollectionEx<NotificationViewModel> collection = null;
                 NotificationViewModel notification = null;
+
+                await StatusBarManager.ShowTextAndProgress("Usuwam powiadomienie...");
 
                 foreach(var col in HashtagsDictionary.Values)
                 {
@@ -432,10 +386,12 @@ namespace Mirko_v2.ViewModel
                 {
                     await App.ApiService.markAsReadNotification(ID);
                     await DispatcherHelper.RunAsync(() => collection.Remove(notification));
-                    await UpdateHashtagDictionary();
+                    UpdateHashtagsCollection();
 
                     UpdateBadge();
                 }
+
+                await StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
             }
             catch (Exception e) 
             {
@@ -462,7 +418,7 @@ namespace Mirko_v2.ViewModel
                 await App.ApiService.markAsReadNotification(id);
 
             HashtagsDictionary.Remove(hashtag);
-            await UpdateHashtagDictionary();
+            UpdateHashtagsCollection();
 
             await StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
         }
@@ -504,7 +460,7 @@ namespace Mirko_v2.ViewModel
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Add(hashtag));
-                await UpdateHashtagDictionary();
+                UpdateHashtagsCollection();
 
                 await StatusBarManager.ShowText("Obserwujesz " + hashtag + ".");
             }
@@ -531,7 +487,7 @@ namespace Mirko_v2.ViewModel
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
-                await UpdateHashtagDictionary();
+                UpdateHashtagsCollection();
 
                 await StatusBarManager.ShowText("Przestałeś obserwować " + hashtag + ".");
             }
@@ -666,7 +622,9 @@ namespace Mirko_v2.ViewModel
         public async Task CheckHashtagNotifications()
         {
             uint pageIndex = 1;
-            var notificationsList = new List<Notification>(50);
+
+            if (ObservedHashtags.Count == 0)
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update ObservedHashtags"));
 
             while (true)
             {
@@ -675,132 +633,115 @@ namespace Mirko_v2.ViewModel
                 if (notifications == null || notifications.Count == 0)
                     break;
 
-                var newNotifications = notifications.Where(x => x.IsNew && x.ID > this.NewestHashtagNotificationID);
-                notificationsList.AddRange(newNotifications);
+                var newNotifications = notifications.Where(x => x.IsNew);
 
-                if (!notifications.Last().IsNew || pageIndex == 10)
+                // process each page right after downloading it.
+                // makes UX so much better on slow network
+                UpdateHashtagDictionary(newNotifications);
+
+                if (!notifications.Last().IsNew || pageIndex == 9)
                     break;
             }
-
-            if (notificationsList.Count > 0)
-                this.NewestHashtagNotificationID = notificationsList.First().ID;
-
-            var dic = this.HashtagsDictionary;
-            foreach (var item in notificationsList)
-            {
-                var body = item.Text;
-                var index = body.IndexOf('#');
-                var nextIndex = body.IndexOf(' ', index);
-
-                var tagName = body.Substring(index, nextIndex - index);
-
-                if (dic.ContainsKey(tagName))
-                    await DispatcherHelper.RunAsync(() => dic[tagName].Add(new NotificationViewModel(item)));
-                else
-                    await DispatcherHelper.RunAsync(() => dic[tagName] = new ObservableCollectionEx<NotificationViewModel>() { new NotificationViewModel(item) });
-            }
-
-            await UpdateHashtagDictionary();
         }
 
-        private async Task UpdateHashtagDictionary(bool forcedSorting = false)
+        private void UpdateHashtagDictionary(IEnumerable<Notification> notifications)
         {
-            await _updateHashtagDic.WaitAsync();
+            /* 1. Create local dictionary made of notifications passed as the parameter.
+             * 2. Merge local dictionary with global HashtagsDictionary.
+             * 3. Update HashtagsCollection. */
 
-            try
+            if (notifications.Count() == 0) return;
+
+            foreach(var notification in notifications)
             {
-                var dic = this.HashtagsDictionary;
-                var orderedNames = dic.Keys.OrderByDescending(x => dic[x].Count).ToList();
+                // extract hashtag
+                var body = notification.Text;
+                var index = body.IndexOf('#');
+                var nextIndex = body.IndexOf(' ', index);
+                var hashtag = body.Substring(index, nextIndex - index);
 
-                uint count = 0;
-
-                var tmp = new List<HashtagInfoContainer>();
-                foreach (var name in orderedNames)
+                if (HashtagsDictionary.ContainsKey(hashtag))
                 {
-                    var c = (uint)dic[name].Count;
-                    if (c > 0)
-                    {
-                        count += c;
-                        tmp.Add(new HashtagInfoContainer
-                        {
-                            Name = name,
-                            Count = c,
-                        });
-                    }
+                    var col = HashtagsDictionary[hashtag];
+                    if (!col.Select(x => x.Data.ID).Contains(notification.ID))
+                        DispatcherHelper.RunAsync(() => col.Add(new NotificationViewModel(notification))).AsTask().Wait();
                 }
-
-                await DispatcherHelper.RunAsync(() =>
+                else
                 {
-                    this.HashtagsCollection.Clear();
-                    this.HashtagsCollection.AddRange(tmp);
-                    this.HashtagNotificationsCount = count;
-
-                    if (CurrentHashtag != null)
-                    {
-                        if (this.HashtagsDictionary.ContainsKey(this.CurrentHashtag.Name))
-                            this.CurrentHashtag.Count = (uint)HashtagsDictionary[this.CurrentHashtag.Name].Count;
-                        else
-                            this.CurrentHashtag.Count = 0;
-                    }
-                });
-
-                tmp.Clear();
-
-                // now add observed hashtags without notifications
-                if (ObservedHashtags.Count == 0)
-                    await DownloadObservedHashtags();
-
-                foreach (var tag in ObservedHashtags)
-                {
-                    bool itemFound = false;
-
-                    foreach (var addedTag in this.HashtagsCollection)
-                    {
-                        if (addedTag.Name == tag)
-                        {
-                            itemFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!itemFound)
-                        tmp.Add(new HashtagInfoContainer() { Name = tag, Count = 0 });
-                }
-
-                await DispatcherHelper.RunAsync(() => this.HashtagsCollection.AddRange(tmp));
-                tmp = null;
-
-                // now sort
-                if (count > 0 || forcedSorting)
-                {
-                    var groups = this.HashtagsCollection.GroupBy(x => x.Count);
-                    int itemsToRemove = this.HashtagsCollection.Count();
-
-                    var sortedGroups = new List<HashtagInfoContainer>();
-
-                    foreach (var group in groups)
-                    {
-                        var sortedGroup = group.OrderBy(x => x.Name);
-                        sortedGroups.AddRange(sortedGroup);
-                    }
-
-                    await DispatcherHelper.RunAsync(() =>
-                    {
-                        this.HashtagsCollection.Clear();
-                        this.HashtagsCollection.AddRange(sortedGroups);
-                    });
-
-                    sortedGroups = null;
+                    var col = new ObservableCollectionEx<NotificationViewModel>() { new NotificationViewModel(notification) };
+                    HashtagsDictionary[hashtag] = col;
                 }
             }
-            catch(Exception e)
+
+            DispatcherHelper.RunAsync(() =>
             {
-                Logger.Error("Error updating HashtagDictionary: ", e);
-            }
-            finally
+                foreach (var col in HashtagsDictionary.Values)
+                    col.Sort();
+            }).AsTask().Wait();
+
+            UpdateHashtagsCollection();
+        }
+
+        private void UpdateHashtagsCollection()
+        {
+            /* dictionaries are now merged. now, we have to update HashtagsCollection.
+             * first, we'll create new instance, then update the old one. */
+            var newHashCol = new List<HashtagInfoContainer>();
+
+            foreach (var hashtag in HashtagsDictionary.Keys)
             {
-                _updateHashtagDic.Release();
+                var count = (uint)HashtagsDictionary[hashtag].Count;
+                newHashCol.Add(new HashtagInfoContainer(hashtag, count));
             }
+
+            // now add observed hashtags (without notifications)
+            var hashColNames = newHashCol.Select(x => x.Name);
+            foreach (var hashtag in ObservedHashtags)
+            {
+                if (!hashColNames.Contains(hashtag))
+                    newHashCol.Add(new HashtagInfoContainer(hashtag, 0));
+            }
+
+            /* now, we have to update HashtagsCollection.
+             first, let's gather current hashtag names. */
+            var newHashColNames = newHashCol.Select(x => x.Name).ToList();
+            hashColNames = HashtagsCollection.Select(x => x.Name);
+
+            var hashesToRemove = hashColNames.Where(x => !newHashColNames.Contains(x));
+
+            foreach (var hashtag in hashesToRemove)
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    HashtagsCollection.Remove(HashtagsCollection.First(x => x.Name == hashtag)));
+
+            // now let's update.
+            hashColNames = HashtagsCollection.Select(x => x.Name);
+            foreach (var hashtagInfo in newHashCol)
+            {
+                var hashtag = hashtagInfo.Name;
+                var count = hashtagInfo.Count;
+
+                if (hashColNames.Contains(hashtag))
+                {
+                    var info = HashtagsCollection.First(x => x.Name == hashtag);
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        info.Count = count);
+                }
+                else
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        HashtagsCollection.Add(new HashtagInfoContainer(hashtag, count)));
+                }
+            }
+
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var sum = HashtagsCollection.Sum(x => x.Count);
+                Debug.WriteLine("-------> sum: " + sum);
+                HashtagNotificationsCount = (uint)sum;
+
+                HashtagsCollection.Sort();
+            });
+
         }
         #endregion
 

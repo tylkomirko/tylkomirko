@@ -7,7 +7,7 @@ using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
-    public class NotificationViewModel : ViewModelBase
+    public class NotificationViewModel : ViewModelBase, IComparable
     {
         public Notification Data { get; set; }
 
@@ -26,6 +26,13 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteMarkAsReadCommand()
         {
             await App.ApiService.markAsReadNotification(Data.ID);
+        }
+
+        public int CompareTo(object obj)
+        {
+            var other = (NotificationViewModel)obj;
+
+            return other.Data.ID.CompareTo(this.Data.ID);
         }
     }
 }

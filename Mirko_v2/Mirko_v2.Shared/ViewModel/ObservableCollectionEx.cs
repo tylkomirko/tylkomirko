@@ -82,5 +82,12 @@ namespace Mirko_v2.ViewModel
 
             return -1; // not found
         }
+
+        public void Sort()
+        {
+            var sorted = this.OrderBy(x => x).ToList();
+            for (int i = 0; i < sorted.Count(); i++)
+                this.Move(this.IndexOf(sorted[i]), i);
+        }
     }
 }

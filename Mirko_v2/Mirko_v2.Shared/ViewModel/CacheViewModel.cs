@@ -31,6 +31,20 @@ namespace Mirko_v2.ViewModel
         {
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
             SaveTimer = new Timer(SaveTimerCallback, null, 45*1000, 0); // 45 seconds
+
+            Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
+        }
+
+        private async void ReadMessage(NotificationMessage obj)
+        {
+            if (obj.Notification == "Update ObservedHashtags")
+            {
+                await DownloadObservedHashtags();
+            }
+            else if (obj.Notification == "Delete ObservedHashtags")
+            {
+                await DeleteObservedTags();
+            }
         }
 
         private async void SaveTimerCallback(object state)
@@ -42,11 +56,75 @@ namespace Mirko_v2.ViewModel
             SaveTimer = null;
         }
 
+        #region ObservedHashtags
+        private async Task DownloadObservedHashtags()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            var needToDownload = false;
+            try
+            {
+                var file = await folder.GetFileAsync("ObservedTags");
+                var props = await file.GetBasicPropertiesAsync();
+                if (DateTime.Now - props.DateModified > new TimeSpan(12, 0, 0))
+                {
+                    needToDownload = true;
+                }
+                else
+                {
+                    var fileContent = await FileIO.ReadLinesAsync(file);
+                    ObservedHashtags.Clear();
+                    ObservedHashtags.AddRange(fileContent);
+                }
+            }
+            catch (Exception)
+            {
+                needToDownload = true;
+            }
+
+            if (needToDownload)
+            {
+                var data = await App.ApiService.getUserObservedTags();
+                if (data != null)
+                {
+                    ObservedHashtags.Clear();
+                    ObservedHashtags.AddRange(data);
+                    data = null;
+                }
+            }
+
+            if (ObservedHashtags.Count > 0)
+            {
+                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteLinesAsync(file, ObservedHashtags);
+            }
+        }
+
+        private async Task DeleteObservedTags()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            try
+            {
+                var file = await folder.GetFileAsync("ObservedTags");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Couldn't delete ObservedTags.", e);
+            }
+        }
+        #endregion ObservedHashtags
+
         #region Properties
         private ObservableCollectionEx<string> _popularHashtags = null;
         public ObservableCollectionEx<string> PopularHashtags
         {
             get { return _popularHashtags ?? (_popularHashtags = new ObservableCollectionEx<string>()); }
+        }
+
+        private ObservableCollectionEx<string> _observedHashtags;
+        public ObservableCollectionEx<string> ObservedHashtags
+        {
+            get { return _observedHashtags ?? (_observedHashtags = new ObservableCollectionEx<string>()); }
         }
 
         private ObservableCollectionEx<string> _hashtagSuggestions = null;
