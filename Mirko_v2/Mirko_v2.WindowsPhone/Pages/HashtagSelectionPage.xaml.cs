@@ -20,7 +20,7 @@ namespace Mirko_v2.Pages
         {
             var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
 
-            if (VM.HashtagsDictionary.Count > 0)
+            if (VM.HashtagNotificationsCount > 0)
                 return ItemTemplate;
             else
                 return ItemTemplateNoCount;
