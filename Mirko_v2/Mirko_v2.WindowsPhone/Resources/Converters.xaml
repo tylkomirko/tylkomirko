@@ -7,6 +7,7 @@
     <converters:GroupToColor x:Key="GroupToColor" />
     <converters:SexToColor x:Key="SexToColor" />
     <converters:DateConverter x:Key="DateConverter" />
+    <converters:LongDateConverter x:Key="LongDateConverter" />
     <converters:BoolToVisibility x:Key="BoolToVisibility" />
     <converters:UpperCase x:Key="UpperCase" />
     <converters:CountToVisibility x:Key="CountToVisibility" />

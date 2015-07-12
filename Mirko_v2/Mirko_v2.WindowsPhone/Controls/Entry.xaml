@@ -158,11 +158,9 @@
                        TextTrimming="CharacterEllipsis"
                        HorizontalAlignment="Left"
                        
+                       Text="{Binding Data.Date, Converter={StaticResource LongDateConverter}}"
                        FontSize="{Binding Fonts.DateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
-                       Foreground="Gray">
-                <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}"/>
-                <Run Text="temu"/>
-            </TextBlock>
+                       Foreground="Gray" />
         </StackPanel>
 
         <TextBlock x:Name="VoteTB"

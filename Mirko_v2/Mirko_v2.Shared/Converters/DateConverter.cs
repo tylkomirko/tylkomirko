@@ -4,15 +4,11 @@ using Windows.UI.Xaml.Data;
 
 namespace Mirko_v2.Converters
 {
-    public class DateConverter : IValueConverter
+    public static class EntryTimeConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string str)
+        public static string Convert(DateTime entryTime)
         {
-            if (value == null)
-                return "";
-
             DateTime now = DateTime.UtcNow;
-            DateTime entryTime = (DateTime)value;
             entryTime = entryTime.Subtract(App.OffsetUTCInPoland);
             string result = string.Empty;
 
@@ -80,8 +76,37 @@ namespace Mirko_v2.Converters
 
             return result;
         }
+    }
+
+    public class DateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string str)
+        {
+            if (value == null)
+                return "";
+
+            DateTime entryTime = (DateTime)value;
+            return EntryTimeConverter.Convert(entryTime);
+        }
 
         public object ConvertBack(object value, Type targetType, object parameter, string str)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class LongDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value == null)
+                return "";
+
+            DateTime entryTime = (DateTime)value;
+            return EntryTimeConverter.Convert(entryTime) + " temu";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
