@@ -501,13 +501,16 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteGoToHashtagNotificationsPage()
         {
-            CurrentHashtagNotifications = HashtagsDictionary[CurrentHashtag.Name];
-
-            if(CurrentHashtagNotifications == null)
+            ObservableCollectionEx<NotificationViewModel> col;
+            if (!HashtagsDictionary.TryGetValue(CurrentHashtag.Name, out col))
             {
                 // no notifications. go to hashtag entries page.
                 SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(CurrentHashtag.Name);
                 return;
+            }
+            else
+            {
+                CurrentHashtagNotifications = col;
             }
 
             if (CurrentHashtagNotifications.Count > 1)
