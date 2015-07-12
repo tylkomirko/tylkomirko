@@ -75,8 +75,10 @@
                                        Foreground="Gray"
                                        FontSize="12"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+                                       HorizontalAlignment="Left">
+                                <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}"/>
+                                <Run Text="temu"/>
+                            </TextBlock>
 
                             <RichTextBlock Grid.Column="0"
                                            Grid.ColumnSpan="2"
