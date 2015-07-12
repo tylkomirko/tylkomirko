@@ -1,4 +1,10 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -9,34 +15,15 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class NotificationCounter : UserControl
     {
-        private int targetValue;
-        private int currentValue;
-        private const int threshold = 5;
-        private const int flipsMax = 5; // number of flips in fast animation
-        private int flipsCounter = 0;
+        private int TargetValue;
+        private int CurrentValue;
+        private const int Threshold = 5; // threshold between slow and fast flip
+        private CancellationTokenSource CTS = null;
+        private Task LastTask = null;
 
         private static Random RandomGenerator = new Random();
 
-        public string Prefix
-        {
-            get { return (string)GetValue(PrefixProperty); }
-            set { SetValue(PrefixProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Prefix.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PrefixProperty =
-            DependencyProperty.Register("Prefix", typeof(string), typeof(NotificationCounter), new PropertyMetadata(""));
-
-        public uint Count
-        {
-            get { return (uint)GetValue(CountProperty); }
-            set { SetValue(CountProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Count.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CountProperty =
-            DependencyProperty.Register("Count", typeof(uint), typeof(NotificationCounter), new PropertyMetadata(0, CountChanged));
-        
+        #region Colour props
         public SolidColorBrush NoNotificationsBrush
         {
             get { return (SolidColorBrush)GetValue(NoNotificationsBrushProperty); }
@@ -46,7 +33,7 @@ namespace Mirko_v2.Controls
         // Using a DependencyProperty as the backing store for NoNotificationsBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NoNotificationsBrushProperty =
             DependencyProperty.Register("NoNotificationsBrush", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null));
-        
+
         public SolidColorBrush NotificationsBrush
         {
             get { return (SolidColorBrush)GetValue(NotificationsBrushProperty); }
@@ -57,24 +44,6 @@ namespace Mirko_v2.Controls
         public static readonly DependencyProperty NotificationsBrushProperty =
             DependencyProperty.Register("NotificationsBrush", typeof(SolidColorBrush), typeof(NotificationCounter), new PropertyMetadata(null));
 
-        private static void CountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var c = d as NotificationCounter;
-            var count = (uint?)e.NewValue;
-            if (count != null)
-            {
-                c.targetValue = (int)count.Value;
-
-                if (Math.Abs(c.currentValue - c.targetValue) < threshold)
-                    c.SlowFlip_1.Begin();
-                else
-                    c.FastFlip_1.Begin();
-
-                c.Foreground = c.targetValue > 0 ? c.NotificationsBrush : c.NoNotificationsBrush;
-            }
-        }
-
-        
         new public SolidColorBrush Foreground
         {
             get { return (SolidColorBrush)GetValue(ForegroundProperty); }
@@ -109,78 +78,112 @@ namespace Mirko_v2.Controls
             var c = d as NotificationCounter;
 
             bool @override = (bool)e.NewValue;
-            if(!@override)
+            if (!@override)
                 c.Foreground = c.Count > 0 ? c.NotificationsBrush : c.NoNotificationsBrush;
-        }        
+        }
+        #endregion
+
+        public string Prefix
+        {
+            get { return (string)GetValue(PrefixProperty); }
+            set { SetValue(PrefixProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Prefix.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PrefixProperty =
+            DependencyProperty.Register("Prefix", typeof(string), typeof(NotificationCounter), new PropertyMetadata(""));
+
+        public uint Count
+        {
+            get { return (uint)GetValue(CountProperty); }
+            set { SetValue(CountProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Count.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CountProperty =
+            DependencyProperty.Register("Count", typeof(uint), typeof(NotificationCounter), new PropertyMetadata(0, CountChanged));
+
+        private static void CountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var c = d as NotificationCounter;
+
+            if (c.LastTask != null)
+            {
+                c.CTS.Cancel();
+                c.CTS.Dispose();
+                c.CTS = null;
+            }
+
+            c.TargetValue = (int)((uint)e.NewValue);
+
+            var cts = new CancellationTokenSource();
+            var task = DispatcherHelper.RunAsync(async () => await c.AnimateCountChange(cts.Token)).AsTask(cts.Token);
+            c.LastTask = task;
+            c.CTS = cts;
+        }
+
+        private async Task AnimateCountChange(CancellationToken token)
+        {
+            if (!OverrideForeground)
+                Foreground = TargetValue > 0 ? NotificationsBrush : NoNotificationsBrush;
+
+            if (CurrentValue == 0 && TargetValue == 0)
+                return;
+
+            if (token.IsCancellationRequested)
+                return;
+
+            int diff = Math.Abs(TargetValue - CurrentValue);
+            bool countUp = TargetValue > CurrentValue;
+            bool useFastAnimation = diff > Threshold ? true : false;
+
+            if (useFastAnimation)
+            {
+                while(true)
+                {
+                    if (token.IsCancellationRequested)
+                        return;
+
+                    int currValue = CurrentValue;
+                    int maxValue = countUp ? TargetValue - 2 : CurrentValue - 2;
+                    int randomMax = maxValue - currValue;
+
+                    if (randomMax <= 1)
+                        break;
+
+                    int random = RandomGenerator.Next(1, randomMax);
+                    if (random > randomMax)
+                        random = randomMax;
+
+                    await FastFlip_1.BeginAsync();
+
+                    CurrentValue += countUp ? random : -random;
+                    NumberTB.Text = CurrentValue > 0 ? CurrentValue.ToString() : "";
+
+                    await FastFlip_2.BeginAsync();
+                }
+
+                countUp = TargetValue > CurrentValue;
+            }
+
+            while(CurrentValue != TargetValue)
+            {
+                if (token.IsCancellationRequested)
+                    return;
+
+                await SlowFlip_1.BeginAsync();
+
+                CurrentValue += countUp ? 1 : -1;
+                NumberTB.Text = CurrentValue > 0 ? CurrentValue.ToString() : "";
+
+                await SlowFlip_2.BeginAsync();
+            }
+        }
 
         public NotificationCounter()
         {
             this.InitializeComponent();
-            GalaSoft.MvvmLight.Ioc.SimpleIoc.Default.GetInstance<Mirko_v2.ViewModel.SettingsViewModel>().ThemeChanged += NotificationCounter_ThemeChanged;
-        }
-
-        private void NotificationCounter_ThemeChanged(object sender, EventArgs e)
-        {
-            Foreground = Count > 0 ? NotificationsBrush : NoNotificationsBrush;
-        }
-
-        private void SlowFlip_1_Completed(object sender, object e)
-        {
-            bool doMoreFlips = true;
-
-            if (currentValue < targetValue)
-                currentValue++;
-            else if (currentValue > targetValue)
-                currentValue--;
-            else
-                doMoreFlips = false;
-
-            NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
-            if(doMoreFlips)
-                SlowFlip_2.Begin();
-        }
-
-        private void SlowFlip_2_Completed(object sender, object e)
-        {
-            if (currentValue != targetValue)
-                SlowFlip_1.Begin();
-        }
-
-        private void FastFlip_1_Completed(object sender, object e)
-        {
-            int diff = Math.Abs(currentValue - targetValue);
-            bool doMoreFlips = true;
-            int random = 1;
-
-            if (diff > 1)
-                random = RandomGenerator.Next(1, diff / 2);
-
-            if (currentValue < targetValue)
-                currentValue += random;
-            else if (currentValue > targetValue)
-                currentValue -= random;
-            else
-                doMoreFlips = false;
-
-            NumberTB.Text = currentValue > 0 ? currentValue.ToString() : "";
-
-            if(doMoreFlips)
-                FastFlip_2.Begin();
-        }
-
-        private void FastFlip_2_Completed(object sender, object e)
-        {
-            flipsCounter++;
-            if (flipsCounter <= flipsMax)
-            {
-                FastFlip_1.Begin();
-            }
-            else
-            {
-                SlowFlip_1.Begin();
-
-                flipsCounter = 0;
-            }
+            SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += (s, e) => Foreground = Count > 0 ? NotificationsBrush : NoNotificationsBrush;
         }
     }
 }

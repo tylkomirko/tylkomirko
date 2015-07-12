@@ -27,7 +27,6 @@
                                  Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
                                  From="0"
                                  To="-90"
-                                 Completed="SlowFlip_1_Completed"
                                  Duration="0:0:0.1"
                                  EasingFunction="{StaticResource EasingIn}" />
             </Storyboard>
@@ -37,7 +36,6 @@
                                  Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
                                  From="-90"
                                  To="0"
-                                 Completed="SlowFlip_2_Completed"
                                  Duration="0:0:0.1"
                                  EasingFunction="{StaticResource EasingOut}" />
             </Storyboard>
@@ -48,7 +46,6 @@
                                  Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
                                  From="0"
                                  To="-90"
-                                 Completed="FastFlip_1_Completed"
                                  Duration="0:0:0.05"
                                  EasingFunction="{StaticResource EasingIn}" />
             </Storyboard>
@@ -58,7 +55,6 @@
                                  Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)"
                                  From="-90"
                                  To="0"
-                                 Completed="FastFlip_2_Completed"
                                  Duration="0:0:0.05"
                                  EasingFunction="{StaticResource EasingOut}" />
             </Storyboard>
