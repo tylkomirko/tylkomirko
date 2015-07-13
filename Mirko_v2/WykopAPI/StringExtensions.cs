@@ -44,6 +44,15 @@ namespace Utils
 
         public static string Between(this string source, int index1, int index2)
         {
+            if (string.IsNullOrEmpty(source))
+                return "";
+
+            if (index1 == -1 && index2 != -1)
+                return source.Substring(0, index2);
+
+            if (index1 != -1 && index2 == -1)
+                return source.Substring(index1, source.Length - index1);
+
             return source.Substring(index1, index2 - index1);
         }
 
