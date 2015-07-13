@@ -189,6 +189,7 @@ namespace Mirko_v2.ViewModel
             RoamingValues.Clear();
 
             App.ApiService.UserInfo = null;
+            NotificationsManager.ClearLiveTile();
         }
 
         private RelayCommand<int> _youTubeAppChanged = null;

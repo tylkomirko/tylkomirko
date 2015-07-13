@@ -126,7 +126,9 @@ namespace Mirko_v2.ViewModel
             else
                 rootPageHeader.Visibility = Visibility.Visible;
 
-            backStack.Push(type);
+            if(key != "LoginPage")
+                backStack.Push(type);
+
             CurrentPageKey = key;
 
             if (Navigating != null)
