@@ -26,17 +26,19 @@ namespace Mirko_v2.ViewModel
 
                 if (mainVM.MirkoEntries.Count == 0)
                 {
-                    newEntries = await App.ApiService.getEntries(0);
+                    newEntries = await App.ApiService.getEntries(0, ct);
                 }
                 else
                 {
                     var lastID = mainVM.MirkoEntries.Last().Data.ID;
-                    var tmp = await App.ApiService.getEntries(lastID, 0);
+                    var tmp = await App.ApiService.getEntries(lastID, 0, ct);
                     if(tmp != null)
                         newEntries = tmp.Skip(1);
                 }
 
-                await StatusBarManager.HideProgress();
+                ct.ThrowIfCancellationRequested();
+
+                await StatusBarManager.HideProgressAsync();
 
                 if (newEntries != null)
                 {
@@ -54,7 +56,7 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
                     var savedEntries = await mainVM.ReadCollection("MirkoEntries");
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
 
                     return savedEntries;
                 }

@@ -43,6 +43,8 @@ namespace Mirko_v2.ViewModel
                 this.cache.RemoveRange(0, itemsToMove);
             }
 
+            ct.ThrowIfCancellationRequested();
+
             if (missingEntries > 0)
             {
                 var entries = new List<Entry>(10);
@@ -53,8 +55,8 @@ namespace Mirko_v2.ViewModel
                     await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
 
                     do
-                    {
-                        newEntries = await App.ApiService.getMyEntries(pageIndex++);
+                    {                       
+                        newEntries = await App.ApiService.getMyEntries(pageIndex++, ct);
                         if (newEntries != null)
                             entries.AddRange(newEntries);
 
@@ -69,7 +71,7 @@ namespace Mirko_v2.ViewModel
 
                     } while (entries.Count <= missingEntries);
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                 }
                 else
                 {
@@ -78,7 +80,7 @@ namespace Mirko_v2.ViewModel
                     {
                         await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
                         var savedEntries = await mainVM.ReadCollection("MyEntries");
-                        await StatusBarManager.HideProgress();
+                        await StatusBarManager.HideProgressAsync();
 
                         return savedEntries;
                     }

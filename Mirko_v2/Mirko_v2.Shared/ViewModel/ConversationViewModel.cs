@@ -94,7 +94,7 @@ namespace Mirko_v2.ViewModel
             if (pms == null || pms.Count == 0)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "");
-                await StatusBarManager.HideProgress();
+                await StatusBarManager.HideProgressAsync();
                 return;
             }
 
@@ -116,7 +116,7 @@ namespace Mirko_v2.ViewModel
 
             Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Clear PM")); // clear PM notification
 
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Sort-Save"));
         }

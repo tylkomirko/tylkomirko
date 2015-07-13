@@ -16,7 +16,6 @@ namespace Mirko_v2.Utils
     public interface IIncrementalSource<T>
     {
         Task<IEnumerable<T>> GetPagedItems(int pageSize, CancellationToken ct);
-        //uint LastID();
         void ClearCache();
     }
 
@@ -29,7 +28,7 @@ namespace Mirko_v2.Utils
         private bool hasMoreItems;
         private bool hasNoItems;
         private CancellationTokenSource cancelToken;
-        //private int currentPage;
+        private bool isStopped = false;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
         {
@@ -40,8 +39,8 @@ namespace Mirko_v2.Utils
 
         public bool HasMoreItems
         {
-            get { return hasMoreItems; }
-            set { hasMoreItems = value; }
+            get { return isStopped ? false : hasMoreItems; }
+            set { hasMoreItems = value; base.OnPropertyChanged(new PropertyChangedEventArgs("HasMoreItems")); }
         }
 
         public bool HasNoItems
@@ -52,13 +51,7 @@ namespace Mirko_v2.Utils
 
         public void ClearAll()
         {
-            if (cancelToken != null)
-            {
-                cancelToken.Cancel();
-                cancelToken.Dispose();
-                cancelToken = null; 
-            }
-
+            Cancel();
             Clear();
             source.ClearCache();
 
@@ -66,48 +59,61 @@ namespace Mirko_v2.Utils
             DispatcherHelper.CheckBeginInvokeOnUI(() => HasNoItems = false);
         }
 
+        public void Cancel()
+        {
+            if (cancelToken != null)
+                cancelToken.Cancel();
+        }
+
+        public void ForceStop()
+        {
+            isStopped = true;
+            Cancel();
+        }
+
+        public void Start()
+        {
+            isStopped = false;
+            hasMoreItems = true;
+        }
+
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
             var dispatcher = Window.Current.Dispatcher;
             cancelToken = new CancellationTokenSource();
 
-            return Task.Run<LoadMoreItemsResult>(
-                async () =>
+            var task = Task.Run<LoadMoreItemsResult>(async () =>
+            {
+                try
                 {
-                    try
-                    {
-                        uint resultCount = 0;
-                        var result = await source.GetPagedItems(itemsPerPage, cancelToken.Token);
+                    uint resultCount = 0;
+                    var result = await source.GetPagedItems(itemsPerPage, cancelToken.Token);
 
-                        if (result == null || result.Count() == 0)
-                        {
+                    if (result == null || result.Count() == 0)
+                    {
+                        if (!cancelToken.Token.IsCancellationRequested)
                             hasMoreItems = false;
-                        }
-                        else
-                        {
-                            resultCount = (uint)result.Count();
-
-                            await dispatcher.RunAsync(
-                                CoreDispatcherPriority.Normal,
-                                () =>
-                                {
-                                    this.AddRange(result);
-
-                                    /*foreach (I item in result)
-                                        this.Add(item);
-                                     */
-                                });
-                        }
-
-                        return new LoadMoreItemsResult() { Count = resultCount };
-
                     }
-                    catch(Exception)
+                    else
                     {
-                        return new LoadMoreItemsResult() { Count = 0 };
+                        resultCount = (uint)result.Count();
+
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                            () => this.AddRange(result));
                     }
 
-                }, cancelToken.Token).AsAsyncOperation<LoadMoreItemsResult>();
+                    return new LoadMoreItemsResult() { Count = resultCount };
+
+                }
+                catch (Exception)
+                {
+                    StatusBarManager.HideProgress();
+                    return new LoadMoreItemsResult() { Count = 0 };
+                }
+
+            }, cancelToken.Token);
+
+            return task.AsAsyncOperation<LoadMoreItemsResult>();
         }
     }
 

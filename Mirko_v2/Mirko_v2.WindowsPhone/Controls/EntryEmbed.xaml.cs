@@ -78,7 +78,7 @@ namespace Mirko_v2.Controls
         {
             Image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
         }
 
         private async void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)

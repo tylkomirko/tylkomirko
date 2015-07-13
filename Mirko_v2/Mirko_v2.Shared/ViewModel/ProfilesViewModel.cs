@@ -56,7 +56,7 @@ namespace Mirko_v2.ViewModel
                 var profile = await App.ApiService.getProfile(username);
                 if(profile != null)
                 {
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                     var profileVM = new ProfileViewModel(profile);
                     Profiles[username] = profileVM;
                     CurrentProfile = profileVM;

@@ -86,7 +86,7 @@ namespace Mirko_v2.ViewModel
                         ErrorMessage = "Serwer odpowiedział: " + response.StatusCode.ToString(),
                     });
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                     return;
                 }
 
@@ -110,7 +110,7 @@ namespace Mirko_v2.ViewModel
                             ErrorMessage = html.Substring(index, lastIndex - index).Trim(),
                         });
 
-                        await StatusBarManager.HideProgress();
+                        await StatusBarManager.HideProgressAsync();
                         return;
                     }
                     else
@@ -166,7 +166,7 @@ namespace Mirko_v2.ViewModel
                 }
             }
 
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
         }
 
         private void processFinalURL(string url)
@@ -237,7 +237,7 @@ namespace Mirko_v2.ViewModel
                 }
             }
 
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
         }
     }
 }

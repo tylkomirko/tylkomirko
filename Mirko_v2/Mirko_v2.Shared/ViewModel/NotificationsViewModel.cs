@@ -134,11 +134,15 @@ namespace Mirko_v2.ViewModel
 
         private async void TimerCallback(object state)
         {
-            await Task.Run(async () =>
+            try
             {
-                await CheckHashtagNotifications();
-                await CheckNotifications();
-            });
+                await Task.Run(async () =>
+                {
+                    await CheckHashtagNotifications();
+                    await CheckNotifications();
+                });
+            }
+            catch (Exception) { }
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
             UpdateBadge();
@@ -195,7 +199,7 @@ namespace Mirko_v2.ViewModel
                         entryVM = new EntryViewModel(entry);
                         mainVM.OtherEntries.Add(entryVM);
 
-                        await StatusBarManager.HideProgress();
+                        await StatusBarManager.HideProgressAsync();
                     }
                     else
                     {
@@ -540,7 +544,7 @@ namespace Mirko_v2.ViewModel
                         mainVM.SelectedEntry = entryVM;
                     });
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                     await ExecuteDeleteHashtagNotification(notification.ID);
                 }
                 else
@@ -609,7 +613,7 @@ namespace Mirko_v2.ViewModel
             {
                 var entryVM = new EntryViewModel(entry);
                 await DispatcherHelper.RunAsync(() => HashtagFlipEntries.Replace(currentIndex, entryVM));
-                await StatusBarManager.HideProgress();
+                await StatusBarManager.HideProgressAsync();
 
                 var notification = CurrentHashtagNotifications.SingleOrDefault(x => x.Data.Entry.ID == currentEntryID);
                 if(notification != null)
@@ -799,7 +803,7 @@ namespace Mirko_v2.ViewModel
                     }
                     else
                     {
-                        await StatusBarManager.HideProgress();
+                        await StatusBarManager.HideProgressAsync();
                         entryVM = new EntryViewModel(entryData);
                         await DispatcherHelper.RunAsync(() => otherEntries.Add(entryVM));
                         mainVM.SelectedEntry = entryVM;

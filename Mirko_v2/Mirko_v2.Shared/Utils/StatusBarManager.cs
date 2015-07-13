@@ -149,9 +149,19 @@ namespace Mirko_v2.Utils
             });
         }
 
-        public static async Task HideProgress()
+        public static async Task HideProgressAsync()
         {
             await DispatcherHelper.RunAsync(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                statusBar.ProgressIndicator.ProgressValue = 0.0;
+                statusBar.ProgressIndicator.Text = " ";
+            });
+        }
+
+        public static void HideProgress()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ProgressIndicator.ProgressValue = 0.0;

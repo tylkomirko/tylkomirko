@@ -20,11 +20,13 @@ namespace Mirko_v2.ViewModel
         {
             var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
+            ct.ThrowIfCancellationRequested();
+
             if (App.ApiService.IsNetworkAvailable && mainVM.FavEntries.Count == 0)
             {
                 await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
-                var newEntries = await App.ApiService.getFavourites();
-                await StatusBarManager.HideProgress();
+                var newEntries = await App.ApiService.getFavourites(ct);
+                await StatusBarManager.HideProgressAsync();
 
                 if (newEntries != null)
                 {
@@ -59,7 +61,7 @@ namespace Mirko_v2.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
                     var savedEntries = await mainVM.ReadCollection("FavEntries");
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
 
                     return savedEntries;
                 }

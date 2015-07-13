@@ -360,7 +360,7 @@ namespace Mirko_v2.ViewModel
                     entryVM = new EntryViewModel(entry);
                     OtherEntries.Add(entryVM);
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                 }
                 else
                 {
@@ -380,7 +380,10 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _hotTimeSpanChanged = null;
         public RelayCommand HotTimeSpanChanged
         {
-            get { return _hotTimeSpanChanged ?? (_hotTimeSpanChanged = new RelayCommand(() => HotEntries.ClearAll())); }
+            get
+            {
+                return _hotTimeSpanChanged ?? (_hotTimeSpanChanged = new RelayCommand(() => HotEntries.ClearAll()));
+            }
         }
 
         private void ExecuteGoToHashtagPage(string tag)
@@ -477,7 +480,7 @@ namespace Mirko_v2.ViewModel
             }
             else
             {
-                await StatusBarManager.HideProgress();
+                await StatusBarManager.HideProgressAsync();
                 return;
             }
 
@@ -502,7 +505,7 @@ namespace Mirko_v2.ViewModel
             }
 
             await DispatcherHelper.RunAsync(() => MirkoNewEntries.PrependRange(entriesToSend));
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
         }
 
         private async Task CheckNewHashtagEntries()
@@ -521,7 +524,7 @@ namespace Mirko_v2.ViewModel
             }
             else
             {
-                await StatusBarManager.HideProgress();
+                await StatusBarManager.HideProgressAsync();
                 return;
             }
 
@@ -547,7 +550,7 @@ namespace Mirko_v2.ViewModel
             }
 
             await DispatcherHelper.RunAsync(() => TaggedNewEntries.PrependRange(entriesToSend));
-            await StatusBarManager.HideProgress();
+            await StatusBarManager.HideProgressAsync();
         }
         #endregion
 

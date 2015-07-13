@@ -58,7 +58,7 @@ namespace WykopAPI
             get
             {
                 if (_httpClient == null)
-                    _httpClient = new HttpClient(retryHandler) { BaseAddress = new Uri(baseURL) };
+                    _httpClient = new HttpClient(retryHandler) { BaseAddress = new Uri(baseURL), Timeout = new TimeSpan(0, 0, 30) };
                 return _httpClient;
             }
         }
@@ -242,7 +242,7 @@ namespace WykopAPI
 
         #region HelperFunctions
 
-        private async Task<T> deserialize<T>(string URL, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null)
+        private async Task<T> deserialize<T>(string URL, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null, CancellationToken ct = default(CancellationToken))
             where T : class
         {
             T result = null;
@@ -295,7 +295,7 @@ namespace WykopAPI
                                 await login(force: true);
                                 var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
                                 _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                                return await deserialize<T>(updatedURL, post, fileStream, fileName);
+                                return await deserialize<T>(updatedURL, post, fileStream, fileName, ct);
                             }
                             return null;
                         }
@@ -319,7 +319,7 @@ namespace WykopAPI
             _log.Error("Deserialization error: " + e.ErrorContext.Error);
         }
 
-        private async Task<List<T>> deserializeList<T>(string URL, SortedDictionary<string, string> post = null)
+        private async Task<List<T>> deserializeList<T>(string URL, SortedDictionary<string, string> post = null, CancellationToken ct = default(CancellationToken))
             where T : class
         {
             List<T> list = new List<T>(50);
@@ -338,7 +338,7 @@ namespace WykopAPI
 
             _log.Trace(newURL);
 
-            using (var stream = await getAsync(URL, post))
+            using (var stream = await getAsync(URL, post, ct: ct))
             {
                 if (stream == null || stream.Length == 0 || stream.Length == 2) // length 2 equals []. essentialy an empty response.
                     return null;
@@ -371,7 +371,7 @@ namespace WykopAPI
                                 var oldUserKey = UserInfo.UserKey;
                                 await login(force: true);
                                 var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
-                                return await deserializeList<T>(updatedURL, post);
+                                return await deserializeList<T>(updatedURL, post, ct);
                             }
                             return null;
                         }
@@ -412,9 +412,10 @@ namespace WykopAPI
             return fileContent;
         }
 
-        private async Task<Stream> getAsync(string url, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null)
+        private async Task<Stream> getAsync(string url, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null, CancellationToken ct = default(CancellationToken))
         {
             HttpResponseMessage response;
+
             using (var content = new MultipartFormDataContent())
             {
                 if (post != null)
@@ -440,7 +441,7 @@ namespace WykopAPI
 
                 content.Headers.Add("apisign", this.calculateMD5(url, post));
 
-                response = await httpClient.PostAsync(url, content);
+                response = await httpClient.PostAsync(url, content, ct);
             }
 
             if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
@@ -516,7 +517,7 @@ namespace WykopAPI
 
         #region Entries getters
 
-        public async Task<IEnumerable<Entry>> getEntries(int pageIndex)
+        public async Task<IEnumerable<Entry>> getEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded)
                 return null;
@@ -525,7 +526,7 @@ namespace WykopAPI
             {
                 var URL = "stream/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-                var result = await deserialize<List<Entry>>(URL);
+                var result = await deserialize<List<Entry>>(URL, ct: ct);
                 if (result != null)
                     return result.Where(x => !x.Blacklisted);
                 else
@@ -540,7 +541,7 @@ namespace WykopAPI
             }
         }
 
-        public async Task<IEnumerable<Entry>> getEntries(uint id, int pageIndex)
+        public async Task<IEnumerable<Entry>> getEntries(uint id, int pageIndex, CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded)
                 return null;
@@ -549,7 +550,7 @@ namespace WykopAPI
             {
                 var URL = "stream/index/firstid/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-                var result = await deserialize<List<Entry>>(URL);
+                var result = await deserialize<List<Entry>>(URL, ct: ct);
                 if (result != null)
                     return result.Where(x => !x.Blacklisted);
                 else
@@ -564,7 +565,7 @@ namespace WykopAPI
             }
         }
 
-        public async Task<IEnumerable<Entry>> getHotEntries(int period, int pageIndex)
+        public async Task<IEnumerable<Entry>> getHotEntries(int period, int pageIndex, CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded)
                 return null;
@@ -573,7 +574,7 @@ namespace WykopAPI
             {
                 var URL = "stream/hot/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
 
-                var result = await deserialize<List<Entry>>(URL);
+                var result = await deserialize<List<Entry>>(URL, ct: ct);
                 if (result != null)
                     return result.Where(x => !x.Blacklisted);
                 else
@@ -583,12 +584,12 @@ namespace WykopAPI
             {
                 var URL = "stream/hot/appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
 
-                var result = await deserialize<List<Entry>>(URL);
+                var result = await deserialize<List<Entry>>(URL, ct: ct);
                 return result;
             }
         }
 
-        public async Task<IEnumerable<Entry>> getHotEntries(int period, uint id, uint pageIndex)
+        public async Task<IEnumerable<Entry>> getHotEntries(int period, uint id, uint pageIndex, CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded)
                 return null;
@@ -602,14 +603,14 @@ namespace WykopAPI
                 return null;
         }
 
-        public async Task<List<Entry>> getMyEntries(int pageIndex)
+        public async Task<List<Entry>> getMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded || UserInfo == null)
                 return null;
 
             var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
 
-            return await deserializeList<Entry>(URL);
+            return await deserializeList<Entry>(URL, ct: ct);
         }
 
         public async Task<List<Entry>> getMyEntries(uint firstID, int pageIndex)
@@ -1047,14 +1048,14 @@ namespace WykopAPI
 
         #region Favourites
 
-        public async Task<List<Entry>> getFavourites()
+        public async Task<List<Entry>> getFavourites(CancellationToken ct = default(CancellationToken))
         {
             if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page,0";
 
-            return await deserialize<List<Entry>>(URL);
+            return await deserialize<List<Entry>>(URL, ct: ct);
         }
 
         public async Task<UserFavorite> addToFavourites(uint id)

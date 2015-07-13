@@ -101,6 +101,11 @@ namespace Mirko_v2.Pages
             {
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
+
+                SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.Start();
+                SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().FavEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().MyEntries.ForceStop();
             }
             else if (currentPage == 1)
             {
@@ -108,14 +113,37 @@ namespace Mirko_v2.Pages
                     HideNewEntriesPopup();
 
                 ShowTimeSpanIndicatorPopup();
+
+                SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.Start();
+                SimpleIoc.Default.GetInstance<MainViewModel>().FavEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().MyEntries.ForceStop();
             } 
-            else
+            else if(currentPage == 2)
             {
                 if (NewMirkoEntriesPopup.IsOpen)
                     HideNewEntriesPopup();
 
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
+
+                SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().FavEntries.Start();
+                SimpleIoc.Default.GetInstance<MainViewModel>().MyEntries.ForceStop();
+            }
+            else if (currentPage == 3)
+            {
+                if (NewMirkoEntriesPopup.IsOpen)
+                    HideNewEntriesPopup();
+
+                if (TimeSpanIndicatorPopup.IsOpen)
+                    HideTimeSpanIndicatorPopup();
+
+                SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().FavEntries.ForceStop();
+                SimpleIoc.Default.GetInstance<MainViewModel>().MyEntries.Start();
             }
         }
 

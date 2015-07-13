@@ -111,7 +111,7 @@ namespace Mirko_v2.ViewModel
                 var newVM = new EntryViewModel(newEntry);
                 Messenger.Default.Send<EntryViewModel>(newVM, "Update");
 
-                await StatusBarManager.HideProgress();
+                await StatusBarManager.HideProgressAsync();
             }
         }
 

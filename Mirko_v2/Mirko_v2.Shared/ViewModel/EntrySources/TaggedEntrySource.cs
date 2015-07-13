@@ -73,7 +73,7 @@ namespace Mirko_v2.ViewModel
 
                     } while (entries.Count <= missingEntries);
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                 }
                 else
                 {

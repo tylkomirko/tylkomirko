@@ -30,6 +30,9 @@ namespace Mirko_v2.ViewModel
             int downloadedEntriesCount = 0;
             missingEntries = Math.Max(0, missingEntries);
 
+            if (ct.IsCancellationRequested)
+                return null;
+
             if (entriesInCache > 0)
             {
                 int itemsToMove;
@@ -43,6 +46,8 @@ namespace Mirko_v2.ViewModel
                 this.cache.RemoveRange(0, itemsToMove);
             }
 
+            ct.ThrowIfCancellationRequested();
+
             if (missingEntries > 0)
             {
                 var timeSpan = mainVM.HotTimeSpan;
@@ -55,15 +60,13 @@ namespace Mirko_v2.ViewModel
 
                     do
                     {
-                        ct.ThrowIfCancellationRequested();
-
                         if (timeSpan >= 6)
                         {
-                            newEntries = await App.ApiService.getHotEntries(timeSpan, pageIndex++);
+                            newEntries = await App.ApiService.getHotEntries(timeSpan, pageIndex++, ct);
                         }
                         else
                         {
-                            var newEntries_temp = await App.ApiService.getHotEntries(6, pageIndex++);
+                            var newEntries_temp = await App.ApiService.getHotEntries(6, pageIndex++, ct);
                             var limitingTime = DateTime.UtcNow.AddHours(-timeSpan);
                             newEntries = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
                         }
@@ -84,7 +87,7 @@ namespace Mirko_v2.ViewModel
 
                         if (pageIndex >= 12 || (newEntries != null && newEntries.Count() == 0))
                         {
-                            mainVM.HotEntries.HasMoreItems = false;
+                            DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasMoreItems = false);
                             if (mainVM.HotEntries.Count == 0 && entries.Count == 0)
                                 DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasNoItems = true);
                             break;
@@ -92,7 +95,7 @@ namespace Mirko_v2.ViewModel
 
                     } while (entries.Count <= missingEntries && newEntries != null);
 
-                    await StatusBarManager.HideProgress();
+                    await StatusBarManager.HideProgressAsync();
                 }
                 else
                 {
@@ -101,7 +104,7 @@ namespace Mirko_v2.ViewModel
                     {
                         await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
                         var savedEntries = await mainVM.ReadCollection("HotEntries");
-                        await StatusBarManager.HideProgress();
+                        await StatusBarManager.HideProgressAsync();
 
                         return savedEntries;
                     }
