@@ -25,6 +25,7 @@ namespace Mirko_v2.Controls
         private async Task LoadImage(string previewURL, string fullURL = null)
         {
             Image.Visibility = Visibility.Collapsed;
+            Grid.Visibility = Visibility.Visible;
             Ring.IsActive = true;
             Ring.Visibility = Visibility.Visible;
 
