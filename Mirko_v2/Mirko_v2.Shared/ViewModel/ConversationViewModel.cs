@@ -64,7 +64,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteSendMessageCommand()
         {
-            await StatusBarManager.ShowTextAndProgress("Wysyłam wiadomość...");
+            await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
             bool success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
             if (success)
             {

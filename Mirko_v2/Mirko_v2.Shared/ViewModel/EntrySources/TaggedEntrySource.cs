@@ -51,7 +51,7 @@ namespace Mirko_v2.ViewModel
 
                 if (App.ApiService.IsNetworkAvailable)
                 {
-                    await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
+                    await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
 
                     do
                     {

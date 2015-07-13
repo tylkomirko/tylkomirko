@@ -57,7 +57,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteLoginCommand()
         {
-            await StatusBarManager.ShowTextAndProgress("Logowanie...");
+            await StatusBarManager.ShowTextAndProgressAsync("Logowanie...");
 
             string startURL = "https://a.wykop.pl/user/connect/appkey," + App.ApiService.APPKEY;
             string redirectURL = "https://www.wykop.pl/user/ConnectSuccess";
@@ -206,7 +206,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecutePermissionGrantedCommand()
         {
-            await StatusBarManager.ShowTextAndProgress("Łączenie konta z aplikacją...");
+            await StatusBarManager.ShowTextAndProgressAsync("Łączenie konta z aplikacją...");
 
             var post = new List<KeyValuePair<string, string>>();
             foreach (var n in this.permissionNames)

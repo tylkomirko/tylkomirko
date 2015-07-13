@@ -190,7 +190,7 @@ namespace Mirko_v2.ViewModel
 
                 if(entryVM == null)
                 {
-                    await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                    await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                     mainVM.SelectedEntry = null;
                     var entry = await App.ApiService.getEntry(entryID);
 
@@ -412,7 +412,7 @@ namespace Mirko_v2.ViewModel
         {
             if (!HashtagsDictionary.ContainsKey(hashtag)) return;
 
-            await StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
+            await StatusBarManager.ShowTextAndProgressAsync("Usuwam powiadomienia...");
 
             var notifications = HashtagsDictionary[hashtag];
             var IDs = notifications.Select(x => x.Data.ID);
@@ -533,7 +533,7 @@ namespace Mirko_v2.ViewModel
 
                 var notification = CurrentHashtagNotifications[0].Data;
 
-                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                 var entry = await App.ApiService.getEntry(notification.Entry.ID);
                 if (entry != null)
                 {
@@ -605,7 +605,7 @@ namespace Mirko_v2.ViewModel
         {
             System.Diagnostics.Debug.WriteLine("ExecuteHashtagFlipSelectionChanged: currentIndex = " + currentIndex);
             if (currentIndex == -1 || HashtagFlipEntries[currentIndex].Data.Text != null) return;
-            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+            await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
 
             var currentEntryID = HashtagFlipEntries[currentIndex].Data.ID;
             var entry = await App.ApiService.getEntry(currentEntryID);
@@ -795,7 +795,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                    await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                     var entryData = await App.ApiService.getEntry(entryID);
                     if (entryData == null)
                     {

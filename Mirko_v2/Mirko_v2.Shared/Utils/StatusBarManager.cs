@@ -109,12 +109,24 @@ namespace Mirko_v2.Utils
             return text;
         }
 
-        public static async Task ShowTextAndProgress(string txt)
+        public static async Task ShowTextAndProgressAsync(string txt)
         {
             await DispatcherHelper.RunAsync(() =>
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 
+                statusBar.BackgroundOpacity = 0.9;
+                statusBar.ProgressIndicator.Text = txt;
+                statusBar.ProgressIndicator.ProgressValue = null;
+            });
+        }
+
+        public static void ShowTextAndProgress(string txt)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+
                 statusBar.BackgroundOpacity = 0.9;
                 statusBar.ProgressIndicator.Text = txt;
                 statusBar.ProgressIndicator.ProgressValue = null;

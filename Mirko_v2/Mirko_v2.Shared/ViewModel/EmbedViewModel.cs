@@ -133,7 +133,7 @@ namespace Mirko_v2.ViewModel
             }
             else if (url.EndsWith(".gif"))
             {
-                await StatusBarManager.ShowTextAndProgress("Konwertuje GIF...");
+                await StatusBarManager.ShowTextAndProgressAsync("Konwertuje GIF...");
                 var mp4 = await Gfycat.Gfycat.GIFtoMP4(EmbedData.URL);
 
                 if (!string.IsNullOrEmpty(mp4))
@@ -143,7 +143,7 @@ namespace Mirko_v2.ViewModel
             }
             else if (url.Contains("gfycat.com"))
             {
-                await StatusBarManager.ShowTextAndProgress("Otwieram GFY...");
+                await StatusBarManager.ShowTextAndProgressAsync("Otwieram GFY...");
                 var mp4 = await Gfycat.Gfycat.GFYgetURL(url);
 
                 if (!string.IsNullOrEmpty(mp4))

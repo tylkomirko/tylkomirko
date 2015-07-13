@@ -100,7 +100,7 @@ namespace Mirko_v2.ViewModel
         {
             if (DataBase == null) return;
 
-            await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+            await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
             var newEntry = await App.ApiService.getEntry(DataBase.ID);
             if (newEntry == null)
             {

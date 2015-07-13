@@ -56,7 +56,7 @@ namespace Mirko_v2.ViewModel
                 IEnumerable<Entry> newEntries = null;
                 if (App.ApiService.IsNetworkAvailable)
                 {
-                    await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
+                    await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
 
                     do
                     {
@@ -102,7 +102,7 @@ namespace Mirko_v2.ViewModel
                     // offline mode
                     if (mainVM.HotEntries.Count == 0)
                     {
-                        await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                        await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
                         var savedEntries = await mainVM.ReadCollection("HotEntries");
                         await StatusBarManager.HideProgressAsync();
 

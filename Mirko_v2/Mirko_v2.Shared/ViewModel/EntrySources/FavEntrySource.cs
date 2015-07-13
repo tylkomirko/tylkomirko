@@ -24,7 +24,7 @@ namespace Mirko_v2.ViewModel
 
             if (App.ApiService.IsNetworkAvailable && mainVM.FavEntries.Count == 0)
             {
-                await StatusBarManager.ShowTextAndProgress("Pobieram wpisy...");
+                await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
                 var newEntries = await App.ApiService.getFavourites(ct);
                 await StatusBarManager.HideProgressAsync();
 
@@ -59,7 +59,7 @@ namespace Mirko_v2.ViewModel
                 // offline mode
                 if (mainVM.FavEntries.Count == 0)
                 {
-                    await StatusBarManager.ShowTextAndProgress("Wczytuje wpisy...");
+                    await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
                     var savedEntries = await mainVM.ReadCollection("FavEntries");
                     await StatusBarManager.HideProgressAsync();
 

@@ -52,7 +52,7 @@ namespace Mirko_v2.ViewModel
             else
             {
                 // download profile info
-                await StatusBarManager.ShowTextAndProgress("Pobieram profil...");
+                await StatusBarManager.ShowTextAndProgressAsync("Pobieram profil...");
                 var profile = await App.ApiService.getProfile(username);
                 if(profile != null)
                 {

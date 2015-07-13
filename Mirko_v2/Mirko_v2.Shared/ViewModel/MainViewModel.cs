@@ -351,7 +351,7 @@ namespace Mirko_v2.ViewModel
 
             if (entryVM == null)
             {
-                await StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
+                await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                 SelectedEntry = null;
                 var entry = await App.ApiService.getEntry(entryID);
 
@@ -466,7 +466,7 @@ namespace Mirko_v2.ViewModel
         #region Functions
         private async Task CheckNewMirkoEntries()
         {
-            await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
+            await StatusBarManager.ShowTextAndProgressAsync("Sprawdzam nowe wpisy...");
 
             EntryViewModel firstEntry = null;
 
@@ -510,7 +510,7 @@ namespace Mirko_v2.ViewModel
 
         private async Task CheckNewHashtagEntries()
         {
-            await StatusBarManager.ShowTextAndProgress("Sprawdzam nowe wpisy...");
+            await StatusBarManager.ShowTextAndProgressAsync("Sprawdzam nowe wpisy...");
 
             EntryViewModel firstEntry = null;
 
