@@ -41,9 +41,13 @@ namespace Mirko_v2.ViewModel
             {
                 await DownloadObservedHashtags();
             }
+            else if (obj.Notification == "Save ObservedHashtags")
+            {
+                await SaveObservedHashtags();
+            }
             else if (obj.Notification == "Delete ObservedHashtags")
             {
-                await DeleteObservedTags();
+                await DeleteObservedHashtags();
             }
         }
 
@@ -99,7 +103,24 @@ namespace Mirko_v2.ViewModel
             }
         }
 
-        private async Task DeleteObservedTags()
+        private async Task SaveObservedHashtags()
+        {
+            if (ObservedHashtags.Count == 0)
+                return;
+
+            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            try
+            {
+                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteLinesAsync(file, ObservedHashtags);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Couldn't save ObservedTags.", e);
+            }
+        }
+
+        private async Task DeleteObservedHashtags()
         {
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             try

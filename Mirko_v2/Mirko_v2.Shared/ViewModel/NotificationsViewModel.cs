@@ -213,23 +213,11 @@ namespace Mirko_v2.ViewModel
             else if (HashtagNotificationsCount > 1)
             {
                 // check if all notifications relate to the same hashtag
+                var tags = HashtagsCollection.Where(x => x.Count > 0).Distinct();
 
-                int nonZeroesFound = 0;
-                HashtagInfoContainer hashtag = null;
-                foreach (var item in HashtagsCollection)
+                if (tags.Count() == 1) // all notifications belong to one tag
                 {
-                    if (item.Count != 0)
-                    {
-                        nonZeroesFound++;
-                        hashtag = item;
-
-                        if (nonZeroesFound >= 2)
-                            break;
-                    }
-                }
-
-                if (nonZeroesFound <= 1) // all notifications belong to one tag
-                {
+                    var hashtag = tags.First();
                     CurrentHashtag = hashtag;
                     CurrentHashtagNotifications = HashtagsDictionary[hashtag.Name];
                     NavService.NavigateTo("HashtagNotificationsPage");
@@ -389,7 +377,7 @@ namespace Mirko_v2.ViewModel
 
                 if (notification != null && notification.Data.IsNew)
                 {
-                    await App.ApiService.markAsReadNotification(ID);
+                    notification.MarkAsReadCommand.Execute(null);
                     await DispatcherHelper.RunAsync(() => collection.Remove(notification));
                     UpdateHashtagsCollection();
 
@@ -405,25 +393,23 @@ namespace Mirko_v2.ViewModel
         private RelayCommand<string> _deleteHashtagNotifications = null;
         public RelayCommand<string> DeleteHashtagNotifications
         {
-            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>(async (string h) => await ExecuteDeleteHashtagNotifications(h))); }
+            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>((h) => ExecuteDeleteHashtagNotifications(h))); }
         }
 
-        private async Task ExecuteDeleteHashtagNotifications(string hashtag)
+        private void ExecuteDeleteHashtagNotifications(string hashtag)
         {
             if (!HashtagsDictionary.ContainsKey(hashtag)) return;
 
-            await StatusBarManager.ShowTextAndProgressAsync("Usuwam powiadomienia...");
+            StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
 
-            var notifications = HashtagsDictionary[hashtag];
-            var IDs = notifications.Select(x => x.Data.ID);
-
-            foreach (var id in IDs)
-                await App.ApiService.markAsReadNotification(id);
+            var notifications = HashtagsDictionary[hashtag].ToList(); // make a copy
+            foreach (var notification in notifications)
+                notification.MarkAsReadCommand.Execute(null);
 
             HashtagsDictionary.Remove(hashtag);
             UpdateHashtagsCollection();
 
-            await StatusBarManager.ShowTextAsync("Powiadomienia zostały usunięte.");
+            StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
         }
 
         private RelayCommand _deleteAllHashtagNotifications = null;
@@ -463,13 +449,14 @@ namespace Mirko_v2.ViewModel
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Add(hashtag));
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Save ObservedHashtags"));
                 UpdateHashtagsCollection();
 
-                await StatusBarManager.ShowTextAsync("Obserwujesz " + hashtag + ".");
+                StatusBarManager.ShowText("Obserwujesz " + hashtag + ".");
             }
             else
             {
-                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
+                StatusBarManager.ShowText("Coś poszło nie tak...");
             }
         }
 
@@ -484,19 +471,20 @@ namespace Mirko_v2.ViewModel
             if (string.IsNullOrEmpty(hashtag)) return;
 
             if (HashtagsDictionary.ContainsKey(hashtag) && HashtagsDictionary[hashtag].Count > 0)
-                await ExecuteDeleteHashtagNotifications(hashtag);
+                ExecuteDeleteHashtagNotifications(hashtag);
 
             var success = await App.ApiService.unobserveTag(hashtag);
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
+                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Save ObservedHashtags"));
                 UpdateHashtagsCollection();
 
-                await StatusBarManager.ShowTextAsync("Przestałeś obserwować " + hashtag + ".");
+                StatusBarManager.ShowText("Przestałeś obserwować " + hashtag + ".");
             }
             else
             {
-                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
+                StatusBarManager.ShowText("Coś poszło nie tak...");
             }
         }
 
@@ -711,7 +699,7 @@ namespace Mirko_v2.ViewModel
             /* now, we have to update HashtagsCollection.
              first, let's gather current hashtag names. */
             var newHashColNames = newHashCol.Select(x => x.Name).ToList();
-            hashColNames = HashtagsCollection.Select(x => x.Name);
+            hashColNames = HashtagsCollection.Select(x => x.Name).ToList();
 
             var hashesToRemove = hashColNames.Where(x => !newHashColNames.Contains(x));
 
@@ -720,7 +708,7 @@ namespace Mirko_v2.ViewModel
                     HashtagsCollection.Remove(HashtagsCollection.First(x => x.Name == hashtag)));
 
             // now let's update.
-            hashColNames = HashtagsCollection.Select(x => x.Name);
+            hashColNames = HashtagsCollection.Select(x => x.Name).ToList();
             foreach (var hashtagInfo in newHashCol)
             {
                 var hashtag = hashtagInfo.Name;
