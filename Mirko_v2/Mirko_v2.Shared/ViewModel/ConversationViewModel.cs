@@ -68,14 +68,14 @@ namespace Mirko_v2.ViewModel
             bool success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
             if (success)
             {
-                await StatusBarManager.ShowText("Wiadomość została wysłana.");
+                await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");
                 await ExecuteUpdateMessagesCommand();
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));
             }
             else
             {
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Fail"));
-                await StatusBarManager.ShowText("Wiadomość nie została wysłana.");
+                await StatusBarManager.ShowTextAsync("Wiadomość nie została wysłana.");
             }
         }
 
@@ -89,7 +89,7 @@ namespace Mirko_v2.ViewModel
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "Pobieram...");
 
-            await StatusBarManager.ShowProgress();
+            await StatusBarManager.ShowProgressAsync();
             var pms = await App.ApiService.getPMs(Data.AuthorName);
             if (pms == null || pms.Count == 0)
             {
@@ -147,16 +147,16 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteDeleteConversation()
         {
-            await StatusBarManager.ShowProgress();
+            await StatusBarManager.ShowProgressAsync();
             bool success = await App.ApiService.deleteConversation(Data.AuthorName);
             if(success)
             {
                 Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Remove"));
-                await StatusBarManager.ShowText("Rozmowa została usunięta.");
+                await StatusBarManager.ShowTextAsync("Rozmowa została usunięta.");
             }
             else
             {
-                await StatusBarManager.ShowText("Nie udało się usunąć rozmowy.");
+                await StatusBarManager.ShowTextAsync("Nie udało się usunąć rozmowy.");
             }
         }
 

@@ -48,14 +48,14 @@ namespace Mirko_v2
         static async void ApiService_MessageReceiver(object sender, WykopAPI.MessageEventArgs e)
         {
             if (e.Code == 61)
-                await StatusBarManager.ShowText(e.Message);
+                await StatusBarManager.ShowTextAsync(e.Message);
         }
 
         static async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
         {
             if(!e.IsNetworkAvailable)
             {
-                await StatusBarManager.ShowText("Brak połączenia z Internetem.");
+                await StatusBarManager.ShowTextAsync("Brak połączenia z Internetem.");
             }
         }
 

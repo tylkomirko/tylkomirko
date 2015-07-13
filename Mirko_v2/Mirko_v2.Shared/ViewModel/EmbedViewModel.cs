@@ -111,7 +111,7 @@ namespace Mirko_v2.ViewModel
                     ImageStream.Seek(0, SeekOrigin.Begin);
                     await ImageStream.CopyToAsync(fileStream);
 
-                    await StatusBarManager.ShowText("Zapisano obraz.");
+                    await StatusBarManager.ShowTextAsync("Zapisano obraz.");
                 }
             }
             catch (Exception) { }
@@ -139,7 +139,7 @@ namespace Mirko_v2.ViewModel
                 if (!string.IsNullOrEmpty(mp4))
                     MediaElementSrc = mp4;
                 else
-                    await StatusBarManager.ShowText("Coś poszło nie tak...");
+                    await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
             else if (url.Contains("gfycat.com"))
             {
@@ -149,7 +149,7 @@ namespace Mirko_v2.ViewModel
                 if (!string.IsNullOrEmpty(mp4))
                     MediaElementSrc = mp4;
                 else
-                    await StatusBarManager.ShowText("Coś poszło nie tak...");
+                    await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
             else if (url.Contains("youtube")) // FIXME
             {

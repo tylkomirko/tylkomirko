@@ -203,7 +203,7 @@ namespace Mirko_v2.ViewModel
                     }
                     else
                     {
-                        await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                        await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
                     }
                 }
 
@@ -423,7 +423,7 @@ namespace Mirko_v2.ViewModel
             HashtagsDictionary.Remove(hashtag);
             UpdateHashtagsCollection();
 
-            await StatusBarManager.ShowText("Powiadomienia zostały usunięte.");
+            await StatusBarManager.ShowTextAsync("Powiadomienia zostały usunięte.");
         }
 
         private RelayCommand _deleteAllHashtagNotifications = null;
@@ -465,11 +465,11 @@ namespace Mirko_v2.ViewModel
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Add(hashtag));
                 UpdateHashtagsCollection();
 
-                await StatusBarManager.ShowText("Obserwujesz " + hashtag + ".");
+                await StatusBarManager.ShowTextAsync("Obserwujesz " + hashtag + ".");
             }
             else
             {
-                await StatusBarManager.ShowText("Coś poszło nie tak...");
+                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
         }
 
@@ -492,11 +492,11 @@ namespace Mirko_v2.ViewModel
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
                 UpdateHashtagsCollection();
 
-                await StatusBarManager.ShowText("Przestałeś obserwować " + hashtag + ".");
+                await StatusBarManager.ShowTextAsync("Przestałeś obserwować " + hashtag + ".");
             }
             else
             {
-                await StatusBarManager.ShowText("Coś poszło nie tak...");
+                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
         }
 
@@ -549,7 +549,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                    await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
                 }
             }
         }
@@ -621,7 +621,7 @@ namespace Mirko_v2.ViewModel
             }
             else
             {
-                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
             }
         }
 
@@ -799,7 +799,7 @@ namespace Mirko_v2.ViewModel
                     var entryData = await App.ApiService.getEntry(entryID);
                     if (entryData == null)
                     {
-                        await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                        await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
                     }
                     else
                     {

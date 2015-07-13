@@ -18,7 +18,7 @@ namespace Mirko_v2.Pages
 
             this.Loaded += async (s, e) =>
             {
-                await StatusBarManager.HideStatusBar();
+                await StatusBarManager.HideStatusBarAsync();
                 var VM = this.DataContext as SettingsViewModel;
 
                 if (VM.SelectedTheme == ElementTheme.Dark)
@@ -30,7 +30,7 @@ namespace Mirko_v2.Pages
                 NightMode.Checked += (se, args) => VM.SelectedTheme = ElementTheme.Dark;
             };
 
-            this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBar();
+            this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBarAsync();
         }
     }
 }

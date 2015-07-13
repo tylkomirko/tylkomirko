@@ -63,7 +63,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowText("Nie udało pobrać się profilu.");
+                    await StatusBarManager.ShowTextAsync("Nie udało pobrać się profilu.");
                     return;
                 }
             }

@@ -48,7 +48,7 @@ namespace Mirko_v2.ViewModel
             var user = Data.Login;
             bool success;
 
-            await StatusBarManager.ShowProgress();
+            await StatusBarManager.ShowProgressAsync();
             if (observed)
                 success = await App.ApiService.unobserveUser(user);
             else
@@ -58,11 +58,11 @@ namespace Mirko_v2.ViewModel
             {
                 string text = observed ? "Przestałeś obserwować @" + user : "Obserwujesz @" + user;
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Observed = !observed);
-                await StatusBarManager.ShowText(text);
+                await StatusBarManager.ShowTextAsync(text);
             }
             else
             {
-                await StatusBarManager.ShowText("Coś poszło nie tak...");
+                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
         }
 
@@ -79,7 +79,7 @@ namespace Mirko_v2.ViewModel
             var user = Data.Login;
             bool success;
 
-            await StatusBarManager.ShowProgress();
+            await StatusBarManager.ShowProgressAsync();
             if (blacklisted)
                 success = await App.ApiService.unblockUser(user);
             else
@@ -89,11 +89,11 @@ namespace Mirko_v2.ViewModel
             {
                 string text = blacklisted ? "Odblokowałeś @" + user : "Zablokowałeś @" + user;
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Blacklisted = !blacklisted);
-                await StatusBarManager.ShowText(text);
+                await StatusBarManager.ShowTextAsync(text);
             }
             else
             {
-                await StatusBarManager.ShowText("Coś poszło nie tak...");
+                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
             }
         }
 

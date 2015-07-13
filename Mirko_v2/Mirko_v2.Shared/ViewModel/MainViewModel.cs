@@ -364,7 +364,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    await StatusBarManager.ShowText("Nie uda³o siê pobraæ wpisu.");
+                    await StatusBarManager.ShowTextAsync("Nie uda³o siê pobraæ wpisu.");
                 }
             }
 

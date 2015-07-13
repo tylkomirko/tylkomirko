@@ -72,7 +72,7 @@ namespace Mirko_v2.Utils
             ShowProgressIndicator(statusBar.ProgressIndicator);
         }
 
-        public static async Task ShowText(string txt)
+        public static async Task ShowTextAsync(string txt)
         {
             await DispatcherHelper.RunAsync(() =>
             {
@@ -94,6 +94,30 @@ namespace Mirko_v2.Utils
                     Timer.Tick += Timer_Tick;
                 }
             });            
+        }
+
+        public static void ShowText(string txt)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+
+                statusBar.ProgressIndicator.Text = txt;
+                statusBar.ProgressIndicator.ProgressValue = 0.0;
+
+                if (Timer.IsEnabled)
+                {
+                    Timer.Stop();
+                    Timer.Start();
+
+                    Timer.Tick += Timer_Tick;
+                }
+                else
+                {
+                    Timer.Start();
+                    Timer.Tick += Timer_Tick;
+                }
+            });
         }
 
         public static async Task<string> GetText()
@@ -133,7 +157,7 @@ namespace Mirko_v2.Utils
             });
         }
 
-        public static async Task HideStatusBar()
+        public static async Task HideStatusBarAsync()
         {
             await DispatcherHelper.RunAsync(async () => 
             {
@@ -142,7 +166,16 @@ namespace Mirko_v2.Utils
             });
         }
 
-        public static async Task ShowStatusBar()
+        public static void HideStatusBar()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                await statusBar.HideAsync();
+            });
+        }
+
+        public static async Task ShowStatusBarAsync()
         {
             await DispatcherHelper.RunAsync(async () =>
             {
@@ -151,9 +184,28 @@ namespace Mirko_v2.Utils
             });
         }
 
-        public static async Task ShowProgress()
+        public static void ShowStatusBar()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                await statusBar.ShowAsync();
+            });
+        }
+
+        public static async Task ShowProgressAsync()
         {
             await DispatcherHelper.RunAsync(() =>
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                statusBar.ProgressIndicator.Text = " ";
+                statusBar.ProgressIndicator.ProgressValue = null;
+            });
+        }
+
+        public static void ShowProgress()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ProgressIndicator.Text = " ";

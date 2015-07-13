@@ -21,14 +21,14 @@ namespace Mirko_v2.Pages
                     DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait | 
                     DisplayOrientations.PortraitFlipped;
 
-                await StatusBarManager.HideStatusBar();
+                await StatusBarManager.HideStatusBarAsync();
             };
 
             this.Unloaded += async (s, e) =>
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
 
-                await StatusBarManager.ShowStatusBar();
+                await StatusBarManager.ShowStatusBarAsync();
             };
         }
 

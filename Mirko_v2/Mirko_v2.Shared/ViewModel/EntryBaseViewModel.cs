@@ -51,7 +51,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteVoteCommand()
         {
-            await StatusBarManager.ShowProgress();
+            await StatusBarManager.ShowProgressAsync();
             Vote reply = null;
             if (DataBase is EntryComment)
             {
@@ -69,11 +69,11 @@ namespace Mirko_v2.ViewModel
                 DataBase.Voted = !DataBase.Voted;
                 DataBase.Voters = reply.Voters;
 
-                await StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
+                await StatusBarManager.ShowTextAsync(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }
             else
             {
-                await StatusBarManager.ShowText("Nie udało się oddać głosu.");
+                await StatusBarManager.ShowTextAsync("Nie udało się oddać głosu.");
             }
         }
 
@@ -104,7 +104,7 @@ namespace Mirko_v2.ViewModel
             var newEntry = await App.ApiService.getEntry(DataBase.ID);
             if (newEntry == null)
             {
-                await StatusBarManager.ShowText("Nie udało się pobrać wpisu.");
+                await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
             }
             else
             {
@@ -166,11 +166,11 @@ namespace Mirko_v2.ViewModel
             var success = await App.ApiService.blockTag(TappedHashtag);
             if (success)
             {
-                await StatusBarManager.ShowText("Tag " + TappedHashtag + " został zablokowany.");
+                await StatusBarManager.ShowTextAsync("Tag " + TappedHashtag + " został zablokowany.");
             }
             else
             {
-                await StatusBarManager.ShowText("Nie udało się zablokować tagu " + TappedHashtag + ".");
+                await StatusBarManager.ShowTextAsync("Nie udało się zablokować tagu " + TappedHashtag + ".");
             }
         }
         #endregion
