@@ -403,9 +403,13 @@ namespace Mirko_v2.ViewModel
             StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
 
             var notifications = HashtagsDictionary[hashtag].ToList(); // make a copy
-            foreach (var notification in notifications)
+            for (int i = 0; i < notifications.Count; i++)
+            {
+                var notification = notifications[i];
                 notification.MarkAsReadCommand.Execute(null);
-
+                notifications.Remove(notification);
+            }
+            
             HashtagsDictionary.Remove(hashtag);
             UpdateHashtagsCollection();
 
