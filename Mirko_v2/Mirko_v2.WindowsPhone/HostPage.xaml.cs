@@ -25,11 +25,15 @@ namespace Mirko_v2
             NavService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>() as NavigationService;
             NavService.Navigating += NavService_Navigating;
 
-            Windows.UI.ViewManagement.StatusBar.GetForCurrentView().Hiding += StatusBar_Moving;
-            Windows.UI.ViewManagement.StatusBar.GetForCurrentView().Showing += StatusBar_Moving;
-            MainGrid.Loaded += (s, e) => StatusBar_Moving(StatusBar.GetForCurrentView(), null);
+            Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += HostPage_VisibleBoundsChanged;
 
             SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += HostPage_ThemeChanged;
+        }
+
+        private void HostPage_VisibleBoundsChanged(ApplicationView sender, object args)
+        {
+            var appView = sender as ApplicationView;
+            MainGrid.Margin = new Thickness(0, appView.VisibleBounds.Top, 0, 0);
         }
 
         private void HostPage_ThemeChanged(object sender, ThemeChangedEventArgs e)
@@ -39,14 +43,6 @@ namespace Mirko_v2
                 var brushKey = e.Theme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
                 MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
             }
-        }
-
-        private void StatusBar_Moving(StatusBar sender, object args)
-        {
-            var statusBar = sender as StatusBar;
-            var statusBarDimensions = statusBar.OccludedRect;
-
-            MainGrid.Margin = new Thickness(0, statusBarDimensions.Height, 0, 0);
         }
 
         private void NavService_Navigating(object source, Utils.StringEventArgs newPage)
