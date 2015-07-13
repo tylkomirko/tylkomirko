@@ -116,6 +116,12 @@ namespace Mirko_v2.Controls
 
             c.TargetValue = (int)((uint)e.NewValue);
 
+            if (!c.OverrideForeground)
+                c.Foreground = c.TargetValue > 0 ? c.NotificationsBrush : c.NoNotificationsBrush;
+
+            if ((c.CurrentValue == 0 && c.TargetValue == 0) || c.Visibility == Visibility.Collapsed)
+                return;
+
             var cts = new CancellationTokenSource();
             var task = DispatcherHelper.RunAsync(async () => await c.AnimateCountChange(cts.Token)).AsTask(cts.Token);
             c.LastTask = task;
@@ -124,15 +130,6 @@ namespace Mirko_v2.Controls
 
         private async Task AnimateCountChange(CancellationToken token)
         {
-            if (!OverrideForeground)
-                Foreground = TargetValue > 0 ? NotificationsBrush : NoNotificationsBrush;
-
-            if (CurrentValue == 0 && TargetValue == 0)
-                return;
-
-            if (token.IsCancellationRequested)
-                return;
-
             int diff = Math.Abs(TargetValue - CurrentValue);
             bool countUp = TargetValue > CurrentValue;
             bool useFastAnimation = diff > Threshold ? true : false;

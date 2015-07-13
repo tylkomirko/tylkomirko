@@ -134,8 +134,11 @@ namespace Mirko_v2.ViewModel
 
         private async void TimerCallback(object state)
         {
-            await CheckHashtagNotifications();
-            await CheckNotifications();
+            await Task.Run(async () =>
+            {
+                await CheckHashtagNotifications();
+                await CheckNotifications();
+            });
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
             UpdateBadge();
