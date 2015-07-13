@@ -60,8 +60,17 @@ namespace Mirko_v2.Controls
 
         private void NavService_Navigating(object source, StringEventArgs newPage)
         {
-            var currentPage = newPage.String;
+            this.HashCounter.OverrideForeground = false;
+            this.AtCounter.OverrideForeground = false;
+            this.PMCounter.OverrideForeground = false;
 
+            if (NavigatedToLoginPage)
+            {
+                Timer.Start();
+                NavigatedToLoginPage = false;
+            }
+
+            var currentPage = newPage.String;
             if (currentPage == "HashtagSelectionPage")
             {
                 this.HashCounter.OverrideForeground = true;
@@ -81,18 +90,6 @@ namespace Mirko_v2.Controls
             {
                 LeaveStreams.Begin();
                 NavigatedToLoginPage = true;
-            }
-            else
-            {
-                this.HashCounter.OverrideForeground = false;
-                this.AtCounter.OverrideForeground = false;
-                this.PMCounter.OverrideForeground = false;
-
-                if (NavigatedToLoginPage)
-                {
-                    Timer.Start();
-                    NavigatedToLoginPage = false;
-                }
             }
         }
 
