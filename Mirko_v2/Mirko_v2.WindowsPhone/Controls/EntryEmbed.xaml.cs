@@ -74,11 +74,16 @@ namespace Mirko_v2.Controls
             }
         }
 
-        private async void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
+        private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
         {
             Image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            await StatusBarManager.HideProgressAsync();
+            var aspectRatio = MediaElement.AspectRatioHeight / (double)MediaElement.AspectRatioWidth;
+            MediaElement.Height = MaxHeight * aspectRatio;
+
+            MediaElement.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            StatusBarManager.HideProgress();
         }
 
         private async void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)

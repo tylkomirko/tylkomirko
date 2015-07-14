@@ -23,8 +23,6 @@
                               Embed="{Binding EmbedData}"/>
         
         <MediaElement x:Name="MediaElement"
-                      MaxHeight="400"
-                      MaxWidth="400"
                       Source="{Binding MediaElementSrc}"
                       AutoPlay="True"
                       IsLooping="True"
@@ -33,7 +31,7 @@
                       MediaOpened="MediaElement_MediaOpened"
                       MediaFailed="MediaElement_MediaFailed"
                       Tapped="MediaElement_Tapped"
-                      Visibility="{Binding MediaElementSrc, Converter={StaticResource NullToVisibility}}"/>
+                      Visibility="Collapsed" />
 
         <TextBlock x:Name="AttachmentTB"
                    Visibility="Collapsed"
