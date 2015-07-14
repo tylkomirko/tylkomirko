@@ -1,4 +1,6 @@
 ﻿using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
+using System;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -11,64 +13,90 @@ namespace Mirko_v2.Pages
 {
     public sealed partial class EmbedPage : UserControl
     {
+        private bool ImageOpened = false;
+
         public EmbedPage()
         {
             this.InitializeComponent();
 
-            this.Loaded += async (s, e) =>
+            this.Loaded += (s, e) =>
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape | 
                     DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait | 
                     DisplayOrientations.PortraitFlipped;
 
-                await StatusBarManager.HideStatusBarAsync();
+                StatusBarManager.HideStatusBar();
             };
 
-            this.Unloaded += async (s, e) =>
+            this.Unloaded += (s, e) =>
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
 
-                await StatusBarManager.ShowStatusBarAsync();
+                StatusBarManager.ShowStatusBar();
+
+                ImageOpened = false;
             };
+
+            this.ImageScrollViewer.SizeChanged += (s, e) =>
+            {
+                if (ImageOpened)
+                    CalculateZoomFactors();
+            };
+
+            this.Image.ImageOpened += (s, e) =>
+            {
+                StatusBarManager.HideProgress();
+                StatusBarManager.HideStatusBar();
+
+                CalculateZoomFactors();
+                ImageOpened = true;
+            };
+
+            this.Image.DoubleTapped += (s, e) => ZoomImage();
         }
 
-        private void ImageScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void CalculateZoomFactors()
         {
-            var x = ImageScrollViewer.ScrollableWidth / 2;
-            var y = ImageScrollViewer.ScrollableHeight / 2;
+            var ratioX = ImageScrollViewer.ViewportWidth / Image.ActualWidth;
+            var ratioY = ImageScrollViewer.ViewportHeight / Image.ActualHeight;
 
-#pragma warning disable 0618
-            ImageScrollViewer.ScrollToHorizontalOffset(x);
-            ImageScrollViewer.ScrollToVerticalOffset(y);
-#pragma warning restore 0618
+            var zoom = Math.Min(ratioX, ratioY);
+            var zoomMin = 0.97 * zoom;
+            var zoomMax = 2.5 * Math.Max(ratioX, ratioY);
+            ImageScrollViewer.MinZoomFactor = (float)zoomMin;
+            ImageScrollViewer.MaxZoomFactor = (float)zoomMax;
+
+            // fuck you MS
+            Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    ImageScrollViewer.ChangeView(0.0, 0.0, (float)zoom, false);
+                });
+            }, TimeSpan.FromMilliseconds(10));
         }
 
-        private void img_Holding(object sender, HoldingRoutedEventArgs e)
+        private void ZoomImage()
+        {
+            var zoom = 2.0f * ImageScrollViewer.ZoomFactor;
+            if (zoom > ImageScrollViewer.MaxZoomFactor)
+                zoom = ImageScrollViewer.MaxZoomFactor;
+
+            // fuck you MS
+            Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    ImageScrollViewer.ChangeView(null, null, zoom, false);
+                    ImageScrollViewer.ChangeView(ImageScrollViewer.ScrollableWidth / 2, ImageScrollViewer.ScrollableHeight / 2, null, false);
+                });
+            }, TimeSpan.FromMilliseconds(10));
+        }
+
+        private void Image_Holding(object sender, HoldingRoutedEventArgs e)
         {
             var mf = this.Resources["SaveFlyout"] as MenuFlyout;
-            mf.ShowAt(img);
-        }
-
-        private void img_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-#pragma warning disable 0618
-            ImageScrollViewer.ZoomToFactor(2.0F);
-
-            var x = ImageScrollViewer.ScrollableWidth / 2;
-            var y = ImageScrollViewer.ScrollableHeight / 2;
-
-            ImageScrollViewer.ScrollToHorizontalOffset(x);
-            ImageScrollViewer.ScrollToVerticalOffset(y);
-#pragma warning restore 0618
-        }
-
-        private void img_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            var bitmap = args.NewValue as BitmapImage;
-            if (bitmap == null) return;
-
-            Ring.IsActive = false;
-            Ring.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            mf.ShowAt(Image);
         }
     }
 }

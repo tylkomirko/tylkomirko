@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using Windows.Storage;
-using Windows.UI.Xaml.Media.Imaging;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -17,31 +16,6 @@ namespace Mirko_v2.ViewModel
     {
         public Embed EmbedData { get; set; }
         public bool ImageShown { get; set; }
-
-        private MemoryStream _imageStream = null;
-        [JsonIgnore]
-        public MemoryStream ImageStream
-        {
-            get { return _imageStream; }
-            set
-            {
-                if (_imageStream != value)
-                {
-                    if (_imageStream != null)
-                        _imageStream.Dispose();
-
-                    _imageStream = value;
-                }
-            }
-        }
-
-        private BitmapImage _bitmap = null;
-        [JsonIgnore]
-        public BitmapImage Bitmap
-        {
-            get { return _bitmap; }
-            set { Set(() => Bitmap, ref _bitmap, value); }
-        }
 
         private string _mediaElementSrc = null;
         public string MediaElementSrc
@@ -52,7 +26,6 @@ namespace Mirko_v2.ViewModel
 
         public EmbedViewModel()
         {
-
         }
 
         public EmbedViewModel(Embed e)
@@ -67,27 +40,6 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EmbedPage");
         }
 
-        private RelayCommand _loadImageCommand = null;
-        [JsonIgnore]
-        public RelayCommand LoadImageCommand
-        {
-            get { return _loadImageCommand ?? (_loadImageCommand = new RelayCommand(ExecuteLoadImageCommand)); }
-        }
-
-        private async void ExecuteLoadImageCommand()
-        {
-            using (var stream = await App.ApiService.httpClient.GetStreamAsync(new Uri(EmbedData.URL)))
-            {
-                ImageStream = new MemoryStream();
-                await stream.CopyToAsync(ImageStream);
-                ImageStream.Position = 0;
-
-                var sr = ImageStream.AsRandomAccessStream();
-                Bitmap = new BitmapImage();
-                Bitmap.SetSource(sr);
-            }
-        }
-
         private RelayCommand _saveImageCommand = null;
         [JsonIgnore]
         public RelayCommand SaveImageCommand
@@ -97,7 +49,7 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteSaveImageCommand()
         {
-            if (ImageStream == null || ImageStream.Length == 0) return;
+            if (EmbedData == null) return;
 
             var folder = KnownFolders.SavedPictures;
             var fileName = Path.GetFileName(EmbedData.Source);
@@ -105,13 +57,13 @@ namespace Mirko_v2.ViewModel
             try
             {
                 var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+                using (var stream = await App.ApiService.httpClient.GetStreamAsync(new Uri(EmbedData.URL)))
                 using (var fileStream = await file.OpenStreamForWriteAsync())
                 {
-                    fileStream.Seek(0, SeekOrigin.Begin);
-                    ImageStream.Seek(0, SeekOrigin.Begin);
-                    await ImageStream.CopyToAsync(fileStream);
+                    await stream.CopyToAsync(fileStream);
 
-                    await StatusBarManager.ShowTextAsync("Zapisano obraz.");
+                    StatusBarManager.ShowText("Zapisano obraz.");
                 }
             }
             catch (Exception) { }
@@ -129,6 +81,7 @@ namespace Mirko_v2.ViewModel
             var url = EmbedData.URL;
             if (url.EndsWith(".jpg") || url.EndsWith(".jpeg") || url.EndsWith(".png") || (url.Contains("imgwykop.pl") && !url.EndsWith("gif")))
             {
+                StatusBarManager.ShowTextAndProgress("Pobieram obraz...");
                 GoToEmbedPage();
             }
             else if (url.EndsWith(".gif"))

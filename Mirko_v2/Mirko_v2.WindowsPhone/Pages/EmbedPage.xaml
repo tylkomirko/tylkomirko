@@ -7,49 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:controls="using:Mirko_v2.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main.SelectedEmbed, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <i:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <core:InvokeCommandAction Command="{Binding LoadImageCommand}" />
-        </core:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
-
     <UserControl.Resources>
         <MenuFlyout x:Key="SaveFlyout">
             <MenuFlyoutItem Text="zapisz" 
-                            Command="{Binding Source={Binding Main.SelectedEmbed, Mode=OneWay, Source={StaticResource Locator}}, 
-                                      Path=SaveImageCommand}" />
+                            Command="{Binding SaveImageCommand}"/>
         </MenuFlyout>
     </UserControl.Resources>
 
     <ScrollViewer x:Name="ImageScrollViewer"
-                  SizeChanged="ImageScrollViewer_SizeChanged"
-                  VerticalScrollBarVisibility="Auto" 
-                  HorizontalScrollBarVisibility="Auto" 
+                  VerticalScrollBarVisibility="Hidden" 
+                  HorizontalScrollBarVisibility="Hidden" 
                   IsDoubleTapEnabled="True"
-                  VerticalContentAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch"
                   ZoomMode="Enabled">
-
-        <Grid IsHoldingEnabled="True">
-            <ProgressRing x:Name="Ring"
-                          IsActive="True" />
-
-            <Image x:Name="img"
-                   DataContext="{Binding Bitmap}"
-                   Source="{Binding ElementName=img, Path=DataContext}"
-                   DataContextChanged="img_DataContextChanged"
-                   Holding="img_Holding"
-                   IsHoldingEnabled="True"
-                   IsDoubleTapEnabled="True"
-                   DoubleTapped="img_DoubleTapped"
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Center" 
-                   Stretch="Uniform" />
-        </Grid>
+              
+        <Image x:Name="Image"
+               Source="{Binding EmbedData.URL}"
+               Holding="Image_Holding"
+               IsHoldingEnabled="True"
+               IsDoubleTapEnabled="True"
+               Stretch="Uniform" />
     </ScrollViewer>
 </UserControl>
