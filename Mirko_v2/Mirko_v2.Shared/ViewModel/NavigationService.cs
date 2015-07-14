@@ -217,5 +217,10 @@ namespace Mirko_v2.ViewModel
         {
             return rootPageFrame.Content as UserControl;
         }
+
+        public AppHeader GetAppHeader()
+        {
+            return rootPageHeader;
+        }
     }
 }

@@ -94,8 +94,7 @@
                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
                      Style="{StaticResource ListBoxNoBorder}"
                      ItemContainerStyle="{StaticResource ListBoxItemStyle}"
-                     SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}, Path=CurrentPivotItem, Mode=TwoWay}"
-                     SelectionChanged="StreamsPanel_SelectionChanged">
+                     SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}, Path=CurrentPivotItem, Mode=TwoWay}">
 
                 <ListBox.RenderTransform>
                     <TranslateTransform X="0" Y="0" />

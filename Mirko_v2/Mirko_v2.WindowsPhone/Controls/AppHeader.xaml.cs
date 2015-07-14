@@ -44,18 +44,20 @@ namespace Mirko_v2.Controls
 
         public AppHeader()
         {
+            Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
+            Timer.Tick += Timer_Tick;
+
             this.InitializeComponent();
 
             var navService = SimpleIoc.Default.GetInstance<INavigationService>() as Mirko_v2.ViewModel.NavigationService;
             if(navService != null)
                 navService.Navigating += NavService_Navigating;
 
-            Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
-            Timer.Tick += Timer_Tick;
-
             this.Loaded += AppHeader_Loaded;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
             SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += (s, e) => DrawLogo();
+
+            this.StreamsPanel.SelectionChanged += (s, e) => ShowStreams();
         }
 
         private void NavService_Navigating(object source, StringEventArgs newPage)
@@ -111,6 +113,7 @@ namespace Mirko_v2.Controls
             Timer.Start();
         }
 
+        #region Logo
         private void DrawLogo()
         {
             // check current date and show appropriate logo
@@ -214,6 +217,7 @@ namespace Mirko_v2.Controls
             Logo.Children.Add(outlinePath);
             Logo.Children.Add(insidePath);
         }
+        #endregion
 
         public void PlayAnimation()
         {
@@ -223,19 +227,20 @@ namespace Mirko_v2.Controls
 
         private void StreamsPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (LeaveNotifications != null)
-            {
-                if (Timer.IsEnabled) return;
-
-                Timer.Stop();
-
-                EnterStreams.Begin();
-                LeaveNotifications.Begin();
-
-                Timer.Start();
-            }
+            ShowStreams();
         }
 
+        public void ShowStreams()
+        {
+            if (Timer.IsEnabled) return;
+
+            Timer.Stop();
+
+            EnterStreams.Begin();
+            LeaveNotifications.Begin();
+
+            Timer.Start();
+        }
 
         #region Animations
         private void Timer_Tick(object sender, object e)

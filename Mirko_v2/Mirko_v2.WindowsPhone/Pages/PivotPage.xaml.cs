@@ -17,10 +17,14 @@ namespace Mirko_v2.Pages
 {
     public sealed partial class PivotPage : UserControl, IHaveAppBar
     {
+        private AppHeader AppHeader;
+
         public ItemsPresenter ItemsPresenter;
         private Storyboard ShowPivotContent;
         private bool HasEntryAnimationPlayed = false;
         private bool CanShowNewEntriesPopup = false;
+        private double PreviousPivotOffset;
+        private const double PivotOffsetThreshold = 10;
 
         public PivotPage()
         {
@@ -28,6 +32,10 @@ namespace Mirko_v2.Pages
 
             var VM = this.DataContext as MainViewModel;
             VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
+
+            var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>()
+                as Mirko_v2.ViewModel.NavigationService;
+            AppHeader = navService.GetAppHeader();
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -50,6 +58,17 @@ namespace Mirko_v2.Pages
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
         {
+            var scroll = MainPivot.GetDescendant<ScrollViewer>();
+            scroll.ViewChanged += (se, args) =>
+            {
+                var sv = se as ScrollViewer;
+                var newOffset = sv.HorizontalOffset;
+                if ((Math.Abs(PreviousPivotOffset - newOffset)) >= PivotOffsetThreshold)
+                    AppHeader.ShowStreams();
+
+                PreviousPivotOffset = newOffset;
+            };
+
             if (ItemsPresenter == null)
             {
                 ItemsPresenter = MainPivot.GetDescendant<ItemsPresenter>();
