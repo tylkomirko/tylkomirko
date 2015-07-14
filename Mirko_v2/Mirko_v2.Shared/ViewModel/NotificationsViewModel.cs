@@ -393,22 +393,23 @@ namespace Mirko_v2.ViewModel
         private RelayCommand<string> _deleteHashtagNotifications = null;
         public RelayCommand<string> DeleteHashtagNotifications
         {
-            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>((h) => ExecuteDeleteHashtagNotifications(h))); }
+            get { return _deleteHashtagNotifications ?? (_deleteHashtagNotifications = new RelayCommand<string>(async (h) => await ExecuteDeleteHashtagNotifications(h))); }
         }
 
-        private void ExecuteDeleteHashtagNotifications(string hashtag)
+        private async Task ExecuteDeleteHashtagNotifications(string hashtag)
         {
             if (!HashtagsDictionary.ContainsKey(hashtag)) return;
 
             StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
 
             var notifications = HashtagsDictionary[hashtag].ToList(); // make a copy
-            for (int i = 0; i < notifications.Count; i++)
+            foreach (var notification in notifications)
             {
-                var notification = notifications[i];
-                notification.MarkAsReadCommand.Execute(null);
-                notifications.Remove(notification);
+                bool success = await App.ApiService.markAsReadNotification(notification.Data.ID);
+                Logger.Trace("Removing notification " + notification.Data.ID + ". success: " + success);
             }
+
+            HashtagsDictionary[hashtag].Clear();
             
             HashtagsDictionary.Remove(hashtag);
             UpdateHashtagsCollection();
@@ -475,7 +476,7 @@ namespace Mirko_v2.ViewModel
             if (string.IsNullOrEmpty(hashtag)) return;
 
             if (HashtagsDictionary.ContainsKey(hashtag) && HashtagsDictionary[hashtag].Count > 0)
-                ExecuteDeleteHashtagNotifications(hashtag);
+                await ExecuteDeleteHashtagNotifications(hashtag);
 
             var success = await App.ApiService.unobserveTag(hashtag);
             if (success)
