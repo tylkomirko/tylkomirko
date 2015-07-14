@@ -6,6 +6,7 @@ using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -77,7 +78,18 @@ namespace Mirko_v2.Pages
             };
             find.Click += FindHashtag_Click;
 
+            var removeAll = new AppBarButton()
+            {
+                Label = "usuń wszystkie powiadomienia"
+            };
+            removeAll.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as NotificationsViewModel,
+                Path = new PropertyPath("DeleteAllHashtagNotifications"),
+            });
+
             c.PrimaryCommands.Add(find);
+            c.SecondaryCommands.Add(removeAll);
             AppBar = c;
 
             return c;

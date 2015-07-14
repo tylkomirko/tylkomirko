@@ -425,7 +425,12 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteDeleteAllHashtagNotifications()
         {
-            await App.ApiService.readHashtagNotifications();
+            var success = await App.ApiService.readHashtagNotifications();
+            if(success)
+            {
+                HashtagsDictionary.Clear();
+                UpdateHashtagsCollection();
+            }
         }
 
         private RelayCommand _deleteCurrentHashtagNotifications = null;
