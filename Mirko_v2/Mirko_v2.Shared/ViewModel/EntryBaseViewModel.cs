@@ -5,8 +5,12 @@ using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Common;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
+using System.Threading.Tasks;
+using System;
 
 namespace Mirko_v2.ViewModel
 {
@@ -46,12 +50,14 @@ namespace Mirko_v2.ViewModel
         [JsonIgnore]
         public RelayCommand VoteCommand
         {
-            get { return _voteCommand ?? (_voteCommand = new RelayCommand(ExecuteVoteCommand)); }
+            get { return _voteCommand ?? (_voteCommand = new RelayCommand(async () => await ExecuteVoteCommand())); }
         }
 
-        private async void ExecuteVoteCommand()
+        private async Task ExecuteVoteCommand(bool verbose = true)
         {
-            await StatusBarManager.ShowProgressAsync();
+            if(verbose)
+                StatusBarManager.ShowProgress();
+
             Vote reply = null;
             if (DataBase is EntryComment)
             {
@@ -69,11 +75,13 @@ namespace Mirko_v2.ViewModel
                 DataBase.Voted = !DataBase.Voted;
                 DataBase.Voters = reply.Voters;
 
-                await StatusBarManager.ShowTextAsync(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
+                if(verbose)
+                    StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }
             else
             {
-                await StatusBarManager.ShowTextAsync("Nie udało się oddać głosu.");
+                if(verbose)
+                    StatusBarManager.ShowText("Nie udało się oddać głosu.");
             }
         }
 
@@ -113,6 +121,35 @@ namespace Mirko_v2.ViewModel
 
                 await StatusBarManager.HideProgressAsync();
             }
+        }
+
+        private RelayCommand<List<EntryBaseViewModel>> _voteMultiple = null;
+        [JsonIgnore]
+        public RelayCommand<List<EntryBaseViewModel>> VoteMultiple
+        {
+            get { return _voteMultiple ?? (_voteMultiple = new RelayCommand<List<EntryBaseViewModel>>(ExecuteVoteMultiple)); }
+        }
+
+        private async void ExecuteVoteMultiple(List<EntryBaseViewModel> list)
+        {
+            var onlyUpVotes = list.Where(x => !x.DataBase.Voted);
+            if (onlyUpVotes.Count() == 0)
+            {
+                await StatusBarManager.ShowTextAsync("Plusa możesz dać tylko raz ( ͡° ͜ʖ ͡°)");
+                return;
+            }
+
+            double progress = 0;
+            double progressStep = 1 / (double)onlyUpVotes.Count();
+
+            foreach(var entry in onlyUpVotes)
+            {
+                await StatusBarManager.ShowProgressAsync(progress);
+                await entry.ExecuteVoteCommand(false);
+                progress += progressStep;
+            }
+
+            await StatusBarManager.ShowTextAsync("Plusy zostały przyznane.");
         }
 
         #region Hashtag

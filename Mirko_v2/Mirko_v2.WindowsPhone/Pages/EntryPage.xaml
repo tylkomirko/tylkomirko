@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko_v2.Controls"
     xmlns:q="using:QKit"
+    xmlns:qc="using:QKit.Common"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -30,9 +31,32 @@
                 <Rectangle x:Name="HeaderSpacer"
                            Fill="Transparent"
                            Height="140" />
-                <controls:Entry DataContext="{Binding}"
-                                LargeEmbed="True"
-                                IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <qc:EdgeSelectButton Grid.Column="0"
+                                         x:Name="HeaderEdgeButton"
+                                         Click="EdgeSelectButton_Click" />
+
+                    <CheckBox Grid.Column="1"
+                              x:Name="HeaderCheckBox"
+                              MinWidth="20"
+                              Visibility="Collapsed"
+                              Unchecked="CheckBox_Unchecked" 
+                              Style="{StaticResource CheckBoxNoTilt}" />
+
+                    <controls:Entry Grid.Column="2"
+                                    DataContext="{Binding}"
+                                    LargeEmbed="True"
+                                    IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
+
+                </Grid>
+
             </StackPanel>
         </ListView.Header>
 

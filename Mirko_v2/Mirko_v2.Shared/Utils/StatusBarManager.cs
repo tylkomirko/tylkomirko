@@ -193,13 +193,13 @@ namespace Mirko_v2.Utils
             });
         }
 
-        public static async Task ShowProgressAsync()
+        public static async Task ShowProgressAsync(double? prog = null)
         {
             await DispatcherHelper.RunAsync(() =>
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 statusBar.ProgressIndicator.Text = " ";
-                statusBar.ProgressIndicator.ProgressValue = null;
+                statusBar.ProgressIndicator.ProgressValue = prog;
             });
         }
 

@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="Resources/Converters.xaml"/>
                 <ResourceDictionary Source="Resources/Common.xaml"/>
                 <ResourceDictionary Source="Resources/PullToRefreshListView.xaml"/>
+                <ResourceDictionary Source="Resources/QKit.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

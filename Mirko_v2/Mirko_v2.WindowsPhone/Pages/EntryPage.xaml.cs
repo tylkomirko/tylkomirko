@@ -1,20 +1,11 @@
-﻿using Mirko_v2.ViewModel;
+﻿using Mirko_v2.Controls;
+using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
+using QKit.Common;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Mirko_v2.Utils;
-using Mirko_v2.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -25,6 +16,13 @@ namespace Mirko_v2.Pages
         public EntryPage()
         {
             this.InitializeComponent();
+
+            this.Unloaded += (s, e) =>
+            {
+                HeaderCheckBox.IsChecked = false;
+                HeaderCheckBox.Visibility = Visibility.Collapsed;
+                ListView.SelectionMode = ListViewSelectionMode.None;
+            };
         }
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
@@ -42,14 +40,6 @@ namespace Mirko_v2.Pages
         private void ListView_ScrollingUp(object sender, EventArgs e)
         {
             AppBar.Show();
-        }
-
-        private void ListView_SelectionModeChanged(object sender, RoutedEventArgs e)
-        {
-            if(ListView.SelectionMode == ListViewSelectionMode.Multiple)
-            {
-                //AppBar.MakeButtonInvisible();
-            }
         }
 
         #region AppBar
@@ -93,16 +83,44 @@ namespace Mirko_v2.Pages
             };
             up.Click += ScrollUpButton_Click;
 
-            var add = new AppBarButton()
+            var voteMultiple = new AppBarButton()
             {
+                Label = "daj plusa",
+                Tag = "voteMulti",
                 Icon = new SymbolIcon(Symbol.Add),
-                Label = "nowy",
+                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+            };
+            voteMultiple.Click += (s, e) =>
+            {
+                var selectedItems = ListView.SelectedItems.Cast<EntryBaseViewModel>().ToList();
+                if(HeaderCheckBox.IsChecked.Value)
+                {
+                    var entryvm = this.ListView.DataContext as EntryViewModel;
+                    selectedItems.Add(entryvm);
+                }
+
+                var vm = selectedItems.First();
+                vm.VoteMultiple.Execute(selectedItems);
+
+                ListView.SelectionMode = ListViewSelectionMode.None;
+                HeaderCheckBox.IsChecked = false;
+                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                HeaderEdgeButton.IsHitTestVisible = true;
+            };
+
+            var replyMultiple = new AppBarButton()
+            {
+                Label = "odpowiedz",
+                Tag = "replyMulti",
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
+                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
             };
 
             c.PrimaryCommands.Add(comment);
             c.PrimaryCommands.Add(delete);
-            //c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(refresh);
+            c.PrimaryCommands.Add(replyMultiple);
+            c.PrimaryCommands.Add(voteMultiple);
             c.PrimaryCommands.Add(up);
 
             var share = new AppBarButton()
@@ -137,6 +155,74 @@ namespace Mirko_v2.Pages
             var sv = this.ListView.GetDescendant<ScrollViewer>();
             if (sv != null)
                 sv.ChangeView(null, 0.0, null);
+        }
+        #endregion
+
+        #region Multiselect
+        private bool AnyItemsChecked()
+        {
+            return ListView.SelectedItems.Count > 0 || HeaderCheckBox.IsChecked.Value;
+        }
+
+        private void ListView_SelectionModeChanged(object sender, RoutedEventArgs e)
+        {
+            if (ListView.SelectionMode == ListViewSelectionMode.Multiple)
+            {
+                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                HeaderEdgeButton.IsHitTestVisible = false;
+
+                AppBar.MakeButtonInvisible("refresh");
+                AppBar.MakeButtonVisible("replyMulti");
+                AppBar.MakeButtonVisible("voteMulti");
+            }
+            else if (ListView.SelectionMode == ListViewSelectionMode.None)
+            {
+                if (AnyItemsChecked())
+                {
+                    ListView.SelectionMode = ListViewSelectionMode.Multiple;
+                }
+                else
+                {
+                    HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    HeaderCheckBox.IsChecked = false;
+                    HeaderEdgeButton.IsHitTestVisible = true;
+
+                    AppBar.MakeButtonVisible("refresh");
+                    AppBar.MakeButtonInvisible("replyMulti");
+                    AppBar.MakeButtonInvisible("voteMulti");
+                }
+            }
+        }
+
+        private void EdgeSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            var edgeButton = sender as EdgeSelectButton;
+            var stackPanel = edgeButton.GetAntecedent<StackPanel>();
+            var checkBox = stackPanel.GetDescendant<CheckBox>();
+
+            HeaderCheckBox.IsChecked = true;
+            HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            ListView.SelectionMode = ListViewSelectionMode.Multiple;
+            HeaderEdgeButton.IsHitTestVisible = false;
+
+            AppBar.MakeButtonInvisible("refresh");
+            AppBar.MakeButtonVisible("replyMulti");
+            AppBar.MakeButtonVisible("voteMulti");
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (AnyItemsChecked())
+                return;
+
+            HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            HeaderEdgeButton.IsHitTestVisible = true;
+            ListView.SelectionMode = ListViewSelectionMode.None;
+
+            AppBar.MakeButtonVisible("refresh");
+            AppBar.MakeButtonInvisible("replyMulti");
+            AppBar.MakeButtonInvisible("voteMulti");
         }
         #endregion
     }
