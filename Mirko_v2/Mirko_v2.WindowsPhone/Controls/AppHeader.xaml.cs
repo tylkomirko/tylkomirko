@@ -236,6 +236,8 @@ namespace Mirko_v2.Controls
 
             Timer.Stop();
 
+            StreamsPanel.IsHitTestVisible = true;
+            NotificationsPanel.IsHitTestVisible = false;
             EnterStreams.Begin();
             LeaveNotifications.Begin();
 
@@ -256,22 +258,22 @@ namespace Mirko_v2.Controls
 
         private void EnterStreams_Completed(object sender, object e)
         {
-            StreamsPanel.IsEnabled = true;
+            StreamsPanel.IsHitTestVisible = true;
         }
 
         private void LeaveStreams_Completed(object sender, object e)
         {
-            StreamsPanel.IsEnabled = false;
+            StreamsPanel.IsHitTestVisible = false;
         }
 
         private void LeaveNotifications_Completed(object sender, object e)
         {
-            NotificationsPanel.IsTapEnabled = false;
+            NotificationsPanel.IsHitTestVisible = false;
         }
 
         private void EnterNotifications_Completed(object sender, object e)
         {
-            NotificationsPanel.IsTapEnabled = true;
+            NotificationsPanel.IsHitTestVisible = true;
         }
 
         #endregion

@@ -168,6 +168,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Opacity="0.0"
+                        IsHitTestVisible="False"
                         Visibility="{Binding Source={StaticResource Locator}, Mode=OneWay, Path=Settings.UserInfo,
                                      Converter={StaticResource NullToVisibility}}">          
             
