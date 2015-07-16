@@ -176,7 +176,7 @@ namespace Mirko_v2.ViewModel
             {
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
                     "Cleaner",
-                    new MaintenanceTrigger(60 * 24, false),
+                    new MaintenanceTrigger(60 * 12, false),
                     new SystemCondition(SystemConditionType.UserNotPresent));
 
                 PseudoPushToggled.Execute(null);
