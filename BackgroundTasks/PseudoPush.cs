@@ -27,7 +27,11 @@ namespace BackgroundTasks
             configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget() { RetainDays = 7 });
             configuration.IsEnabled = true;
 
-            LogManagerFactory.DefaultConfiguration = configuration;
+            try
+            {
+                LogManagerFactory.DefaultConfiguration = configuration;
+            }
+            catch (System.InvalidOperationException) { }
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<PseudoPush>();
         }
@@ -37,14 +41,22 @@ namespace BackgroundTasks
             var deferral = taskInstance.GetDeferral();
 
             Logger.Trace("PseudoPush started.");
+            
+            bool appRunning = false;
+            if (Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey("AppRunning"))
+                appRunning = (bool)Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"];
+
+            if(appRunning)
+                Logger.Trace("App is running.");
 
             ApiService = new WykopAPI.WykopAPI();
 
             if (ApiService.UserInfo == null ||
+                appRunning ||
                 string.IsNullOrEmpty(ApiService.UserInfo.UserName) ||
                 string.IsNullOrEmpty(ApiService.UserInfo.AccountKey))
             {
-                Logger.Trace("UserInfo is null. Terminating.");
+                Logger.Trace("Terminating.");
 
                 deferral.Complete();
                 return;

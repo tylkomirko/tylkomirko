@@ -171,7 +171,10 @@ namespace Mirko_v2
             // expand window size 
             var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
             applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
+
             StatusBarManager.Init();
+
+            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
 
             var locator = this.Resources["Locator"] as ViewModelLocator;
             NavService = locator.NavService;
