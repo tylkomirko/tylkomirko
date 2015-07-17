@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Mirko_v2.ViewModel
 {
@@ -24,6 +25,7 @@ namespace Mirko_v2.ViewModel
         private Page rootPage = null;
         private Frame rootPageFrame = null;
         private AppHeader rootPageHeader = null;
+        private Popup rootPagePopup = null;
 
         private readonly StackList<Type> backStack = new StackList<Type>();
         private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
@@ -111,6 +113,7 @@ namespace Mirko_v2.ViewModel
                 rootPage = currentFrame.Content as HostPage;
                 rootPageFrame = rootPage.FindName("MainFrame") as Frame;
                 rootPageHeader = rootPage.FindName("AppHeader") as AppHeader;
+                rootPagePopup = rootPage.FindName("SuggestionsPopup") as Popup;
 
                 navigatedToRootPage = true;
             }
@@ -221,6 +224,11 @@ namespace Mirko_v2.ViewModel
         public AppHeader GetAppHeader()
         {
             return rootPageHeader;
+        }
+
+        public Popup GetPopup()
+        {
+            return rootPagePopup;
         }
     }
 }

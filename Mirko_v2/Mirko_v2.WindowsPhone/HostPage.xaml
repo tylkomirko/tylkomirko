@@ -29,6 +29,17 @@
         
         <Frame Grid.Row="1"
                x:Name="MainFrame"/>
+
+        <Popup x:Name="SuggestionsPopup"
+               Grid.Row="0"
+               Grid.RowSpan="2"
+               Canvas.ZIndex="1"
+               IsOpen="False"
+               VerticalAlignment="Top"
+               Height="66">
+            <controls:SuggestionsPopupContent />
+        </Popup>
+        
     </Grid>  
 
 </Page>

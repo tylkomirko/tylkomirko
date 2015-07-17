@@ -60,7 +60,7 @@ namespace Mirko_v2.ViewModel
             SaveTimer = null;
         }
 
-        #region ObservedHashtags
+        #region ObservedHashtags (functions)
         private async Task DownloadObservedHashtags()
         {
             var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
@@ -146,19 +146,6 @@ namespace Mirko_v2.ViewModel
         public ObservableCollectionEx<string> ObservedHashtags
         {
             get { return _observedHashtags ?? (_observedHashtags = new ObservableCollectionEx<string>()); }
-        }
-
-        private ObservableCollectionEx<string> _hashtagSuggestions = null;
-        public ObservableCollectionEx<string> HashtagSuggestions
-        {
-            get { return _hashtagSuggestions ?? (_hashtagSuggestions = new ObservableCollectionEx<string>()); }
-        }
-
-        private string _hashtagScratchpad = "#";
-        public string HashtagScratchpad
-        {
-            get { return _hashtagScratchpad; }
-            set { Set(() => HashtagScratchpad, ref _hashtagScratchpad, value); }
         }
         #endregion
 
@@ -368,6 +355,24 @@ namespace Mirko_v2.ViewModel
                 Logger.Error("Error downloading image.", e);
                 return null;
             }
+        }
+        #endregion
+
+        #region Hashtag suggestions
+        private ObservableCollectionEx<string> _hashtagSuggestions = null;
+        public ObservableCollectionEx<string> HashtagSuggestions
+        {
+            get { return _hashtagSuggestions ?? (_hashtagSuggestions = new ObservableCollectionEx<string>()); }
+        }
+
+        public void GenerateSuggestions(string input)
+        {
+            HashtagSuggestions.Clear();
+
+            var sugs = ObservedHashtags.Where(x => x.StartsWith(input));
+            HashtagSuggestions.AddRange(sugs);
+            sugs = PopularHashtags.Where(x => x.StartsWith(input));
+            HashtagSuggestions.AddRange(sugs);
         }
         #endregion
     }

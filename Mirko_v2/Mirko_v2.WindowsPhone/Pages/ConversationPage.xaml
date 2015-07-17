@@ -9,6 +9,7 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:controls="using:Mirko_v2.Controls"
     xmlns:utils="using:Mirko_v2.Utils"
+    xmlns:q="using:QKit"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -125,11 +126,11 @@
         <local:PMTemplateSelector x:Key="PMTemplateSelector"
                                   ReceivedTemplate="{StaticResource ReceivedMessage}"
                                   SentTemplate="{StaticResource SentMessage}" />
-    </UserControl.Resources>
-
+    </UserControl.Resources>    
+    
     <Grid x:Name="LayoutRoot"
           DataContext="{Binding CurrentConversation}">
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -180,9 +181,12 @@
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" 
-              x:Name="ContentRoot" 
-              Margin="10,-145,10,-24">
+        <q:InputAwarePanel Grid.Row="1"
+                           AnimationMode="Independent"
+                           VerticalAlignment="Bottom"
+                           x:Name="ContentRoot" 
+                           LayoutChangeCompleted="IAP_LayoutChangeCompleted"
+                           Margin="10,-145,10,-24">
 
             <ListView x:Name="ListView"
                       ItemsSource="{Binding Messages}"
@@ -210,10 +214,10 @@
                 </ListView.ItemContainerTransitions>
 
                 <ListView.Footer>
-                    <StackPanel Margin="35,0,0,92">
+                    <StackPanel Margin="35,0,0,92">                        
                         <Border BorderThickness="0"
                                 Background="{ThemeResource SentMessageBackground}">
-                            <TextBox x:Name="TextBox"
+                            <controls:AutoCompletingTextBox x:Name="TextBox"
                                      PlaceholderText="Twoja wiadomość..."
                                      InputScope="Chat"
                                      AcceptsReturn="True"
@@ -258,10 +262,16 @@
                             </Polygon>
 
                         </Grid>
+
+                        <Rectangle Height="66"
+                                   Fill="Transparent"
+                                   Visibility="{Binding ElementName=TextBox, Path=AreSuggestionsOpen, 
+                                                Converter={StaticResource BoolToVisibility}}"
+                                   x:Name="FooterSpacer" />
                     </StackPanel>
                 </ListView.Footer>
 
             </ListView>
-        </Grid>
+        </q:InputAwarePanel>
     </Grid>
 </UserControl>

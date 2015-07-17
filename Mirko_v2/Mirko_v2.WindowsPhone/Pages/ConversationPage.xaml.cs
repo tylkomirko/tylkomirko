@@ -139,5 +139,26 @@ namespace Mirko_v2.Pages
             return AppBar;
         }
         #endregion
+
+        private void IAP_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
+        {
+            if (ListView != null && !e.IsDefaultLayout)
+            {
+                JumpToBottom();
+            }
+        }
+
+        private void JumpToBottom()
+        {
+            var sv = ListView.GetDescendant<ScrollViewer>();
+            if (sv != null)
+            {
+                sv.UpdateLayout();
+                if (sv != null)
+                    sv.ChangeView(null, sv.ScrollableHeight, null, true);
+                sv.UpdateLayout();
+            }
+
+        }
     }
 }

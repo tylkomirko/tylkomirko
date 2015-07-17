@@ -34,15 +34,6 @@
                                FontSize="24"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-
-            <ListView.Items>
-                <x:String>#heheszki</x:String>
-                <x:String>#pdk</x:String>
-                <x:String>#muzyka</x:String>
-                <x:String>#michau</x:String>
-                <x:String>#koty</x:String>
-                <x:String>#mirkowp</x:String>
-            </ListView.Items>
         </ListView>
     </Border>
 </UserControl>
