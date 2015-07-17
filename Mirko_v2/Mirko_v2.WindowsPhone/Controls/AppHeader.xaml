@@ -108,7 +108,7 @@
                                 Completed="EnterStreams_Completed">
                         <DoubleAnimation Storyboard.TargetName="StreamsPanel"
                                          Storyboard.TargetProperty="Opacity"
-                                         To="{StaticResource AppHeaderOpacity}"
+                                         To="1.0"
                                          EasingFunction="{StaticResource Ease}"                                        
                                          Duration="0:0:0.5" />
 
