@@ -93,6 +93,13 @@ namespace Mirko_v2.Pages
                 ShowPivotContent.Begin();
                 HasEntryAnimationPlayed = true;
             }
+
+            // calculate offsets for popups
+            var vertical = 15;
+            var horizontal = Window.Current.Bounds.Right - PopupGrid.Width - 22;
+
+            NewMirkoEntriesPopup.HorizontalOffset = horizontal;
+            NewMirkoEntriesPopup.VerticalOffset = vertical;
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
@@ -195,8 +202,6 @@ namespace Mirko_v2.Pages
         #region Popups
         private void ShowNewEntriesPopup()
         {
-            this.PopupGrid.Width = Window.Current.Bounds.Width;
-
             this.NewMirkoEntriesPopup.IsOpen = true;
             this.PopupFadeIn.Begin();
         }
@@ -313,6 +318,17 @@ namespace Mirko_v2.Pages
                 Label = "nowy",
             };
 
+            var refresh = new AppBarButton()
+            {
+                Label = "odśwież",
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+            };
+            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("RefreshMirkoEntries"),
+            });
+
             var settings = new AppBarButton()
             {
                 Label = "ustawienia",
@@ -367,6 +383,7 @@ namespace Mirko_v2.Pages
             });
 
             c.PrimaryCommands.Add(add);
+            c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);
             c.SecondaryCommands.Add(settings);
             c.SecondaryCommands.Add(login);

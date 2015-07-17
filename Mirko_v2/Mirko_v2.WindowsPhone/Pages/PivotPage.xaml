@@ -28,8 +28,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Popup x:Name="NewMirkoEntriesPopup"
-               VerticalOffset="103.5">
+        <Popup x:Name="NewMirkoEntriesPopup">
             
             <Popup.Resources>
                 <Storyboard x:Name="PopupFadeIn">
@@ -50,23 +49,25 @@
 
             <Grid x:Name="PopupGrid"
                   Opacity="{StaticResource AppHeaderOpacity}"
-                  Background="#67a7d2"
-                  Height="49">
+                  Background="Transparent"
+                  Height="55"
+                  Width="55">
 
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="Tapped">
                         <core:InvokeCommandAction Command="{Binding AddNewMirkoEntries}" />
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
-
-                <TextBlock x:Name="PopupTB"
+                
+                <Ellipse Fill="#67a7d2"
+                         Height="55"
+                         Width="55"/>
+                <TextBlock Text="{Binding MirkoNewEntries.Count}"
+                           FontWeight="SemiBold"
+                           FontSize="19"                           
                            Style="{StaticResource BaseTextBlockStyle}"
-                           FontSize="18"
-                           HorizontalAlignment="Center"
                            VerticalAlignment="Center"
-                           Foreground="White"
-                           Text="{Binding MirkoNewEntries.Count, Converter={StaticResource NewEntriesNumeral}}">
-                </TextBlock>
+                           HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
 
@@ -167,24 +168,19 @@
 
             <!--Pivot item one-->
             <PivotItem Margin="10,0,0,0">
-                <controls:PullToRefreshListView x:Name="MirkoListView"
-                                                ScrollingDown="ListView_ScrollingDown"
-                                                ScrollingUp="ListView_ScrollingUp"
-                                                Loaded="ListView_Loaded"
-                                                RefreshCommand="{Binding RefreshMirkoEntries}"
-                                                Foreground="{ThemeResource EntryBodyForeground}"
-                                                PullText="Przytrzymaj żeby odświeżyć..."
-                                                RefreshText="Puść żeby odświeżyć."
-                                                ArrowColor="{ThemeResource LogoFill}"
-                                                TranslateOffset="18"
-                                                ItemsSource="{Binding MirkoEntries}"
-                                                ItemTemplate="{StaticResource EntryTemplate}"
-                                                ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                                IsItemClickEnabled="False"
-                                                VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                                IncrementalLoadingThreshold="6"
-                                                DataFetchSize="7"
-                                                Tag="LV0">                   
+                <controls:ListViewEx x:Name="MirkoListView"
+                                     ScrollingDown="ListView_ScrollingDown"
+                                     ScrollingUp="ListView_ScrollingUp"
+                                     Loaded="ListView_Loaded"
+                                     Foreground="{ThemeResource EntryBodyForeground}"
+                                     ItemsSource="{Binding MirkoEntries}"
+                                     ItemTemplate="{StaticResource EntryTemplate}"
+                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     IsItemClickEnabled="False"
+                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7"
+                                     Tag="LV0">
                     
                     <ListView.Header>
                         <Rectangle Height="135"
@@ -196,7 +192,7 @@
                                    Fill="Transparent" />
                     </ListView.Footer>
 
-                </controls:PullToRefreshListView>
+                </controls:ListViewEx>
             </PivotItem>
 
             <!--Pivot item two-->
