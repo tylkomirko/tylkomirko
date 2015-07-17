@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AutoCompletingTextBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml.cs">
       <DependentUpon>CachedImage.xaml</DependentUpon>
     </Compile>
@@ -29,6 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PullToRefreshListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml.cs">
       <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SuggestionsPopupContent.xaml.cs">
+      <DependentUpon>SuggestionsPopupContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BlacklistToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
@@ -121,6 +125,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\SuggestionsPopupContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

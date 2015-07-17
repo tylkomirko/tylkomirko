@@ -67,6 +67,9 @@
 
             <SolidColorBrush x:Key="ComboBoxBorderThemeBrush" Color="#6cb0dd" />
             <SolidColorBrush x:Key="ComboBoxHighlightedBorderThemeBrush" Color="White" />
+
+            <SolidColorBrush x:Key="SuggestionsPopupBackground" Color="#1F1F1F" />
+            <SolidColorBrush x:Key="SuggestionsPopupForeground" Color="White" />
         </ResourceDictionary>
         
         <ResourceDictionary x:Key="Light">
@@ -131,6 +134,9 @@
 
             <SolidColorBrush x:Key="ComboBoxBorderThemeBrush" Color="#6cb0dd" />
             <SolidColorBrush x:Key="ComboBoxHighlightedBorderThemeBrush" Color="#6cb0dd" />
+
+            <SolidColorBrush x:Key="SuggestionsPopupBackground" Color="#DDDDDD" />
+            <SolidColorBrush x:Key="SuggestionsPopupForeground" Color="Black" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
