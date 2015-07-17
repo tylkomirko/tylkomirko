@@ -419,6 +419,8 @@ namespace Mirko_v2.ViewModel
             else
             {
                 // log out
+                var loginVM = SimpleIoc.Default.GetInstance<LoginViewModel>();
+                loginVM.RemoveCredentials();
                 settingsVM.Delete();
                 MyEntries.ClearAll();
                 FavEntries.ClearAll();

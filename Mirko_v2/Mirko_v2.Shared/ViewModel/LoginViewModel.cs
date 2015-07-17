@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using Windows.Security.Credentials;
 using WykopAPI;
 
 namespace Mirko_v2.ViewModel
@@ -37,6 +38,7 @@ namespace Mirko_v2.ViewModel
         private List<string> permissionNames = null;
         private string magicalToken = null;
         private string endURL = "http://www.wykop.pl/user/ConnectSuccess/";
+        private const string RESOURCE_NAME = "Credentials";
 
         private class JsonReply
         {
@@ -192,6 +194,8 @@ namespace Mirko_v2.ViewModel
                 this.permissionNames = null;
                 this.magicalToken = null;
 
+                SaveCredentials();
+
                 // navigate off to somewhere
                 SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("PivotPage");
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Login"));
@@ -239,5 +243,31 @@ namespace Mirko_v2.ViewModel
 
             await StatusBarManager.HideProgressAsync();
         }
+
+        #region PasswordVault
+        private void SaveCredentials()
+        {
+            var vault = new PasswordVault();
+            var credential = new PasswordCredential(RESOURCE_NAME, Username, Password);
+            vault.Add(credential);
+        }
+
+        public void RemoveCredentials()
+        {
+            var vault = new PasswordVault();
+            try
+            {
+                // Removes the credential from the password vault.
+                string username = App.ApiService.UserInfo.UserName;
+                vault.Remove(vault.Retrieve(RESOURCE_NAME, username));
+            }
+            catch (Exception)
+            {
+                // If no credentials have been stored with the given RESOURCE_NAME, an exception
+                // is thrown.
+            }
+
+        }
+        #endregion
     }
 }
