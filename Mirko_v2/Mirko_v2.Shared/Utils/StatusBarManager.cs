@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 
 namespace Mirko_v2.Utils
 {
     public static class StatusBarManager
     {
-        private static DispatcherTimer Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 8) };
+        private static DispatcherTimer Timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 7) };
 
         private static void Timer_Tick(object sender, object e)
         {
@@ -66,7 +65,7 @@ namespace Mirko_v2.Utils
             settingsVM.ThemeChanged += (s, args) => Paint((args as ThemeChangedEventArgs).Theme);
             Paint(settingsVM.SelectedTheme);
 
-            statusBar.BackgroundOpacity = 0.9;
+            statusBar.BackgroundOpacity = (double)Application.Current.Resources["AppHeaderOpacity"];
             statusBar.ProgressIndicator.Text = " ";
             statusBar.ProgressIndicator.ProgressValue = 0.0;
             ShowProgressIndicator(statusBar.ProgressIndicator);
@@ -139,7 +138,6 @@ namespace Mirko_v2.Utils
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 
-                statusBar.BackgroundOpacity = 0.9;
                 statusBar.ProgressIndicator.Text = txt;
                 statusBar.ProgressIndicator.ProgressValue = null;
             });
@@ -151,7 +149,6 @@ namespace Mirko_v2.Utils
             {
                 var statusBar = StatusBar.GetForCurrentView();
 
-                statusBar.BackgroundOpacity = 0.9;
                 statusBar.ProgressIndicator.Text = txt;
                 statusBar.ProgressIndicator.ProgressValue = null;
             });
