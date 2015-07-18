@@ -30,7 +30,7 @@ namespace Mirko_v2.ViewModel
         private readonly StackList<Type> backStack = new StackList<Type>();
         private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
         private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
-        private readonly List<string> framesWithoutHeader = null;
+        private readonly List<string> framesWithoutHeader = new List<string>() { "EmbedPage", "SettingsPage", "NewEntryPage" };
 
         public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
         public event NavigatingEventHandler Navigating;
@@ -39,7 +39,6 @@ namespace Mirko_v2.ViewModel
         public NavigationService()
         {
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-            framesWithoutHeader = new List<string>() { "EmbedPage", "SettingsPage", };
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
