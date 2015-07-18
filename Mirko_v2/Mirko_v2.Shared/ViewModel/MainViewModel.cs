@@ -73,16 +73,7 @@ namespace Mirko_v2.ViewModel
 
             Messenger.Default.Register<EntryViewModel>(this, "Update", (e) =>
             {
-                ObservableCollectionEx<EntryViewModel> col = null;
-
-                if (CurrentPivotItem == 0)
-                    col = MirkoEntries;
-                else if (CurrentPivotItem == 1)
-                    col = HotEntries;
-                else if (CurrentPivotItem == 2)
-                    col = FavEntries;
-                else
-                    col = MyEntries;
+                var col = CurrentCollection();
 
                 SelectedEntry = e;
 
@@ -96,6 +87,41 @@ namespace Mirko_v2.ViewModel
                     oldEntry.Data.Text = e.Data.Text;
                     oldEntry.Data.VoteCount = e.Data.VoteCount;
                     oldEntry.Data.Voters = e.Data.Voters;
+                }
+            });
+
+            Messenger.Default.Register<uint>(this, "Remove entry", id =>
+            {
+                var col = CurrentCollection();
+                var entry = col.SingleOrDefault(x => x.Data.ID == id);
+                if (entry != null)
+                    col.Remove(entry);
+                else
+                {
+                    entry = OtherEntries.SingleOrDefault(x => x.Data.ID == id);
+                    if (entry != null)
+                        OtherEntries.Remove(entry);
+                }
+            });
+
+            Messenger.Default.Register<Tuple<uint, uint>>(this, "Remove comment", (e) =>
+            {
+                var rootID = e.Item1;
+                var commentID = e.Item2;
+
+                var col = CurrentCollection();
+                var entry = col.SingleOrDefault(x => x.Data.ID == rootID);
+                if(entry == null)
+                    entry = OtherEntries.SingleOrDefault(x => x.Data.ID == rootID);
+
+                if(entry != null)
+                {
+                    var comment = entry.Comments.SingleOrDefault(x => x.Data.ID == commentID);
+                    if(comment != null)
+                    {
+                        comment.Data.Deleted = true;
+                        comment.Data.Text = "[Komentarz usuniêty]";
+                    }
                 }
             });
         }
@@ -321,7 +347,11 @@ namespace Mirko_v2.ViewModel
 
         private void ExecuteAddNewEntryCommand()
         {
-            throw new System.NotImplementedException();
+            var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+            vm.RootEntryID = 0;
+            vm.Entry = null;
+
+            NavService.NavigateTo("NewEntryPage");
         }
 
         private RelayCommand _refreshMirkoEntries = null;

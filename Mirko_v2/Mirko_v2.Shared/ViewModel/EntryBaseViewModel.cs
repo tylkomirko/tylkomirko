@@ -85,6 +85,31 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private RelayCommand _replyCommand = null;
+        [JsonIgnore]
+        public RelayCommand ReplyCommand
+        {
+            get { return _replyCommand ?? (_replyCommand = new RelayCommand(ExecuteReplyCommand)); }
+        }
+
+        private void ExecuteReplyCommand()
+        {
+            var VM = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+
+            if(DataBase is EntryComment)
+            {
+                var d = DataBase as EntryComment;
+                VM.RootEntryID = d.EntryID;
+            }
+            else
+            {
+                VM.RootEntryID = DataBase.ID;
+            }
+
+            VM.Entry = this;
+            VM.GoToNewEntryPage();
+        }
+
         private RelayCommand _deleteCommand = null;
         [JsonIgnore]
         public RelayCommand DeleteCommand
@@ -92,9 +117,54 @@ namespace Mirko_v2.ViewModel
             get { return _deleteCommand ?? (_deleteCommand = new RelayCommand(ExecuteDeleteCommand)); }
         }
 
-        private void ExecuteDeleteCommand()
+        private async void ExecuteDeleteCommand()
         {
-            throw new System.NotImplementedException();
+            if (DataBase is EntryComment)
+            {
+                var d = DataBase as EntryComment;
+                var result = await App.ApiService.deleteEntry(rootID: d.EntryID, id: d.ID, isComment: true);
+                if(result == d.ID)
+                {
+                    StatusBarManager.ShowText("Komentarz został usunięty.");
+                    Messenger.Default.Send<Tuple<uint, uint>>(new Tuple<uint, uint>(d.EntryID, d.ID), "Remove comment");
+                }
+            }
+            else
+            {
+                var result = await App.ApiService.deleteEntry(id: DataBase.ID);
+                if(result == DataBase.ID)
+                {
+                    StatusBarManager.ShowText("Wpis został usunięty.");
+                    Messenger.Default.Send<uint>(result, "Remove entry");
+                }
+            }
+        }
+
+        private RelayCommand _editCommand = null;
+        [JsonIgnore]
+        public RelayCommand EditCommand
+        {
+            get { return _editCommand ?? (_editCommand = new RelayCommand(ExecuteEditCommand)); }
+        }
+
+        private void ExecuteEditCommand()
+        {
+            var VM = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+
+            if (DataBase is EntryComment)
+            {
+                var d = DataBase as EntryComment;
+                VM.RootEntryID = d.EntryID;
+            }
+            else
+            {
+                VM.RootEntryID = DataBase.ID;
+            }
+
+            VM.Entry = this;
+            VM.Data.IsEditing = true;
+            VM.Data.Text = this.DataBase.Text;
+            VM.GoToNewEntryPage();
         }
 
         private RelayCommand _refreshCommand = null;

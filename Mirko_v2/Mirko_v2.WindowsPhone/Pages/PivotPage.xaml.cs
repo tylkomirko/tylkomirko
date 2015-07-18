@@ -317,6 +317,11 @@ namespace Mirko_v2.Pages
                 Icon = new SymbolIcon(Symbol.Add),
                 Label = "nowy",
             };
+            add.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("AddNewEntryCommand"),
+            });
 
             var refresh = new AppBarButton()
             {

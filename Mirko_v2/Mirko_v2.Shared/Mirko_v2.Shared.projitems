@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntriesNumeral.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntryPageTitleConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MirkoEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\TaggedEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />

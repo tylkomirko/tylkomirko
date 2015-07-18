@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,10 @@ public class ContinuationManager
 
     private FrameworkElement GetCurrentView()
     {
-        var frame = Window.Current.Content as Frame;
+        //var frame = Window.Current.Content as Frame;
+        var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>()
+            as Mirko_v2.ViewModel.NavigationService;
+        var frame = navService.CurrentFrame();
         if (frame != null)
             return frame.Content as FrameworkElement;
 

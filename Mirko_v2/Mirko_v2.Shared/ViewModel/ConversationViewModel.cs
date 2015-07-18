@@ -18,7 +18,7 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
-    public class ConversationViewModel : ViewModelBase, IFileOpenPickerContinuable
+    public class ConversationViewModel : ViewModelBase
     {
         public Conversation Data { get; set; }
         private ObservableCollectionEx<PMViewModel> _messages = null;
@@ -160,18 +160,6 @@ namespace Mirko_v2.ViewModel
             }
         }
 
-        private RelayCommand _addAttachment = null;
-        public RelayCommand AddAttachment
-        {
-            get { return _addAttachment ?? (_addAttachment = new RelayCommand(ExecuteAddAttachment)); }
-        }
-
-        private void ExecuteAddAttachment()
-        {
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>();
-            navService.NavigateTo("AddAttachmentPage", "PM");
-        }
-
         private void ProcessMessages()
         {
             var maxIndex = this.Messages.Count - 1;
@@ -241,56 +229,6 @@ namespace Mirko_v2.ViewModel
             }
 
             return newMsg;
-        }
-
-        private RelayCommand _openPicker = null;
-        public RelayCommand OpenPicker
-        {
-            get { return _openPicker ?? (_openPicker = new RelayCommand(ExecuteOpenPicker)); }
-        }
-
-        private void ExecuteOpenPicker()
-        {
-            var openPicker = new FileOpenPicker();
-            openPicker.FileTypeFilter.Add(".jpg");
-            openPicker.FileTypeFilter.Add(".jpeg");
-            openPicker.FileTypeFilter.Add(".png");
-            openPicker.FileTypeFilter.Add(".gif");
-            openPicker.ViewMode = PickerViewMode.Thumbnail;
-            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            openPicker.PickSingleFileAndContinue();
-        }
-
-        public async void ContinueFileOpenPicker(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs args)
-        {
-            if (args.Files.Count() > 0)
-            {
-                StorageFile file = args.Files[0];
-                var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                NewEntry.FileStream = s.AsStreamForRead();
-                NewEntry.FileName = file.Name;
-                NewEntry.AttachmentName = file.DisplayName;
-
-                SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
-            }
-        }
-
-        private RelayCommand _removeAttachment = null;
-        public RelayCommand RemoveAttachment
-        {
-            get { return _removeAttachment ?? (_removeAttachment = new RelayCommand(() => NewEntry.RemoveAttachment())); }
-        }
-
-        private RelayCommand _acceptPressed = null;
-        public RelayCommand AcceptPressed
-        {
-            get { return _acceptPressed ?? (_acceptPressed = new RelayCommand(ExecuteAcceptPressed)); }
-        }
-
-        private void ExecuteAcceptPressed()
-        {
-            SimpleIoc.Default.GetInstance<INavigationService>().GoBack();
         }
 
         private RelayCommand _checkIfOnline = null;

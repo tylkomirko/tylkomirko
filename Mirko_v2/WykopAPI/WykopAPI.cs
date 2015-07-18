@@ -641,13 +641,13 @@ namespace WykopAPI
             return await deserialize<Entry>(URL);
         }
 
-        public async Task<string> addEntry(NewEntry newEntry)
+        public async Task<uint> addEntry(NewEntry newEntry)
         {
             if (this.limitExceeded || UserInfo == null)
-                return null;
+                return 0;
 
             string URL = "entries/add";
-            if (newEntry.IsReply)
+            if (newEntry.ID != 0)
                 URL += "comment/" + newEntry.ID;
 
             URL += "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -661,19 +661,16 @@ namespace WykopAPI
             var fileName = newEntry.FileName;
 
             var result = await deserialize<EntryIDReply>(URL, post, stream, fileName);
-            if (result != null)
-                return result.id;
-            else
-                return null;
+            return result != null ? result.ID : 0;
         }
 
-        public async Task<string> editEntry(NewEntry entry)
+        public async Task<uint> editEntry(NewEntry entry)
         {
             if (this.limitExceeded)
-                return null;
+                return 0;
 
             string URL = "entries/edit";
-            if (entry.IsReply)
+            if (entry.ID != 0)
                 URL += "comment/" + entry.ID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             else
                 URL += "/" + entry.ID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -682,16 +679,13 @@ namespace WykopAPI
             post.Add("body", entry.Text);
 
             var result = await deserialize<EntryIDReply>(URL, post);
-            if (result != null)
-                return result.id;
-            else
-                return null;
+            return result != null ? result.ID : 0;
         }
 
-        public async Task<string> deleteEntry(uint id, uint rootID = 0, bool isComment = false)
+        public async Task<uint> deleteEntry(uint id, uint rootID = 0, bool isComment = false)
         {
             if (this.limitExceeded)
-                return null;
+                return 0;
 
             string URL = "entries/delete";
             if (isComment)
@@ -700,10 +694,7 @@ namespace WykopAPI
             URL += "/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
             var result = await deserialize<EntryIDReply>(URL);
-            if (result != null)
-                return result.id;
-            else
-                return null;
+            return result != null ? result.ID : 0;
         }
 
         public async Task<Vote> voteEntry(uint id, uint commentID = 0, bool upVote = true, bool isItEntry = true)

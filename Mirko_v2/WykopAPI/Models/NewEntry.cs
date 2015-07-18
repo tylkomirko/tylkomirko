@@ -15,7 +15,6 @@ namespace WykopAPI.Models
         public string Text { get; set; }
         public string Embed { get; set; }
 
-        public bool IsReply { get; set; }
         public bool IsEditing { get; set; }
         public uint CommentID { get; set; }
 
@@ -26,9 +25,9 @@ namespace WykopAPI.Models
 
         public void RemoveAttachment()
         {
-            AttachmentName = string.Empty;
+            AttachmentName = null;
             Embed = null;
-            FileName = string.Empty;
+            FileName = null;
 
             if (FileStream != null)
                 FileStream.Dispose();

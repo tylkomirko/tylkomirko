@@ -71,6 +71,12 @@ namespace Mirko_v2.Utils
                 makeFlyoutItemInvisible("separator"); // FIXME
             }
 
+            if (entryData.AuthorName == myUserName)
+            {
+                makeFlyoutItemVisible("delete");
+                // makeFlyoutItemVisible("edit");
+            }
+
             if (entryData.VoteCount == 0 || entry.ShowVoters)
                 makeFlyoutItemInvisible("voters");
             else

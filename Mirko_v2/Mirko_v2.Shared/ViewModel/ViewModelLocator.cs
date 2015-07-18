@@ -56,9 +56,10 @@ namespace Mirko_v2.ViewModel
             NavService.RegisterPage("AtNotificationsPage", typeof(AtNotificationsPage));
             NavService.RegisterPage("ConversationsPage", typeof(ConversationsPage));
             NavService.RegisterPage("ConversationPage", typeof(ConversationPage));
-            NavService.RegisterPage("AddAttachmentPage", typeof(AddAttachmentPage));
             NavService.RegisterPage("DebugPage", typeof(DebugPage));
             NavService.RegisterPage("ProfilePage", typeof(ProfilePage));
+            NavService.RegisterPage("AttachmentPage", typeof(AttachmentPage));
+            NavService.RegisterPage("NewEntryPage", typeof(NewEntryPage));
 
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
             SimpleIoc.Default.Register<GalaSoft.MvvmLight.Views.INavigationService>(() => NavService);
@@ -74,6 +75,7 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<AddEntryViewModel>();
             SimpleIoc.Default.Register<DebugViewModel>(true);
             SimpleIoc.Default.Register<ProfilesViewModel>(() => { return new ProfilesViewModel(NavService); });
+            SimpleIoc.Default.Register<NewEntryViewModel>(() => { return new NewEntryViewModel(NavService); });
         }
 
         private NavigationService _navService = null;
@@ -130,6 +132,11 @@ namespace Mirko_v2.ViewModel
         public ProfilesViewModel Profiles
         {
             get { return ServiceLocator.Current.GetInstance<ProfilesViewModel>(); }
+        }
+
+        public NewEntryViewModel NewEntry
+        {
+            get { return ServiceLocator.Current.GetInstance<NewEntryViewModel>(); }
         }
 
         public static void Cleanup()

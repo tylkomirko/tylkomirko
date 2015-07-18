@@ -52,41 +52,17 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EntryPage");
         }
 
-        private RelayCommand _replyCommand = null;
-        [JsonIgnore]
-        public RelayCommand ReplyCommand
-        {
-            get { return _replyCommand ?? (_replyCommand = new RelayCommand(ExecuteReplyCommand)); }
-        }
-
-        private void ExecuteReplyCommand()
-        {
-            throw new System.NotImplementedException();
-        }
-
         private RelayCommand _favouriteCommand = null;
         [JsonIgnore]
         public RelayCommand FavouriteCommand
         {
-            get { return _favouriteCommand ?? (_replyCommand = new RelayCommand(ExecuteFavouriteCommand)); }
+            get { return _favouriteCommand ?? (_favouriteCommand = new RelayCommand(ExecuteFavouriteCommand)); }
         }
 
         private async void ExecuteFavouriteCommand()
         {
             var reply = await App.ApiService.addToFavourites(Data.ID);
             Data.Favourite = reply.user_favorite;
-        }
-
-        private RelayCommand _editCommand = null;
-        [JsonIgnore]
-        public RelayCommand EditCommand
-        {
-            get { return _editCommand ?? (_replyCommand = new RelayCommand(ExecuteEditCommand)); }
-        }
-
-        private void ExecuteEditCommand()
-        {
-            throw new System.NotImplementedException();
         }
 
         private RelayCommand _shareCommand = null;

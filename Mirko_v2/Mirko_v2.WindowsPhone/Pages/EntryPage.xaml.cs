@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -55,8 +56,8 @@ namespace Mirko_v2.Pages
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
                 Label = "odpowiedz",
                 Tag = "reply",
-                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
             };
+            comment.Click += CommentButton_Click;
 
             var delete = new AppBarButton()
             {
@@ -134,6 +135,13 @@ namespace Mirko_v2.Pages
             AppBar = c;
 
             return c;
+        }
+
+        private void CommentButton_Click(object sender, RoutedEventArgs e)
+        {
+            var entryVM = this.ListView.DataContext as EntryViewModel;
+            if (entryVM != null)
+                entryVM.ReplyCommand.Execute(null);
         }
 
         private void ShareButton_Click(object sender, RoutedEventArgs e)
