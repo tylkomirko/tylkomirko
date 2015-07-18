@@ -187,7 +187,7 @@ namespace Mirko_v2.Pages
             if (HeaderCheckBox.IsChecked.Value)
             {
                 var entryvm = this.ListView.DataContext as EntryViewModel;
-                selectedItems.Add(entryvm);
+                selectedItems.Insert(0, entryvm);
             }
 
             return selectedItems;

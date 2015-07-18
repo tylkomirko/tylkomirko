@@ -127,8 +127,11 @@ namespace Mirko_v2.ViewModel
         {
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
 
+            var txt = string.Join("\n", Responses.Select(x => x.Text));
+
+            Data.Text = txt;
             Data.ID = RootEntryID;
-            uint entryID = await App.ApiService.editEntry(Data);
+            uint entryID = await App.ApiService.addEntry(Data);
 
             if (entryID != 0)
             {
