@@ -11,6 +11,8 @@
     <SolidColorBrush x:Key="SettingsBackgroundLight" Color="White" />
     <SolidColorBrush x:Key="PageBackgroundDark" Color="Black" />
     <SolidColorBrush x:Key="PageBackgroundLight" Color="White" />
+    <SolidColorBrush x:Key="NewEntryBackgroundDark" Color="#1B1B1B" />
+    <SolidColorBrush x:Key="NewEntryBackgroundLight" Color="#EAEAEA" />
 
     <Color x:Key="StatusBarForegroundLight">#3D9CDE</Color>
 

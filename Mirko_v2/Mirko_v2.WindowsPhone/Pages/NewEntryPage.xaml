@@ -69,8 +69,7 @@
 
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot"
-          Background="{StaticResource PivotHeaderBackground}">
+    <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -212,11 +211,13 @@
                                                FontSize="17"
                                                Foreground="Gray" />
 
-                                    <controls:Entry DataContext="{Binding Preview}"/>
+                                    <controls:Entry DataContext="{Binding Preview}"
+                                                    Margin="3,0,0,0"/>
                                 </StackPanel>
                             </ScrollViewer>
 
                             <ScrollViewer Grid.Row="1"
+                                          Margin="0,10,0,0"
                                           VerticalAlignment="Stretch"
                                           VerticalScrollBarVisibility="Hidden">
                                 <StackPanel VerticalAlignment="Stretch">
@@ -228,11 +229,12 @@
                                     </StackPanel.ChildrenTransitions>
 
                                     <controls:AutoCompletingTextBox x:Name="Editor"
-                                                                    PlaceholderText="treść..."
+                                                                    Margin="6,0,0,0"
+                                                                    Header="Treść:"
                                                                     InputScope="Chat"
                                                                     AcceptsReturn="True"
                                                                     TextWrapping="Wrap"
-                                                                    MinHeight="100"
+                                                                    MinHeight="200"
                                                                     Background="{ThemeResource NewContentBackground}"
                                                                     Foreground="{ThemeResource NewContentForeground}"
                                                                     Text="{Binding Text, Mode=TwoWay}"
@@ -243,7 +245,7 @@
 
                                     <Polygon x:Name="LittleArrow"
                                              Points="0,0 24,14 48,0"
-                                             Margin="0,-10,14,24"
+                                             Margin="0,0,14,24"
                                              Stroke="{ThemeResource NewContentBackground}" 
                                              Fill="{ThemeResource NewContentBackground}"
                                              StrokeThickness="0"

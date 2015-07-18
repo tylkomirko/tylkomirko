@@ -48,8 +48,10 @@ namespace Mirko_v2
         private void NavService_Navigating(object source, Utils.StringEventArgs newPage)
         {
             string brushKey;
-            if(newPage.String == "SettingsPage")
+            if (newPage.String == "SettingsPage")
                 brushKey = RequestedTheme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
+            else if (newPage.String == "NewEntryPage")
+                brushKey = RequestedTheme == ElementTheme.Dark ? "NewEntryBackgroundDark" : "NewEntryBackgroundLight";
             else
                 brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
 
