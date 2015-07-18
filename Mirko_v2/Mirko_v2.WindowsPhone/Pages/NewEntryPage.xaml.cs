@@ -40,6 +40,13 @@ namespace Mirko_v2.Pages
             return grid.FindName("EntryPreview") as ScrollViewer;
         }
 
+        private TextBlock CurrentAttachmentSymbol()
+        {
+            var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
+            var grid = item.ContentTemplateRoot as Grid;
+            return grid.FindName("AttachmentSymbol") as TextBlock;
+        }
+
         private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
             if (e.IsDefaultLayout)
@@ -75,7 +82,7 @@ namespace Mirko_v2.Pages
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
         {
             var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
-            //mf.ShowAt(this.AttachmentSymbol);
+            mf.ShowAt(CurrentAttachmentSymbol());
         }
 
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)

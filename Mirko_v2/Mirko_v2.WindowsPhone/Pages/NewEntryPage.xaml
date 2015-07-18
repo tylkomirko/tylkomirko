@@ -243,13 +243,38 @@
                                                                     BorderThickness="0"
                                                                     Style="{StaticResource TextBoxStyle1}" />
 
-                                    <Polygon x:Name="LittleArrow"
-                                             Points="0,0 24,14 48,0"
-                                             Margin="0,0,14,24"
-                                             Stroke="{ThemeResource NewContentBackground}" 
-                                             Fill="{ThemeResource NewContentBackground}"
-                                             StrokeThickness="0"
-                                             HorizontalAlignment="Right"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock x:Name="AttachmentSymbol"
+                                                   Grid.Column="0"
+                                                   Margin="-2,-6,0,0"
+                                                   FontSize="14"
+                                                   IsColorFontEnabled="False"
+                                                   Foreground="Gray"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Holding="AttachmentSymbol_Holding"
+                                                   Visibility="{Binding NewEntry.Data.AttachmentName, Mode=OneWay, Source={StaticResource Locator},
+                                                                Converter={StaticResource NullToVisibility}}">
+                                            
+                                            <Run Text="&#128206;" />
+                                            <Run Text="{Binding NewEntry.Data.AttachmentName, Mode=OneWay, Source={StaticResource Locator}}" 
+                                                 Foreground="{ThemeResource AttachmentNameForeground}"/>
+                                            
+                                        </TextBlock>
+
+                                        <Polygon x:Name="LittleArrow"
+                                                 Grid.Column="1"
+                                                 Points="0,0 24,14 48,0"
+                                                 Margin="0,-10,14,24"
+                                                 Stroke="{ThemeResource NewContentBackground}" 
+                                                 Fill="{ThemeResource NewContentBackground}"
+                                                 StrokeThickness="0"
+                                                 HorizontalAlignment="Right"/>
+                                    </Grid>
 
                                     <Rectangle Height="100"
                                                Fill="Transparent"/>
