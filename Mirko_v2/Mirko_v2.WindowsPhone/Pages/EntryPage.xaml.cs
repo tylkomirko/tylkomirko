@@ -1,8 +1,10 @@
-﻿using Mirko_v2.Controls;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using QKit.Common;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -93,13 +95,7 @@ namespace Mirko_v2.Pages
             };
             voteMultiple.Click += (s, e) =>
             {
-                var selectedItems = ListView.SelectedItems.Cast<EntryBaseViewModel>().ToList();
-                if(HeaderCheckBox.IsChecked.Value)
-                {
-                    var entryvm = this.ListView.DataContext as EntryViewModel;
-                    selectedItems.Add(entryvm);
-                }
-
+                var selectedItems = SelectedItems();
                 var vm = selectedItems.First();
                 vm.VoteMultiple.Execute(selectedItems);
 
@@ -115,6 +111,19 @@ namespace Mirko_v2.Pages
                 Tag = "replyMulti",
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
                 Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+            };
+            replyMultiple.Click += (s, e) =>
+            {
+                var selectedItems = SelectedItems();
+                var root = this.ListView.DataContext as EntryViewModel;
+                var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+                vm.RootEntryID = root.Data.ID;
+                vm.GoToNewEntryPage(selectedItems);
+
+                ListView.SelectionMode = ListViewSelectionMode.None;
+                HeaderCheckBox.IsChecked = false;
+                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                HeaderEdgeButton.IsHitTestVisible = true;
             };
 
             c.PrimaryCommands.Add(comment);
@@ -172,6 +181,18 @@ namespace Mirko_v2.Pages
             return ListView.SelectedItems.Count > 0 || HeaderCheckBox.IsChecked.Value;
         }
 
+        private List<EntryBaseViewModel> SelectedItems()
+        {
+            var selectedItems = ListView.SelectedItems.Cast<EntryBaseViewModel>().ToList();
+            if (HeaderCheckBox.IsChecked.Value)
+            {
+                var entryvm = this.ListView.DataContext as EntryViewModel;
+                selectedItems.Add(entryvm);
+            }
+
+            return selectedItems;
+        }
+
         private void ListView_SelectionModeChanged(object sender, RoutedEventArgs e)
         {
             if (ListView.SelectionMode == ListViewSelectionMode.Multiple)
@@ -180,6 +201,7 @@ namespace Mirko_v2.Pages
                 HeaderEdgeButton.IsHitTestVisible = false;
 
                 AppBar.MakeButtonInvisible("refresh");
+                AppBar.MakeButtonInvisible("reply");
                 AppBar.MakeButtonVisible("replyMulti");
                 AppBar.MakeButtonVisible("voteMulti");
             }
@@ -196,6 +218,7 @@ namespace Mirko_v2.Pages
                     HeaderEdgeButton.IsHitTestVisible = true;
 
                     AppBar.MakeButtonVisible("refresh");
+                    AppBar.MakeButtonVisible("reply");
                     AppBar.MakeButtonInvisible("replyMulti");
                     AppBar.MakeButtonInvisible("voteMulti");
                 }
@@ -215,6 +238,7 @@ namespace Mirko_v2.Pages
             HeaderEdgeButton.IsHitTestVisible = false;
 
             AppBar.MakeButtonInvisible("refresh");
+            AppBar.MakeButtonInvisible("reply");
             AppBar.MakeButtonVisible("replyMulti");
             AppBar.MakeButtonVisible("voteMulti");
         }
@@ -229,6 +253,7 @@ namespace Mirko_v2.Pages
             ListView.SelectionMode = ListViewSelectionMode.None;
 
             AppBar.MakeButtonVisible("refresh");
+            AppBar.MakeButtonVisible("reply");
             AppBar.MakeButtonInvisible("replyMulti");
             AppBar.MakeButtonInvisible("voteMulti");
         }

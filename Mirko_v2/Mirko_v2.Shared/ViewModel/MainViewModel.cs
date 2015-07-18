@@ -349,7 +349,7 @@ namespace Mirko_v2.ViewModel
         {
             var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
             vm.RootEntryID = 0;
-            vm.Entry = null;
+            //vm.Entry = null;
 
             NavService.NavigateTo("NewEntryPage");
         }

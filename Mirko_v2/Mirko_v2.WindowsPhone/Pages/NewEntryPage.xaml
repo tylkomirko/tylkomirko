@@ -79,7 +79,7 @@
         <Popup x:Name="FormattingPopup"               
                Loaded="FormattingPopup_Loaded"
                VerticalAlignment="Top"
-               IsOpen="True"
+               IsOpen="False"
                Canvas.ZIndex="1"
                Grid.Row="0"
                Grid.RowSpan="2">
@@ -172,7 +172,7 @@
                           Converter={StaticResource NewEntryPageTitleConverter}}"
                    Grid.Row="0"
                    x:Name="PageTitle"
-                   Margin="18,-6.5,0,26.5" 
+                   Margin="10,0,0,0" 
                    Style="{ThemeResource HeaderTextBlockStyle}"
                    CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
                    FontSize="34"
@@ -186,77 +186,80 @@
             
         </TextBlock>
 
-        <!--TODO: Content should be placed within the following grid-->
-        <q:InputAwarePanel Grid.Row="1" 
-                           x:Name="ContentRoot" 
-                           Margin="19,9.5,19,45"
-                           LayoutChangeCompleted="ContentRoot_LayoutChangeCompleted"
-                           VerticalAlignment="Stretch"
-                           HorizontalAlignment="Stretch">
+        <q:InputAwarePanel Grid.Row="1"
+                           LayoutChangeCompleted="ContentRoot_LayoutChangeCompleted">           
+            
+            <FlipView x:Name="FlipView"
+                  ItemsSource="{Binding Responses}">
 
-            <ScrollViewer VerticalAlignment="Bottom"
-                          VerticalScrollBarVisibility="Hidden">
+                <FlipView.ItemTemplate>
+                    <DataTemplate>
 
-                <StackPanel Orientation="Vertical"
-                            VerticalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                    <StackPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <EdgeUIThemeTransition Edge="Left" />
-                        </TransitionCollection>
-                    </StackPanel.ChildrenTransitions>
+                            <ScrollViewer Grid.Row="0"
+                                          MaxHeight="120"
+                                          Visibility="{Binding Preview, Converter={StaticResource NullToVisibility}}"
+                                          x:Name="EntryPreview">
+                                <StackPanel>
+                                    <TextBlock Text="Komentujesz:"
+                                               Margin="10,0,0,0"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               FontSize="17"
+                                               Foreground="Gray" />
 
-                    <controls:AutoCompletingTextBox x:Name="Editor"
-                                                    PlaceholderText="treść wpisu..."
-                                                    InputScope="Chat"
-                                                    AcceptsReturn="True"
-                                                    TextWrapping="Wrap"
-                                                    MinHeight="150"
-                                                    Background="{ThemeResource NewContentBackground}"
-                                                    Foreground="{ThemeResource NewContentForeground}"
-                                                    Text="{Binding Data.Text, Mode=TwoWay}"
-                                                    BorderThickness="0"
-                                                    Style="{StaticResource TextBoxStyle1}" />
+                                    <controls:Entry DataContext="{Binding Preview}"/>
+                                </StackPanel>
+                            </ScrollViewer>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                            <ScrollViewer Grid.Row="1"
+                                          VerticalAlignment="Stretch"
+                                          VerticalScrollBarVisibility="Hidden">
+                                <StackPanel VerticalAlignment="Stretch">
 
-                        <TextBlock x:Name="AttachmentSymbol"
-                                   Grid.Column="0"
-                                   Margin="-2,-6,0,0"
-                                   FontSize="14"
-                                   IsColorFontEnabled="False"
-                                   Foreground="Gray"
-                                   TextTrimming="CharacterEllipsis"
-                                   Holding="AttachmentSymbol_Holding"
-                                   Visibility="{Binding Data.AttachmentName, 
-                                            Converter={StaticResource NullToVisibility}}">
-                            <Run Text="&#128206;" />
-                            
-                            <Run Text="{Binding Data.AttachmentName}" 
-                                 Foreground="{ThemeResource AttachmentNameForeground}"/>
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EdgeUIThemeTransition Edge="Left" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
 
-                        </TextBlock>
+                                    <controls:AutoCompletingTextBox x:Name="Editor"
+                                                                    PlaceholderText="treść..."
+                                                                    InputScope="Chat"
+                                                                    AcceptsReturn="True"
+                                                                    TextWrapping="Wrap"
+                                                                    MinHeight="100"
+                                                                    Background="{ThemeResource NewContentBackground}"
+                                                                    Foreground="{ThemeResource NewContentForeground}"
+                                                                    Text="{Binding Text, Mode=TwoWay}"
+                                                                    Loaded="Editor_Loaded"
+                                                                    TextChanged="Editor_TextChanged"
+                                                                    BorderThickness="0"
+                                                                    Style="{StaticResource TextBoxStyle1}" />
 
-                        <Polygon x:Name="LittleArrow"
-                                 Grid.Column="1"
-                                 Points="0,0 24,14 48,0"
-                                 Margin="0,-10,14,24"
-                                 Stroke="{ThemeResource NewContentBackground}" 
-                                 Fill="{ThemeResource NewContentBackground}"
-                                 StrokeThickness="0"
-                                 HorizontalAlignment="Right"/>                      
+                                    <Polygon x:Name="LittleArrow"
+                                             Points="0,0 24,14 48,0"
+                                             Margin="0,-10,14,24"
+                                             Stroke="{ThemeResource NewContentBackground}" 
+                                             Fill="{ThemeResource NewContentBackground}"
+                                             StrokeThickness="0"
+                                             HorizontalAlignment="Right"/>
 
-                    </Grid>
+                                    <Rectangle Height="100"
+                                               Fill="Transparent"/>
 
-                    <Rectangle Height="60"
-                               Fill="Transparent" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
 
-                </StackPanel>
-            </ScrollViewer>
+                    </DataTemplate>
+                </FlipView.ItemTemplate>
+                
+            </FlipView>
         </q:InputAwarePanel>
     </Grid>
 </UserControl>

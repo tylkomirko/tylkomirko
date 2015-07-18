@@ -15,6 +15,12 @@ using GalaSoft.MvvmLight.Messaging;
 
 namespace Mirko_v2.ViewModel
 {
+    public class NewEntryContainer
+    {
+        public EntryBaseViewModel Preview { get; set; }
+        public string Text { get; set; }
+    }
+
     public class NewEntryViewModel : ViewModelBase, IFileOpenPickerContinuable
     {
         private NavigationService NavService = null;
@@ -25,7 +31,12 @@ namespace Mirko_v2.ViewModel
             get { return _rootEntryID; }
             set { Set(() => RootEntryID, ref _rootEntryID, value); }
         }
-        public EntryBaseViewModel Entry { get; set; }
+
+        private ObservableCollectionEx<NewEntryContainer> _responses = null;
+        public ObservableCollectionEx<NewEntryContainer> Responses
+        {
+            get { return _responses ?? (_responses = new ObservableCollectionEx<NewEntryContainer>()); }
+        }
 
         private NewEntry _data = null;
         public NewEntry Data
@@ -40,8 +51,19 @@ namespace Mirko_v2.ViewModel
         }
 
 
-        public void GoToNewEntryPage()
+        public void GoToNewEntryPage(List<EntryBaseViewModel> entries = null)
         {
+            if(entries != null)
+            {
+                Responses.Clear();
+                foreach (var entry in entries)
+                    Responses.Add(new NewEntryContainer() 
+                    { 
+                        Preview = entry,
+                        Text = "@" + entry.DataBase.AuthorName + ": ",
+                    });
+            }
+
             NavService.NavigateTo("NewEntryPage");
         }
 

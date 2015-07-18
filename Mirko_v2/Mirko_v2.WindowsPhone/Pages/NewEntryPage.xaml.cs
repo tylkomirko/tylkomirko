@@ -1,5 +1,6 @@
 ﻿using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
+using QKit;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,26 +17,52 @@ namespace Mirko_v2.Pages
 {
     public sealed partial class NewEntryPage : UserControl, IHaveAppBar
     {
+        private BindingExpression EntryPreviewBinding = null;
+
         public NewEntryPage()
         {
             this.InitializeComponent();
 
             this.LayoutRoot.Loaded += (s, e) => FormattingPopup.IsOpen = true;
-            this.Editor.Loaded += (s, e) => HandleSendButton();
-            this.Editor.TextChanged += (s, e) => HandleSendButton();
         }
 
-        private void ContentRoot_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
+        private TextBox CurrentEditor()
+        {
+            var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
+            var grid = item.ContentTemplateRoot as Grid;
+            return grid.FindName("Editor") as TextBox;
+        }
+
+        private ScrollViewer CurrentEntryPreview()
+        {
+            var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
+            var grid = item.ContentTemplateRoot as Grid;
+            return grid.FindName("EntryPreview") as ScrollViewer;
+        }
+
+        private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
             if (e.IsDefaultLayout)
+            {
                 PageTitle.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                if (EntryPreviewBinding != null)
+                    CurrentEntryPreview().SetBinding(ScrollViewer.VisibilityProperty, EntryPreviewBinding.ParentBinding);
+                
+            }
             else
+            {
                 PageTitle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                if(EntryPreviewBinding == null)
+                    EntryPreviewBinding = CurrentEntryPreview().GetBindingExpression(ScrollViewer.VisibilityProperty);
+                CurrentEntryPreview().Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
         }
 
         private void HandleSendButton()
         {
-            string txt = this.Editor.Text;
+            string txt = CurrentEditor().Text;
             var vm = this.DataContext as NewEntryViewModel;
             var attachmentName = vm.Data.AttachmentName;
 
@@ -48,7 +75,7 @@ namespace Mirko_v2.Pages
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
         {
             var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
-            mf.ShowAt(this.AttachmentSymbol);
+            //mf.ShowAt(this.AttachmentSymbol);
         }
 
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)
@@ -84,7 +111,7 @@ namespace Mirko_v2.Pages
             };
             lenny.Click += async (s, e) =>
             {
-                var editor = this.Editor;
+                var editor = CurrentEditor();
                 if (editor.FocusState == FocusState.Pointer || editor.FocusState == FocusState.Programmatic)
                     editor.Focus(FocusState.Unfocused);
 
@@ -146,11 +173,11 @@ namespace Mirko_v2.Pages
 
         private void AppendTextAndHideFlyout(string text, string flyoutName)
         {
-            var start = this.Editor.SelectionStart;
-            var newText = this.Editor.Text.Insert(start, text);
+            var start = CurrentEditor().SelectionStart;
+            var newText = CurrentEditor().Text.Insert(start, text);
 
-            this.Editor.Text = newText;
-            this.Editor.SelectionStart = start + newText.Length;
+            CurrentEditor().Text = newText;
+            CurrentEditor().SelectionStart = start + newText.Length;
 
             var f = this.Resources[flyoutName] as FlyoutBase;
             f.Hide();
@@ -247,71 +274,81 @@ namespace Mirko_v2.Pages
                 return;
             }
 
-            if (this.Editor.SelectedText.Length > 0)
+            if (CurrentEditor().SelectedText.Length > 0)
             {
-                var selectedText = this.Editor.SelectedText;
+                var selectedText = CurrentEditor().SelectedText;
                 var prefix = FormattingPrefixes[SelectedFormatting].Item1;
                 var newText = prefix + selectedText +
                     FormattingPrefixes[SelectedFormatting].Item2;
 
-                var start = this.Editor.SelectionStart;
-                var length = this.Editor.SelectionLength;
-                var txt = this.Editor.Text.Remove(start, length).Insert(start, newText);
-                this.Editor.Text = txt;
+                var start = CurrentEditor().SelectionStart;
+                var length = CurrentEditor().SelectionLength;
+                var txt = CurrentEditor().Text.Remove(start, length).Insert(start, newText);
+                CurrentEditor().Text = txt;
 
-                this.Editor.SelectionStart = start + newText.Length;
-                this.Editor.Focus(FocusState.Programmatic);
+                CurrentEditor().SelectionStart = start + newText.Length;
+                CurrentEditor().Focus(FocusState.Programmatic);
 
                 SelectedFormatting = FormattingEnum.NONE;
             }
             else
             {
-                var start = this.Editor.SelectionStart;
+                var start = CurrentEditor().SelectionStart;
                 var prefix = FormattingPrefixes[SelectedFormatting].Item1;
                                 
                 if(SelectedFormatting == FormattingEnum.SPOILER || SelectedFormatting == FormattingEnum.QUOTE)
                 {
-                    if (this.Editor.Text.Length == 0 || this.Editor.Text.EndsWith("\n"))
+                    if (CurrentEditor().Text.Length == 0 || CurrentEditor().Text.EndsWith("\n"))
                         prefix = prefix.TrimStart(); // remove newline character
                 }
 
-                var newText = this.Editor.Text.Insert(start, prefix);
+                var newText = CurrentEditor().Text.Insert(start, prefix);
 
-                this.Editor.Text = newText;
-                this.Editor.SelectionStart = start + prefix.Length;
+                CurrentEditor().Text = newText;
+                CurrentEditor().SelectionStart = start + prefix.Length;
                 SetFormattingButton();
-                this.Editor.Focus(FocusState.Programmatic);
+                CurrentEditor().Focus(FocusState.Programmatic);
             }
         }
 
         private void FormattingButton_Click(object sender, RoutedEventArgs e)
         {
             var insertion = FormattingPrefixes[SelectedFormatting].Item2;
-            if (this.Editor.SelectedText.Length > 0)
+            if (CurrentEditor().SelectedText.Length > 0)
             {
-                var selectedText = this.Editor.SelectedText;
+                var selectedText = CurrentEditor().SelectedText;
                 var newText = selectedText + insertion;
 
-                var start = this.Editor.SelectionStart;
-                var length = this.Editor.SelectionLength;
-                var txt = this.Editor.Text.Remove(start, length).Insert(start, newText);
-                this.Editor.Text = txt;
+                var start = CurrentEditor().SelectionStart;
+                var length = CurrentEditor().SelectionLength;
+                var txt = CurrentEditor().Text.Remove(start, length).Insert(start, newText);
+                CurrentEditor().Text = txt;
 
-                this.Editor.SelectionStart = start + newText.Length;
+                CurrentEditor().SelectionStart = start + newText.Length;
             }
             else
             {
-                var length = this.Editor.Text.Length;
-                this.Editor.Text += insertion;
-                this.Editor.SelectionStart = length + insertion.Length;
+                var length = CurrentEditor().Text.Length;
+                CurrentEditor().Text += insertion;
+                CurrentEditor().SelectionStart = length + insertion.Length;
             }
 
             SelectedFormatting = FormattingEnum.NONE;
             FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            this.Editor.Focus(FocusState.Programmatic);
+            CurrentEditor().Focus(FocusState.Programmatic);
         }
 
         #endregion
+
+        private void Editor_Loaded(object sender, RoutedEventArgs e)
+        {
+            HandleSendButton();
+        }
+
+        private void Editor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            HandleSendButton();
+        }
     }
 }

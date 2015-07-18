@@ -106,8 +106,7 @@ namespace Mirko_v2.ViewModel
                 VM.RootEntryID = DataBase.ID;
             }
 
-            VM.Entry = this;
-            VM.GoToNewEntryPage();
+            VM.GoToNewEntryPage(new List<EntryBaseViewModel>() { this });
         }
 
         private RelayCommand _deleteCommand = null;
@@ -161,7 +160,7 @@ namespace Mirko_v2.ViewModel
                 VM.RootEntryID = DataBase.ID;
             }
 
-            VM.Entry = this;
+            //VM.Entry = this;
             VM.Data.IsEditing = true;
             VM.Data.Text = this.DataBase.Text;
             VM.GoToNewEntryPage();
