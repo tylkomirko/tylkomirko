@@ -274,9 +274,6 @@
                 </Grid>
             </StackPanel>
         </Grid>
-
-    <Image x:Name="Gradient"
-           Source="/Assets/appheader_footer.png" />
         
     </StackPanel>
     
