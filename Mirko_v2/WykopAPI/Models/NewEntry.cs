@@ -1,10 +1,5 @@
 ﻿using PropertyChanged;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WykopAPI.Models
 {
@@ -18,7 +13,7 @@ namespace WykopAPI.Models
         public bool IsEditing { get; set; }
         public uint CommentID { get; set; }
 
-        public uint ID { get; set; }
+        public uint EntryID { get; set; }
 
         public Stream FileStream { get; set; }
         public string FileName { get; set; }

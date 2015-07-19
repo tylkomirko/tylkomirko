@@ -647,8 +647,8 @@ namespace WykopAPI
                 return 0;
 
             string URL = "entries/add";
-            if (newEntry.ID != 0)
-                URL += "comment/" + newEntry.ID;
+            if (newEntry.EntryID != 0)
+                URL += "comment/" + newEntry.EntryID;
 
             URL += "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
@@ -670,10 +670,10 @@ namespace WykopAPI
                 return 0;
 
             string URL = "entries/edit";
-            if (entry.ID != 0)
-                URL += "comment/" + entry.ID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            if (entry.CommentID != 0)
+                URL += "comment/" + entry.EntryID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
             else
-                URL += "/" + entry.ID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+                URL += "/" + entry.EntryID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
 
             var post = new SortedDictionary<string, string>();
             post.Add("body", entry.Text);

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -117,7 +116,9 @@ namespace Mirko_v2.Pages
                 var selectedItems = SelectedItems();
                 var root = this.ListView.DataContext as EntryViewModel;
                 var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-                vm.RootEntryID = root.Data.ID;
+                vm.Data.IsEditing = false;
+                vm.Data.CommentID = 0;
+                vm.Data.EntryID = root.Data.ID;
                 vm.GoToNewEntryPage(selectedItems);
 
                 ListView.SelectionMode = ListViewSelectionMode.None;

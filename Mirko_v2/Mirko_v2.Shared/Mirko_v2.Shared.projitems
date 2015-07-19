@@ -43,10 +43,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\FontSizeScaler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\GroupToColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\HotTimeSpanConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertBool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntriesNumeral.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntryPageTitleConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />

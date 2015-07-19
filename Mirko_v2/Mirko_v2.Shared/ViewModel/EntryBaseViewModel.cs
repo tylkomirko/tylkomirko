@@ -5,12 +5,12 @@ using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Common;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using WykopAPI.Models;
-using System.Threading.Tasks;
-using System;
 
 namespace Mirko_v2.ViewModel
 {
@@ -99,13 +99,15 @@ namespace Mirko_v2.ViewModel
             if(DataBase is EntryComment)
             {
                 var d = DataBase as EntryComment;
-                VM.RootEntryID = d.EntryID;
+                VM.Data.EntryID = d.EntryID;
             }
             else
             {
-                VM.RootEntryID = DataBase.ID;
+                VM.Data.EntryID = DataBase.ID;
             }
-
+            
+            VM.Data.CommentID = 0;
+            VM.Data.IsEditing = false;
             VM.GoToNewEntryPage(new List<EntryBaseViewModel>() { this });
         }
 
@@ -153,17 +155,16 @@ namespace Mirko_v2.ViewModel
             if (DataBase is EntryComment)
             {
                 var d = DataBase as EntryComment;
-                VM.RootEntryID = d.EntryID;
+                VM.Data.EntryID = d.EntryID;
+                VM.Data.CommentID = d.ID;
             }
             else
             {
-                VM.RootEntryID = DataBase.ID;
+                VM.Data.EntryID = DataBase.ID;
             }
 
-            //VM.Entry = this;
             VM.Data.IsEditing = true;
-            VM.Data.Text = this.DataBase.Text;
-            VM.GoToNewEntryPage();
+            VM.GoToNewEntryPage(new List<EntryBaseViewModel>() { this });
         }
 
         private RelayCommand _refreshCommand = null;

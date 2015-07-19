@@ -348,7 +348,8 @@ namespace Mirko_v2.ViewModel
         private void ExecuteAddNewEntryCommand()
         {
             var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-            vm.RootEntryID = 0;
+            vm.Data.EntryID = 0;
+            vm.Data.IsEditing = false;
             vm.GoToNewEntryPage();
         }
 

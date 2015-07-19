@@ -167,15 +167,14 @@
         </Popup>
         
         <!-- Title Panel -->
-        <TextBlock Text="{Binding RootEntryID, 
-                          Converter={StaticResource NewEntryPageTitleConverter}}"
-                   Grid.Row="0"
+        <TextBlock Grid.Row="0"
                    x:Name="PageTitle"
                    Margin="10,0,0,0" 
                    Style="{ThemeResource HeaderTextBlockStyle}"
                    CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
                    FontSize="34"
-                   Foreground="Gray">
+                   Foreground="Gray"
+                   Loaded="PageTitle_Loaded">
 
             <TextBlock.Transitions>
                 <TransitionCollection>

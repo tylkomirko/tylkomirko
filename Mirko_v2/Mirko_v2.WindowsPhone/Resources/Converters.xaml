@@ -28,6 +28,6 @@
     <converters:NumberSeparator x:Key="NumberSeparator" />
     <converters:ObservedToText x:Key="ObservedToText" />
     <converters:BlacklistToText x:Key="BlacklistToText" />
-    <converters:NewEntryPageTitleConverter x:Key="NewEntryPageTitleConverter" />
+    <converters:InvertBool x:Key="InvertBool" />
 
 </ResourceDictionary>

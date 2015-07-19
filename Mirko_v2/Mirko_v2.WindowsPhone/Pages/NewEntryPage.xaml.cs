@@ -1,4 +1,5 @@
-﻿using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using QKit;
 using System;
@@ -77,6 +78,25 @@ namespace Mirko_v2.Pages
             }
         }
 
+        private void PageTitle_Loaded(object sender, RoutedEventArgs e)
+        {
+            var data = (this.DataContext as NewEntryViewModel).Data;
+
+            string title;
+            if(data.IsEditing)
+            {
+                title = "edytujesz ";
+                title += data.CommentID == 0 ? "wpis" : "komentarz";
+            }
+            else
+            {
+                title = "nowy ";
+                title += data.EntryID == 0 ? "wpis" : "komentarz";
+            }
+
+            PageTitle.Text = title;
+        }
+
         private void HandleSendButton()
         {
             string txt = CurrentEditor().Text;
@@ -148,6 +168,12 @@ namespace Mirko_v2.Pages
             {
                 Source = this.DataContext as NewEntryViewModel,
                 Path = new PropertyPath("AddAttachment"),
+            });
+            attachment.SetBinding(AppBarButton.IsEnabledProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<NewEntryViewModel>(),
+                Path = new PropertyPath("Data.IsEditing"),
+                Converter = App.Current.Resources["InvertBool"] as IValueConverter,
             });
 
             FormattingButton = new AppBarToggleButton()

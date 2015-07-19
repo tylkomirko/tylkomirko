@@ -74,7 +74,7 @@ namespace Mirko_v2.Utils
             if (entryData.AuthorName == myUserName)
             {
                 makeFlyoutItemVisible("delete");
-                // makeFlyoutItemVisible("edit");
+                makeFlyoutItemVisible("edit");
             }
 
             if (entryData.VoteCount == 0 || entry.ShowVoters)
