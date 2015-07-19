@@ -30,6 +30,7 @@ namespace Mirko_v2.Pages
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var mainVM = this.DataContext as MainViewModel;
+            ListView.Margin = new Thickness(0, -mainVM.ListViewHeaderHeight, 0, 0);
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }

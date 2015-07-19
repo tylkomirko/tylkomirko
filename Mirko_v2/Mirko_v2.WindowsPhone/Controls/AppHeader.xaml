@@ -13,8 +13,7 @@
     x:Name="AppHeaderControl"
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
     
-    <StackPanel>
-        <Grid Background="{Binding ElementName=AppHeaderControl, Path=Background}">        
+    <Grid Background="{Binding ElementName=AppHeaderControl, Path=Background}">        
             
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -273,8 +272,6 @@
                                                   Count="{Binding PMNotifications.Count}" />
                 </Grid>
             </StackPanel>
-        </Grid>
-        
-    </StackPanel>
+        </Grid>        
     
 </UserControl>

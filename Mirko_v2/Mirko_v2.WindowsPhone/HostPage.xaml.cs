@@ -32,8 +32,12 @@ namespace Mirko_v2
 
         private void HostPage_VisibleBoundsChanged(ApplicationView sender, object args)
         {
-            var appView = sender as ApplicationView;
-            MainGrid.Margin = new Thickness(0, appView.VisibleBounds.Top, 0, 0);
+            var appView = (sender as ApplicationView).VisibleBounds;
+            var screen = Window.Current.Bounds;
+
+            var appBarHeight = screen.Bottom - appView.Bottom;
+
+            MainGrid.Margin = new Thickness(0, appView.Top, 0, appBarHeight);
         }
 
         private void HostPage_ThemeChanged(object sender, ThemeChangedEventArgs e)

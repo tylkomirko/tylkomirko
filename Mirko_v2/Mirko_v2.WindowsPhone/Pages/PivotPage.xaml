@@ -20,13 +20,7 @@
     </UserControl.Resources>
     
     <Grid x:Name="PivotPageGrid"
-          Loaded="PivotPageGrid_Loaded"
-          Margin="0,0,0,-24">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+          Loaded="PivotPageGrid_Loaded">
 
         <Popup x:Name="NewMirkoEntriesPopup">
             
@@ -72,7 +66,7 @@
         </Popup>
 
         <Popup x:Name="TimeSpanIndicatorPopup"
-               VerticalOffset="-32">
+               VerticalOffset="-22">
 
             <Popup.Resources>
                 <Storyboard x:Name="TimeSpanIndicatorFadeIn">
@@ -103,7 +97,6 @@
                 </TextBlock>
             </Grid>
         </Popup>
-       
         
         <Popup x:Name="TimeSpanSelectionPopup"
                VerticalOffset="-220"
@@ -159,15 +152,13 @@
 
         <Pivot x:Name="MainPivot"
                Loaded="MainPivot_Loaded"
-               Grid.Row="1"
-               Margin="0,-132.5,0,0"
                HorizontalAlignment="Stretch"
                SelectedIndex="{Binding CurrentPivotItem, Mode=TwoWay}"
                SelectionChanged="MainPivot_SelectionChanged"
 			   Style="{StaticResource CustomPivotStyle}">
 
             <!--Pivot item one-->
-            <PivotItem Margin="10,0,0,0">
+            <PivotItem Margin="0,0,0,0">
                 <controls:ListViewEx x:Name="MirkoListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
@@ -183,20 +174,17 @@
                                      Tag="LV0">
                     
                     <ListView.Header>
-                        <Rectangle Height="135"
-                                   Fill="Transparent" />
+                        <StackPanel>
+                            <Rectangle Fill="Transparent"
+                                       Height="{Binding ListViewHeaderHeight}"/>
+                        </StackPanel>
                     </ListView.Header>
-
-                    <ListView.Footer>
-                        <Rectangle Height="92"
-                                   Fill="Transparent" />
-                    </ListView.Footer>
 
                 </controls:ListViewEx>
             </PivotItem>
 
             <!--Pivot item two-->
-            <PivotItem Margin="10,-140,0,0">
+            <PivotItem Margin="0,0,0,0">
                 <controls:ListViewEx x:Name="HotListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
@@ -217,8 +205,8 @@
 
                     <ListView.Header>
                         <StackPanel>
-                            <Rectangle Height="230"
-                                   Fill="Transparent" />
+                            <Rectangle Fill="Transparent"
+                                       Height="{Binding ListViewHeaderHeight}"/>
 
                             <TextBlock x:Name="NoItemsTB"
                                        Style="{StaticResource TextBlockNoItems}"
@@ -229,17 +217,12 @@
                         </StackPanel>
                     </ListView.Header>
 
-                    <ListView.Footer>
-                        <Rectangle Height="92"
-                                   Fill="Transparent" />
-                    </ListView.Footer>
-
                 </controls:ListViewEx>
 
             </PivotItem>
 
             <!--Pivot item three-->
-            <PivotItem Margin="10,-140,0,0">
+            <PivotItem Margin="0,0,0,0">
                 <controls:ListViewEx x:Name="FavListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
@@ -255,8 +238,8 @@
 
                     <ListView.Header>
                         <StackPanel>
-                            <Rectangle Height="220"
-                                       Fill="Transparent" />
+                            <Rectangle Fill="Transparent"
+                                       Height="{Binding ListViewHeaderHeight}"/>
 
                             <TextBlock Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
@@ -265,17 +248,12 @@
                         </StackPanel>
                     </ListView.Header>
 
-                    <ListView.Footer>
-                        <Rectangle Height="92"
-                                   Fill="Transparent" />
-                    </ListView.Footer>
-
                 </controls:ListViewEx>
             </PivotItem>
 
 
             <!--Pivot item four-->
-            <PivotItem Margin="10,-140,0,0">
+            <PivotItem Margin="0,0,0,0">
                 <controls:ListViewEx x:Name="MyListView"
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
@@ -291,8 +269,8 @@
 
                     <ListView.Header>
                         <StackPanel>
-                            <Rectangle Height="220"
-                                       Fill="Transparent" />
+                            <Rectangle Fill="Transparent"
+                                       Height="{Binding ListViewHeaderHeight}"/>
 
                             <TextBlock Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
@@ -300,11 +278,6 @@
                                        Visibility="{Binding MyEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
                         </StackPanel>
                     </ListView.Header>
-
-                    <ListView.Footer>
-                        <Rectangle Height="92"
-                                   Fill="Transparent" />
-                    </ListView.Footer>
 
                 </controls:ListViewEx>
             </PivotItem>

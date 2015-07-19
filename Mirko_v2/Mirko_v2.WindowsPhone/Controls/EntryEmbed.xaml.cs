@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -33,25 +34,28 @@ namespace Mirko_v2.Controls
 
         private void HandleImageVisibility()
         {
-            var VM = DataContext as EmbedViewModel;
-            if (VM == null || VM.EmbedData == null) return;
-
-            if (!App.ApiService.IsNetworkAvailable ||
-                (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable) ||
-                (VM.EmbedData.NSFW && !Settings.ShowPlus18))
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                Image.Visibility = Visibility.Collapsed;
-                AttachmentTB.Visibility = Visibility.Visible;
+                var VM = DataContext as EmbedViewModel;
+                if (VM == null || VM.EmbedData == null) return;
 
-                VM.ImageShown = false;
-            }
-            else
-            {
-                Image.Visibility = Visibility.Visible;
-                AttachmentTB.Visibility = Visibility.Collapsed;
+                if (!App.ApiService.IsNetworkAvailable ||
+                    (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable) ||
+                    (VM.EmbedData.NSFW && !Settings.ShowPlus18))
+                {
+                    Image.Visibility = Visibility.Collapsed;
+                    AttachmentTB.Visibility = Visibility.Visible;
 
-                VM.ImageShown = true;
-            }
+                    VM.ImageShown = false;
+                }
+                else
+                {
+                    Image.Visibility = Visibility.Visible;
+                    AttachmentTB.Visibility = Visibility.Collapsed;
+
+                    VM.ImageShown = true;
+                }
+            });
         }
 
         private void UserControl_Tapped(object sender, TappedRoutedEventArgs e)

@@ -14,9 +14,6 @@
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
     <q:MultiSelectListView x:Name="ListView"
-                           Grid.Row="1"
-                           Margin="0,-132.5,0,0"
-                           HorizontalAlignment="Stretch"
                            DataContext="{Binding SelectedEntry}"
                            ItemsSource="{Binding Comments}"
                            IsItemClickEnabled="False"
@@ -30,7 +27,7 @@
             <StackPanel Margin="0,0,0,0">
                 <Rectangle x:Name="HeaderSpacer"
                            Fill="Transparent"
-                           Height="140" />
+                           Height="{Binding Main.ListViewHeaderHeight, Mode=OneWay, Source={StaticResource Locator}}" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -67,12 +64,6 @@
                                 ShowLeftSpacer="True"/>
             </DataTemplate>
         </ListView.ItemTemplate>
-
-        <ListView.Footer>
-            <Rectangle x:Name="Footer"
-                       Fill="Transparent"
-                       Height="64" />
-        </ListView.Footer>
 
     </q:MultiSelectListView>
 </UserControl>

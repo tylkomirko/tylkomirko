@@ -26,22 +26,16 @@
                                             Canvas.ZIndex="1"/>
 
         <Grid x:Name="ContentRoot" 
-              Grid.Row="1" 
-              Margin="0,-135,0,-24">
+              Grid.Row="1">
             <q:MultiSelectListView x:Name="ListView"
                                    IsItemClickEnabled="False"
                                    SelectionModeChanged="ListView_SelectionModeChanged"
+                                   Loaded="ListView_Loaded"
                                    ItemsSource="{Binding CurrentHashtagNotifications}">                
 
                 <ListView.Header>
-                    <Rectangle Height="140"
-                               Fill="Transparent" />
+                    <Rectangle Fill="Transparent" />
                 </ListView.Header>
-
-                <ListView.Footer>
-                    <Rectangle Height="84"
-                               Fill="Transparent"/>
-                </ListView.Footer>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

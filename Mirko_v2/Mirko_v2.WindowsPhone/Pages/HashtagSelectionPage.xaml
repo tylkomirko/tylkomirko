@@ -107,14 +107,12 @@
 
         <Rectangle Height="1"
                    Grid.Row="0"
-                   Margin="0,0,0,16"
                    Canvas.ZIndex="1"
                    Opacity="{StaticResource AppBarOpacity}"
                    Fill="{StaticResource PivotHeaderBackground}"/>
 
         <Grid x:Name="ContentRoot" 
-              Grid.Row="1"
-              Margin="19,-100,0,-72">
+              Grid.Row="1">
 
             <controls:ListViewEx x:Name="ListView"
                                  SelectionMode="None"
@@ -122,6 +120,7 @@
                                  ItemClick="ListView_ItemClick"
                                  ScrollingDown="ListView_ScrollingDown"
                                  ScrollingUp="ListView_ScrollingUp"
+                                 Loaded="ListView_Loaded"
                                  ItemTemplateSelector="{StaticResource TemplateSelector}"
                                  ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
                                  ItemsSource="{Binding HashtagsCollection}"
@@ -135,8 +134,7 @@
 
                 <ListView.Header>
                     <StackPanel>
-                        <Rectangle Height="90"
-                                   Fill="Transparent"/>
+                        <Rectangle Fill="Transparent"/>
                         
                         <TextBlock Text="Nie obserwujesz żadnych tagów."
                                    Style="{StaticResource TextBlockNoItems}"
@@ -144,11 +142,6 @@
                         
                     </StackPanel>
                 </ListView.Header>
-
-                <ListView.Footer>
-                    <Rectangle Height="130"
-                               Fill="Transparent"/>
-                </ListView.Footer>
 
             </controls:ListViewEx>
         </Grid>

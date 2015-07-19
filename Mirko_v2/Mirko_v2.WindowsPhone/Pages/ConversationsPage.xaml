@@ -19,8 +19,7 @@
         </core:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,25.6,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,8 +28,7 @@
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0"
-                    Canvas.ZIndex="1"
-                    Margin="0,0,0,12">
+                    Canvas.ZIndex="1">
             <Rectangle Height="1"
                        Opacity="{StaticResource AppBarOpacity}"
                        Fill="{StaticResource PivotHeaderBackground}" />
@@ -38,8 +36,7 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" 
-              x:Name="ContentRoot" 
-              Margin="17,-105,0,-24">
+              x:Name="ContentRoot">
 
             <ListView x:Name="ListView"
                       IsItemClickEnabled="True"
@@ -47,12 +44,12 @@
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       SelectionMode="None"
                       ItemClick="ListView_ItemClick"
+                      Loaded="ListView_Loaded"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">
 
                 <ListView.Header>
                     <StackPanel>
-                        <Rectangle Height="92"
-                                   Fill="Transparent"/>
+                        <Rectangle Fill="Transparent"/>
 
                         <TextBlock Text="Z nikim jeszcze nie rozmawiałeś."
                                    Style="{StaticResource TextBlockNoItems}"
@@ -60,15 +57,10 @@
                     </StackPanel>
                 </ListView.Header>
 
-                <ListView.Footer>
-                    <Rectangle Height="54"
-                               Fill="Transparent"/>
-                </ListView.Footer>
-
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         
-                        <Grid Margin="0,0,0,13">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />

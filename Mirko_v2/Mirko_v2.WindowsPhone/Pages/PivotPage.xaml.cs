@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -58,6 +59,13 @@ namespace Mirko_v2.Pages
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
         {
+            var appHeaderHeight = AppHeader.ActualHeight;
+            var statusBarHeight = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height;
+            var margin = appHeaderHeight + 2.5 * statusBarHeight;
+
+            MainPivot.Margin = new Thickness(10, -margin, 0, 0);
+            SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
+
             var scroll = MainPivot.GetDescendant<ScrollViewer>();
             scroll.ViewChanged += (se, args) =>
             {

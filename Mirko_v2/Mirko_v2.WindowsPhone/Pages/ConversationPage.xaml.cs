@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -140,6 +141,11 @@ namespace Mirko_v2.Pages
         }
         #endregion
 
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListView.AppBar = AppBar;
+        }
+
         private void IAP_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
         {
             if (ListView != null && !e.IsDefaultLayout)
@@ -159,6 +165,15 @@ namespace Mirko_v2.Pages
                 sv.UpdateLayout();
             }
 
+        }
+
+        private void ContentRoot_Loaded(object sender, RoutedEventArgs e)
+        {
+            var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 49; // adjust for header
+            ContentRoot.Margin = new Thickness(10, -height, 0, 0);
+
+            var header = ListView.Header as FrameworkElement;
+            header.Height = height;
         }
     }
 }

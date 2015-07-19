@@ -11,8 +11,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,25.6,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,12 +27,12 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" 
-              x:Name="ContentRoot" 
-              Margin="0,-85,0,-24">
+              x:Name="ContentRoot">           
 
             <ListView x:Name="ListView"
                       IsItemClickEnabled="True"
                       ItemClick="ListView_ItemClick"
+                      Loaded="ListView_Loaded"
                       ItemsSource="{Binding AtNotifications}"
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -46,19 +45,13 @@
 
                 <ListView.Header>
                     <StackPanel>
-                        <Rectangle Height="90"
-                                   Fill="Transparent" />
+                        <Rectangle Fill="Transparent" />
 
                         <TextBlock Text="Nie masz żadnych powiadomień."
                                    Style="{StaticResource TextBlockNoItems}"
                                    Visibility="{Binding AtNotifications.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
                     </StackPanel>
                 </ListView.Header>
-
-                <ListView.Footer>
-                    <Rectangle Height="56"
-                               Fill="Transparent"/>
-                </ListView.Footer>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

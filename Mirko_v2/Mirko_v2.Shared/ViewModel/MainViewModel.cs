@@ -41,6 +41,13 @@ namespace Mirko_v2.ViewModel
         private Timer Timer = null;
         private bool StartedOffline = false;
 
+        private double _listViewHeaderHeight;
+        public double ListViewHeaderHeight
+        {
+            get { return _listViewHeaderHeight; }
+            set { Set(() => ListViewHeaderHeight, ref _listViewHeaderHeight, value); }
+        }
+
         public MainViewModel(NavigationService nav)
         {
             NavService = nav;

@@ -182,23 +182,22 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <q:InputAwarePanel Grid.Row="1"
-                           AnimationMode="Independent"
                            VerticalAlignment="Bottom"
                            x:Name="ContentRoot" 
                            LayoutChangeCompleted="IAP_LayoutChangeCompleted"
-                           Margin="10,-145,10,-24">
+                           Loaded="ContentRoot_Loaded">
 
-            <ListView x:Name="ListView"
-                      ItemsSource="{Binding Messages}"
-                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                      ItemTemplateSelector="{StaticResource PMTemplateSelector}"
-                      VirtualizingStackPanel.VirtualizationMode="Recycling"
-                      IncrementalLoadingThreshold="6"
-                      DataFetchSize="7">
+            <controls:ListViewEx x:Name="ListView"
+                                 ItemsSource="{Binding Messages}"
+                                 ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                 ItemTemplateSelector="{StaticResource PMTemplateSelector}"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                 IncrementalLoadingThreshold="6"
+                                 DataFetchSize="7"
+                                 Loaded="ListView_Loaded">
 
                 <ListView.Header>
-                    <Rectangle Height="160"
-                               Fill="Transparent"/>
+                    <Rectangle Fill="Transparent"/>
                 </ListView.Header>
 
                 <ListView.Transitions>
@@ -214,20 +213,20 @@
                 </ListView.ItemContainerTransitions>
 
                 <ListView.Footer>
-                    <StackPanel Margin="35,0,0,92">                        
+                    <StackPanel Margin="35,0,0,0">                        
                         <Border BorderThickness="0"
                                 Background="{ThemeResource SentMessageBackground}">
                             <controls:AutoCompletingTextBox x:Name="TextBox"
-                                     PlaceholderText="Twoja wiadomość..."
-                                     InputScope="Chat"
-                                     AcceptsReturn="True"
-                                     FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
-                                     Margin="12,7,12,7"
-                                     GotFocus="TextBox_GotFocus"
-                                     LostFocus="TextBox_LostFocus"
-                                     TextChanged="TextBox_TextChanged"
-                                     Text="{Binding NewEntry.Text, Mode=TwoWay}"
-                                     Style="{StaticResource TextBoxStyle2}" />
+                                                            PlaceholderText="Twoja wiadomość..."
+                                                            InputScope="Chat"
+                                                            AcceptsReturn="True"
+                                                            FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
+                                                            Margin="12,7,12,7"
+                                                            GotFocus="TextBox_GotFocus"
+                                                            LostFocus="TextBox_LostFocus"
+                                                            TextChanged="TextBox_TextChanged"
+                                                            Text="{Binding NewEntry.Text, Mode=TwoWay}"
+                                                            Style="{StaticResource TextBoxStyle2}" />
                         </Border>
 
                         <Grid>
@@ -271,7 +270,7 @@
                     </StackPanel>
                 </ListView.Footer>
 
-            </ListView>
+            </controls:ListViewEx>
         </q:InputAwarePanel>
     </Grid>
 </UserControl>
