@@ -39,11 +39,27 @@ namespace Mirko_v2.Pages
 
             this.ListView.Loaded += (s, args) =>
             {
-                if (this.ListView.ItemsSource != null && this.ListView.Items.Count > 0)
-                    this.ListView.ScrollIntoView(this.ListView.Items.Last(), ScrollIntoViewAlignment.Leading);
+                var items = ListView.ItemsSource as ObservableCollectionEx<PMViewModel>;
+                if(items != null)
+                {
+                    if(items.Count > 0)
+                        ListView.ScrollIntoView(items.Last(), ScrollIntoViewAlignment.Leading);
+                    else // happens sometimes with push notifications
+                        items.CollectionChanged += Messages_CollectionChanged;
+                }
             };
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
+        }
+
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                var col = sender as ObservableCollectionEx<PMViewModel>;
+                ListView.ScrollIntoView(col.Last(), ScrollIntoViewAlignment.Leading);
+                col.CollectionChanged -= Messages_CollectionChanged;
+            }
         }
 
         private void ReadMessage(NotificationMessage obj)

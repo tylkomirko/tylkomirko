@@ -106,8 +106,13 @@ namespace Mirko_v2.ViewModel
 
             await DispatcherHelper.RunAsync(() =>
             {
+                var vms = new List<PMViewModel>(newMessages.Count());
                 foreach (var pm in newMessages)
-                    this.Messages.Add(new PMViewModel(pm));
+                    vms.Add(new PMViewModel(pm));
+
+                this.Messages.AddRange(vms);
+                vms.Clear();
+                vms = null;
 
                 Data.LastUpdate = this.Messages.Last().Data.Date;
                 Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
