@@ -365,8 +365,10 @@ namespace Mirko_v2
             IResumable viewModel = null;
             if (viewModelName == "MainViewModel")
                 viewModel = SimpleIoc.Default.GetInstance<MainViewModel>();
-            else if(viewModelName == "ProfilesViewModel")
+            else if (viewModelName == "ProfilesViewModel")
                 viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+            else if (viewModelName == "NewEntryViewModel")
+                viewModel = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
 
             try
             {

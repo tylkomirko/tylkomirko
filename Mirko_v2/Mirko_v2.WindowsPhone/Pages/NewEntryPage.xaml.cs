@@ -19,13 +19,18 @@ namespace Mirko_v2.Pages
 {
     public sealed partial class NewEntryPage : UserControl, IHaveAppBar
     {
+        private bool IsLoaded = false;
         private BindingExpression EntryPreviewBinding = null;
 
         public NewEntryPage()
         {
             this.InitializeComponent();
 
-            this.LayoutRoot.Loaded += (s, e) => FormattingPopup.IsOpen = true;
+            this.LayoutRoot.Loaded += (s, e) =>
+            {
+                FormattingPopup.IsOpen = true;
+                IsLoaded = true;
+            };
         }
 
         private TextBox CurrentEditor()
@@ -58,6 +63,9 @@ namespace Mirko_v2.Pages
 
         private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             if (e.IsDefaultLayout)
             {
                 PageTitle.Visibility = Windows.UI.Xaml.Visibility.Visible;

@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,7 @@ namespace Mirko_v2.ViewModel
         public string Text { get; set; }
     }
 
-    public class NewEntryViewModel : ViewModelBase, IFileOpenPickerContinuable
+    public class NewEntryViewModel : ViewModelBase, IFileOpenPickerContinuable, IResumable
     {
         private NavigationService NavService = null;
 
@@ -35,6 +36,10 @@ namespace Mirko_v2.ViewModel
         {
             get { return _data ?? (_data = new NewEntry()); }
             set { Set(() => Data, ref _data, value); }
+        }
+
+        public NewEntryViewModel()
+        {
         }
 
         public NewEntryViewModel(NavigationService nav)
@@ -78,12 +83,14 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _addAttachment = null;
+        [JsonIgnore]
         public RelayCommand AddAttachment
         {
             get { return _addAttachment ?? (_addAttachment = new RelayCommand(() => NavService.NavigateTo("AttachmentPage"))); }
         }
 
         private RelayCommand _openPicker = null;
+        [JsonIgnore]
         public RelayCommand OpenPicker
         {
             get { return _openPicker ?? (_openPicker = new RelayCommand(ExecuteOpenPicker)); }
@@ -117,6 +124,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _acceptAttachments = null;
+        [JsonIgnore]
         public RelayCommand AcceptAttachments
         {
             get { return _acceptAttachments ?? (_acceptAttachments = new RelayCommand(() => NavService.GoBack())); }
@@ -128,6 +136,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _sendMessageCommand = null;
+        [JsonIgnore]
         public RelayCommand SendMessageCommand
         {
             get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
@@ -212,5 +221,48 @@ namespace Mirko_v2.ViewModel
                 await StatusBarManager.ShowTextAsync("Nie udało się edytować" + suffix + ".");
             }
         }
+
+        #region IResumable
+        public async Task SaveState(string pageName)
+        {
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("NewEntryViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                writer.Formatting = Formatting.None;
+                JsonSerializer serializer = new JsonSerializer();
+
+                serializer.Serialize(writer, this);
+            }
+        }
+
+        public async Task<bool> LoadState(string pageName)
+        {
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+            var file = await folder.GetFileAsync("NewEntryViewModel");
+
+            using (var stream = await file.OpenStreamForReadAsync())
+            using (var sr = new StreamReader(stream))
+            using (var reader = new JsonTextReader(sr))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                var vm = serializer.Deserialize<NewEntryViewModel>(reader);
+
+                Data = vm.Data;
+                Responses.Clear();
+                Responses.AddRange(vm.Responses);
+            }
+
+            return true; // success!
+        }
+
+        public string GetName()
+        {
+            return "NewEntryViewModel";
+        }
+        #endregion
     }
 }
