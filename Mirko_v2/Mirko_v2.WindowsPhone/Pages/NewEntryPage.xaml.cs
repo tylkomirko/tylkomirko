@@ -63,7 +63,7 @@ namespace Mirko_v2.Pages
 
         private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || FlipView.SelectedIndex == -1)
                 return;
 
             if (e.IsDefaultLayout)

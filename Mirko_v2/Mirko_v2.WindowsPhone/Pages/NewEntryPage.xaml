@@ -188,7 +188,7 @@
                            LayoutChangeCompleted="ContentRoot_LayoutChangeCompleted">           
             
             <FlipView x:Name="FlipView"
-                  ItemsSource="{Binding Responses}">
+                      ItemsSource="{Binding Responses}">
 
                 <FlipView.ItemTemplate>
                     <DataTemplate>

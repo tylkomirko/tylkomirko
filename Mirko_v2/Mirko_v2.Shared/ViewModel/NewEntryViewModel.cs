@@ -6,8 +6,10 @@ using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -15,10 +17,73 @@ using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
-    public class NewEntryContainer
+    public class NewEntryContainer : INotifyPropertyChanged
     {
-        public EntryBaseViewModel Preview { get; set; }
-        public string Text { get; set; }
+        internal class EntryPreviewConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return true;
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                EntryViewModel entryVM = null;
+                try
+                {
+                    entryVM = serializer.Deserialize<EntryViewModel>(reader);
+                }
+                catch (Exception) { }
+
+                if (entryVM != null)
+                {
+                    return entryVM;
+                }
+                else
+                {
+                    var commentVM = serializer.Deserialize<CommentViewModel>(reader);
+                    return commentVM;
+                }
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var basicVM = value as EntryBaseViewModel;
+                var entryVM = basicVM as EntryViewModel;
+                if (entryVM != null)
+                {
+                    serializer.Serialize(writer, entryVM);
+                }
+                else
+                {
+                    var commentVM = basicVM as CommentViewModel;
+                    serializer.Serialize(writer, commentVM);
+                }
+            }
+        }
+
+        private EntryBaseViewModel _preview = null;
+        [JsonConverter(typeof(EntryPreviewConverter))]
+        public EntryBaseViewModel Preview
+        {
+            get { return _preview; }
+            set { _preview = value; OnPropertyChanged(); }
+        }
+
+        private string _text = null;
+        public string Text
+        {
+            get { return _text; }
+            set { _text = value; OnPropertyChanged(); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class NewEntryViewModel : ViewModelBase, IFileOpenPickerContinuable, IResumable
@@ -254,6 +319,8 @@ namespace Mirko_v2.ViewModel
                 Data = vm.Data;
                 Responses.Clear();
                 Responses.AddRange(vm.Responses);
+
+                vm = null;
             }
 
             return true; // success!
