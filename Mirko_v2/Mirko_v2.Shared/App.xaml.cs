@@ -62,6 +62,7 @@ namespace Mirko_v2
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         private Mirko_v2.ViewModel.NavigationService NavService = null;
+        private readonly ILogger Logger = null;
 
         private static TimeSpan _offsetUTCInPoland;
         public static TimeSpan OffsetUTCInPoland
@@ -107,6 +108,8 @@ namespace Mirko_v2
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
 
+            this.UnhandledException += App_UnhandledException;
+
             var configuration = new LoggingConfiguration();
 #if DEBUG
             configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new DebugTarget());
@@ -115,6 +118,13 @@ namespace Mirko_v2
             configuration.IsEnabled = true;
 
             LogManagerFactory.DefaultConfiguration = configuration;
+
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<App>();
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Logger.Error("UnhandledException. Message: " + e.Message, e.Exception);
         }
 
         private Frame CreateRootFrame()
@@ -195,9 +205,7 @@ namespace Mirko_v2
                 {
                     this.transitions = new TransitionCollection();
                     foreach (var c in rootFrame.ContentTransitions)
-                    {
                         this.transitions.Add(c);
-                    }
                 }
 
                 rootFrame.ContentTransitions = null;
@@ -205,9 +213,7 @@ namespace Mirko_v2
 #endif
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
                     await ResumeFromSuspension();
-                }
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -221,9 +227,7 @@ namespace Mirko_v2
                 {
                     this.transitions = new TransitionCollection();
                     foreach (var c in rootFrame.ContentTransitions)
-                    {
                         this.transitions.Add(c);
-                    }
                 }
 
                 rootFrame.ContentTransitions = null;
@@ -274,25 +278,6 @@ namespace Mirko_v2
         }
 
 #if WINDOWS_PHONE_APP
-        private async Task RestoreStatusAsync(ApplicationExecutionState previousExecutionState)
-        {
-            // Do not repeat app initialization when the Window already has content, 
-            // just ensure that the window is active 
-            if (previousExecutionState == ApplicationExecutionState.Terminated)
-            {
-                // Restore the saved session state only when appropriate 
-                try
-                {
-                    await SuspensionManager.RestoreAsync();
-                }
-                catch (SuspensionManagerException)
-                {
-                    //Something went wrong restoring state. 
-                    //Assume there is no state and continue 
-                }
-            }
-        } 
-
         /// <summary>
         /// Restores the content transitions after the app has launched.
         /// </summary>
@@ -309,19 +294,16 @@ namespace Mirko_v2
         /// Handle OnActivated event to deal with File Open/Save continuation activation kinds 
         /// </summary> 
         /// <param name="e">Application activated event arguments, it can be casted to proper sub-type based on ActivationKind</param> 
-        protected async override void OnActivated(IActivatedEventArgs e)
+        protected override void OnActivated(IActivatedEventArgs e)
         {
             base.OnActivated(e);
 
             continuationManager = new ContinuationManager();
 
             Frame rootFrame = CreateRootFrame();
-            await RestoreStatusAsync(e.PreviousExecutionState);
 
             if (rootFrame.Content == null)
-            {
                 rootFrame.Navigate(typeof(HostPage));
-            }
 
             var continuationEventArgs = e as IContinuationActivatedEventArgs;
             if (continuationEventArgs != null)
@@ -349,12 +331,19 @@ namespace Mirko_v2
             var currentFrame = NavService.CurrentFrame();
             if (currentFrame.DataContext is IResumable)
             {
-                var resumableVM = currentFrame.DataContext as IResumable;
-                await resumableVM.SaveState(currentPage);
+                try
+                {
+                    var resumableVM = currentFrame.DataContext as IResumable;
+                    await resumableVM.SaveState(currentPage);
 
-                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-                localSettings["PageKey"] = currentPage;
-                localSettings["VM"] = resumableVM.GetName();
+                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+                    localSettings["PageKey"] = currentPage;
+                    localSettings["VM"] = resumableVM.GetName();
+                } 
+                catch(Exception ex)
+                {
+                    Logger.Error("Error saving state: ", ex);
+                }
             }
 
             deferral.Complete();
@@ -363,7 +352,11 @@ namespace Mirko_v2
         private async Task ResumeFromSuspension()
         {
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-            if (!settings.ContainsKey("PageKey")) return;
+            if (!settings.ContainsKey("PageKey") || !settings.ContainsKey("VM"))
+            {
+                NavService.NavigateTo("PivotPage");
+                return;
+            }
 
             var pageKey = (string)settings["PageKey"];
             var viewModelName = (string)settings["VM"];
@@ -375,7 +368,14 @@ namespace Mirko_v2
             else if(viewModelName == "ProfilesViewModel")
                 viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
 
-            resumed = await viewModel.LoadState(pageKey);
+            try
+            {
+                resumed = await viewModel.LoadState(pageKey);
+            } 
+            catch(Exception e)
+            {
+                Logger.Error("Error loading state: ", e);
+            }
 
             if(resumed)
             {

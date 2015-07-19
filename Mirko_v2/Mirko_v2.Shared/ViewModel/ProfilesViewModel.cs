@@ -8,6 +8,7 @@ using Mirko_v2.Utils;
 using System.IO;
 using Newtonsoft.Json;
 using MetroLog;
+using System.Threading.Tasks;
 
 namespace Mirko_v2.ViewModel
 {
@@ -72,55 +73,39 @@ namespace Mirko_v2.ViewModel
         }
 
         #region IResumable
-        public async System.Threading.Tasks.Task SaveState(string pageName)
+        public async Task SaveState(string pageName)
         {
-            try
-            {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
-                var file = await folder.CreateFileAsync("ProfilesViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("ProfilesViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
 
-                using (var stream = await file.OpenStreamForWriteAsync())
-                using (var sw = new StreamWriter(stream))
-                using (var writer = new JsonTextWriter(sw))
-                {
-                    writer.Formatting = Formatting.None;
-                    JsonSerializer serializer = new JsonSerializer();
-
-                    serializer.Serialize(writer, CurrentProfile);
-                }
-            }
-            catch (Exception e)
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream))
+            using (var writer = new JsonTextWriter(sw))
             {
-                Logger.Error("Error saving state: ", e);
+                writer.Formatting = Formatting.None;
+                JsonSerializer serializer = new JsonSerializer();
+
+                serializer.Serialize(writer, CurrentProfile);
             }
         }
 
-        public async System.Threading.Tasks.Task<bool> LoadState(string pageName)
+        public async Task<bool> LoadState(string pageName)
         {
-            try
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+            var file = await folder.GetFileAsync("ProfilesViewModel");
+
+            using (var stream = await file.OpenStreamForReadAsync())
+            using (var sr = new StreamReader(stream))
+            using (var reader = new JsonTextReader(sr))
             {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
-                var file = await folder.GetFileAsync("ProfilesViewModel");
+                JsonSerializer serializer = new JsonSerializer();
+                var profileVM = serializer.Deserialize<ProfileViewModel>(reader);
 
-                using (var stream = await file.OpenStreamForReadAsync())
-                using (var sr = new StreamReader(stream))
-                using (var reader = new JsonTextReader(sr))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    var profileVM = serializer.Deserialize<ProfileViewModel>(reader);
-
-                    CurrentProfile = profileVM;
-                    Profiles[profileVM.Data.Login] = profileVM;
-                }
-
-                return true; // success!
-
+                CurrentProfile = profileVM;
+                Profiles[profileVM.Data.Login] = profileVM;
             }
-            catch (Exception e)
-            {
-                Logger.Error("Error loading state: ", e);
-                return false;
-            }
+
+            return true; // success!
         }
 
         public string GetName()

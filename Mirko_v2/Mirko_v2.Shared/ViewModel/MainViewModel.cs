@@ -644,99 +644,85 @@ namespace Mirko_v2.ViewModel
 
         public async Task SaveState(string pageName)
         {
-            try
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            int firstVisibleIndex = 0;
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream))
+            using (var writer = new JsonTextWriter(sw))
             {
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
-                var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-                int firstVisibleIndex = 0;
-
-                using (var stream = await file.OpenStreamForWriteAsync())
-                using (var sw = new StreamWriter(stream))
-                using (var writer = new JsonTextWriter(sw))
-                {
-                    writer.Formatting = Formatting.None;
-                    JsonSerializer serializer = new JsonSerializer();
-
-                    if (pageName == "PivotPage")
-                    {
-                        var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
-                        serializer.Serialize(writer, entries);
-                    }
-                    else if (pageName == "EntryPage")
-                    {
-                        serializer.Serialize(writer, SelectedEntry);
-                    }
-                    else if (pageName == "EmbedPage")
-                    {
-                        serializer.Serialize(writer, SelectedEmbed);
-                    }
-                }
+                writer.Formatting = Formatting.None;
+                JsonSerializer serializer = new JsonSerializer();
 
                 if (pageName == "PivotPage")
                 {
-                    var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
-
-                    settings["CurrentPivotItem"] = CurrentPivotItem;
-                    settings["FirstIndex"] = firstVisibleIndex;
+                    var entries = GetCurrentlyVisibleEntries(out firstVisibleIndex);
+                    serializer.Serialize(writer, entries);
                 }
-            } catch(Exception e)
+                else if (pageName == "EntryPage")
+                {
+                    serializer.Serialize(writer, SelectedEntry);
+                }
+                else if (pageName == "EmbedPage")
+                {
+                    serializer.Serialize(writer, SelectedEmbed);
+                }
+            }
+
+            if (pageName == "PivotPage")
             {
-                Logger.Error("Error saving state: ", e);
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+                settings["CurrentPivotItem"] = CurrentPivotItem;
+                settings["FirstIndex"] = firstVisibleIndex;
             }
         }
 
         public async Task<bool> LoadState(string pageName)
         {
-            try
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+
+            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+            var file = await folder.GetFileAsync("MainViewModel");
+
+            using (var stream = await file.OpenStreamForReadAsync())
+            using (var sr = new StreamReader(stream))
+            using (var reader = new JsonTextReader(sr))
             {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+                JsonSerializer serializer = new JsonSerializer();
 
-                var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
-                var file = await folder.GetFileAsync("MainViewModel");
-
-                using (var stream = await file.OpenStreamForReadAsync())
-                using (var sr = new StreamReader(stream))
-                using (var reader = new JsonTextReader(sr))
+                if (pageName == "PivotPage")
                 {
-                    JsonSerializer serializer = new JsonSerializer();
+                    if (settings.ContainsKey("CurrentPivotItem"))
+                        CurrentPivotItem = (int)settings["CurrentPivotItem"];
 
-                    if (pageName == "PivotPage")
-                    {
-                        if (settings.ContainsKey("CurrentPivotItem"))
-                            CurrentPivotItem = (int)settings["CurrentPivotItem"];
+                    var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
+                    if (CurrentPivotItem == 0)
+                        MirkoEntries.PrependRange(entries);
+                    else if (CurrentPivotItem == 1)
+                        HotEntries.PrependRange(entries);
+                    else if (CurrentPivotItem == 2)
+                        FavEntries.PrependRange(entries);
+                    else if (CurrentPivotItem == 3)
+                        MyEntries.PrependRange(entries);
 
-                        var entries = serializer.Deserialize<List<EntryViewModel>>(reader);
-                        if (CurrentPivotItem == 0)
-                            MirkoEntries.PrependRange(entries);
-                        else if (CurrentPivotItem == 1)
-                            HotEntries.PrependRange(entries);
-                        else if (CurrentPivotItem == 2)
-                            FavEntries.PrependRange(entries);
-                        else if (CurrentPivotItem == 3)
-                            MyEntries.PrependRange(entries);
-
-                        if (settings.ContainsKey("FirstIndex"))
-                        {
-                            IndexToScrollTo = (int)settings["FirstIndex"];
-                        }
-                    }
-                    else if (pageName == "EntryPage")
+                    if (settings.ContainsKey("FirstIndex"))
                     {
-                        SelectedEntry = serializer.Deserialize<EntryViewModel>(reader);
-                    }
-                    else if (pageName == "EmbedPage")
-                    {
-                        SelectedEmbed = serializer.Deserialize<EmbedViewModel>(reader);
+                        IndexToScrollTo = (int)settings["FirstIndex"];
                     }
                 }
-
-                return true; // success!
-
-            } catch(Exception e)
-            {
-                Logger.Error("Error loading state: ", e);
-                return false;
+                else if (pageName == "EntryPage")
+                {
+                    SelectedEntry = serializer.Deserialize<EntryViewModel>(reader);
+                }
+                else if (pageName == "EmbedPage")
+                {
+                    SelectedEmbed = serializer.Deserialize<EmbedViewModel>(reader);
+                }
             }
+
+            return true; // success!
         }
 
         public string GetName()
