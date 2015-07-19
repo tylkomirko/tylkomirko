@@ -115,10 +115,18 @@ namespace Mirko_v2.Controls
             }
         }
 
+        private bool CharPredicate(char c)
+        {
+            bool isSeparator = char.IsSeparator(c) || c == '\r' || c == '\n';
+            bool isPunctuation = c == '#' || !char.IsPunctuation(c);
+
+            return !isSeparator && isPunctuation;
+        }
+
         private string GetWordCharactersBefore()
         {
             var backwards = Text.Substring(0, SelectionStart);
-            var wordCharactersBeforePointer = new string(backwards.Reverse().TakeWhile(c => !char.IsSeparator(c) && (c == '#' || !char.IsPunctuation(c))).Reverse().ToArray());
+            var wordCharactersBeforePointer = new string(backwards.Reverse().TakeWhile(c => CharPredicate(c)).Reverse().ToArray());
 
             return wordCharactersBeforePointer;
         }
@@ -126,7 +134,7 @@ namespace Mirko_v2.Controls
         private string GetWordCharactersAfter()
         {
             var fowards = Text.Substring(SelectionStart, Text.Length - SelectionStart);
-            var wordCharactersAfterPointer = new string(fowards.TakeWhile(c => !char.IsSeparator(c) && (c == '#' || !char.IsPunctuation(c))).ToArray());
+            var wordCharactersAfterPointer = new string(fowards.TakeWhile(c => CharPredicate(c)).ToArray());
 
             return wordCharactersAfterPointer;
         }
