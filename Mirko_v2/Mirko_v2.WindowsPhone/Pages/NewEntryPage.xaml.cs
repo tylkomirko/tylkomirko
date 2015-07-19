@@ -250,7 +250,7 @@ namespace Mirko_v2.Pages
                 stackPanel.Width = Window.Current.Bounds.Width;
                 popup.Width = Window.Current.Bounds.Width;
 
-                popup.VerticalOffset = this.ActualHeight - 2 * stackPanel.Height;
+                popup.VerticalOffset = this.ActualHeight - stackPanel.Height;
             }
         }
 
