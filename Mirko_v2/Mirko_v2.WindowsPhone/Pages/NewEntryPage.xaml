@@ -229,7 +229,7 @@
                                     </StackPanel.ChildrenTransitions>
 
                                     <controls:AutoCompletingTextBox x:Name="Editor"
-                                                                    Margin="6,0,0,0"
+                                                                    Margin="6,0,6,0"
                                                                     Header="Treść:"
                                                                     InputScope="Chat"
                                                                     AcceptsReturn="True"
@@ -269,7 +269,7 @@
                                         <Polygon x:Name="LittleArrow"
                                                  Grid.Column="1"
                                                  Points="0,0 24,14 48,0"
-                                                 Margin="0,-10,14,24"
+                                                 Margin="0,0,14,24"
                                                  Stroke="{ThemeResource NewContentBackground}" 
                                                  Fill="{ThemeResource NewContentBackground}"
                                                  StrokeThickness="0"
@@ -277,7 +277,8 @@
                                     </Grid>
 
                                     <Rectangle Height="100"
-                                               Fill="Transparent"/>
+                                               Fill="Transparent"
+                                               x:Name="Footer"/>
 
                                 </StackPanel>
                             </ScrollViewer>

@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -47,11 +48,19 @@ namespace Mirko_v2.Pages
             return grid.FindName("AttachmentSymbol") as TextBlock;
         }
 
+        private Rectangle CurrentFooter()
+        {
+            var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
+            var grid = item.ContentTemplateRoot as Grid;
+            return grid.FindName("Footer") as Rectangle;
+        }
+
         private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
             if (e.IsDefaultLayout)
             {
                 PageTitle.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                CurrentFooter().Height = 100;
 
                 if (EntryPreviewBinding != null)
                     CurrentEntryPreview().SetBinding(ScrollViewer.VisibilityProperty, EntryPreviewBinding.ParentBinding);
@@ -60,6 +69,7 @@ namespace Mirko_v2.Pages
             else
             {
                 PageTitle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                CurrentFooter().Height = 50;
 
                 if(EntryPreviewBinding == null)
                     EntryPreviewBinding = CurrentEntryPreview().GetBindingExpression(ScrollViewer.VisibilityProperty);
