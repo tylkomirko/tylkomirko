@@ -53,15 +53,23 @@ namespace Mirko_v2.ViewModel
 
         public void GoToNewEntryPage(List<EntryBaseViewModel> entries = null)
         {
+            Responses.Clear();
+
             if(entries != null)
-            {
-                Responses.Clear();
+            {                
                 foreach (var entry in entries)
                     Responses.Add(new NewEntryContainer() 
                     { 
                         Preview = entry,
                         Text = "@" + entry.DataBase.AuthorName + ": ",
                     });
+            }
+            else
+            {
+                Responses.Add(new NewEntryContainer()
+                {
+                    Text = "",
+                });
             }
 
             NavService.NavigateTo("NewEntryPage");
