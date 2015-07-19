@@ -46,9 +46,12 @@ namespace Mirko_v2.Pages
             var col = sender as ObservableCollectionEx<EntryViewModel>;
             if (col.Count > 0)
             {
-                CanShowNewEntriesPopup = true;
-                if(AppBar.IsOpen) // it's kinda ugly.
+                var sv = MirkoListView.GetDescendant<ScrollViewer>();
+
+                if(AppBar.IsOpen || sv.VerticalOffset == 0)
                     ShowNewEntriesPopup();
+
+                CanShowNewEntriesPopup = true;
             }
             else
             {
