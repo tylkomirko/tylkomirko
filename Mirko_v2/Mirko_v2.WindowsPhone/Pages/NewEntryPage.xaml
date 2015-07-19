@@ -211,6 +211,7 @@
                                                Foreground="Gray" />
 
                                     <controls:Entry DataContext="{Binding Preview}"
+                                                    IsTapEnabled="False"
                                                     Margin="3,0,0,0"/>
                                 </StackPanel>
                             </ScrollViewer>
