@@ -345,6 +345,7 @@ namespace Mirko_v2.ViewModel
                     saveStream.Position = 0;
                     await saveStream.CopyToAsync(fileStream);
                     fileStream.Dispose();
+                    fileStream = null;
 
                     stream.Seek(0);
                     return stream;

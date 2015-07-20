@@ -33,14 +33,16 @@ namespace Mirko_v2.Controls
 
             if (stream != null)
             {
-                var bitmap = new BitmapImage();
+                var bitmap = new BitmapImage() { CreateOptions = BitmapCreateOptions.None };
                 bitmap.SetSource(stream);
+
                 Image.Source = bitmap;
                 Grid.Visibility = Visibility.Visible;
                 Ring.Visibility = Visibility.Collapsed;
                 Image.Visibility = Visibility.Visible;
 
-                //stream.Dispose(); // when to dispose?
+                stream.Dispose();
+                stream = null;
             }
             else
             {
@@ -115,6 +117,6 @@ namespace Mirko_v2.Controls
             var control = d as CachedImage;
             if (control.Visibility == Visibility.Visible)
                 await control.LoadImage(url);
-        }        
+        }       
     }
 }

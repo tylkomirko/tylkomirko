@@ -199,6 +199,8 @@
             
             <controls:EntryEmbed x:Name="EmbedPreview"
                                  Margin="0,3,0,0"
+                                 MinHeight="50"
+                                 MinWidth="50"
                                  MaxHeight="250"
                                  MaxWidth="250"
                                  HorizontalAlignment="Left"
