@@ -31,7 +31,7 @@
                     Canvas.ZIndex="1">
             <Rectangle Height="1"
                        Opacity="{StaticResource AppBarOpacity}"
-                       Fill="{StaticResource PivotHeaderBackground}" />
+                       Fill="{ThemeResource TinySeparator}" />
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->

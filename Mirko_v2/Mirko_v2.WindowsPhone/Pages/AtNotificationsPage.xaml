@@ -22,7 +22,7 @@
         <Rectangle Grid.Row="0"
                    Canvas.ZIndex="1"
                    Height="1" 
-                   Fill="{StaticResource PivotHeaderBackground}"
+                   Fill="{ThemeResource TinySeparator}"
                    Opacity="{StaticResource AppBarOpacity}" />
 
         <!--TODO: Content should be placed within the following grid-->
