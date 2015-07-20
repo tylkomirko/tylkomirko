@@ -149,17 +149,16 @@ namespace Mirko_v2.Controls
             var newText = this.Text;
             var before = GetWordCharactersBefore();
             var after = GetWordCharactersAfter();
-            var idx = SelectionStart;
+            var idx = SelectionStart - before.Length;
 
             // first, we have to remove current word.
-            newText = newText.Remove(SelectionStart - before.Length, before.Length);
-            if(after.Length > 0)
-                newText = newText.Remove(SelectionStart, after.Length);
+            newText = newText.Remove(idx, before.Length);
+            newText = newText.Remove(idx, after.Length);
 
-            newText = newText.Insert(SelectionStart - before.Length, replacementWord);
+            newText = newText.Insert(idx, replacementWord);
 
             this.Text = newText;
-            this.SelectionStart = idx + replacementWord.Length - after.Length;
+            this.SelectionStart = idx + before.Length + replacementWord.Length - after.Length;
         }
     }
 }
