@@ -32,7 +32,7 @@
             BorderThickness="0"
             Height="49"
             Opacity="{StaticResource AppBarOpacity}"
-            Background="{StaticResource PivotHeaderBackground}">
+            Background="{ThemeResource PivotHeaderBackground}">
 
         <Grid>
             <Grid.ColumnDefinitions>

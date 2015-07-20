@@ -109,7 +109,7 @@
                    Grid.Row="0"
                    Canvas.ZIndex="1"
                    Opacity="{StaticResource AppBarOpacity}"
-                   Fill="{StaticResource PivotHeaderBackground}"/>
+                   Fill="{ThemeResource TinySeparator}"/>
 
         <Grid x:Name="ContentRoot" 
               Grid.Row="1">
