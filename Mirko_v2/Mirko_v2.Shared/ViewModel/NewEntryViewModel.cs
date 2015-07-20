@@ -188,6 +188,18 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        public async Task AddFile(IStorageItem item) // used in share target activation
+        {
+            var file = item as StorageFile;
+            var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            Data.FileStream = s.AsStreamForRead();
+            Data.FileName = file.Name;
+            Data.AttachmentName = file.DisplayName;
+
+            Responses.Clear();
+            Responses.Add(new NewEntryContainer());
+        }
+
         private RelayCommand _acceptAttachments = null;
         [JsonIgnore]
         public RelayCommand AcceptAttachments

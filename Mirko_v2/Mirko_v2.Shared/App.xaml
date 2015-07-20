@@ -1,14 +1,17 @@
 <Application x:Class="Mirko_v2.App" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="using:Mirko_v2"
-             xmlns:vm="using:Mirko_v2.ViewModel">
+             xmlns:vm="using:Mirko_v2.ViewModel"
+             mc:Ignorable="d">
 
     <Application.Resources>
 
         <ResourceDictionary>
             <!-- This has to stay on top. God knows why. -->
-            <vm:ViewModelLocator x:Key="Locator" />
+            <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Brushes.xaml"/>

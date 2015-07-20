@@ -25,11 +25,16 @@ namespace Mirko_v2.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
+        private static bool initialized = false; // fuck you ShareTarget
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
         public ViewModelLocator()
         {
+            if (initialized)
+                return;
+
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             ////if (ViewModelBase.IsInDesignModeStatic)
@@ -76,6 +81,8 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<DebugViewModel>(true);
             SimpleIoc.Default.Register<ProfilesViewModel>(() => { return new ProfilesViewModel(NavService); });
             SimpleIoc.Default.Register<NewEntryViewModel>(() => { return new NewEntryViewModel(NavService); });
+
+            initialized = true;
         }
 
         private NavigationService _navService = null;

@@ -277,6 +277,88 @@ namespace Mirko_v2
             }
         }
 
+        protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
+        {
+            var data = args.ShareOperation.Data;
+            var files = await data.GetStorageItemsAsync();
+            var VM = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+            await VM.AddFile(files[0]);
+            args.ShareOperation.ReportDataRetrieved();
+
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            DispatcherHelper.Initialize();
+
+            // expand window size 
+            var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
+
+            StatusBarManager.Init();
+
+            Window.Current.VisibilityChanged += (s, e) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = e.Visible;
+
+            NavService = SimpleIoc.Default.GetInstance<NavigationService>();
+
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
+            if (rootFrame == null)
+            {
+                // Create a Frame to act as the navigation context and navigate to the first page
+                rootFrame = CreateRootFrame();
+
+                // TODO: change this value to a cache size that is appropriate for your application
+                rootFrame.CacheSize = 1;
+
+#if WINDOWS_PHONE_APP
+                // Removes the turnstile navigation for startup.
+                if (rootFrame.ContentTransitions != null)
+                {
+                    this.transitions = new TransitionCollection();
+                    foreach (var c in rootFrame.ContentTransitions)
+                        this.transitions.Add(c);
+                }
+
+                rootFrame.ContentTransitions = null;
+                rootFrame.Navigated += this.RootFrame_FirstNavigated;
+#endif
+
+                // Place the frame in the current Window
+                Window.Current.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null)
+            {
+#if WINDOWS_PHONE_APP
+                // Removes the turnstile navigation for startup.
+                if (rootFrame.ContentTransitions != null)
+                {
+                    this.transitions = new TransitionCollection();
+                    foreach (var c in rootFrame.ContentTransitions)
+                        this.transitions.Add(c);
+                }
+
+                rootFrame.ContentTransitions = null;
+                rootFrame.Navigated += this.RootFrame_FirstNavigated;
+#endif
+
+                SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
+                App.ApiService.LocalStorage.InitAction();
+
+                NavService.NavigateTo("NewEntryPage");
+            }
+
+            // Ensure the current window is active
+            Window.Current.Activate();
+
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Init"));
+        }
+
 #if WINDOWS_PHONE_APP
         /// <summary>
         /// Restores the content transitions after the app has launched.
