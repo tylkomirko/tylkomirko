@@ -69,7 +69,6 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -115,13 +114,7 @@
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
 
-        <Grid x:Name="LeftSpacer"
-              Grid.Column="0"
-              Grid.Row="0"
-              Grid.RowSpan="3"
-              Background="Transparent" />
-
-        <StackPanel Grid.Column="1"
+        <StackPanel Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Grid.Row="0"
                     VerticalAlignment="Center"
@@ -164,7 +157,7 @@
         </StackPanel>
 
         <TextBlock x:Name="VoteTB"
-                   Grid.Column="2"
+                   Grid.Column="1"
                    Grid.Row="0"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
@@ -178,7 +171,7 @@
         </TextBlock>
 
         <RichTextBlock x:Name="BodyRTB"
-                       Grid.Column="1"
+                       Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Grid.Row="1"
                        Margin="6,-2,0,0"
@@ -193,7 +186,7 @@
                        utils:Properties.Html="{Binding Data.Text}"/>
 
         <Grid x:Name="EmbedPreviewGrid"
-              Grid.Column="1"
+              Grid.Column="0"
               Grid.ColumnSpan="2"
               Grid.Row="2"
               
@@ -211,7 +204,7 @@
         </Grid>
         
         <RichTextBlock x:Name="VotersRTB"
-                       Grid.Column="1"
+                       Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Grid.Row="3"
                        Margin="5,0,0,0"
@@ -221,7 +214,7 @@
                        utils:Properties.ShowVoters="{Binding ShowVoters}"/>       
 
         <Grid x:Name="RightSpacer"
-              Grid.Column="3"
+              Grid.Column="2"
               Grid.Row="0"
               Grid.RowSpan="3"
               Width="10"

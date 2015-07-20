@@ -61,7 +61,7 @@
             <DataTemplate>
                 <controls:Entry DataContext="{Binding}"
                                 IsTapEnabled="False"
-                                ShowLeftSpacer="True"/>
+                                Margin="25,0,0,0"/>
             </DataTemplate>
         </ListView.ItemTemplate>
 

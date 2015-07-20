@@ -17,7 +17,7 @@
         <DataTemplate x:Key="Block_Entry">
             <controls:Entry DataContext="{Binding Comment}"
                             IsTapEnabled="False"
-                            ShowLeftSpacer="True"/>
+                            Margin="25,0,0,0"/>
         </DataTemplate>
 
         <DataTemplate x:Key="Block_Null" />

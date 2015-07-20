@@ -50,32 +50,6 @@ namespace Mirko_v2.Controls
                 embed.MaxWidth = 250;
             }
         }
-
-        public bool ShowComments
-        {
-            get { return (bool)GetValue(ShowCommentsProperty); }
-            set { SetValue(ShowCommentsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for ShowComments.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ShowCommentsProperty =
-            DependencyProperty.Register("ShowComments", typeof(bool), typeof(Entry), new PropertyMetadata(false));
-
-        public bool ShowLeftSpacer
-        {
-            get { return (bool)GetValue(ShowLeftSpacerProperty); }
-            set { SetValue(ShowLeftSpacerProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for ShowLeftSpacer.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ShowLeftSpacerProperty =
-            DependencyProperty.Register("ShowLeftSpacer", typeof(bool), typeof(Entry), new PropertyMetadata(false, ShowLeftSpacerChanged));
-
-        private static void ShowLeftSpacerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool)e.NewValue)
-                (d as Entry).LeftSpacer.Width = 30.0;
-        }
         #endregion
 
         public Entry()
