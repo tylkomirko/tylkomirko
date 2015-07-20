@@ -1,4 +1,5 @@
-﻿using Mirko_v2.ViewModel;
+﻿using Mirko_v2.Utils;
+using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -50,6 +51,16 @@ namespace Mirko_v2.Controls
                 embed.MaxWidth = 250;
             }
         }
+
+        public bool EnableTextSelection
+        {
+            get { return (bool)GetValue(EnableTextSelectionProperty); }
+            set { SetValue(EnableTextSelectionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for EnableTextSelection.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EnableTextSelectionProperty =
+            DependencyProperty.Register("EnableTextSelection", typeof(bool), typeof(Entry), new PropertyMetadata(false));      
         #endregion
 
         public Entry()
@@ -140,6 +151,17 @@ namespace Mirko_v2.Controls
 
             VM.ShowVoters = true;
             VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        }
+
+        public delegate void TextSelectionChangedEventHandler(object sender, StringEventArgs e);
+        public event TextSelectionChangedEventHandler TextSelectionChanged;
+
+        private void BodyRTB_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var txt = BodyRTB.SelectedText;
+
+            if (TextSelectionChanged != null)
+                TextSelectionChanged(this, new StringEventArgs(txt));
         }
     }
 }

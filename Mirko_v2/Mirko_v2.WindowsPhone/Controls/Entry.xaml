@@ -17,7 +17,8 @@
     IsTapEnabled="True"
     IsDoubleTapEnabled="True"
     Tapped="UserControl_Tapped"
-    DoubleTapped="UserControl_DoubleTapped">
+    DoubleTapped="UserControl_DoubleTapped"
+    x:Name="Root">
 
     <UserControl.Resources>
         <MenuFlyout x:Name="HashtagFlyout">
@@ -175,7 +176,8 @@
                        Grid.ColumnSpan="2"
                        Grid.Row="1"
                        Margin="6,-2,0,0"
-                       IsTextSelectionEnabled="False"
+                       IsTextSelectionEnabled="{Binding ElementName=Root, Path=EnableTextSelection}"
+                       SelectionChanged="BodyRTB_SelectionChanged"
                        IsTapEnabled="True"
                        IsTextScaleFactorEnabled="False"
                        IsDoubleTapEnabled="True"

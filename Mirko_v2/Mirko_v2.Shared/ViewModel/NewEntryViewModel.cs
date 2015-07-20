@@ -77,6 +77,13 @@ namespace Mirko_v2.ViewModel
             set { _text = value; OnPropertyChanged(); }
         }
 
+        private string _selectedText = null;
+        public string SelectedText
+        {
+            get { return _selectedText; }
+            set { _selectedText = value; OnPropertyChanged(); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

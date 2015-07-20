@@ -323,6 +323,20 @@ namespace Mirko_v2.Pages
                 var f = Resources["HyperlinkFlyout"] as Flyout;
                 f.ShowAt(this);
                 return;
+            } 
+            else if(SelectedFormatting == FormattingEnum.QUOTE)
+            {
+                var VM = this.DataContext as NewEntryViewModel;
+                var currentVM = VM.Responses[FlipView.SelectedIndex];
+                if(!string.IsNullOrEmpty(currentVM.SelectedText))
+                {
+                    var insertion = "\n> " + currentVM.SelectedText + "\n";
+                    CurrentEditor().Text += insertion;
+
+                    currentVM.SelectedText = null;
+                    SelectedFormatting = FormattingEnum.NONE;
+                    return;
+                }
             }
 
             if (CurrentEditor().SelectedText.Length > 0)
@@ -400,6 +414,13 @@ namespace Mirko_v2.Pages
         private void Editor_TextChanged(object sender, TextChangedEventArgs e)
         {
             HandleSendButton();
+        }
+
+        private void Preview_TextSelectionChanged(object sender, StringEventArgs e)
+        {
+            var VM = this.DataContext as NewEntryViewModel;
+            var currentVM = VM.Responses[FlipView.SelectedIndex];
+            currentVM.SelectedText = e.String;
         }
     }
 }
