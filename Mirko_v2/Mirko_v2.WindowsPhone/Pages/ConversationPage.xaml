@@ -63,6 +63,7 @@
                             <controls:EntryEmbed MaxHeight="300"
                                                  MaxWidth="300"
                                                  Margin="5,0,5,5"
+                                                 HorizontalAlignment="Left"
                                                  DataContext="{Binding EmbedVM}"/>
                         </Grid>
                         
