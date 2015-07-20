@@ -139,7 +139,19 @@ namespace Mirko_v2.ViewModel
             {
                 Conversation tmp = conv.Data;
                 if (conv.Messages != null)
-                    await DispatcherHelper.RunAsync(() => tmp.Messages = new List<PM>(conv.Messages.Select(x => x.Data)));
+                {
+                    var newMsgs = new List<PM>();
+                    foreach(var msg in conv.Messages)
+                    {
+                        var tmpMsg = msg.Data;
+                        if(msg.EmbedVM != null)
+                            tmpMsg.Embed = msg.EmbedVM.EmbedData;
+
+                        newMsgs.Add(tmpMsg);
+                    }
+
+                    tmp.Messages = newMsgs;
+                }
                 list.Add(tmp);
             }
 
