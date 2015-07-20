@@ -2,14 +2,12 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using Windows.Security.Credentials;
 using WykopAPI;
 
@@ -197,7 +195,7 @@ namespace Mirko_v2.ViewModel
                 SaveCredentials();
 
                 // navigate off to somewhere
-                SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("PivotPage");
+                SimpleIoc.Default.GetInstance<NavigationService>().NavigateTo("PivotPage");
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Login"));
             }
         }

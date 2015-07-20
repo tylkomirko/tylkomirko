@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
@@ -37,7 +36,7 @@ namespace Mirko_v2.ViewModel
         public void GoToEmbedPage()
         {
             Messenger.Default.Send<EmbedViewModel>(this, "Embed UserControl");
-            SimpleIoc.Default.GetInstance<INavigationService>().NavigateTo("EmbedPage");
+            SimpleIoc.Default.GetInstance<NavigationService>().NavigateTo("EmbedPage");
         }
 
         private RelayCommand _saveImageCommand = null;

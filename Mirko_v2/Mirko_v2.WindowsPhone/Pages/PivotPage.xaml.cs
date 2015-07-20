@@ -10,7 +10,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -34,8 +33,7 @@ namespace Mirko_v2.Pages
             var VM = this.DataContext as MainViewModel;
             VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
 
-            var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>()
-                as Mirko_v2.ViewModel.NavigationService;
+            var navService = SimpleIoc.Default.GetInstance<NavigationService>();
             AppHeader = navService.GetAppHeader();
         }
 

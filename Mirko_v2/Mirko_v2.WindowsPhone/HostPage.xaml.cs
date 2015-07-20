@@ -22,7 +22,7 @@ namespace Mirko_v2
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            NavService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>() as NavigationService;
+            NavService = SimpleIoc.Default.GetInstance<NavigationService>();
             NavService.Navigating += NavService_Navigating;
 
             Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += HostPage_VisibleBoundsChanged;

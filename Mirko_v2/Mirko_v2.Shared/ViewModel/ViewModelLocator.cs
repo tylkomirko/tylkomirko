@@ -62,7 +62,7 @@ namespace Mirko_v2.ViewModel
             NavService.RegisterPage("NewEntryPage", typeof(NewEntryPage));
 
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
-            SimpleIoc.Default.Register<GalaSoft.MvvmLight.Views.INavigationService>(() => NavService);
+            SimpleIoc.Default.Register<NavigationService>(() => NavService);
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
             SimpleIoc.Default.Register<LoginViewModel>();

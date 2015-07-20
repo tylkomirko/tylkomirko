@@ -1,12 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+
 
 #if WINDOWS_PHONE_APP
 /// <summary> 
@@ -22,8 +19,7 @@ public class ContinuationManager
     private FrameworkElement GetCurrentView()
     {
         //var frame = Window.Current.Content as Frame;
-        var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>()
-            as Mirko_v2.ViewModel.NavigationService;
+        var navService = SimpleIoc.Default.GetInstance<NavigationService>();
         var frame = navService.CurrentFrame();
         if (frame != null)
             return frame.Content as FrameworkElement;

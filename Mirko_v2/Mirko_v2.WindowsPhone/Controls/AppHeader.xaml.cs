@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
-using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
@@ -49,9 +48,8 @@ namespace Mirko_v2.Controls
 
             this.InitializeComponent();
 
-            var navService = SimpleIoc.Default.GetInstance<INavigationService>() as Mirko_v2.ViewModel.NavigationService;
-            if(navService != null)
-                navService.Navigating += NavService_Navigating;
+            var navService = SimpleIoc.Default.GetInstance<NavigationService>();
+            navService.Navigating += NavService_Navigating;
 
             this.Loaded += AppHeader_Loaded;
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;

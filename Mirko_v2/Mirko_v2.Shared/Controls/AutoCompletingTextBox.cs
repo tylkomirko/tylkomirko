@@ -56,8 +56,7 @@ namespace Mirko_v2.Controls
 
             base.Loaded += (s,e) =>
             {
-                var navService = SimpleIoc.Default.GetInstance<GalaSoft.MvvmLight.Views.INavigationService>() 
-                    as Mirko_v2.ViewModel.NavigationService;
+                var navService = SimpleIoc.Default.GetInstance<NavigationService>();
 
                 SuggestionsPopup = navService.GetPopup();
 
