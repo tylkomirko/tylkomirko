@@ -88,7 +88,7 @@ namespace Mirko_v2.Pages
 
         private void PageTitle_Loaded(object sender, RoutedEventArgs e)
         {
-            var data = (this.DataContext as NewEntryViewModel).Data;
+            var data = (this.DataContext as NewEntryViewModel).NewEntry;
 
             string title;
             if(data.IsEditing)
@@ -109,7 +109,7 @@ namespace Mirko_v2.Pages
         {
             string txt = CurrentEditor().Text;
             var vm = this.DataContext as NewEntryViewModel;
-            var attachmentName = vm.Data.AttachmentName;
+            var attachmentName = vm.NewEntry.AttachmentName;
 
             if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
                 this.SendButton.IsEnabled = true;
@@ -126,7 +126,7 @@ namespace Mirko_v2.Pages
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)
         {
             var vm = this.DataContext as NewEntryViewModel;
-            vm.RemoveAttachment();
+            vm.NewEntry.RemoveAttachment();
             HandleSendButton();
         }
 
@@ -174,13 +174,13 @@ namespace Mirko_v2.Pages
             };
             attachment.SetBinding(AppBarButton.CommandProperty, new Binding()
             {
-                Source = this.DataContext as NewEntryViewModel,
+                Source = this.DataContext as NewEntryBaseViewModel,
                 Path = new PropertyPath("AddAttachment"),
             });
             attachment.SetBinding(AppBarButton.IsEnabledProperty, new Binding()
             {
                 Source = SimpleIoc.Default.GetInstance<NewEntryViewModel>(),
-                Path = new PropertyPath("Data.IsEditing"),
+                Path = new PropertyPath("NewEntry.IsEditing"),
                 Converter = App.Current.Resources["InvertBool"] as IValueConverter,
             });
 

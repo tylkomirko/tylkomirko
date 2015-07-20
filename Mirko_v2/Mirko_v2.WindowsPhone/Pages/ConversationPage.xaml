@@ -23,7 +23,7 @@
 
     <UserControl.Resources>
         <MenuFlyout x:Name="DeleteAttachmentFlyout">
-            <MenuFlyoutItem Text="usuń" Command="{Binding RemoveAttachment}" />
+            <MenuFlyoutItem Text="usuń" Click="MenuFlyoutItem_Click" />
         </MenuFlyout>
 
         <!--Lennys Flyout-->
@@ -213,7 +213,7 @@
                 </ListView.ItemContainerTransitions>
 
                 <ListView.Footer>
-                    <StackPanel Margin="35,0,0,0">                        
+                    <StackPanel Margin="35,0,0,0">
                         <Border BorderThickness="0"
                                 Background="{ThemeResource SentMessageBackground}">
                             <controls:AutoCompletingTextBox x:Name="TextBox"
@@ -224,7 +224,6 @@
                                                             Margin="12,7,12,7"
                                                             GotFocus="TextBox_GotFocus"
                                                             LostFocus="TextBox_LostFocus"
-                                                            TextChanged="TextBox_TextChanged"
                                                             Text="{Binding NewEntry.Text, Mode=TwoWay}"
                                                             Style="{StaticResource TextBoxStyle2}" />
                         </Border>

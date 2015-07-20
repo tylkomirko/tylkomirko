@@ -10,7 +10,7 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    DataContext="{Binding NewEntry, Mode=OneWay, Source={StaticResource Locator}}">
+    DataContext="{Binding NewEntry.AttachmentTarget, Mode=OneWay, Source={StaticResource Locator}}">
 
     <Grid x:Name="LayoutRoot"
           Background="{StaticResource PivotHeaderBackground}">
@@ -53,7 +53,7 @@
             <TextBox x:Name="URLTextBox"
                      Grid.Row="0"
                      PlaceholderText="link..."
-                     Text="{Binding Data.Embed, Mode=TwoWay}"
+                     Text="{Binding NewEntry.Embed, Mode=TwoWay}"
                      Style="{StaticResource TextBoxStyle1}"
                      InputScope="Url" />
 

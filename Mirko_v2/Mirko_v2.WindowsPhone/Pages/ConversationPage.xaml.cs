@@ -49,6 +49,9 @@ namespace Mirko_v2.Pages
                 }
             };
 
+            this.TextBox.Loaded += (s, e) => HandleSendButton();
+            this.TextBox.TextChanged += (s, e) => HandleSendButton();
+
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
@@ -85,15 +88,6 @@ namespace Mirko_v2.Pages
                 AppBar.IsSticky = true;
             else
                 AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var txt = TextBox.Text;
-            if (txt.Length > 0 || AttachmentSymbol.Text.Length > 3) // 3 is the length of attachment symbol and two spaces
-                SendButton.IsEnabled = true;
-            else
-                SendButton.IsEnabled = false;
         }
 
         private void LennyChooser_LennySelected(object sender, StringEventArgs e)
@@ -149,8 +143,20 @@ namespace Mirko_v2.Pages
                 flyout.ShowAt(this);
             };
 
+            var attachment = new AppBarButton()
+            {
+                Label = "załącznik",
+                Icon = new SymbolIcon(Symbol.Attach),
+            };
+            attachment.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MessagesViewModel,
+                Path = new PropertyPath("CurrentConversation.AddAttachment"),
+            });
+
             c.PrimaryCommands.Add(SendButton);
             c.PrimaryCommands.Add(lenny);
+            c.PrimaryCommands.Add(attachment);
 
             AppBar = c;
             return AppBar;
@@ -165,9 +171,7 @@ namespace Mirko_v2.Pages
         private void IAP_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
         {
             if (ListView != null && !e.IsDefaultLayout)
-            {
                 JumpToBottom();
-            }
         }
 
         private void JumpToBottom()
@@ -180,7 +184,6 @@ namespace Mirko_v2.Pages
                     sv.ChangeView(null, sv.ScrollableHeight, null, true);
                 sv.UpdateLayout();
             }
-
         }
 
         private void ContentRoot_Loaded(object sender, RoutedEventArgs e)
@@ -190,6 +193,25 @@ namespace Mirko_v2.Pages
 
             var header = ListView.Header as FrameworkElement;
             header.Height = height;
+        }
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
+            vm.NewEntry.RemoveAttachment();
+            HandleSendButton();
+        }
+
+        private void HandleSendButton()
+        {
+            string txt = TextBox.Text;
+            var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
+            var attachmentName = vm.NewEntry.AttachmentName;
+
+            if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
+                this.SendButton.IsEnabled = true;
+            else
+                this.SendButton.IsEnabled = false;
         }
     }
 }

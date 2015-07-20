@@ -117,9 +117,9 @@ namespace Mirko_v2.Pages
                 var selectedItems = SelectedItems();
                 var root = this.ListView.DataContext as EntryViewModel;
                 var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-                vm.Data.IsEditing = false;
-                vm.Data.CommentID = 0;
-                vm.Data.EntryID = root.Data.ID;
+                vm.NewEntry.IsEditing = false;
+                vm.NewEntry.CommentID = 0;
+                vm.NewEntry.EntryID = root.Data.ID;
                 vm.GoToNewEntryPage(selectedItems);
 
                 ListView.SelectionMode = ListViewSelectionMode.None;

@@ -93,7 +93,7 @@ namespace Mirko_v2.ViewModel
         }
     }
 
-    public class NewEntryViewModel : ViewModelBase, IFileOpenPickerContinuable, IResumable
+    public class NewEntryViewModel : NewEntryBaseViewModel, IResumable
     {
         private NavigationService NavService = null;
 
@@ -103,11 +103,11 @@ namespace Mirko_v2.ViewModel
             get { return _responses ?? (_responses = new ObservableCollectionEx<NewEntryContainer>()); }
         }
 
-        private NewEntry _data = null;
-        public NewEntry Data
+        private NewEntryBaseViewModel _attachmentTarget = null;
+        public NewEntryBaseViewModel AttachmentTarget
         {
-            get { return _data ?? (_data = new NewEntry()); }
-            set { Set(() => Data, ref _data, value); }
+            get { return _attachmentTarget; }
+            set { Set(() => AttachmentTarget, ref _attachmentTarget, value); }
         }
 
         public NewEntryViewModel()
@@ -119,14 +119,13 @@ namespace Mirko_v2.ViewModel
             NavService = nav;
         }
 
-
         public void GoToNewEntryPage(List<EntryBaseViewModel> entries = null)
         {
             Responses.Clear();
 
             if(entries != null)
             {
-                if (Data.IsEditing)
+                if (NewEntry.IsEditing)
                 {
                     Responses.Add(new NewEntryContainer()
                     {
@@ -154,69 +153,16 @@ namespace Mirko_v2.ViewModel
             NavService.NavigateTo("NewEntryPage");
         }
 
-        private RelayCommand _addAttachment = null;
-        [JsonIgnore]
-        public RelayCommand AddAttachment
-        {
-            get { return _addAttachment ?? (_addAttachment = new RelayCommand(() => NavService.NavigateTo("AttachmentPage"))); }
-        }
-
-        private RelayCommand _openPicker = null;
-        [JsonIgnore]
-        public RelayCommand OpenPicker
-        {
-            get { return _openPicker ?? (_openPicker = new RelayCommand(ExecuteOpenPicker)); }
-        }
-
-        private void ExecuteOpenPicker()
-        {
-            var openPicker = new FileOpenPicker();
-            openPicker.FileTypeFilter.Add(".jpg");
-            openPicker.FileTypeFilter.Add(".jpeg");
-            openPicker.FileTypeFilter.Add(".png");
-            openPicker.FileTypeFilter.Add(".gif");
-            openPicker.ViewMode = PickerViewMode.Thumbnail;
-            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-
-            openPicker.PickSingleFileAndContinue();
-        }
-
-        public async void ContinueFileOpenPicker(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs args)
-        {
-            if (args.Files.Count() > 0)
-            {
-                StorageFile file = args.Files[0];
-                var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                Data.FileStream = s.AsStreamForRead();
-                Data.FileName = file.Name;
-                Data.AttachmentName = file.DisplayName;
-
-                NavService.GoBack();
-            }
-        }
-
         public async Task AddFile(IStorageItem item) // used in share target activation
         {
             var file = item as StorageFile;
             var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            Data.FileStream = s.AsStreamForRead();
-            Data.FileName = file.Name;
-            Data.AttachmentName = file.DisplayName;
+            NewEntry.FileStream = s.AsStreamForRead();
+            NewEntry.FileName = file.Name;
+            NewEntry.AttachmentName = file.DisplayName;
 
             Responses.Clear();
             Responses.Add(new NewEntryContainer());
-        }
-
-        private RelayCommand _acceptAttachments = null;
-        [JsonIgnore]
-        public RelayCommand AcceptAttachments
-        {
-            get { return _acceptAttachments ?? (_acceptAttachments = new RelayCommand(() => NavService.GoBack())); }
-        }
-
-        public void RemoveAttachment()
-        {
-            Data.RemoveAttachment();
         }
 
         private RelayCommand _sendMessageCommand = null;
@@ -231,9 +177,9 @@ namespace Mirko_v2.ViewModel
             var txt = string.Join("\n", Responses.Select(x => x.Text));
             if (string.IsNullOrEmpty(txt))
                 txt = " \n ";
-            Data.Text = txt;
+            NewEntry.Text = txt;
 
-            if (Data.IsEditing)
+            if (NewEntry.IsEditing)
                 await SendEdited();
             else
                 await SendNew();
@@ -241,21 +187,21 @@ namespace Mirko_v2.ViewModel
 
         private async Task SendNew()
         {
-            string suffix = Data.EntryID == 0 ? " wpis" : " komentarz";
+            string suffix = NewEntry.EntryID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam" + suffix + "...");
 
-            uint entryID = await App.ApiService.addEntry(Data);
+            uint entryID = await App.ApiService.addEntry(NewEntry);
 
             if (entryID != 0)
             {
                 await StatusBarManager.ShowTextAsync("Dodano" + suffix + ".");
-                Data.RemoveAttachment();
-                Data.Text = null;
+                NewEntry.RemoveAttachment();
+                NewEntry.Text = null;
 
                 NavService.GoBack();
 
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
-                if (Data.EntryID == 0)
+                if (NewEntry.EntryID == 0)
                 {
                     var entry = await App.ApiService.getEntry(entryID);
                     if (entry != null)
@@ -263,7 +209,7 @@ namespace Mirko_v2.ViewModel
                 }
                 else
                 {
-                    var entry = await App.ApiService.getEntry(Data.EntryID);
+                    var entry = await App.ApiService.getEntry(NewEntry.EntryID);
                     if (entry != null)
                         Messenger.Default.Send<EntryViewModel>(new EntryViewModel(entry), "Update");
                 }
@@ -277,33 +223,33 @@ namespace Mirko_v2.ViewModel
 
         private async Task SendEdited()
         {
-            string suffix = Data.CommentID == 0 ? " wpis" : " komentarz";
+            string suffix = NewEntry.CommentID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Edytuje" + suffix + "...");
 
-            uint entryID = await App.ApiService.editEntry(Data);
+            uint entryID = await App.ApiService.editEntry(NewEntry);
 
             if(entryID != 0)
             {
                 await StatusBarManager.HideProgressAsync();
-                Data.RemoveAttachment();
-                Data.Text = null;
+                NewEntry.RemoveAttachment();
+                NewEntry.Text = null;
 
                 NavService.GoBack();
 
                 var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 Entry entry = null;
 
-                if (Data.EntryID == 0)
+                if (NewEntry.EntryID == 0)
                     entry = await App.ApiService.getEntry(entryID);
                 else
-                    entry = await App.ApiService.getEntry(Data.EntryID);
+                    entry = await App.ApiService.getEntry(NewEntry.EntryID);
 
                 if (entry != null)
                     Messenger.Default.Send<EntryViewModel>(new EntryViewModel(entry), "Update");
             }
             else
             {
-                suffix = Data.CommentID == 0 ? " wpisu" : " komentarza";
+                suffix = NewEntry.CommentID == 0 ? " wpisu" : " komentarza";
                 await StatusBarManager.ShowTextAsync("Nie udało się edytować" + suffix + ".");
             }
         }
@@ -337,7 +283,7 @@ namespace Mirko_v2.ViewModel
                 JsonSerializer serializer = new JsonSerializer();
                 var vm = serializer.Deserialize<NewEntryViewModel>(reader);
 
-                Data = vm.Data;
+                NewEntry = vm.NewEntry;
                 Responses.Clear();
                 Responses.AddRange(vm.Responses);
 

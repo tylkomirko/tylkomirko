@@ -99,15 +99,15 @@ namespace Mirko_v2.ViewModel
             if(DataBase is EntryComment)
             {
                 var d = DataBase as EntryComment;
-                VM.Data.EntryID = d.EntryID;
+                VM.NewEntry.EntryID = d.EntryID;
             }
             else
             {
-                VM.Data.EntryID = DataBase.ID;
+                VM.NewEntry.EntryID = DataBase.ID;
             }
             
-            VM.Data.CommentID = 0;
-            VM.Data.IsEditing = false;
+            VM.NewEntry.CommentID = 0;
+            VM.NewEntry.IsEditing = false;
             VM.GoToNewEntryPage(new List<EntryBaseViewModel>() { this });
         }
 
@@ -155,15 +155,15 @@ namespace Mirko_v2.ViewModel
             if (DataBase is EntryComment)
             {
                 var d = DataBase as EntryComment;
-                VM.Data.EntryID = d.EntryID;
-                VM.Data.CommentID = d.ID;
+                VM.NewEntry.EntryID = d.EntryID;
+                VM.NewEntry.CommentID = d.ID;
             }
             else
             {
-                VM.Data.EntryID = DataBase.ID;
+                VM.NewEntry.EntryID = DataBase.ID;
             }
 
-            VM.Data.IsEditing = true;
+            VM.NewEntry.IsEditing = true;
             VM.GoToNewEntryPage(new List<EntryBaseViewModel>() { this });
         }
 

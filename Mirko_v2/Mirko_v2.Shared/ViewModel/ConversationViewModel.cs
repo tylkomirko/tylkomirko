@@ -18,20 +18,13 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel
 {
-    public class ConversationViewModel : ViewModelBase
+    public class ConversationViewModel : NewEntryBaseViewModel
     {
         public Conversation Data { get; set; }
         private ObservableCollectionEx<PMViewModel> _messages = null;
         public ObservableCollectionEx<PMViewModel> Messages
         {
             get { return _messages ?? (_messages = new ObservableCollectionEx<PMViewModel>()); }
-        }
-
-        private NewEntry _newEntry = null;
-        public NewEntry NewEntry
-        {
-            get { return _newEntry ?? (_newEntry = new NewEntry()); }
-            set { Set(() => NewEntry, ref _newEntry, value); }
         }
 
         private bool _isOnline = false;
@@ -66,6 +59,7 @@ namespace Mirko_v2.ViewModel
         {
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
             bool success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+            NewEntry.RemoveAttachment();
             if (success)
             {
                 await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");

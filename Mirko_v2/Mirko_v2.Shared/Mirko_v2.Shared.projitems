@@ -101,6 +101,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MirkoEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\TaggedEntrySource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryBaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />

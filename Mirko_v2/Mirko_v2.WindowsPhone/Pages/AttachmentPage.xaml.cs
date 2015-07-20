@@ -28,7 +28,7 @@ namespace Mirko_v2.Pages
 
             OKButton.SetBinding(AppBarButton.CommandProperty, new Binding()
             {
-                Source = this.DataContext as NewEntryViewModel,
+                Source = this.DataContext as NewEntryBaseViewModel,
                 Path = new PropertyPath("AcceptAttachments"),
             });
 
@@ -40,8 +40,8 @@ namespace Mirko_v2.Pages
 
         private void HandleOKButtonVisibility()
         {
-            var VM = this.DataContext as NewEntryViewModel;
-            var data = VM.Data;
+            var VM = this.DataContext as NewEntryBaseViewModel;
+            var data = VM.NewEntry;
 
             if (URLTextBox.Text.Length > 0 || !string.IsNullOrEmpty(data.FileName))
                 OKButton.IsEnabled = true;

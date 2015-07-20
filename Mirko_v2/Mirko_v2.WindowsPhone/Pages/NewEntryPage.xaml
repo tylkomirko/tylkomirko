@@ -259,11 +259,11 @@
                                                    Foreground="Gray"
                                                    TextTrimming="CharacterEllipsis"
                                                    Holding="AttachmentSymbol_Holding"
-                                                   Visibility="{Binding NewEntry.Data.AttachmentName, Mode=OneWay, Source={StaticResource Locator},
+                                                   Visibility="{Binding NewEntry.NewEntry.AttachmentName, Mode=OneWay, Source={StaticResource Locator},
                                                                 Converter={StaticResource NullToVisibility}}">
                                             
                                             <Run Text="&#128206;" />
-                                            <Run Text="{Binding NewEntry.Data.AttachmentName, Mode=OneWay, Source={StaticResource Locator}}" 
+                                            <Run Text="{Binding NewEntry.NewEntry.AttachmentName, Mode=OneWay, Source={StaticResource Locator}}" 
                                                  Foreground="{ThemeResource AttachmentNameForeground}"/>
                                             
                                         </TextBlock>
