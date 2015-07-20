@@ -218,8 +218,8 @@ namespace Mirko_v2.Pages
             { FormattingEnum.BOLD, Tuple.Create<string, string>("**", "** ") },
             { FormattingEnum.ITALIC, Tuple.Create<string, string>("_", "_ ") },
             { FormattingEnum.CODE, Tuple.Create<string, string>("`", "` ") },
-            { FormattingEnum.QUOTE, Tuple.Create<string, string>("\n> ", "\n") },
-            { FormattingEnum.SPOILER, Tuple.Create<string, string>("\n! ", "\n") },
+            { FormattingEnum.QUOTE, Tuple.Create<string, string>("\r\n> ", "\r\n") },
+            { FormattingEnum.SPOILER, Tuple.Create<string, string>("\r\n! ", "\r\n") },
         };
 
         private void AppendTextAndHideFlyout(string text, string flyoutName)
@@ -318,6 +318,8 @@ namespace Mirko_v2.Pages
             else if (tag == "quote")
                 SelectedFormatting = FormattingEnum.QUOTE;
 
+            var editor = CurrentEditor();
+
             if(SelectedFormatting == FormattingEnum.LINK)
             {
                 var f = Resources["HyperlinkFlyout"] as Flyout;
@@ -331,7 +333,7 @@ namespace Mirko_v2.Pages
                 if(!string.IsNullOrEmpty(currentVM.SelectedText))
                 {
                     var insertion = "\n> " + currentVM.SelectedText + "\n";
-                    CurrentEditor().Text += insertion;
+                    editor.Text += insertion;
 
                     currentVM.SelectedText = null;
                     SelectedFormatting = FormattingEnum.NONE;
@@ -339,69 +341,69 @@ namespace Mirko_v2.Pages
                 }
             }
 
-            if (CurrentEditor().SelectedText.Length > 0)
+            var start = editor.GetNormalizedSelectionStart();
+
+            var prefix = FormattingPrefixes[SelectedFormatting].Item1;
+            if (SelectedFormatting == FormattingEnum.SPOILER || SelectedFormatting == FormattingEnum.QUOTE)
             {
-                var selectedText = CurrentEditor().SelectedText;
-                var prefix = FormattingPrefixes[SelectedFormatting].Item1;
+                if (editor.Text.Length == 0 || editor.Text.EndsWith("\r\n"))
+                    prefix = prefix.TrimStart(); // remove newline character
+            }
+
+            if (editor.SelectedText.Length > 0)
+            {
+                var selectedText = editor.SelectedText;
                 var newText = prefix + selectedText +
                     FormattingPrefixes[SelectedFormatting].Item2;
 
-                var start = CurrentEditor().SelectionStart;
-                var length = CurrentEditor().SelectionLength;
-                var txt = CurrentEditor().Text.Remove(start, length).Insert(start, newText);
-                CurrentEditor().Text = txt;
+                var length = editor.SelectionLength;
+                var txt = editor.Text.Remove(start, length).Insert(start, newText);
+                editor.Text = txt;
 
-                CurrentEditor().SelectionStart = start + newText.Length;
-                CurrentEditor().Focus(FocusState.Programmatic);
+                editor.SelectionStart = start + newText.Length;
+                editor.Focus(FocusState.Programmatic);
 
                 SelectedFormatting = FormattingEnum.NONE;
             }
             else
             {
-                var start = CurrentEditor().SelectionStart;
-                var prefix = FormattingPrefixes[SelectedFormatting].Item1;
-                                
-                if(SelectedFormatting == FormattingEnum.SPOILER || SelectedFormatting == FormattingEnum.QUOTE)
-                {
-                    if (CurrentEditor().Text.Length == 0 || CurrentEditor().Text.EndsWith("\n"))
-                        prefix = prefix.TrimStart(); // remove newline character
-                }
+                var newText = editor.Text.Insert(start, prefix);
 
-                var newText = CurrentEditor().Text.Insert(start, prefix);
-
-                CurrentEditor().Text = newText;
-                CurrentEditor().SelectionStart = start + prefix.Length;
+                editor.Text = newText;
+                editor.SelectionStart = start + prefix.Length;
                 SetFormattingButton();
-                CurrentEditor().Focus(FocusState.Programmatic);
+                editor.Focus(FocusState.Programmatic);
             }
         }
 
         private void FormattingButton_Click(object sender, RoutedEventArgs e)
         {
+            var editor = CurrentEditor();
             var insertion = FormattingPrefixes[SelectedFormatting].Item2;
-            if (CurrentEditor().SelectedText.Length > 0)
+
+            if (editor.SelectedText.Length > 0)
             {
-                var selectedText = CurrentEditor().SelectedText;
+                var selectedText = editor.SelectedText;
                 var newText = selectedText + insertion;
 
-                var start = CurrentEditor().SelectionStart;
-                var length = CurrentEditor().SelectionLength;
-                var txt = CurrentEditor().Text.Remove(start, length).Insert(start, newText);
-                CurrentEditor().Text = txt;
+                var start = editor.SelectionStart;
+                var length = editor.SelectionLength;
+                var txt = editor.Text.Remove(start, length).Insert(start, newText);
+                editor.Text = txt;
 
-                CurrentEditor().SelectionStart = start + newText.Length;
+                editor.SelectionStart = start + newText.Length;
             }
             else
             {
-                var length = CurrentEditor().Text.Length;
-                CurrentEditor().Text += insertion;
-                CurrentEditor().SelectionStart = length + insertion.Length;
+                var length = editor.Text.Length;
+                editor.Text += insertion;
+                editor.SelectionStart = length + insertion.Length;
             }
 
             SelectedFormatting = FormattingEnum.NONE;
             FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            CurrentEditor().Focus(FocusState.Programmatic);
+            editor.Focus(FocusState.Programmatic);
         }
 
         #endregion

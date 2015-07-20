@@ -79,6 +79,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StoryboardExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TextBoxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AddEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
