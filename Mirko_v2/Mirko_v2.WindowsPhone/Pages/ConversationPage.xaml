@@ -38,7 +38,7 @@
                          Points="0,0 0,11 14,0"
                          Margin="14,-11,0,0" 
                          StrokeThickness="0"                       
-                         Fill="{StaticResource ReceivedMessageBackground}"
+                         Fill="{ThemeResource ReceivedMessageBackground}"
                          Visibility="{Binding ShowArrow, 
                             Converter={StaticResource BoolToVisibility}}"
                          HorizontalAlignment="Left" 
@@ -67,7 +67,7 @@
                         </Grid>
                         
                         <TextBlock FontSize="12.5"
-                                   Foreground="LightGray"
+                                   Foreground="{ThemeResource MessageReceivedTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">
                             <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
@@ -102,7 +102,7 @@
                         </Grid>
 
                         <TextBlock FontSize="12.5"
-                                   Foreground="LightGray"
+                                   Foreground="{ThemeResource MessageSentTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">
                             <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
@@ -193,8 +193,7 @@
                                  ItemTemplateSelector="{StaticResource PMTemplateSelector}"
                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                                  IncrementalLoadingThreshold="6"
-                                 DataFetchSize="7"
-                                 Loaded="ListView_Loaded">
+                                 DataFetchSize="7">
 
                 <ListView.Header>
                     <Rectangle Fill="Transparent"/>
@@ -213,7 +212,7 @@
                 </ListView.ItemContainerTransitions>
 
                 <ListView.Footer>
-                    <StackPanel Margin="35,0,0,0">
+                    <StackPanel Margin="35,0,0,5">
                         <Border BorderThickness="0"
                                 Background="{ThemeResource SentMessageBackground}">
                             <controls:AutoCompletingTextBox x:Name="TextBox"

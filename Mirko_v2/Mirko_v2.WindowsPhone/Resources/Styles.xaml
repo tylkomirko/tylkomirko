@@ -222,9 +222,9 @@
     <Style x:Key="TextBoxStyle2" TargetType="TextBox">
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}"/>
         <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}"/>
-        <Setter Property="Foreground" Value="{StaticResource SentMessageForeground}"/>
+        <Setter Property="Foreground" Value="{ThemeResource SentMessageForeground}"/>
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextSelectionHighlightColorThemeBrush}"/>
-        <Setter Property="Background" Value="{StaticResource SentMessageBackground}"/>
+        <Setter Property="Background" Value="{ThemeResource SentMessageBackground}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource TextBoxBorderThemeBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilyNormal}"/>
@@ -260,7 +260,7 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextBoxDisabledForegroundThemeBrush}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="PlaceholderTextContentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SentMessageForeground}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SentMessageForeground}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -277,7 +277,7 @@
                                         </ObjectAnimationUsingKeyFrames>
                                         <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PlaceholderTextContentPresenter"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="BackgroundElement">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SentMessageBackground}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SentMessageBackground}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
