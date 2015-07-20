@@ -251,7 +251,7 @@
 
                                         <TextBlock x:Name="AttachmentSymbol"
                                                    Grid.Column="0"
-                                                   Margin="-2,-6,0,0"
+                                                   Margin="-2,0,0,0"
                                                    FontSize="14"
                                                    IsColorFontEnabled="False"
                                                    Foreground="Gray"

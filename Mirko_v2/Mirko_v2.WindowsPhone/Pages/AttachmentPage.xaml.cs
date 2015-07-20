@@ -12,26 +12,41 @@ namespace Mirko_v2.Pages
         public AttachmentPage()
         {
             this.InitializeComponent();
+            this.URLTextBox.TextChanged += (s, e) => HandleOKButtonVisibility();
+            this.Loaded += (s, e) => HandleOKButtonVisibility();
         }
+
+        private AppBarButton OKButton;
 
         public CommandBar CreateCommandBar()
         {
-            var ok = new AppBarButton()
+            OKButton = new AppBarButton()
             {
                 Label = "ok",
                 Icon = new SymbolIcon(Symbol.Accept),
             };
 
-            ok.SetBinding(AppBarButton.CommandProperty, new Binding()
+            OKButton.SetBinding(AppBarButton.CommandProperty, new Binding()
             {
                 Source = this.DataContext as NewEntryViewModel,
                 Path = new PropertyPath("AcceptAttachments"),
             });
 
             var c = new CommandBar();
-            c.PrimaryCommands.Add(ok);
+            c.PrimaryCommands.Add(OKButton);
 
             return c;
+        }
+
+        private void HandleOKButtonVisibility()
+        {
+            var VM = this.DataContext as NewEntryViewModel;
+            var data = VM.Data;
+
+            if (URLTextBox.Text.Length > 0 || !string.IsNullOrEmpty(data.FileName))
+                OKButton.IsEnabled = true;
+            else
+                OKButton.IsEnabled = false;
         }
     }
 }

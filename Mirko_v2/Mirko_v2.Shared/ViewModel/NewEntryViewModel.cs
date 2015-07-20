@@ -210,6 +210,8 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteSendMessageCommand()
         {
             var txt = string.Join("\n", Responses.Select(x => x.Text));
+            if (string.IsNullOrEmpty(txt))
+                txt = " \n ";
             Data.Text = txt;
 
             if (Data.IsEditing)
