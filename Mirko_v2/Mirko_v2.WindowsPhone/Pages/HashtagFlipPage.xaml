@@ -14,8 +14,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Grid x:Name="LayoutRoot"
-          Margin="0,25.6,0,0">
+    <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,18 +39,18 @@
 
             <FlipView.ItemTemplate>
                 <DataTemplate>
-                    <controls:ListViewEx Margin="0,-132.5,0,0"
-                                         HorizontalAlignment="Stretch"
+                    <controls:ListViewEx HorizontalAlignment="Stretch"
                                          ItemsSource="{Binding Comments}"
                                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                          IsItemClickEnabled="False"
-                                         VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                         VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                         IncrementalLoadingThreshold="6"
+                                         DataFetchSize="7"
+                                         Loaded="ListViewEx_Loaded">
 
                         <ListView.Header>
-                            <StackPanel Margin="0,0,0,0">
-                                <Rectangle x:Name="HeaderSpacer"
-                                           Fill="Transparent"
-                                           Height="140" />
+                            <StackPanel>
+                                <Rectangle Fill="Transparent" />
                                 <controls:Entry DataContext="{Binding}"
                                                 LargeEmbed="True"
                                                 IsTapEnabled="False"/>
@@ -65,12 +64,6 @@
                                                 Margin="25,0,0,0"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-
-                        <ListView.Footer>
-                            <Rectangle x:Name="Footer"
-                                       Fill="Transparent"
-                                       Height="64" />
-                        </ListView.Footer>
 
                     </controls:ListViewEx>
                 </DataTemplate>
