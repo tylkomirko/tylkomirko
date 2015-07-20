@@ -54,7 +54,7 @@ namespace Mirko_v2
             string brushKey;
             if (newPage.String == "SettingsPage")
                 brushKey = RequestedTheme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
-            else if (newPage.String == "NewEntryPage")
+            else if (newPage.String == "NewEntryPage" || newPage.String == "AttachmentPage")
                 brushKey = RequestedTheme == ElementTheme.Dark ? "NewEntryBackgroundDark" : "NewEntryBackgroundLight";
             else
                 brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
