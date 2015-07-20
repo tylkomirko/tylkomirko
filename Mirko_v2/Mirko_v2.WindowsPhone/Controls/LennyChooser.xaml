@@ -13,10 +13,11 @@
         <Style TargetType="TextBlock" x:Key="LennyLabel">
             <Setter Property="FontSize" Value="26" />
             <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
         </Style>
     </UserControl.Resources>
     
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
