@@ -150,7 +150,7 @@ namespace Mirko_v2.ViewModel
                         newMsgs.Add(tmpMsg);
                     }
 
-                    tmp.Messages = newMsgs;
+                    await DispatcherHelper.RunAsync(() => tmp.Messages = newMsgs);
                 }
                 list.Add(tmp);
             }
