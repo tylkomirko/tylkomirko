@@ -370,7 +370,7 @@ namespace Mirko_v2.ViewModel
         {
             Logger.Trace("RefreshMirkoEntries");
             await CheckNewMirkoEntries();
-            AddNewMirkoEntries.Execute(null);
+            //AddNewMirkoEntries.Execute(null);
         }
 
         private RelayCommand<uint> _goToEntryPage = null;
