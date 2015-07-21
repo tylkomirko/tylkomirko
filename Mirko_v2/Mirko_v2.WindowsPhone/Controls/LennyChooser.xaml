@@ -16,8 +16,8 @@
             <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
         </Style>
     </UserControl.Resources>
-    
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{ThemeResource HashtagSuggestionBoxBackground}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />

@@ -10,7 +10,7 @@
     DataContext="{Binding Cache, Mode=OneWay, Source={StaticResource Locator}}">
 
     <StackPanel HorizontalAlignment="Stretch"
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                Background="{ThemeResource HashtagSuggestionBoxBackground}">
 
         <TextBox x:Name="HashtagBox"
                  Margin="5,5,5,0"

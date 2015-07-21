@@ -74,6 +74,8 @@
             <SolidColorBrush x:Key="SuggestionsPopupForeground" Color="White" />
 
             <SolidColorBrush x:Key="TinySeparator" Color="#1B1B1B" />
+
+            <SolidColorBrush x:Key="HashtagSuggestionBoxBackground" Color="#1B1B1B" />
         </ResourceDictionary>
         
         <ResourceDictionary x:Key="Light">
@@ -145,6 +147,8 @@
             <SolidColorBrush x:Key="SuggestionsPopupForeground" Color="Black" />
 
             <SolidColorBrush x:Key="TinySeparator" Color="White" />
+
+            <SolidColorBrush x:Key="HashtagSuggestionBoxBackground" Color="White" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
