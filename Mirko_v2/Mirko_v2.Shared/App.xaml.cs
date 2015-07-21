@@ -107,7 +107,6 @@ namespace Mirko_v2
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
-
             this.UnhandledException += App_UnhandledException;
 
             var configuration = new LoggingConfiguration();
@@ -411,15 +410,17 @@ namespace Mirko_v2
 
             var currentPage = NavService.CurrentPageKey;
             var currentFrame = NavService.CurrentFrame();
+
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+            localSettings["PageKey"] = currentPage;
+            localSettings.Remove("VM");
+
             if (currentFrame.DataContext is IResumable)
             {
                 try
                 {
                     var resumableVM = currentFrame.DataContext as IResumable;
                     await resumableVM.SaveState(currentPage);
-
-                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-                    localSettings["PageKey"] = currentPage;
                     localSettings["VM"] = resumableVM.GetName();
                 } 
                 catch(Exception ex)
@@ -434,13 +435,21 @@ namespace Mirko_v2
         private async Task ResumeFromSuspension()
         {
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-            if (!settings.ContainsKey("PageKey") || !settings.ContainsKey("VM"))
+            if (!settings.ContainsKey("PageKey"))
             {
                 NavService.NavigateTo("PivotPage");
                 return;
             }
 
             var pageKey = (string)settings["PageKey"];
+
+            if(!settings.ContainsKey("VM"))
+            {
+                NavService.InsertMainPage();
+                NavService.NavigateTo(pageKey);
+                return;
+            }
+
             var viewModelName = (string)settings["VM"];
 
             bool resumed = false;
