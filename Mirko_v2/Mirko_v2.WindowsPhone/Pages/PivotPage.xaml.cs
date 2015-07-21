@@ -331,6 +331,13 @@ namespace Mirko_v2.Pages
                 Source = this.DataContext as MainViewModel,
                 Path = new PropertyPath("AddNewEntryCommand"),
             });
+            add.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Mode = BindingMode.OneWay,
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
 
             var refresh = new AppBarButton()
             {
