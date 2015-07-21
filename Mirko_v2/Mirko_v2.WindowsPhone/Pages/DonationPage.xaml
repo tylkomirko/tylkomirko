@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    DataContext="{Binding Donation, Mode=OneWay, Source={StaticResource Locator}}">
     
-    <Grid>
+    <Grid Margin="10,0,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -31,10 +32,20 @@
             <Run Text="Możesz wybrać spośród następujących stawek:" />
         </TextBlock>
         
-        <TextBlock Grid.Row="1"
-                   Style="{StaticResource SubheaderTextBlockStyle}">
-            <Run Text="1,99" />
-            <Run Text="PLN" Foreground="DarkGray" />
-        </TextBlock>
+        <ListView Grid.Row="1"
+                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                  ItemsSource="{Binding Products}">
+            
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Style="{StaticResource SubheaderTextBlockStyle}">
+                        <Run Text="{Binding Item2}" />
+                        <Run Text="PLN" Foreground="DarkGray" />
+                    </TextBlock>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+       
     </Grid>
 </UserControl>

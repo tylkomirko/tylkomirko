@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-16" ?>
+<CurrentApp>
+    <ListingInformation>
+        <App>
+        <AppId>00000000-0000-0000-0000-000000000000</AppId>
+        <LinkUri>http://apps.microsoft.com/webpdp/app/00000000-0000-0000-0000-000000000000</LinkUri>
+        <CurrentMarket>en-US</CurrentMarket>
+        <AgeRating>3</AgeRating>
+        <MarketData xml:lang="en-us">
+            <Name>AppName</Name>
+            <Description>AppDescription</Description>
+            <Price>1.00</Price>
+            <CurrencySymbol>$</CurrencySymbol>
+            <CurrencyCode>USD</CurrencyCode>
+        </MarketData>
+    </App>
+    <Product ProductId="DonationTier1" LicenseDuration="0" ProductType="Consumable">
+        <MarketData xml:lang="en-us">
+            <Name>Product1Name</Name>
+            <Price>1.00</Price>
+            <CurrencySymbol>$</CurrencySymbol>
+            <CurrencyCode>USD</CurrencyCode>
+        </MarketData>
+    </Product>
+    <Product ProductId="DonationTier2" LicenseDuration="0" ProductType="Consumable">
+        <MarketData xml:lang="en-us">
+            <Name>Product2Name</Name>
+            <Price>2.00</Price>
+            <CurrencySymbol>$</CurrencySymbol>
+            <CurrencyCode>USD</CurrencyCode>
+        </MarketData>
+    </Product>
+	<Product ProductId="DonationTier3" LicenseDuration="0" ProductType="Consumable">
+        <MarketData xml:lang="en-us">
+            <Name>Product2Name</Name>
+            <Price>3.00</Price>
+            <CurrencySymbol>$</CurrencySymbol>
+            <CurrencyCode>USD</CurrencyCode>
+        </MarketData>
+    </Product>
+</ListingInformation>
+<LicenseInformation>
+    <App>
+        <IsActive>true</IsActive>
+        <IsTrial>true</IsTrial>
+    </App>
+</LicenseInformation>
+<ConsumableInformation>
+    <Product ProductId="2" TransactionId="00000000-0000-0000-0000-000000000000" Status="Active" />
+</ConsumableInformation>

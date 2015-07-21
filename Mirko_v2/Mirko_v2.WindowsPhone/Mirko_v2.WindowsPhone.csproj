@@ -203,6 +203,7 @@
     <Content Include="Assets\ust_transparent.png" />
     <Content Include="Assets\video_icon.png" />
     <Content Include="Assets\wide_badge.png" />
+    <Content Include="Assets\WindowsStoreProxy.xml" />
     <Content Include="FodyWeavers.xml" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>

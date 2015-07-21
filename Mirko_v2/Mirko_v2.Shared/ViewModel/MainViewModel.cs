@@ -470,6 +470,12 @@ namespace Mirko_v2.ViewModel
             get { return _goToDebugPage ?? (_goToDebugPage = new RelayCommand(() => NavService.NavigateTo("DebugPage"))); }
         }
 
+        private RelayCommand _goToDonationPage;
+        public RelayCommand GoToDonationPage
+        {
+            get { return _goToDonationPage ?? (_goToDonationPage = new RelayCommand(() => NavService.NavigateTo("DonationPage"))); }
+        }
+
         private RelayCommand _addNewMirkoEntries = null;
         public RelayCommand AddNewMirkoEntries
         {

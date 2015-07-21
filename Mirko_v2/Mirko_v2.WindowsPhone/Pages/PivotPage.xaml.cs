@@ -429,6 +429,16 @@ namespace Mirko_v2.Pages
                 Path = new PropertyPath("GoToDebugPage"),
             });
 
+            var donation = new AppBarButton()
+            {
+                Label = "podziękuj",
+            };
+            donation.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("GoToDonationPage"),
+            });
+
             c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);
@@ -436,6 +446,7 @@ namespace Mirko_v2.Pages
             c.SecondaryCommands.Add(login);
             c.SecondaryCommands.Add(logout);
             c.SecondaryCommands.Add(debug);
+            //c.SecondaryCommands.Add(donation);
             AppBar = c;
 
             return c;

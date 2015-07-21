@@ -65,8 +65,8 @@ namespace Mirko_v2.ViewModel
             NavService.RegisterPage("ProfilePage", typeof(ProfilePage));
             NavService.RegisterPage("AttachmentPage", typeof(AttachmentPage));
             NavService.RegisterPage("NewEntryPage", typeof(NewEntryPage));
-
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
+            NavService.RegisterPage("DonationPage", typeof(DonationPage));
             SimpleIoc.Default.Register<NavigationService>(() => NavService);
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
@@ -144,6 +144,11 @@ namespace Mirko_v2.ViewModel
         public NewEntryViewModel NewEntry
         {
             get { return ServiceLocator.Current.GetInstance<NewEntryViewModel>(); }
+        }
+
+        public PaymentViewModel Donation
+        {
+            get { return ServiceLocator.Current.GetInstance<PaymentViewModel>(); }
         }
 
         public static void Cleanup()
