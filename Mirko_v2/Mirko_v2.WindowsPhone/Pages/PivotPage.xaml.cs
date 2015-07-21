@@ -6,6 +6,7 @@ using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -15,14 +16,19 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class PivotPage : UserControl, IHaveAppBar
+    public sealed partial class PivotPage : UserControl, IHaveAppBar, IDisposable
     {
         private AppHeader AppHeader;
 
         public ItemsPresenter ItemsPresenter;
         private Storyboard ShowPivotContent;
         private bool HasEntryAnimationPlayed = false;
+
+        private Popup NewMirkoEntriesPopup;
+        private Storyboard PopupFadeIn;
+        private Storyboard PopupFadeOut;
         private bool CanShowNewEntriesPopup = false;
+
         private double PreviousPivotOffset;
         private const double PivotOffsetThreshold = 10;
 
@@ -30,11 +36,25 @@ namespace Mirko_v2.Pages
         {
             this.InitializeComponent();
 
+            NewMirkoEntriesPopup = this.Resources["NewMirkoEntriesPopup"] as Popup;
+            PopupFadeIn = NewMirkoEntriesPopup.Resources["PopupFadeIn"] as Storyboard;
+            PopupFadeOut = NewMirkoEntriesPopup.Resources["PopupFadeOut"] as Storyboard;
+
+            this.Resources.Remove("NewMirkoEntriesPopup");
+            PivotPageGrid.Children.Add(NewMirkoEntriesPopup);
+
             var VM = this.DataContext as MainViewModel;
+            VM.MirkoNewEntries.CollectionChanged -= MirkoNewEntries_CollectionChanged;
             VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
 
             var navService = SimpleIoc.Default.GetInstance<NavigationService>();
             AppHeader = navService.GetAppHeader();
+        }
+
+        public void Dispose()
+        {
+            NewMirkoEntriesPopup.IsOpen = false;
+            NewMirkoEntriesPopup = null;
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -60,23 +80,26 @@ namespace Mirko_v2.Pages
 
         private void MainPivot_Loaded(object sender, RoutedEventArgs e)
         {
-            var appHeaderHeight = AppHeader.ActualHeight;
-            var statusBarHeight = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height;
-            var margin = appHeaderHeight + 2.5 * statusBarHeight;
+            if (MainPivot.Margin.Top == 0)
+            {
+                var appHeaderHeight = AppHeader.ActualHeight;
+                var statusBarHeight = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height;
+                var margin = appHeaderHeight + 2.5 * statusBarHeight;
 
-            MainPivot.Margin = new Thickness(10, -margin, 0, 0);
-            SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
+                MainPivot.Margin = new Thickness(10, -margin, 0, 0);
+                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
+            }
 
             var scroll = MainPivot.GetDescendant<ScrollViewer>();
-            scroll.ViewChanged += (se, args) =>
-            {
-                var sv = se as ScrollViewer;
-                var newOffset = sv.HorizontalOffset;
-                if ((Math.Abs(PreviousPivotOffset - newOffset)) >= PivotOffsetThreshold)
-                    AppHeader.ShowStreams();
+            scroll.ViewChanged -= ScrollViewer_ViewChanged;
+            scroll.ViewChanged += ScrollViewer_ViewChanged;
 
-                PreviousPivotOffset = newOffset;
-            };
+            var VM = this.DataContext as MainViewModel;
+            if (VM.MirkoNewEntries.Count > 0 && MainPivot.SelectedIndex == 0)
+                CanShowNewEntriesPopup = true;
+          
+            if (scroll.VerticalOffset == 0 && CanShowNewEntriesPopup)
+                ShowNewEntriesPopup();
 
             if (ItemsPresenter == null)
             {
@@ -95,6 +118,16 @@ namespace Mirko_v2.Pages
              * */
         }
 
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var sv = sender as ScrollViewer;
+            var newOffset = sv.HorizontalOffset;
+            if ((Math.Abs(PreviousPivotOffset - newOffset)) >= PivotOffsetThreshold)
+                AppHeader.ShowStreams();
+
+            PreviousPivotOffset = newOffset;
+        }
+
         private void PivotPageGrid_Loaded(object sender, RoutedEventArgs e)
         {
             if (!HasEntryAnimationPlayed)
@@ -103,12 +136,10 @@ namespace Mirko_v2.Pages
                 HasEntryAnimationPlayed = true;
             }
 
-            // calculate offsets for popups
-            var vertical = 15;
-            var horizontal = Window.Current.Bounds.Right - PopupGrid.Width - 22;
-
+            var popupGrid = NewMirkoEntriesPopup.Child as Grid;
+            var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
             NewMirkoEntriesPopup.HorizontalOffset = horizontal;
-            NewMirkoEntriesPopup.VerticalOffset = vertical;
+            NewMirkoEntriesPopup.IsOpen = true;
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
@@ -144,8 +175,7 @@ namespace Mirko_v2.Pages
             }
             else if (currentPage == 1)
             {
-                if (NewMirkoEntriesPopup.IsOpen)
-                    HideNewEntriesPopup();
+                HideNewEntriesPopup();
 
                 ShowTimeSpanIndicatorPopup();
 
@@ -156,8 +186,7 @@ namespace Mirko_v2.Pages
             } 
             else if(currentPage == 2)
             {
-                if (NewMirkoEntriesPopup.IsOpen)
-                    HideNewEntriesPopup();
+                HideNewEntriesPopup();
 
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
@@ -169,8 +198,7 @@ namespace Mirko_v2.Pages
             }
             else if (currentPage == 3)
             {
-                if (NewMirkoEntriesPopup.IsOpen)
-                    HideNewEntriesPopup();
+                HideNewEntriesPopup();
 
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
@@ -211,13 +239,11 @@ namespace Mirko_v2.Pages
         #region Popups
         private void ShowNewEntriesPopup()
         {
-            this.NewMirkoEntriesPopup.IsOpen = true;
-            this.PopupFadeIn.Begin();
+            PopupFadeIn.Begin();
         }
 
         private void HideNewEntriesPopup()
         {
-            this.NewMirkoEntriesPopup.IsOpen = false;
             this.PopupFadeOut.Begin();
         }
 

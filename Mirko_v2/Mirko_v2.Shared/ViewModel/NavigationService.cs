@@ -74,7 +74,20 @@ namespace Mirko_v2.ViewModel
             if (!pagesCache.ContainsKey(type))
             {
                 if (pagesCache.Count > cachedPagesCount)
-                    pagesCache.Remove(pagesCache.First().Key);
+                {
+                    var item = pagesCache.First();
+                    var page = item.Value;
+                    var key = item.Key;
+
+                    var dispose = page.Page as IDisposable;
+                    if (dispose != null)
+                        dispose.Dispose();
+
+                    page.Page = null;
+                    page.AppBar = null;
+
+                    pagesCache.Remove(key);
+                }
 
                 content = (UserControl)Activator.CreateInstance(type);
                 var hasAppBar = content as IHaveAppBar;
