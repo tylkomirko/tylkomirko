@@ -104,6 +104,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private NewEntryBaseViewModel _attachmentTarget = null;
+        [JsonIgnore]
         public NewEntryBaseViewModel AttachmentTarget
         {
             get { return _attachmentTarget; }
