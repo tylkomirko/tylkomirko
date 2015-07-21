@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Mirko_v2.Utils;
 
 namespace Mirko_v2.Controls
 {
@@ -124,7 +125,8 @@ namespace Mirko_v2.Controls
 
         private string GetWordCharactersBefore()
         {
-            var backwards = Text.Substring(0, SelectionStart);
+            var start = this.GetNormalizedSelectionStart();
+            var backwards = Text.Substring(0, start);
             var wordCharactersBeforePointer = new string(backwards.Reverse().TakeWhile(c => CharPredicate(c)).Reverse().ToArray());
 
             return wordCharactersBeforePointer;
@@ -132,7 +134,8 @@ namespace Mirko_v2.Controls
 
         private string GetWordCharactersAfter()
         {
-            var fowards = Text.Substring(SelectionStart, Text.Length - SelectionStart);
+            var start = this.GetNormalizedSelectionStart();
+            var fowards = Text.Substring(start, Text.Length - start);
             var wordCharactersAfterPointer = new string(fowards.TakeWhile(c => CharPredicate(c)).ToArray());
 
             return wordCharactersAfterPointer;
@@ -148,7 +151,8 @@ namespace Mirko_v2.Controls
             var newText = this.Text;
             var before = GetWordCharactersBefore();
             var after = GetWordCharactersAfter();
-            var idx = SelectionStart - before.Length;
+            var start = this.GetNormalizedSelectionStart();
+            var idx = start - before.Length;
 
             // first, we have to remove current word.
             newText = newText.Remove(idx, before.Length);
