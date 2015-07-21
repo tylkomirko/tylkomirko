@@ -22,30 +22,28 @@ namespace Mirko_v2.Controls
 {
     public sealed partial class HashtagSuggestionBox : UserControl
     {
+        private static CacheViewModel Cache = null;
+
         public delegate void HashtagSelectedEventHandler(object sender, StringEventArgs e);
         public event HashtagSelectedEventHandler HashtagSelected;       
 
         public HashtagSuggestionBox()
         {
             this.InitializeComponent();
-        }
 
-        private void GenerateSuggestions(string query)
-        {
-            var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
-            if (query.Length < 2 || cacheVM.PopularHashtags.Count == 0) return;
-
-            cacheVM.HashtagSuggestions.Clear();
-            var sug = cacheVM.PopularHashtags.Where(item => item.StartsWith(query));
-            cacheVM.HashtagSuggestions.AddRange(sug);
+            if (Cache == null)
+            {
+                Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
+                if (Cache.PopularHashtags.Count == 0)
+                    Cache.GetPopularHashtags();
+            }
         }
 
         private void HashtagBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var txt = this.HashtagBox.Text;
-            if (txt == "#") return;
-
-            GenerateSuggestions(txt);
+            var query = HashtagBox.Text;
+            if (query.StartsWith("#"))
+                Cache.GenerateSuggestions(query);
         }
 
         private void HashtagBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -72,8 +70,7 @@ namespace Mirko_v2.Controls
             this.HashtagBox.Text = "#";
             this.HashtagBox.SelectionStart = 1;
 
-            var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
-            cacheVM.HashtagSuggestions.Clear();
+            Cache.HashtagSuggestions.Clear();
         }
     }
 }
