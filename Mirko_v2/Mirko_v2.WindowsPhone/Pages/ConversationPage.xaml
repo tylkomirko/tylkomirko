@@ -15,12 +15,6 @@
     d:DesignWidth="400"
     DataContext="{Binding Messages, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <i:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Unloaded">
-            <core:InvokeCommandAction Command="{Binding SaveCommand}" />
-        </core:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
-
     <UserControl.Resources>
         <MenuFlyout x:Name="DeleteAttachmentFlyout">
             <MenuFlyoutItem Text="usuń" Click="MenuFlyoutItem_Click" />
