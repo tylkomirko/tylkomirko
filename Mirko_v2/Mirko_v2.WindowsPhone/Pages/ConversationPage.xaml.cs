@@ -132,6 +132,17 @@ namespace Mirko_v2.Pages
                 SendButton.IsEnabled = false;
             };
 
+            var refresh = new AppBarButton()
+            {
+                Label = "odśwież",
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+            };
+            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MessagesViewModel,
+                Path = new PropertyPath("CurrentConversation.UpdateMessagesCommand"),
+            });
+
             var lenny = new AppBarButton()
             {
                 Label = "lenny",
@@ -155,6 +166,7 @@ namespace Mirko_v2.Pages
             });
 
             c.PrimaryCommands.Add(SendButton);
+            c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(lenny);
             c.PrimaryCommands.Add(attachment);
 
