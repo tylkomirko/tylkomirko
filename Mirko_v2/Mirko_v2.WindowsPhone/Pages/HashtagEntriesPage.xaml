@@ -13,38 +13,52 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Grid x:Name="LayoutRoot">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Popup definition -->
-        <Popup x:Name="NewEntriesPopup"
-               VerticalOffset="103.5">
+    <UserControl.Resources>
+        <Popup x:Key="NewEntriesPopup"
+               IsOpen="True"
+               VerticalOffset="15">
 
             <Popup.Resources>
-                <Storyboard x:Name="PopupFadeIn">
+                <Storyboard x:Key="PopupFadeIn">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="{StaticResource AppHeaderOpacity}"
                                      Duration="0:0:0.2" />
+
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PopupGrid"
+                                                   Storyboard.TargetProperty="IsHitTestVisible"
+                                                   BeginTime="0:0:0.2">
+                        <DiscreteObjectKeyFrame KeyTime="0">
+                            <DiscreteObjectKeyFrame.Value>
+                                <x:Boolean>True</x:Boolean>
+                            </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
-                <Storyboard x:Name="PopupFadeOut">
+                <Storyboard x:Key="PopupFadeOut">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="0.0"
                                      Duration="0:0:0.2"/>
+
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PopupGrid"
+                                                   Storyboard.TargetProperty="IsHitTestVisible">
+                        <DiscreteObjectKeyFrame KeyTime="0">
+                            <DiscreteObjectKeyFrame.Value>
+                                <x:Boolean>False</x:Boolean>
+                            </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
             </Popup.Resources>
 
             <Grid x:Name="PopupGrid"
-                  Opacity="{StaticResource AppHeaderOpacity}"
-                  Background="#67a7d2"
-                  Height="49">
+                  Opacity="0"
+                  Background="Transparent"
+                  Height="55"
+                  Width="55">
 
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="Tapped">
@@ -52,16 +66,26 @@
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
 
-                <TextBlock x:Name="PopupTB"
+                <Ellipse Fill="#67a7d2"
+                         Height="55"
+                         Width="55"/>
+                <TextBlock Text="{Binding TaggedNewEntries.Count}"
+                           FontWeight="SemiBold"
+                           FontSize="19"                           
                            Style="{StaticResource BaseTextBlockStyle}"
-                           FontSize="18"
-                           HorizontalAlignment="Center"
                            VerticalAlignment="Center"
-                           Foreground="White"
-                           Text="{Binding TaggedNewEntries.Count, Converter={StaticResource NewEntriesNumeral}}">
-                </TextBlock>
+                           HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
+    </UserControl.Resources>
+    
+    <Grid x:Name="LayoutRoot"
+          Loaded="LayoutRoot_Loaded">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0"
@@ -71,7 +95,7 @@
                     BorderThickness="0"
                     Opacity="{StaticResource AppBarOpacity}"
                     Height="49"
-                    Background="{StaticResource PivotHeaderBackground}">
+                    Background="{ThemeResource PivotHeaderBackground}">
 
                 <Border.Resources>
                     <Storyboard x:Name="ShowHeader">
@@ -109,7 +133,6 @@
         <!--TODO: Content should be placed within the following grid-->        
         <controls:ListViewEx x:Name="ListView"
                              Grid.Row="1"
-                             Margin="10,-140,0,0"
                              ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                              ScrollingDown="ListView_ScrollingDown"
                              ScrollingUp="ListView_ScrollingUp"
@@ -127,8 +150,7 @@
 
             <ListView.Header>
                 <StackPanel>
-                    <Rectangle Height="140"
-                               Fill="Transparent" />
+                    <Rectangle Fill="Transparent" />
 
                     <TextBlock x:Name="NoItemsTB"
                                Style="{StaticResource TextBlockNoItems}"
@@ -137,11 +159,6 @@
                                Visibility="{Binding TaggedEntries.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
                 </StackPanel>
             </ListView.Header>
-
-            <ListView.Footer>
-                <Rectangle Height="32"
-                           Fill="Transparent" />
-            </ListView.Footer>
 
         </controls:ListViewEx>
 

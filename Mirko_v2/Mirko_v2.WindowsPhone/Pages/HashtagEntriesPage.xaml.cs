@@ -6,22 +6,46 @@ using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class HashtagEntriesPage : UserControl, IHaveAppBar
+    public sealed partial class HashtagEntriesPage : UserControl, IHaveAppBar, IDisposable
     {
+        private Popup NewEntriesPopup;
+        private Storyboard PopupFadeIn;
+        private Storyboard PopupFadeOut;
         private bool CanShowNewEntriesPopup = false;
 
         public HashtagEntriesPage()
         {
             this.InitializeComponent();
 
+            NewEntriesPopup = this.Resources["NewEntriesPopup"] as Popup;
+            PopupFadeIn = NewEntriesPopup.Resources["PopupFadeIn"] as Storyboard;
+            PopupFadeOut = NewEntriesPopup.Resources["PopupFadeOut"] as Storyboard;
+
+            this.Resources.Remove("NewEntriesPopup");
+            LayoutRoot.Children.Add(NewEntriesPopup);
+
             var VM = this.DataContext as MainViewModel;
+            var height = VM.ListViewHeaderHeight + 49; // adjust for header
+            ListView.Margin = new Thickness(10, -height, 0, 0);
+            var rect = (ListView.Header as FrameworkElement).GetDescendant<Rectangle>();
+            rect.Height = height;
+
             VM.TaggedNewEntries.CollectionChanged += TaggedNewEntries_CollectionChanged;
+        }
+
+        public void Dispose()
+        {
+            NewEntriesPopup.IsOpen = false;
+            NewEntriesPopup = null;
         }
 
         private void TaggedNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -30,27 +54,21 @@ namespace Mirko_v2.Pages
             if (col.Count > 0)
             {
                 CanShowNewEntriesPopup = true;
-                ShowNewEntriesPopup();
+                PopupFadeIn.Begin();
             }
             else
             {
                 CanShowNewEntriesPopup = false;
-                HideNewEntriesPopup();
+                PopupFadeOut.Begin();
             }
         }
 
-        private void ShowNewEntriesPopup()
+        private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            this.PopupGrid.Width = Window.Current.Bounds.Width;
-
-            this.NewEntriesPopup.IsOpen = true;
-            this.PopupFadeIn.Begin();
-        }
-
-        private void HideNewEntriesPopup()
-        {
-            this.NewEntriesPopup.IsOpen = false;
-            this.PopupFadeOut.Begin();
+            var popupGrid = NewEntriesPopup.Child as Grid;
+            var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
+            NewEntriesPopup.HorizontalOffset = horizontal;
+            NewEntriesPopup.IsOpen = true;
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
@@ -58,7 +76,7 @@ namespace Mirko_v2.Pages
             HideHeader.Begin();
             AppBar.Hide();
 
-            HideNewEntriesPopup();
+            PopupFadeOut.Begin();
         }
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
@@ -67,7 +85,7 @@ namespace Mirko_v2.Pages
             AppBar.Show();
 
             if (CanShowNewEntriesPopup)
-                ShowNewEntriesPopup();
+                PopupFadeIn.Begin();
         }
 
         #region AppBar
@@ -76,7 +94,7 @@ namespace Mirko_v2.Pages
 
         public CommandBar CreateCommandBar()
         {
-            var c = new CommandBar();
+            AppBar = new CommandBar();
 
             var observe = new AppBarToggleButton()
             {
@@ -85,6 +103,17 @@ namespace Mirko_v2.Pages
             };
             observe.Click += Observe_Click;
 
+            var refresh = new AppBarButton()
+            {
+                Label = "odśwież",
+                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+            };
+            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("RefreshTaggedEntries")
+            });
+
             var up = new AppBarButton()
             {
                 Icon = new SymbolIcon(Symbol.Up),
@@ -92,15 +121,15 @@ namespace Mirko_v2.Pages
             };
             up.Click += ScrollUp_Click;
 
-            c.PrimaryCommands.Add(observe);
-            c.PrimaryCommands.Add(up);
+            AppBar.PrimaryCommands.Add(observe);
+            AppBar.PrimaryCommands.Add(refresh);
+            AppBar.PrimaryCommands.Add(up);
 
-            AppBar = c;
             ObserveButton = observe;
             ObserveButton.Loaded += (s, e) =>
             {
                 var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
-                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+                var mainVM = this.DataContext as MainViewModel;
                 if (cacheVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
                 {
                     ObserveButton.IsChecked = true;
@@ -113,14 +142,14 @@ namespace Mirko_v2.Pages
                 }
             };
 
-            return c;
+            return AppBar;
         }
 
         private void Observe_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as AppBarToggleButton;
             var notificationsVM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+            var mainVM = this.DataContext as MainViewModel;
 
             if(button.IsChecked.Value)
             {

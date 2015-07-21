@@ -373,6 +373,12 @@ namespace Mirko_v2.ViewModel
             //AddNewMirkoEntries.Execute(null);
         }
 
+        private RelayCommand _refreshTaggedEntries = null;
+        public RelayCommand RefreshTaggedEntries
+        {
+            get { return _refreshTaggedEntries ?? (_refreshTaggedEntries = new RelayCommand(async () => await CheckNewHashtagEntries())); }
+        }
+
         private RelayCommand<uint> _goToEntryPage = null;
         public RelayCommand<uint> GoToEntryPage
         {
