@@ -1,0 +1,40 @@
+﻿<UserControl
+    x:Class="Mirko_v2.Pages.DonationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko_v2.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0"
+                   Style="{StaticResource BodyTextBlockStyle}"
+                   FontSize="16"
+                   TextWrapping="WrapWholeWords">
+            <Run Text="Jeżeli chcesz podziękować za setki godzin spędzone nad rozwijaniem tej aplikacji, możesz przesłać dobrowolną dotację." />
+            <LineBreak />
+            <Run Text="Nie odblokuje to żadnych dodatkowych funkcji, ponieważ aplikacja jest w całości darmowa." />
+            <LineBreak />
+            <Run Text="Dotacje można składać wielokrotnie." />
+            <LineBreak />
+            <Run Text="Płatność odbywa się poprzez Sklep Microsoft." />
+            <LineBreak />
+            <LineBreak />
+            <Run Text="Możesz wybrać spośród następujących stawek:" />
+        </TextBlock>
+        
+        <TextBlock Grid.Row="1"
+                   Style="{StaticResource SubheaderTextBlockStyle}">
+            <Run Text="1,99" />
+            <Run Text="PLN" Foreground="DarkGray" />
+        </TextBlock>
+    </Grid>
+</UserControl>

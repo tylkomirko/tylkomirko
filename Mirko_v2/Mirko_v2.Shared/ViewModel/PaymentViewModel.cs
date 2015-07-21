@@ -12,6 +12,7 @@ namespace Mirko_v2.ViewModel
     {
         private readonly ILogger Logger = null;
         private LicenseInformation LicenseInformation;
+        private ListingInformation ListingInformation;
 
         public PaymentViewModel()
         {
@@ -25,6 +26,8 @@ namespace Mirko_v2.ViewModel
         {
             if (obj.Notification == "Init")
             {
+                ListingInformation = await CurrentApp.LoadListingInformationAsync();
+
                 var products = await CurrentApp.GetUnfulfilledConsumablesAsync();
                 foreach (UnfulfilledConsumable product in products)
                 {
