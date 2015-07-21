@@ -26,6 +26,7 @@ namespace Mirko_v2.ViewModel
                     base.RaisePropertyChanged("EmbedSymbolFontSize");
                     base.RaisePropertyChanged("AttachmentFontSize");
                     base.RaisePropertyChanged("PMFontSize");
+                    base.RaisePropertyChanged("PMDateFontSize");
                 }
             };
         }
@@ -39,6 +40,7 @@ namespace Mirko_v2.ViewModel
         private const double EmbedSymbolBasicFontSize = 16.0;
         private const double AttachmentBasicFontSize = 13.0;
         private const double PMBasicFontSize = 15.0;
+        private const double PMDateBasicFontSize = 12.5;
 
         public double EntryFontSize
         {
@@ -83,6 +85,11 @@ namespace Mirko_v2.ViewModel
         public double PMFontSize
         {
             get { return PMBasicFontSize * SettingsVM.FontScaleFactor; }
+        }
+
+        public double PMDateFontSize
+        {
+            get { return PMDateBasicFontSize * SettingsVM.FontScaleFactor; }
         }
     }
 }

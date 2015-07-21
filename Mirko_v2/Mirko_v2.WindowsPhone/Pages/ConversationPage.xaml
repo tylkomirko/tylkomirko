@@ -46,7 +46,7 @@
                         Background="{ThemeResource ReceivedMessageBackground}">
                     <StackPanel>
                         <RichTextBlock utils:Properties.Html="{Binding Data.Text}"
-                                       FontSize="15.0"
+                                       FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                        Margin="12,7,12,7"
                                        Foreground="{ThemeResource ReceivedMessageForeground}"/>
 
@@ -60,8 +60,8 @@
                                                  HorizontalAlignment="Left"
                                                  DataContext="{Binding EmbedVM}"/>
                         </Grid>
-                        
-                        <TextBlock FontSize="12.5"
+
+                        <TextBlock FontSize="{Binding Fonts.PMDateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                    Foreground="{ThemeResource MessageReceivedTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">
@@ -80,7 +80,7 @@
                         Background="{ThemeResource SentMessageBackground}">
                     <StackPanel>
                         <RichTextBlock utils:Properties.Html="{Binding Data.Text}"
-                                       FontSize="15.0"
+                                       FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                        Margin="12,7,12,7"
                                        Foreground="{ThemeResource SentMessageForeground}"/>
 
@@ -96,7 +96,7 @@
 
                         </Grid>
 
-                        <TextBlock FontSize="12.5"
+                        <TextBlock FontSize="{Binding Fonts.PMDateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                    Foreground="{ThemeResource MessageSentTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">

@@ -26,7 +26,7 @@ namespace Mirko_v2.ViewModel
         {
             if (obj.Notification == "Init")
             {
-                ListingInformation = await CurrentApp.LoadListingInformationAsync();
+                //ListingInformation = await CurrentApp.LoadListingInformationAsync();
 
                 var products = await CurrentApp.GetUnfulfilledConsumablesAsync();
                 foreach (UnfulfilledConsumable product in products)
