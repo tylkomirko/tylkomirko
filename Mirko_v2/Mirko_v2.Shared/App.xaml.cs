@@ -233,7 +233,6 @@ namespace Mirko_v2
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
                 App.ApiService.LocalStorage.InitAction();
 
                 if (!string.IsNullOrEmpty(e.Arguments))
@@ -346,7 +345,6 @@ namespace Mirko_v2
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                SimpleIoc.Default.GetInstance<CacheViewModel>().InitCommand.Execute(null);
                 App.ApiService.LocalStorage.InitAction();
 
                 NavService.NavigateTo("NewEntryPage");

@@ -30,7 +30,11 @@ namespace Mirko_v2.Controls
         public AutoCompletingTextBox()
         {
             if (Cache == null)
+            {
                 Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
+                if (Cache.PopularHashtags.Count == 0)
+                    Cache.GetPopularHashtags();
+            }
 
             Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
             {

@@ -1,15 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
 using Mirko_v2.Utils;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -20,17 +16,18 @@ namespace Mirko_v2.ViewModel
 {
     public class CacheViewModel : ViewModelBase
     {
-        private readonly TimeSpan FileLifeSpan = new TimeSpan(24, 0, 0);
-        private Timer SaveTimer = null;
+        private readonly TimeSpan FileLifeSpan = new TimeSpan(12, 0, 0);
         private readonly ILogger Logger = null;
-
-        // image cache
+        private readonly StorageFolder TempFolder = null;
         private StorageFolder ImageCacheFolder = null;
+
+        public Action GetPopularHashtags = null;
 
         public CacheViewModel()
         {
+            TempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
-            SaveTimer = new Timer(SaveTimerCallback, null, 45*1000, 0); // 45 seconds
+            GetPopularHashtags = new Action(async () => await DownloadPopularHashtags());
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
@@ -38,36 +35,26 @@ namespace Mirko_v2.ViewModel
         private async void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Update ObservedHashtags")
-            {
                 await DownloadObservedHashtags();
-            }
             else if (obj.Notification == "Save ObservedHashtags")
-            {
                 await SaveObservedHashtags();
-            }
             else if (obj.Notification == "Delete ObservedHashtags")
-            {
                 await DeleteObservedHashtags();
-            }
         }
 
-        private async void SaveTimerCallback(object state)
+        #region ObservedHashtags
+        private ObservableCollectionEx<string> _observedHashtags;
+        public ObservableCollectionEx<string> ObservedHashtags
         {
-            Logger.Info("Saving cache.");
-            await Save();
-
-            SaveTimer.Dispose(); // effectivly this is a one-shot timer
-            SaveTimer = null;
+            get { return _observedHashtags ?? (_observedHashtags = new ObservableCollectionEx<string>()); }
         }
 
-        #region ObservedHashtags (functions)
         private async Task DownloadObservedHashtags()
         {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             var needToDownload = false;
             try
             {
-                var file = await folder.GetFileAsync("ObservedTags");
+                var file = await TempFolder.GetFileAsync("ObservedHashtags");
                 var props = await file.GetBasicPropertiesAsync();
                 if (DateTime.Now - props.DateModified > new TimeSpan(12, 0, 0))
                 {
@@ -80,8 +67,9 @@ namespace Mirko_v2.ViewModel
                     ObservedHashtags.AddRange(fileContent);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Error("Couldn't read ObservedHashtags.", e);
                 needToDownload = true;
             }
 
@@ -93,13 +81,9 @@ namespace Mirko_v2.ViewModel
                     ObservedHashtags.Clear();
                     ObservedHashtags.AddRange(data);
                     data = null;
-                }
-            }
 
-            if (ObservedHashtags.Count > 0)
-            {
-                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteLinesAsync(file, ObservedHashtags);
+                    await SaveObservedHashtags();
+                }
             }
         }
 
@@ -108,63 +92,45 @@ namespace Mirko_v2.ViewModel
             if (ObservedHashtags.Count == 0)
                 return;
 
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             try
             {
-                var file = await folder.CreateFileAsync("ObservedTags", CreationCollisionOption.ReplaceExisting);
+                var file = await TempFolder.CreateFileAsync("ObservedHashtags", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteLinesAsync(file, ObservedHashtags);
             }
             catch (Exception e)
             {
-                Logger.Error("Couldn't save ObservedTags.", e);
+                Logger.Error("Couldn't save ObservedHashtags.", e);
             }
         }
 
         private async Task DeleteObservedHashtags()
         {
-            var folder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
             try
             {
-                var file = await folder.GetFileAsync("ObservedTags");
+                var file = await TempFolder.GetFileAsync("ObservedHashtags");
                 await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
             }
             catch (Exception e)
             {
-                Logger.Error("Couldn't delete ObservedTags.", e);
+                Logger.Error("Couldn't delete ObservedHashtags.", e);
             }
         }
         #endregion ObservedHashtags
 
-        #region Properties
+        #region PopularHashtags
         private ObservableCollectionEx<string> _popularHashtags = null;
         public ObservableCollectionEx<string> PopularHashtags
         {
             get { return _popularHashtags ?? (_popularHashtags = new ObservableCollectionEx<string>()); }
         }
 
-        private ObservableCollectionEx<string> _observedHashtags;
-        public ObservableCollectionEx<string> ObservedHashtags
-        {
-            get { return _observedHashtags ?? (_observedHashtags = new ObservableCollectionEx<string>()); }
-        }
-        #endregion
-
-        #region Commands
-        private RelayCommand _initCommand = null;
-        public RelayCommand InitCommand
-        {
-            get { return _initCommand ?? (_initCommand = new RelayCommand(ExecuteInitCommand)); }
-        }
-
-        private async void ExecuteInitCommand()
+        private async Task DownloadPopularHashtags()
         {
             bool needToDownload = false;
-            var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
 
-            // PopularTags
             try
             {
-                var file = await tempFolder.GetFileAsync("PopularTags");
+                var file = await TempFolder.GetFileAsync("PopularHashtags");
                 var props = await file.GetBasicPropertiesAsync();
                 if (DateTime.Now - props.DateModified > FileLifeSpan)
                 {
@@ -173,7 +139,7 @@ namespace Mirko_v2.ViewModel
                 else
                 {
                     var fileContent = await FileIO.ReadLinesAsync(file);
-                    Logger.Info(fileContent.Count + " entries in PopularTags");
+                    Logger.Info(fileContent.Count + " entries in PopularHashtags");
                     if (fileContent.Count == 0)
                     {
                         needToDownload = true;
@@ -184,9 +150,10 @@ namespace Mirko_v2.ViewModel
                         PopularHashtags.AddRange(fileContent);
                     }
                 }
-            } 
-            catch(Exception)
+            }
+            catch (Exception e)
             {
+                Logger.Error("Couldn't read PopularHashtags.", e);
                 needToDownload = true;
             }
 
@@ -199,22 +166,29 @@ namespace Mirko_v2.ViewModel
                     PopularHashtags.Clear();
                     PopularHashtags.AddRange(data.Select(x => x.HashtagName));
                     data = null;
+
+                    await SavePopularHashtags();
                 }
                 else
                 {
                     Logger.Warn("Downloading PopularHashtags failed.");
                 }
-            }            
+            } 
         }
 
-        private async Task Save()
+        private async Task SavePopularHashtags()
         {
-            var tempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-
-            // PopularTags
-            var file = await tempFolder.CreateFileAsync("PopularTags", CreationCollisionOption.ReplaceExisting);
-            await FileIO.WriteLinesAsync(file, PopularHashtags);
-            Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
+            try
+            {
+                var file = await TempFolder.CreateFileAsync("PopularHashtags", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteLinesAsync(file, PopularHashtags);
+                Logger.Info("Saved PopularHashtags, " + PopularHashtags.Count + " entries.");
+            }
+            catch(Exception e)
+            {
+                Logger.Error("Couldn't save PopularHashtags.", e);
+            }
+          
         }
         #endregion
 
@@ -297,10 +271,7 @@ namespace Mirko_v2.ViewModel
             previewURL = previewURL.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
 
             if (ImageCacheFolder == null)
-            {
-                var localFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
-                ImageCacheFolder = await localFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
-            }
+                ImageCacheFolder = await TempFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
 
             StorageFile file = null;
 
