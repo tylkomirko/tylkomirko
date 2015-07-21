@@ -8,6 +8,12 @@ namespace NotificationsExtensions
     {
         public static void SetBadge(uint count)
         {
+            object liveTile;
+            Windows.Storage.ApplicationData.Current.RoamingSettings.Values.TryGetValue("LiveTile", out liveTile);
+
+            if (!(bool)liveTile)
+                return;
+
             BadgeNumericNotificationContent badgeContent = new BadgeNumericNotificationContent(count);
             BadgeUpdateManager.CreateBadgeUpdaterForApplication().Update(badgeContent.CreateNotification());
         }
@@ -25,7 +31,7 @@ namespace NotificationsExtensions
             smallTile.ImageIcon.Src = "Assets/small_badge.png";
 
             var mediumTile = TileContentFactory.CreateTileSquare150x150IconWithBadge();
-            mediumTile.Branding = TileBranding.None;
+            mediumTile.Branding = TileBranding.Name;
             mediumTile.ImageIcon.Src = "Assets/medium_badge.png";
 
             var wideTile = TileContentFactory.CreateTileWide310x150IconWithBadgeAndText();
