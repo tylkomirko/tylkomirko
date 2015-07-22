@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using QKit.Common;
@@ -20,11 +19,6 @@ namespace Mirko_v2.Pages
         {
             this.InitializeComponent();
 
-            var mainVM = this.DataContext as MainViewModel;
-            var height = mainVM.ListViewHeaderHeight;
-            ListView.Margin = new Thickness(0, -height, 0, 10);
-            (ListView.Header as FrameworkElement).GetDescendant<Rectangle>().Height = height;
-
             this.Unloaded += (s, e) =>
             {
                 HeaderCheckBox.IsChecked = false;
@@ -36,18 +30,15 @@ namespace Mirko_v2.Pages
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var mainVM = this.DataContext as MainViewModel;
+
+            var height = mainVM.ListViewHeaderHeight;
+            ListView.Margin = new Thickness(0, -height, 0, 10);
+            var header = ListView.Header as FrameworkElement;
+            var rect = header.GetDescendant<Rectangle>();
+            rect.Height = height;
+
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
-        }
-
-        private void ListView_ScrollingDown(object sender, EventArgs e)
-        {
-            AppBar.Hide();
-        }
-
-        private void ListView_ScrollingUp(object sender, EventArgs e)
-        {
-            AppBar.Show();
         }
 
         #region AppBar
