@@ -410,7 +410,12 @@ namespace Mirko_v2
             var currentFrame = NavService.CurrentFrame();
 
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-            localSettings["PageKey"] = currentPage;
+
+            if (currentPage != "DonationPage")
+                localSettings["PageKey"] = currentPage;
+            else
+                localSettings.Remove("PageKey");
+
             localSettings.Remove("VM");
 
             if (currentFrame.DataContext is IResumable)

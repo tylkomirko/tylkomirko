@@ -5,12 +5,15 @@
     xmlns:local="using:Mirko_v2.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    DataContext="{Binding Donation, Mode=OneWay, Source={StaticResource Locator}}">
+    DataContext="{Binding Donation, Mode=OneWay, Source={StaticResource Locator}}"
+    x:Name="root">
     
-    <Grid Margin="10,0,10,0">
+    <Grid Margin="15,0,15,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -26,7 +29,7 @@
             <LineBreak />
             <Run Text="Dotacje można składać wielokrotnie." />
             <LineBreak />
-            <Run Text="Płatność odbywa się poprzez Sklep Microsoft." />
+            <Run Text="Płatność odbywa się poprzez Sklep Windows." />
             <LineBreak />
             <LineBreak />
             <Run Text="Możesz wybrać spośród następujących stawek:" />
@@ -39,8 +42,17 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Style="{StaticResource SubheaderTextBlockStyle}">
+                        <Run Text="&#x2022;" />
                         <Run Text="{Binding Item2}" />
                         <Run Text="PLN" Foreground="DarkGray" />
+                        
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Tapped">
+                                <core:InvokeCommandAction Command="{Binding ElementName=root, Path=DataContext.BuyProduct}"
+                                                          CommandParameter="{Binding Item1}" />
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+                        
                     </TextBlock>
                 </DataTemplate>
             </ListView.ItemTemplate>

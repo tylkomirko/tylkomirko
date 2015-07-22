@@ -446,7 +446,7 @@ namespace Mirko_v2.Pages
             c.SecondaryCommands.Add(login);
             c.SecondaryCommands.Add(logout);
             c.SecondaryCommands.Add(debug);
-            //c.SecondaryCommands.Add(donation);
+            c.SecondaryCommands.Add(donation);
             AppBar = c;
 
             return c;
