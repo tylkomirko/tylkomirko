@@ -84,8 +84,8 @@ namespace Mirko_v2.ViewModel
 
                 SelectedEntry = e;
 
-                var oldEntry = col.SingleOrDefault(x => x.Data.ID == e.Data.ID);
-                if(oldEntry != null)
+                var oldEntries = col.Where(x => x.Data.ID == e.Data.ID);
+                foreach(var oldEntry in oldEntries)
                 {
                     oldEntry.Data.CommentCount = e.Data.CommentCount;
                     oldEntry.Comments.Clear();
