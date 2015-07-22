@@ -24,10 +24,8 @@
                            DataFetchSize="7">       
 
         <ListView.Header>
-            <StackPanel Margin="0,0,0,0">
-                <Rectangle x:Name="HeaderSpacer"
-                           Fill="Transparent"
-                           Height="{Binding Main.ListViewHeaderHeight, Mode=OneWay, Source={StaticResource Locator}}" />
+            <StackPanel>
+                <Rectangle Fill="Transparent" />
 
                 <Grid>
                     <Grid.ColumnDefinitions>

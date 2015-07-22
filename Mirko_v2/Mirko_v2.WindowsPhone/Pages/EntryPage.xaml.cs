@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -18,6 +19,11 @@ namespace Mirko_v2.Pages
         public EntryPage()
         {
             this.InitializeComponent();
+
+            var mainVM = this.DataContext as MainViewModel;
+            var height = mainVM.ListViewHeaderHeight;
+            ListView.Margin = new Thickness(0, -height, 0, 10);
+            (ListView.Header as FrameworkElement).GetDescendant<Rectangle>().Height = height;
 
             this.Unloaded += (s, e) =>
             {
@@ -30,7 +36,6 @@ namespace Mirko_v2.Pages
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var mainVM = this.DataContext as MainViewModel;
-            ListView.Margin = new Thickness(0, -mainVM.ListViewHeaderHeight, 0, 0);
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }
