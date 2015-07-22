@@ -1,16 +1,18 @@
-﻿using GalaSoft.MvvmLight.Threading;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko_v2.Pages
 {
-    public sealed partial class SettingsPage : UserControl
+    public sealed partial class SettingsPage : UserControl, IHaveAppBar
     {
         public SettingsPage()
         {
@@ -31,6 +33,25 @@ namespace Mirko_v2.Pages
             };
 
             this.Unloaded += async (s, e) => await StatusBarManager.ShowStatusBarAsync();
+        }
+
+        public CommandBar CreateCommandBar()
+        {
+            var c = new CommandBar() { ClosedDisplayMode = AppBarClosedDisplayMode.Minimal };
+
+            var debug = new AppBarButton()
+            {
+                Label = "debug",
+            };
+            debug.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<MainViewModel>(),
+                Path = new PropertyPath("GoToDebugPage"),
+            });
+
+            c.SecondaryCommands.Add(debug);
+
+            return c;
         }
     }
 }
