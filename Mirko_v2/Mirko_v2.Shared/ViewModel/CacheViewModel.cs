@@ -56,7 +56,7 @@ namespace Mirko_v2.ViewModel
             {
                 var file = await TempFolder.GetFileAsync("ObservedHashtags");
                 var props = await file.GetBasicPropertiesAsync();
-                if (DateTime.Now - props.DateModified > new TimeSpan(12, 0, 0))
+                if (DateTime.Now - props.DateModified > FileLifeSpan)
                 {
                     needToDownload = true;
                 }
@@ -66,6 +66,11 @@ namespace Mirko_v2.ViewModel
                     ObservedHashtags.Clear();
                     ObservedHashtags.AddRange(fileContent);
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.Error("ObservedHashtags not found.");
+                needToDownload = true;
             }
             catch (Exception e)
             {
@@ -150,6 +155,11 @@ namespace Mirko_v2.ViewModel
                         PopularHashtags.AddRange(fileContent);
                     }
                 }
+            }
+            catch(FileNotFoundException)
+            {
+                Logger.Error("PopularHashtags not found.");
+                needToDownload = true;
             }
             catch (Exception e)
             {
