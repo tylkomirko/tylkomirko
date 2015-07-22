@@ -19,12 +19,6 @@ namespace WykopAPI
         private StorageFolder RootFolder = null;
         public Action InitAction = null;
 
-        private List<uint> _entriesID = null;
-        public List<uint> EntriesID
-        {
-            get { return _entriesID ?? (_entriesID = new List<uint>()); }
-        }
-
         private List<Conversation> _conversations = null;
         public List<Conversation> Conversations
         {
@@ -42,13 +36,6 @@ namespace WykopAPI
         {
             var tempFolder = ApplicationData.Current.TemporaryFolder; // maybe change to LocalFolder?
             RootFolder = await tempFolder.CreateFolderAsync("Storage", CreationCollisionOption.OpenIfExists);
-            var entriesFolder = await RootFolder.CreateFolderAsync("Entries", CreationCollisionOption.OpenIfExists);
-
-            // get all files in entries folder
-            var files = await entriesFolder.GetFilesAsync();
-            EntriesID.Capacity = files.Count;
-            foreach (var file in files)
-                EntriesID.Add(Convert.ToUInt32(file.DisplayName));
         }
 
         public async Task<List<Conversation>> ReadConversations()
@@ -71,6 +58,11 @@ namespace WykopAPI
                     JsonSerializer serializer = new JsonSerializer();
                     return serializer.Deserialize<List<Conversation>>(reader);
                 }
+            }
+            catch(FileNotFoundException)
+            {
+                _log.Error("Conversations not found.");
+                return null;
             }
             catch (Exception e)
             {
@@ -95,8 +87,9 @@ namespace WykopAPI
 
                 _log.Info("Saved Conversations.");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _log.Error("Something went wrong saving Conversations: ", e);
             }
             finally
             {
@@ -113,8 +106,9 @@ namespace WykopAPI
 
                 _log.Info("Deleted Conversations.");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _log.Error("Something went wrong deleting Conversations: ", e);
             }
         }
     }
