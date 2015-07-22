@@ -184,13 +184,20 @@
     <Language Code="vi-vn" InMinimumRequirementSet="true" />
   </SupportedLocales>
   <ProductReservedInfo>
-    <MainPackageIdentityName>40167Eggplant.63068A49910A9</MainPackageIdentityName>
+    <MainPackageIdentityName>40167Eggplant.TylkoMirkoBeta</MainPackageIdentityName>
     <ReservedNames>
-      <ReservedName>Tylko Mirko Beta²</ReservedName>
+      <ReservedName>Tylko Mirko Beta</ReservedName>
+      <ReservedName>Tylko Mirko</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
-    <MainPackageIdentityName>40167Eggplant.TylkoMirkoBeta</MainPackageIdentityName>
+    <MainPackageIdentityName>40167Eggplant.63068A49910A9</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9NBLGGH08179" />
+  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9WZDNCRDM0DZ">
+    <PackageInfo>
+      <OsMinVersion>6.3.0.0</OsMinVersion>
+      <PackageArchitecture>Arm</PackageArchitecture>
+      <PackageMaxArchitectureVersion>0.9.3.9</PackageMaxArchitectureVersion>
+    </PackageInfo>
+  </PackageInfoList>
 </StoreAssociation>
