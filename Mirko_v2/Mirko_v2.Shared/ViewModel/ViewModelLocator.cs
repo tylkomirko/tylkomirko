@@ -71,7 +71,7 @@ namespace Mirko_v2.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
             SimpleIoc.Default.Register<LoginViewModel>();
-            SimpleIoc.Default.Register<PaymentViewModel>(true);
+            //SimpleIoc.Default.Register<PaymentViewModel>(true);
             SimpleIoc.Default.Register<SettingsViewModel>(true);
             SimpleIoc.Default.Register<FontsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>(() => { return new NotificationsViewModel(NavService); });
