@@ -11,7 +11,7 @@ namespace NotificationsExtensions
             object liveTile;
             Windows.Storage.ApplicationData.Current.RoamingSettings.Values.TryGetValue("LiveTile", out liveTile);
 
-            if (!(bool)liveTile)
+            if (liveTile != null && !(bool)liveTile)
                 return;
 
             BadgeNumericNotificationContent badgeContent = new BadgeNumericNotificationContent(count);
