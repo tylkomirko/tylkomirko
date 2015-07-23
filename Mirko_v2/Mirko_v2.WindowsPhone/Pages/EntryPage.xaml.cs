@@ -5,6 +5,7 @@ using QKit.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -33,10 +34,13 @@ namespace Mirko_v2.Pages
             var mainVM = this.DataContext as MainViewModel;
 
             var height = mainVM.ListViewHeaderHeight;
-            ListView.Margin = new Thickness(0, -height, 0, 10);
             var header = ListView.Header as FrameworkElement;
             var rect = header.GetDescendant<Rectangle>();
             rect.Height = height;
+            /* It would make much more sense to set ListView.Margin, but that causes a bug.
+             * When user navigates for the first time, margin seems to be not set.
+             * It must be because of QKit */
+            this.Margin = new Thickness(0, -height, 0, 0);
 
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
@@ -219,10 +223,6 @@ namespace Mirko_v2.Pages
 
         private void EdgeSelectButton_Click(object sender, RoutedEventArgs e)
         {
-            var edgeButton = sender as EdgeSelectButton;
-            var stackPanel = edgeButton.GetAntecedent<StackPanel>();
-            var checkBox = stackPanel.GetDescendant<CheckBox>();
-
             HeaderCheckBox.IsChecked = true;
             HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Visible;
 

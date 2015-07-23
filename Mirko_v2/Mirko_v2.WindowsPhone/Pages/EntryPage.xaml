@@ -21,47 +21,59 @@
                            SelectionModeChanged="ListView_SelectionModeChanged"
                            VirtualizingStackPanel.VirtualizationMode="Recycling"
                            IncrementalLoadingThreshold="6"
-                           DataFetchSize="7">       
+                           DataFetchSize="7">
 
-        <ListView.Header>
-            <StackPanel>
-                <Rectangle Fill="Transparent" />
+        <q:MultiSelectListView.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                    <qc:EdgeSelectButton Grid.Column="0"
-                                         x:Name="HeaderEdgeButton"
-                                         Click="EdgeSelectButton_Click" />
+                <Rectangle Grid.Row="0"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Fill="Transparent" />
 
-                    <CheckBox Grid.Column="1"
-                              x:Name="HeaderCheckBox"
-                              MinWidth="20"
-                              Visibility="Collapsed"
-                              Unchecked="CheckBox_Unchecked" 
-                              Style="{StaticResource CheckBoxNoTilt}" />
+                <qc:EdgeSelectButton Grid.Column="0"
+                                     Grid.Row="1"
+                                     x:Name="HeaderEdgeButton"
+                                     Click="EdgeSelectButton_Click" />
 
-                    <controls:Entry Grid.Column="2"
-                                    DataContext="{Binding}"
-                                    LargeEmbed="True"
-                                    IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
+                <CheckBox Grid.Column="1"
+                          Grid.Row="1"
+                          x:Name="HeaderCheckBox"
+                          MinWidth="20"
+                          Visibility="Collapsed"
+                          Unchecked="CheckBox_Unchecked" 
+                          Style="{StaticResource CheckBoxNoTilt}" />
 
-                </Grid>
+                <controls:Entry Grid.Column="2"
+                                Grid.Row="1"
+                                DataContext="{Binding}"
+                                LargeEmbed="True"
+                                IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
+            </Grid>
+        </q:MultiSelectListView.Header>
 
-            </StackPanel>
-        </ListView.Header>
-
-        <ListView.ItemTemplate>
+        <q:MultiSelectListView.ItemTemplate>
             <DataTemplate>
                 <controls:Entry DataContext="{Binding}"
                                 IsTapEnabled="False"
                                 Margin="25,0,0,0"/>
             </DataTemplate>
-        </ListView.ItemTemplate>
+        </q:MultiSelectListView.ItemTemplate>
+        
+        <q:MultiSelectListView.Footer>
+            <Rectangle Height="10"
+                       Fill="Transparent" />
+        </q:MultiSelectListView.Footer>
 
     </q:MultiSelectListView>
 </UserControl>
