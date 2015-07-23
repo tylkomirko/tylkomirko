@@ -133,7 +133,7 @@
                 <ColumnDefinition Width="0.2*" />
                 <ColumnDefinition Width="0.18*"/>
                 <ColumnDefinition Width="0.2*"/>
-                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="0.2*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                                Text="ʕ•ᴥ•ʔ"
@@ -148,7 +148,7 @@
                                Tapped="Lenny_Tapped"
                                Style="{StaticResource LennyLabel}"/>
             <TextBlock Grid.Column="3"
-                               Text="(⌐ ͡■ ͜ʖ ͡■)"
+                               Text="(◔ ◡ ◔)"
                                Tapped="Lenny_Tapped"
                                Style="{StaticResource LennyLabel}"/>
         </Grid>
