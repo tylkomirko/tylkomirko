@@ -699,7 +699,7 @@ namespace WykopAPI
 
         public async Task<Vote> voteEntry(uint id, uint commentID = 0, bool upVote = true, bool isItEntry = true)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "entries/";
@@ -729,10 +729,10 @@ namespace WykopAPI
 
         public async Task<List<Hashtag>> getPopularTags()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (this.limitExceeded)
                 return null;
 
-            string URL = "tags/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tags/index/appkey," + this.APPKEY;
 
             return await deserialize<List<Hashtag>>(URL);
         }

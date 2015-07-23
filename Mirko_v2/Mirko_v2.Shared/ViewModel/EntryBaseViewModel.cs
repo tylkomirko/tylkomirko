@@ -55,6 +55,12 @@ namespace Mirko_v2.ViewModel
 
         private async Task ExecuteVoteCommand(bool verbose = true)
         {
+            if(App.ApiService.UserInfo == null)
+            {
+                StatusBarManager.ShowText("Musisz być zalogowany.");
+                return;
+            }
+
             if(verbose)
                 StatusBarManager.ShowProgress();
 

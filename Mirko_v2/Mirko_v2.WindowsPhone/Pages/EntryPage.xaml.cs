@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -55,6 +56,13 @@ namespace Mirko_v2.Pages
                 Label = "odpowiedz",
                 Tag = "reply",
             };
+            comment.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Mode = BindingMode.OneWay,
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
             comment.Click += CommentButton_Click;
 
             var delete = new AppBarButton()
@@ -62,7 +70,7 @@ namespace Mirko_v2.Pages
                 Icon = new SymbolIcon(Symbol.Delete),
                 Label = "usuń",
                 Tag = "delete",
-                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+                Visibility = Visibility.Collapsed,
             };
 
             // regular buttons
@@ -87,7 +95,7 @@ namespace Mirko_v2.Pages
                 Label = "daj plusa",
                 Tag = "voteMulti",
                 Icon = new SymbolIcon(Symbol.Add),
-                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
+                Visibility = Visibility.Collapsed,
             };
             voteMultiple.Click += (s, e) =>
             {
@@ -97,37 +105,13 @@ namespace Mirko_v2.Pages
 
                 ListView.SelectionMode = ListViewSelectionMode.None;
                 HeaderCheckBox.IsChecked = false;
-                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                HeaderEdgeButton.IsHitTestVisible = true;
-            };
-
-            var replyMultiple = new AppBarButton()
-            {
-                Label = "odpowiedz",
-                Tag = "replyMulti",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
-                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
-            };
-            replyMultiple.Click += (s, e) =>
-            {
-                var selectedItems = SelectedItems();
-                var root = this.ListView.DataContext as EntryViewModel;
-                var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-                vm.NewEntry.IsEditing = false;
-                vm.NewEntry.CommentID = 0;
-                vm.NewEntry.EntryID = root.Data.ID;
-                vm.GoToNewEntryPage(selectedItems);
-
-                ListView.SelectionMode = ListViewSelectionMode.None;
-                HeaderCheckBox.IsChecked = false;
-                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                HeaderCheckBox.Visibility = Visibility.Collapsed;
                 HeaderEdgeButton.IsHitTestVisible = true;
             };
 
             c.PrimaryCommands.Add(comment);
             c.PrimaryCommands.Add(delete);
             c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(replyMultiple);
             c.PrimaryCommands.Add(voteMultiple);
             c.PrimaryCommands.Add(up);
 
@@ -146,9 +130,22 @@ namespace Mirko_v2.Pages
 
         private void CommentButton_Click(object sender, RoutedEventArgs e)
         {
-            var entryVM = this.ListView.DataContext as EntryViewModel;
-            if (entryVM != null)
-                entryVM.ReplyCommand.Execute(null);
+            var root = this.ListView.DataContext as EntryViewModel;
+            var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+            var selectedItems = SelectedItems();
+
+            if (selectedItems.Count == 0) // in other words - item selection mode is not turned on
+                selectedItems.Add(root);
+
+            vm.NewEntry.IsEditing = false;
+            vm.NewEntry.CommentID = 0;
+            vm.NewEntry.EntryID = root.Data.ID;
+            vm.GoToNewEntryPage(selectedItems);
+
+            ListView.SelectionMode = ListViewSelectionMode.None;
+            HeaderCheckBox.IsChecked = false;
+            HeaderCheckBox.Visibility = Visibility.Collapsed;
+            HeaderEdgeButton.IsHitTestVisible = true;
         }
 
         private void ShareButton_Click(object sender, RoutedEventArgs e)
@@ -169,7 +166,7 @@ namespace Mirko_v2.Pages
         {
             var sv = this.ListView.GetDescendant<ScrollViewer>();
             if (sv != null)
-                sv.ChangeView(null, 0.0, null);
+                sv.ChangeView(null, 0.0, null, false);
         }
         #endregion
 
@@ -199,9 +196,8 @@ namespace Mirko_v2.Pages
                 HeaderEdgeButton.IsHitTestVisible = false;
 
                 AppBar.MakeButtonInvisible("refresh");
-                AppBar.MakeButtonInvisible("reply");
-                AppBar.MakeButtonVisible("replyMulti");
-                AppBar.MakeButtonVisible("voteMulti");
+                if (SimpleIoc.Default.GetInstance<SettingsViewModel>().UserInfo != null)
+                    AppBar.MakeButtonVisible("voteMulti");
             }
             else if (ListView.SelectionMode == ListViewSelectionMode.None)
             {
@@ -216,8 +212,6 @@ namespace Mirko_v2.Pages
                     HeaderEdgeButton.IsHitTestVisible = true;
 
                     AppBar.MakeButtonVisible("refresh");
-                    AppBar.MakeButtonVisible("reply");
-                    AppBar.MakeButtonInvisible("replyMulti");
                     AppBar.MakeButtonInvisible("voteMulti");
                 }
             }
@@ -236,9 +230,8 @@ namespace Mirko_v2.Pages
             HeaderEdgeButton.IsHitTestVisible = false;
 
             AppBar.MakeButtonInvisible("refresh");
-            AppBar.MakeButtonInvisible("reply");
-            AppBar.MakeButtonVisible("replyMulti");
-            AppBar.MakeButtonVisible("voteMulti");
+            if (SimpleIoc.Default.GetInstance<SettingsViewModel>().UserInfo != null)
+                AppBar.MakeButtonVisible("voteMulti");
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -251,8 +244,6 @@ namespace Mirko_v2.Pages
             ListView.SelectionMode = ListViewSelectionMode.None;
 
             AppBar.MakeButtonVisible("refresh");
-            AppBar.MakeButtonVisible("reply");
-            AppBar.MakeButtonInvisible("replyMulti");
             AppBar.MakeButtonInvisible("voteMulti");
         }
         #endregion
