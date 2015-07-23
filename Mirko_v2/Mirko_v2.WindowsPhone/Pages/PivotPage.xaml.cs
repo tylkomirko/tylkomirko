@@ -165,6 +165,7 @@ namespace Mirko_v2.Pages
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
             {
+                AppBar.MakeButtonVisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
 
@@ -176,7 +177,7 @@ namespace Mirko_v2.Pages
             else if (currentPage == 1)
             {
                 HideNewEntriesPopup();
-
+                AppBar.MakeButtonInvisible("refresh");
                 ShowTimeSpanIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
@@ -187,7 +188,7 @@ namespace Mirko_v2.Pages
             else if(currentPage == 2)
             {
                 HideNewEntriesPopup();
-
+                AppBar.MakeButtonInvisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
 
@@ -199,7 +200,7 @@ namespace Mirko_v2.Pages
             else if (currentPage == 3)
             {
                 HideNewEntriesPopup();
-
+                AppBar.MakeButtonInvisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
 
@@ -368,6 +369,7 @@ namespace Mirko_v2.Pages
             var refresh = new AppBarButton()
             {
                 Label = "odśwież",
+                Tag = "refresh",
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
             };
             refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
