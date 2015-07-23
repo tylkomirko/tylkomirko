@@ -137,12 +137,13 @@
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled">
 
+                <!--
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="SelectionChanged">
                         <core:InvokeCommandAction Command="{Binding HotTimeSpanChanged}" />
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
-                
+                -->
                 <ListView.Header>
                     <Rectangle Height="270"
                                Fill="Transparent" />

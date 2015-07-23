@@ -198,6 +198,7 @@ namespace Mirko_v2.ViewModel
         public IncrementalLoadingCollection<HotEntrySource, EntryViewModel> HotEntries
         {
             get { return _hotEntries ?? (_hotEntries = new IncrementalLoadingCollection<HotEntrySource, EntryViewModel>()); }
+            set { Set(() => HotEntries, ref _hotEntries, value); }
         }
 
         public int HotTimeSpan
@@ -417,15 +418,6 @@ namespace Mirko_v2.ViewModel
         public RelayCommand<string> GoToHashtagPage
         {
             get { return _goToHashtagPage ?? (_goToHashtagPage = new RelayCommand<string>(ExecuteGoToHashtagPage)); }
-        }
-
-        private RelayCommand _hotTimeSpanChanged = null;
-        public RelayCommand HotTimeSpanChanged
-        {
-            get
-            {
-                return _hotTimeSpanChanged ?? (_hotTimeSpanChanged = new RelayCommand(() => HotEntries.ClearAll()));
-            }
         }
 
         private void ExecuteGoToHashtagPage(string tag)

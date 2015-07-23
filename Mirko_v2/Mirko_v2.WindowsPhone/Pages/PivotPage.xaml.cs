@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
@@ -304,9 +305,15 @@ namespace Mirko_v2.Pages
             }
         }
 
-        private void TimeSpanSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void TimeSpanSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HideTimeSpanSelectionPopup();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.HotEntries.ClearAll();
+
+            if(HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
+                await HotListView.LoadMoreItemsAsync();
         }
 
         private void ShowTimeSpanSelectionPopup()
