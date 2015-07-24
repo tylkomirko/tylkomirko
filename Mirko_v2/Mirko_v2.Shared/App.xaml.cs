@@ -107,7 +107,7 @@ namespace Mirko_v2
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
-            this.UnhandledException += App_UnhandledException;
+            GlobalCrashHandler.Configure();
 
             var configuration = new LoggingConfiguration();
 #if DEBUG
@@ -119,11 +119,6 @@ namespace Mirko_v2
             LogManagerFactory.DefaultConfiguration = configuration;
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<App>();
-        }
-
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Logger.Error("UnhandledException. Message: " + e.Message, e.Exception);
         }
 
         private Frame CreateRootFrame()
