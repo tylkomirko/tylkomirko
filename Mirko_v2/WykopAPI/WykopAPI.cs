@@ -441,7 +441,15 @@ namespace WykopAPI
 
                 content.Headers.Add("apisign", this.calculateMD5(url, post));
 
-                response = await httpClient.PostAsync(url, content, ct);
+                try
+                {
+                    response = await httpClient.PostAsync(url, content, ct);
+                } 
+                catch(Exception e)
+                {
+                    _log.Error("Something when wrong in getAsync: ", e);
+                    return null;
+                }
             }
 
             if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
