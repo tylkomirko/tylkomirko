@@ -48,10 +48,13 @@ namespace Mirko_v2.ViewModel
         public List<T> GetRange(int startIndex, int count)
         {
             var list = new List<T>(count);
-            for (int i = startIndex; i < startIndex + count; i++)
-            {
+            var lastIndex = startIndex + count;
+
+            if (lastIndex > this.Count)
+                lastIndex = this.Count;
+
+            for (int i = startIndex; i < lastIndex; i++)
                 list.Add(this.Items[i]);
-            }
 
             return list;
         }
