@@ -9,13 +9,26 @@ namespace Mirko_v2.Utils
         {
             int occurences = 0;
             string source = textBox.Text;
+            int maxIndex = source.Length;
+            int start = textBox.SelectionStart;
 
-            for (var index = 0; index < textBox.SelectionStart + occurences; index++)
+            if (start > source.Length)
+                start = source.Length;
+
+            for (var index = 0; index < start + occurences; index++)
             {
+                if (index >= source.Length)
+                    break;
+
                 if (source[index] == '\r' && source[index + 1] == '\n')
                     occurences++;
             }
-            return textBox.SelectionStart + occurences;
+
+            var result = start + occurences;
+            if (result > source.Length)
+                result = source.Length;
+
+            return result;
         }
     }
 }
