@@ -16,15 +16,6 @@ namespace Mirko_v2.Pages
             this.InitializeComponent();
         }
 
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var item = e.ClickedItem as NotificationViewModel;
-            var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-
-            VM.SelectedHashtagNotification = item;
-            VM.GoToFlipPage.Execute(null);
-        }
-
         private CommandBar AppBar = null;
         private AppBarButton DeleteSelectedButton = null;
 
