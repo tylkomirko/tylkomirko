@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Controls;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
@@ -40,6 +41,15 @@ namespace Mirko_v2.Pages
             rect.Height = height;
 
             VM.TaggedNewEntries.CollectionChanged += TaggedNewEntries_CollectionChanged;
+
+            Messenger.Default.Register<NotificationMessage>(this, async (m) =>
+            {
+                if (m.Notification == "HashtagEntriesPage reload")
+                {
+                    if (ListView.ItemsSource != null)
+                        await ListView.LoadMoreItemsAsync(); // agrhrgrrrhhr... Satya....
+                }
+            });
         }
 
         public void Dispose()

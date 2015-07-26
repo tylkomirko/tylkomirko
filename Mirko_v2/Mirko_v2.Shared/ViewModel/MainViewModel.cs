@@ -427,6 +427,7 @@ namespace Mirko_v2.ViewModel
             TaggedEntries.ClearAll();
             TaggedNewEntries.Clear();
 
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("HashtagEntriesPage reload"));
             NavService.NavigateTo("HashtagEntriesPage");
         }
 
