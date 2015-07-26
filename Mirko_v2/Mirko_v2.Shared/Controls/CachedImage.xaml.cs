@@ -1,10 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using WykopAPI.Models;
+using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -24,30 +26,33 @@ namespace Mirko_v2.Controls
 
         private async Task LoadImage(string previewURL, string fullURL = null)
         {
-            Image.Visibility = Visibility.Collapsed;
-            Grid.Visibility = Visibility.Visible;
-            Ring.IsActive = true;
-            Ring.Visibility = Visibility.Visible;
-
-            var stream = await Cache.GetImageStream(previewURL, fullURL);
-
-            if (stream != null)
+            await DispatcherHelper.RunAsync(async () =>
             {
-                var bitmap = new BitmapImage() { CreateOptions = BitmapCreateOptions.None };
-                bitmap.SetSource(stream);
-
-                Image.Source = bitmap;
+                Image.Visibility = Visibility.Collapsed;
                 Grid.Visibility = Visibility.Visible;
-                Ring.Visibility = Visibility.Collapsed;
-                Image.Visibility = Visibility.Visible;
+                Ring.IsActive = true;
+                Ring.Visibility = Visibility.Visible;
 
-                stream.Dispose();
-                stream = null;
-            }
-            else
-            {
-                Visibility = Visibility.Collapsed;
-            }
+                var stream = await Cache.GetImageStream(previewURL, fullURL);
+
+                if (stream != null)
+                {
+                    var bitmap = new BitmapImage() { CreateOptions = BitmapCreateOptions.None };
+                    bitmap.SetSource(stream);
+
+                    Image.Source = bitmap;
+                    Grid.Visibility = Visibility.Visible;
+                    Ring.Visibility = Visibility.Collapsed;
+                    Image.Visibility = Visibility.Visible;
+
+                    stream.Dispose();
+                    stream = null;
+                }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
+                }
+            });
         }
 
         public new Visibility Visibility
