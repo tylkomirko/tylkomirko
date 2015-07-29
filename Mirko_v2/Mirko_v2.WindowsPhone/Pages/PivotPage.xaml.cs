@@ -385,6 +385,23 @@ namespace Mirko_v2.Pages
                 Path = new PropertyPath("RefreshMirkoEntries"),
             });
 
+            var profile = new AppBarButton()
+            {
+                Label = "twój profil",
+            };
+            profile.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Mode = BindingMode.OneWay,
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
+            profile.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("GoToYourProfile"),
+            });
+
             var settings = new AppBarButton()
             {
                 Label = "ustawienia",
@@ -441,6 +458,7 @@ namespace Mirko_v2.Pages
             c.PrimaryCommands.Add(add);
             c.PrimaryCommands.Add(refresh);
             c.PrimaryCommands.Add(up);
+            c.SecondaryCommands.Add(profile);
             c.SecondaryCommands.Add(settings);
             c.SecondaryCommands.Add(login);
             c.SecondaryCommands.Add(logout);

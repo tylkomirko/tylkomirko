@@ -374,6 +374,19 @@ namespace Mirko_v2.ViewModel
             //AddNewMirkoEntries.Execute(null);
         }
 
+        private RelayCommand _goToYourProfile = null;
+        public RelayCommand GoToYourProfile
+        {
+            get { return _goToYourProfile ?? (_goToYourProfile = new RelayCommand(ExecuteGoToYourProfile)); }
+        }
+
+        private void ExecuteGoToYourProfile()
+        {
+            var username = App.ApiService.UserInfo.UserName;
+            var profilesVM = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+            profilesVM.GoToProfile.Execute(username);
+        }
+
         private RelayCommand _refreshTaggedEntries = null;
         public RelayCommand RefreshTaggedEntries
         {
