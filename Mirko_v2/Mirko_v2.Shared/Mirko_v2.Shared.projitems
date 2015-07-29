@@ -109,7 +109,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MessagesViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PaymentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PMViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfilesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfileViewModel.cs" />

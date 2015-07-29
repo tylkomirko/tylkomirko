@@ -71,7 +71,6 @@ namespace Mirko_v2.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
             SimpleIoc.Default.Register<LoginViewModel>();
-            //SimpleIoc.Default.Register<PaymentViewModel>(true);
             SimpleIoc.Default.Register<SettingsViewModel>(true);
             SimpleIoc.Default.Register<FontsViewModel>();
             SimpleIoc.Default.Register<NotificationsViewModel>(() => { return new NotificationsViewModel(NavService); });
@@ -144,11 +143,6 @@ namespace Mirko_v2.ViewModel
         public NewEntryViewModel NewEntry
         {
             get { return ServiceLocator.Current.GetInstance<NewEntryViewModel>(); }
-        }
-
-        public PaymentViewModel Donation
-        {
-            get { return ServiceLocator.Current.GetInstance<PaymentViewModel>(); }
         }
 
         public static void Cleanup()
