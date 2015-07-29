@@ -141,6 +141,13 @@
                     Height="49">
 
                 <Grid x:Name="Header">
+                    
+                    <i:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{Binding GoToProfilePage}"
+                                                      CommandParameter="{Binding Data.AuthorName}"/>
+                        </core:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>

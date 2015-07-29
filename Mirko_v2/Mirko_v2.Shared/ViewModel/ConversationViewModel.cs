@@ -49,6 +49,20 @@ namespace Mirko_v2.ViewModel
             d = null;
         }
 
+        private RelayCommand<string> _goToProfilePage = null;
+        public RelayCommand<string> GoToProfilePage
+        {
+            get { return _goToProfilePage ?? (_goToProfilePage = new RelayCommand<string>(ExecuteGoToProfilePage)); }
+        }
+
+        private void ExecuteGoToProfilePage(string username)
+        {
+            if (string.IsNullOrEmpty(username)) return;
+
+            var profilesVM = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+            profilesVM.GoToProfile.Execute(username);
+        }
+
         private RelayCommand _sendMessageCommand = null;
         public RelayCommand SendMessageCommand
         {
