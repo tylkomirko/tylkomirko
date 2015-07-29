@@ -387,7 +387,7 @@ namespace Mirko_v2.Pages
 
             var profile = new AppBarButton()
             {
-                Label = "twój profil",
+                Label = "mój profil",
             };
             profile.SetBinding(AppBarButton.VisibilityProperty, new Binding()
             {
