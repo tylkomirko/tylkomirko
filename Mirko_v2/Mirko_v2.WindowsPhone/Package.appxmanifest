@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="40167Eggplant.TylkoMirkoBeta" Publisher="CN=1BBF47AD-E998-47CF-BD00-0EBB4B231B55" Version="1.0.2.0" />
+  <Identity Name="40167Eggplant.TylkoMirkoBeta" Publisher="CN=1BBF47AD-E998-47CF-BD00-0EBB4B231B55" Version="1.1.0.0" />
   <mp:PhoneIdentity PhoneProductId="0ceeaeec-8762-49d2-a614-fdd3a0c13caf" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Tylko Mirko Beta</DisplayName>
