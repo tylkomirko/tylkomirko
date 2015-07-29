@@ -23,12 +23,13 @@ namespace Mirko_v2.ViewModel
         public EntryViewModel(Entry d) : base(d)
         {
             Data = d;
+            var author = d.AuthorName;
 
             if (Data.Comments != null)
             {
                 Comments = new ObservableCollectionEx<CommentViewModel>();
                 foreach (var com in Data.Comments)
-                    Comments.Add(new CommentViewModel(com));
+                    Comments.Add(new CommentViewModel(com) { RootEntryAuthor = author });
 
                 Data.Comments = null;
             }

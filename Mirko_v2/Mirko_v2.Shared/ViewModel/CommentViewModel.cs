@@ -9,6 +9,7 @@ namespace Mirko_v2.ViewModel
     public class CommentViewModel : EntryBaseViewModel
     {
         public EntryComment Data { get; set; }
+        public string RootEntryAuthor { get; set; }
 
         public CommentViewModel()
         {

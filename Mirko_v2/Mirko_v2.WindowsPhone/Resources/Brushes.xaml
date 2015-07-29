@@ -34,8 +34,7 @@
             <SolidColorBrush x:Key="NewContentBackground" Color="#101010" />
             <SolidColorBrush x:Key="NewContentForeground" Color="#AFB3B4" />
             <SolidColorBrush x:Key="AttachmentNameForeground" Color="LightGray" />
-
-            <SolidColorBrush x:Key="AuthorCommentRectangleFill" Color="White" />
+            
             <SolidColorBrush x:Key="SentMessageBackground" Color="#404040" />
             <SolidColorBrush x:Key="SentMessageForeground" Color="#c0c0c0" />
             <SolidColorBrush x:Key="ReceivedMessageBackground" Color="#1B1B1B" />
@@ -109,7 +108,6 @@
             <SolidColorBrush x:Key="NewContentForeground" Color="Black" />
             <SolidColorBrush x:Key="AttachmentNameForeground" Color="DarkGray" />
 
-            <SolidColorBrush x:Key="AuthorCommentRectangleFill" Color="Gray" />            
             <SolidColorBrush x:Key="SentMessageBackground" Color="#4FAFF3" />
             <SolidColorBrush x:Key="SentMessageForeground" Color="White" />
             <SolidColorBrush x:Key="ReceivedMessageBackground" Color="#EAEAEA" />

@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SuggestionsPopupContent.xaml.cs">
       <DependentUpon>SuggestionsPopupContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\AuthorIndicator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BlacklistToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />

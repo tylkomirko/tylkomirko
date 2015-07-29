@@ -29,5 +29,6 @@
     <converters:ObservedToText x:Key="ObservedToText" />
     <converters:BlacklistToText x:Key="BlacklistToText" />
     <converters:InvertBool x:Key="InvertBool" />
+    <converters:AuthorIndicator x:Key="AuthorIndicator" />
 
 </ResourceDictionary>

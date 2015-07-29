@@ -224,12 +224,11 @@
               Width="10"
               Background="Transparent">
 
-            <Rectangle x:Name="AuthorIndicator"
-                       Visibility="Collapsed"
+            <Rectangle x:Name="AuthorIndicator"                       
                        Width="2.5"
-                       Margin="2,2,0,2"
+                       Margin="0,2,0.5,2"
                        HorizontalAlignment="Right"
-                       Fill="{ThemeResource AuthorCommentRectangleFill}" />
+                       Fill="{Binding Converter={StaticResource AuthorIndicator}}" />
         </Grid>
 
     </Grid>

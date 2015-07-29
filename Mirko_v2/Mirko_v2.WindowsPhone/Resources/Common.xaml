@@ -16,4 +16,9 @@
 
     <Color x:Key="StatusBarForegroundLight">#3D9CDE</Color>
 
+    <SolidColorBrush x:Key="AuthorCommentFill" Color="White" />
+    <SolidColorBrush x:Key="CommentDirectedFill" Color="#6cb0dd" />
+    <SolidColorBrush x:Key="AuthorCommentFillLight" Color="DarkGray" />
+    <SolidColorBrush x:Key="CommentDirectedFillLight" Color="#6cb0dd" />
+
 </ResourceDictionary>
