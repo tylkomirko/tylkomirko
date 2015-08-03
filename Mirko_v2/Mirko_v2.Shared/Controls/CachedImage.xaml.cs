@@ -1,12 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Threading;
 using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using WykopAPI.Models;
-using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,33 +24,27 @@ namespace Mirko_v2.Controls
 
         private async Task LoadImage(string previewURL, string fullURL = null)
         {
-            await DispatcherHelper.RunAsync(async () =>
+            Image.Visibility = Visibility.Collapsed;
+            Grid.Visibility = Visibility.Visible;
+            Ring.IsActive = true;
+            Ring.Visibility = Visibility.Visible;
+
+            var uri = await Cache.GetImageUri(previewURL, fullURL);
+
+            if (uri != null)
             {
-                Image.Visibility = Visibility.Collapsed;
+                var bitmap = new BitmapImage() { UriSource = uri, CreateOptions = BitmapCreateOptions.IgnoreImageCache };
+                Image.Source = bitmap;
+
                 Grid.Visibility = Visibility.Visible;
-                Ring.IsActive = true;
-                Ring.Visibility = Visibility.Visible;
-
-                var stream = await Cache.GetImageStream(previewURL, fullURL);
-
-                if (stream != null)
-                {
-                    var bitmap = new BitmapImage() { CreateOptions = BitmapCreateOptions.None };
-                    bitmap.SetSource(stream);
-
-                    Image.Source = bitmap;
-                    Grid.Visibility = Visibility.Visible;
-                    Ring.Visibility = Visibility.Collapsed;
-                    Image.Visibility = Visibility.Visible;
-
-                    stream.Dispose();
-                    stream = null;
-                }
-                else
-                {
-                    Visibility = Visibility.Collapsed;
-                }
-            });
+                Ring.Visibility = Visibility.Collapsed;
+                Image.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Image.Source = null;
+                Visibility = Visibility.Collapsed;
+            }
         }
 
         public new Visibility Visibility
@@ -97,9 +89,13 @@ namespace Mirko_v2.Controls
         private static async void EmbedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var embed = e.NewValue as Embed;
-            if (embed == null) return;
-
             var control = d as CachedImage;
+            if (embed == null)
+            {
+                control.Image.Source = null;
+                return;
+            }
+
             if (control.Visibility == Visibility.Visible)
                 await control.LoadImage(embed.PreviewURL, embed.URL);
         }

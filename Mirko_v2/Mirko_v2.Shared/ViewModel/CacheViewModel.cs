@@ -260,7 +260,7 @@ namespace Mirko_v2.ViewModel
             return stream;
         }
 
-        public async Task<IRandomAccessStream> GetImageStream(string previewURL, string fullURL = null)
+        public async Task<Uri> GetImageUri(string previewURL, string fullURL = null)
         {
             /*
             var r = new Random();
@@ -289,10 +289,9 @@ namespace Mirko_v2.ViewModel
             try
             {
                 file = await ImageCacheFolder.GetFileAsync(fileName);
-                var stream = await file.OpenAsync(FileAccessMode.Read);
-                Messenger.Default.Send<NotificationMessage<ulong>>(new NotificationMessage<ulong>(stream.Size, "ImgCacheHit"));
+                Messenger.Default.Send<NotificationMessage<ulong>>(new NotificationMessage<ulong>(0, "ImgCacheHit"));
 
-                return stream;
+                return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", file.Name));
             }
             catch(FileNotFoundException)
             {
@@ -320,16 +319,14 @@ namespace Mirko_v2.ViewModel
 
                     // and now save
                     file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-                    var fileStream = await file.OpenStreamForWriteAsync();
+                    using (var fileStream = await file.OpenStreamForWriteAsync())
+                    using (var saveStream = stream.AsStream())
+                    {
+                        saveStream.Position = 0;
+                        await saveStream.CopyToAsync(fileStream);
+                    }
 
-                    var saveStream = stream.AsStream();
-                    saveStream.Position = 0;
-                    await saveStream.CopyToAsync(fileStream);
-                    fileStream.Dispose();
-                    fileStream = null;
-
-                    stream.Seek(0);
-                    return stream;
+                    return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
                 }
             }
             catch (Exception e)

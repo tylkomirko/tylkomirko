@@ -26,6 +26,6 @@
                       Visibility="Collapsed"
                       IsActive="False"/>
 
-        <Image x:Name="Image"/>       
+        <Image x:Name="Image"/>     
     </Grid>
 </UserControl>
