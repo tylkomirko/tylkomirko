@@ -3,6 +3,7 @@ using Mirko_v2.ViewModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 
@@ -65,7 +66,31 @@ namespace Mirko_v2.Controls
 
         public Entry()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
+            this.Holding += Entry_Holding;     
+        }
+
+        private void Entry_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            if (e.HoldingState == Windows.UI.Input.HoldingState.Completed 
+                || e.HoldingState == Windows.UI.Input.HoldingState.Canceled) return;
+
+            var pos = e.GetPosition(EmbedPreviewGrid);
+            System.Diagnostics.Debug.WriteLine("pos: " + pos);
+
+            var VM = this.DataContext as EntryViewModel;
+            if(VM.EmbedVM != null && pos.Y > 0)
+            {
+                var mf = FlyoutBase.GetAttachedFlyout(EmbedPreview);
+                mf.ShowAt(EmbedPreviewGrid);
+            }
+            else
+            {
+                var helper = new OpenEntryMenuFlyout();
+                helper.Execute(this, null);
+            }
+
+            e.Handled = true;
         }
 
         private async void UserControl_Tapped(object sender, TappedRoutedEventArgs e)

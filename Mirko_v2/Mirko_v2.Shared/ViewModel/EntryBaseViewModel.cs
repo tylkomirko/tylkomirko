@@ -42,7 +42,8 @@ namespace Mirko_v2.ViewModel
         public EntryBaseViewModel(EntryBase d)
         {
             DataBase = d;
-            EmbedVM = new EmbedViewModel(DataBase.Embed);
+            if(d.Embed != null)
+                EmbedVM = new EmbedViewModel(DataBase.Embed);
             DataBase.Embed = null;
         }
 

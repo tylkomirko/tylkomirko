@@ -82,7 +82,7 @@ namespace Mirko_v2.Utils
             else
                 makeFlyoutItemVisible("voters");
 
-            flyoutBase.ShowAt(src);
+            flyoutBase.ShowAt(src.GetDescendant<RichTextBlock>());
 
             return null;
         }

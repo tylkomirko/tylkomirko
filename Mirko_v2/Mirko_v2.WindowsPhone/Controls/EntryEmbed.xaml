@@ -8,13 +8,24 @@
     xmlns:controls="using:Mirko_v2.Controls"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:utils="using:Mirko_v2.Utils"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     
     IsTapEnabled="True"
     Tapped="UserControl_Tapped"
-    DataContextChanged="UserControl_DataContextChanged">   
+    DataContextChanged="UserControl_DataContextChanged">
+
+    <FlyoutBase.AttachedFlyout>
+        <MenuFlyout>
+            <MenuFlyoutItem Text="odśwież"
+                            Click="RefreshImage_Click"/>
+            
+            <MenuFlyoutItem Text="zapisz"
+                            Click="SaveImage_Click"/>
+        </MenuFlyout>
+    </FlyoutBase.AttachedFlyout>
 
     <Grid x:Name="EntryEmbedGrid"
           HorizontalAlignment="Stretch">

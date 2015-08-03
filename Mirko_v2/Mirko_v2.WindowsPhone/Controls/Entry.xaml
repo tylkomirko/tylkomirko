@@ -52,12 +52,6 @@
     </UserControl.Resources>
     -->
 
-    <i:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Holding">
-            <utils:OpenEntryMenuFlyout />
-        </core:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
-
     <Grid x:Name="EntryGrid"
           VerticalAlignment="Top">
 
@@ -195,7 +189,7 @@
               Margin="5,0,0,0"
               HorizontalAlignment="Stretch"
               Background="Transparent"
-              Visibility="{Binding Path=EmbedVM.EmbedData, Converter={StaticResource NullToVisibility}}">
+              Visibility="{Binding Path=EmbedVM, Converter={StaticResource NullToVisibility}}">
             
             <controls:EntryEmbed x:Name="EmbedPreview"
                                  Margin="0,3,0,0"

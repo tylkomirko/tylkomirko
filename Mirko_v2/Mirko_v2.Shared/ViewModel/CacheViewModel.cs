@@ -260,6 +260,19 @@ namespace Mirko_v2.ViewModel
             return stream;
         }
 
+        private string GetFilename(string previewURL)
+        {
+            if (previewURL == null) return null;
+
+            Uri uri = new Uri(previewURL);
+
+            string fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
+            if (fileName.Length > 255) // sometimes, file names are really long
+                fileName = Cryptography.EncodeMD5(fileName);
+
+            return fileName;
+        }
+
         public async Task<Uri> GetImageUri(string previewURL, string fullURL = null)
         {
             /*
@@ -272,11 +285,7 @@ namespace Mirko_v2.ViewModel
 
             if (previewURL == null) return null;
 
-            Uri uri = new Uri(previewURL);
-
-            string fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
-            if (fileName.Length > 255) // sometimes, file names are really long
-                fileName = Cryptography.EncodeMD5(fileName);
+            string fileName = GetFilename(previewURL);
 
             previewURL = previewURL.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
 
@@ -333,6 +342,21 @@ namespace Mirko_v2.ViewModel
             {
                 Logger.Error("Error downloading image.", e);
                 return null;
+            }
+        }
+
+        public async Task RemoveCachedImage(string previewURL)
+        {
+            var filename = GetFilename(previewURL);
+
+            try
+            {
+                var file = await ImageCacheFolder.GetFileAsync(filename);
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch(Exception e)
+            {
+                Logger.Error("Error deleting image.", e);
             }
         }
         #endregion

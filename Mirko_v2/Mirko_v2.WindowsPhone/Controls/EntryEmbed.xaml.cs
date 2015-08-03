@@ -128,5 +128,16 @@ namespace Mirko_v2.Controls
 
             HandleImageVisibility();
         }
+
+        private void SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = this.DataContext as EmbedViewModel;
+            vm.SaveImageCommand.Execute(null);
+        }
+
+        private async void RefreshImage_Click(object sender, RoutedEventArgs e)
+        {
+            await Image.RefreshImage();
+        }
     }
 }

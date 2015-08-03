@@ -119,5 +119,12 @@ namespace Mirko_v2.Controls
             if (control.Visibility == Visibility.Visible)
                 await control.LoadImage(url);
         }       
+
+        public async Task RefreshImage()
+        {
+            var vm = DataContext as EmbedViewModel;
+            await Cache.RemoveCachedImage(vm.EmbedData.PreviewURL);
+            await LoadImage(vm.EmbedData.PreviewURL, vm.EmbedData.URL);
+        }
     }
 }
