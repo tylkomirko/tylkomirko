@@ -665,10 +665,10 @@ namespace WykopAPI
             if (newEntry.Embed != null)
                 post.Add("embed", newEntry.Embed);
 
-            var stream = newEntry.FileStream;
-            var fileName = newEntry.FileName;
+            var result = await deserialize<EntryIDReply>(URL, post, newEntry.FileStream, newEntry.FileName);
+            if (newEntry.FileStream != null)
+                newEntry.FileStream.Dispose();
 
-            var result = await deserialize<EntryIDReply>(URL, post, stream, fileName);
             return result != null ? result.ID : 0;
         }
 
@@ -989,6 +989,9 @@ namespace WykopAPI
                 post.Add("embed", newEntry.Embed);
 
             var result = await deserialize<List<bool>>(URL, post, newEntry.FileStream, newEntry.FileName);
+            if (newEntry.FileStream != null)
+                newEntry.FileStream.Dispose();
+
             return result != null ? result[0] : false;
         }
 
