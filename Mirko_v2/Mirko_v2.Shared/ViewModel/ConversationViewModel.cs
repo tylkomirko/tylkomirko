@@ -72,7 +72,24 @@ namespace Mirko_v2.ViewModel
         private async void ExecuteSendMessageCommand()
         {
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
-            bool success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+
+            if (string.IsNullOrEmpty(NewEntry.Text))
+                NewEntry.Text = " \n ";
+
+            bool success = true;
+            if(NewEntry.Files != null)
+            {
+                foreach(var file in NewEntry.Files)
+                {
+                    using (var fileStream = await file.OpenStreamForReadAsync())
+                        success = await App.ApiService.sendPM(NewEntry, Data.AuthorName, fileStream, file.Name);
+                }
+            }
+            else
+            {
+                success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+            }
+
             NewEntry.RemoveAttachment();
             if (success)
             {

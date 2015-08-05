@@ -662,7 +662,7 @@ namespace WykopAPI
 
             var post = new SortedDictionary<string, string>();
             post.Add("body", newEntry.Text);
-            if (newEntry.Embed != null)
+            if (!string.IsNullOrEmpty(newEntry.Embed))
                 post.Add("embed", newEntry.Embed);
 
             var result = await deserialize<EntryIDReply>(URL, post, fileStream, fileName);
