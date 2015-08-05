@@ -124,10 +124,15 @@ namespace Mirko_v2.ViewModel
             }
 
             IEnumerable<PM> newMessages = null;
-            if(this.Messages.Count > 0)
-                newMessages = FilterMessages(pms);
+            if (Messages.Count > 0)
+            {
+                var lastMsgTime = Messages.Last().Data.Date;
+                newMessages = pms.Where(x => x.Date > lastMsgTime);
+            }
             else
+            {                
                 newMessages = pms;
+            }
 
             await DispatcherHelper.RunAsync(() =>
             {
@@ -228,6 +233,7 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        /*
         private IEnumerable<PM> FilterMessages(List<PM> col)
         {
             var lastDate = this.Messages.Last().Data.Date;
@@ -259,7 +265,7 @@ namespace Mirko_v2.ViewModel
             }
 
             return newMsg;
-        }
+        }*/
 
         private RelayCommand _checkIfOnline = null;
         public RelayCommand CheckIfOnline
