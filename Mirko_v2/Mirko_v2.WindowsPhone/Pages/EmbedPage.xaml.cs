@@ -61,7 +61,7 @@ namespace Mirko_v2.Pages
             var ratioY = ImageScrollViewer.ViewportHeight / Image.ActualHeight;
 
             var zoom = Math.Min(ratioX, ratioY);
-            var zoomMin = 0.97 * zoom;
+            var zoomMin = Math.Max(0.97 * zoom, 0.1); // it can't be smaller than 0.1. otherwise it throws.
             var zoomMax = 2.5 * Math.Max(ratioX, ratioY);
             ImageScrollViewer.MinZoomFactor = (float)zoomMin;
             ImageScrollViewer.MaxZoomFactor = (float)zoomMax;
