@@ -102,8 +102,8 @@ namespace Mirko_v2.Pages
 
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
-            mf.ShowAt(this);
+            var mf = Resources["DeleteAttachmentFlyout"] as MenuFlyout;
+            mf.ShowAt(AttachmentSymbol);
         }
 
         #region AppBar
