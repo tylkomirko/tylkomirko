@@ -1,7 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -11,6 +8,10 @@ namespace Mirko_v2.ViewModel
         public PM Data { get; set; }
         public EmbedViewModel EmbedVM { get; set; }
         public bool ShowArrow { get; set; } 
+
+        public PMViewModel()
+        {
+        }
 
         public PMViewModel(PM p)
         {

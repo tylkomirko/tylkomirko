@@ -62,7 +62,7 @@ namespace Mirko_v2
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         public static bool ShareTargetActivated { get; set; }
-        private Mirko_v2.ViewModel.NavigationService NavService = null;
+        private NavigationService NavService = null;
         private readonly ILogger Logger = null;
 
         private static TimeSpan _offsetUTCInPoland;
@@ -435,6 +435,8 @@ namespace Mirko_v2
 
         private async Task ResumeFromSuspension()
         {
+            Logger.Trace("Resuming from suspension.");
+
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
             if (!settings.ContainsKey("PageKey"))
             {
@@ -461,6 +463,8 @@ namespace Mirko_v2
                 viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
             else if (viewModelName == "NewEntryViewModel")
                 viewModel = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+            else if(viewModelName == "MessagesViewModel")
+                viewModel = SimpleIoc.Default.GetInstance<MessagesViewModel>();
 
             try
             {

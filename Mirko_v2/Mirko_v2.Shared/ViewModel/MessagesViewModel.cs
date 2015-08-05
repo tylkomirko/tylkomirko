@@ -1,25 +1,28 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
+using MetroLog;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using WykopAPI.Models;
+using System.IO;
 using System.Linq;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Views;
-using GalaSoft.MvvmLight.Ioc;
+using System.Threading.Tasks;
 using Windows.Storage;
-using GalaSoft.MvvmLight.Threading;
+using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
 {
-    public class MessagesViewModel : ViewModelBase
+    public class MessagesViewModel : ViewModelBase, IResumable
     {
         private NavigationService NavService = null;
+        private readonly ILogger Logger = null;
 
         public MessagesViewModel(NavigationService nav)
         {
             NavService = nav;
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<MessagesViewModel>();
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
@@ -105,13 +108,6 @@ namespace Mirko_v2.ViewModel
             set { Set(() => CurrentConversation, ref _currentConversation, value); }
         }
 
-        private NewEntry _newMessage = null;
-        public NewEntry NewMessage
-        {
-            get { return _newMessage ?? (_newMessage = new NewEntry()); }
-            set { Set(() => NewMessage, ref _newMessage, value); }
-        }
-
         private RelayCommand _goToConversationPageCommand = null;
         public RelayCommand GoToConversationPageCommand
         {
@@ -129,10 +125,10 @@ namespace Mirko_v2.ViewModel
         private RelayCommand _saveCommand = null;
         public RelayCommand SaveCommand
         {
-            get { return _saveCommand ?? (_saveCommand = new RelayCommand(ExecuteSaveCommand)); }
+            get { return _saveCommand ?? (_saveCommand = new RelayCommand(async () => await ExecuteSaveCommand())); }
         }
 
-        private async void ExecuteSaveCommand()
+        private async Task ExecuteSaveCommand()
         {
             var list = new List<Conversation>(ConversationsList.Count);
             foreach(var conv in ConversationsList)
@@ -180,5 +176,77 @@ namespace Mirko_v2.ViewModel
                     this.ConversationsList.Move(oldIndex, newIndex);
             }
         }
+
+        #region IResumable
+        public async Task SaveState(string pageName)
+        {
+            if (pageName == "ConversationsPage")
+            {
+                await ExecuteSaveCommand();
+                return;
+            }
+
+            try
+            {
+                var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", CreationCollisionOption.OpenIfExists);
+                var file = await folder.CreateFileAsync("MessagesViewModel", CreationCollisionOption.ReplaceExisting);
+
+                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var sw = new StreamWriter(stream))
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    writer.Formatting = Formatting.None;
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    serializer.Serialize(writer, CurrentConversation);
+                }
+
+                await ExecuteSaveCommand();
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Error saving to state: ", e);
+            }
+        }
+
+        public async Task<bool> LoadState(string pageName)
+        {
+            if (pageName == "ConversationsPage")
+                return true;
+
+            try
+            {
+                var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+                var file = await folder.GetFileAsync("MessagesViewModel");
+
+                using (var stream = await file.OpenStreamForReadAsync())
+                using (var sr = new StreamReader(stream))
+                using (var reader = new JsonTextReader(sr))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    var conversationVM = serializer.Deserialize<ConversationViewModel>(reader);
+
+                    var newEntry = conversationVM.NewEntry;
+                    if (newEntry.Files == null && string.IsNullOrEmpty(newEntry.Embed))
+                        newEntry.AttachmentName = null;
+
+                    CurrentConversation = conversationVM;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Error loading from state: ", e);
+
+                return false;
+            }
+
+            return true; // success!
+        }
+
+        public string GetName()
+        {
+            return "MessagesViewModel";
+        }
+        #endregion
     }
 }

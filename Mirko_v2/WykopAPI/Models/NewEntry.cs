@@ -1,5 +1,5 @@
-﻿using PropertyChanged;
-using System.IO;
+﻿using Newtonsoft.Json;
+using PropertyChanged;
 using Windows.Storage;
 
 namespace WykopAPI.Models
@@ -16,6 +16,7 @@ namespace WykopAPI.Models
 
         public uint EntryID { get; set; }
 
+        [JsonIgnore]
         public StorageFile[] Files { get; set; }
 
         public void RemoveAttachment()

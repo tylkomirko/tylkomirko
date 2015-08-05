@@ -15,6 +15,7 @@ using Windows.Storage.Pickers;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using Newtonsoft.Json;
 
 namespace Mirko_v2.ViewModel
 {
@@ -34,6 +35,10 @@ namespace Mirko_v2.ViewModel
             set { Set(() => IsOnline, ref _isOnline, value); }
         }
 
+        public ConversationViewModel()
+        {
+        }
+
         public ConversationViewModel(Conversation d)
         {
             Data = d;
@@ -50,6 +55,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand<string> _goToProfilePage = null;
+        [JsonIgnore]
         public RelayCommand<string> GoToProfilePage
         {
             get { return _goToProfilePage ?? (_goToProfilePage = new RelayCommand<string>(ExecuteGoToProfilePage)); }
@@ -64,6 +70,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _sendMessageCommand = null;
+        [JsonIgnore]
         public RelayCommand SendMessageCommand
         {
             get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
@@ -105,6 +112,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _updateMessagesCommand = null;
+        [JsonIgnore]
         public RelayCommand UpdateMessagesCommand
         {
             get { return _updateMessagesCommand ?? (_updateMessagesCommand = new RelayCommand(async () => await ExecuteUpdateMessagesCommand())); }
@@ -157,6 +165,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _loadLastMessageCommand = null;
+        [JsonIgnore]
         public RelayCommand LoadLastMessageCommand
         {
             get { return _loadLastMessageCommand ?? (_loadLastMessageCommand = new RelayCommand(ExecuteLoadLastMessageCommand)); }
@@ -175,6 +184,7 @@ namespace Mirko_v2.ViewModel
         }
 
         private RelayCommand _deleteConversation = null;
+        [JsonIgnore]
         public RelayCommand DeleteConversation
         {
             get { return _deleteConversation ?? (_deleteConversation = new RelayCommand(ExecuteDeleteConversation)); }
@@ -268,6 +278,7 @@ namespace Mirko_v2.ViewModel
         }*/
 
         private RelayCommand _checkIfOnline = null;
+        [JsonIgnore]
         public RelayCommand CheckIfOnline
         {
             get { return _checkIfOnline ?? (_checkIfOnline = new RelayCommand(ExecuteCheckIfOnline)); }
