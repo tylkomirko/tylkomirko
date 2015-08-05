@@ -1,5 +1,6 @@
 ﻿using PropertyChanged;
 using System.IO;
+using Windows.Storage;
 
 namespace WykopAPI.Models
 {
@@ -15,18 +16,21 @@ namespace WykopAPI.Models
 
         public uint EntryID { get; set; }
 
-        public Stream FileStream { get; set; }
-        public string FileName { get; set; }
+        public StorageFile[] Files { get; set; }
 
         public void RemoveAttachment()
         {
             AttachmentName = null;
             Embed = null;
-            FileName = null;
+            Files = null;
+        }
 
-            if (FileStream != null)
-                FileStream.Dispose();
-            FileStream = null;
+        public void SetAttachmentName(int count) // used when sending multiple attachments. count > 1.
+        {
+            if (count == 2 || count == 3 || count == 4)
+                AttachmentName = count + " pliki";
+            else
+                AttachmentName = count + " plików";
         }
     }
 }

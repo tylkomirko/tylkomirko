@@ -649,7 +649,7 @@ namespace WykopAPI
             return await deserialize<Entry>(URL);
         }
 
-        public async Task<uint> addEntry(NewEntry newEntry)
+        public async Task<uint> addEntry(NewEntry newEntry, Stream fileStream = null, string fileName = null)
         {
             if (this.limitExceeded || UserInfo == null)
                 return 0;
@@ -665,10 +665,7 @@ namespace WykopAPI
             if (newEntry.Embed != null)
                 post.Add("embed", newEntry.Embed);
 
-            var result = await deserialize<EntryIDReply>(URL, post, newEntry.FileStream, newEntry.FileName);
-            if (newEntry.FileStream != null)
-                newEntry.FileStream.Dispose();
-
+            var result = await deserialize<EntryIDReply>(URL, post, fileStream, fileName);
             return result != null ? result.ID : 0;
         }
 
@@ -976,7 +973,7 @@ namespace WykopAPI
             return await deserialize<List<PM>>(URL);
         }
 
-        public async Task<bool> sendPM(NewEntry newEntry, string userName)
+        public async Task<bool> sendPM(NewEntry newEntry, string userName, Stream fileStream = null, string fileName = null)
         {
             if (this.limitExceeded)
                 return false;
@@ -988,10 +985,7 @@ namespace WykopAPI
             if (!string.IsNullOrEmpty(newEntry.Embed))
                 post.Add("embed", newEntry.Embed);
 
-            var result = await deserialize<List<bool>>(URL, post, newEntry.FileStream, newEntry.FileName);
-            if (newEntry.FileStream != null)
-                newEntry.FileStream.Dispose();
-
+            var result = await deserialize<List<bool>>(URL, post, fileStream, fileName);
             return result != null ? result[0] : false;
         }
 

@@ -1,5 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.Utils;
@@ -12,7 +11,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.Storage.Pickers;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -154,13 +152,15 @@ namespace Mirko_v2.ViewModel
             NavService.NavigateTo("NewEntryPage");
         }
 
-        public async Task AddFile(IStorageItem item) // used in share target activation
+        public void AddFiles(IReadOnlyList<IStorageItem> items) // used in share target activation
         {
-            var file = item as StorageFile;
-            var s = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            NewEntry.FileStream = s.AsStreamForRead();
-            NewEntry.FileName = file.Name;
-            NewEntry.AttachmentName = file.DisplayName;
+            var files = items.Cast<StorageFile>();
+            NewEntry.Files = files.ToArray();
+
+            if (files.Count() == 1)
+                NewEntry.AttachmentName = files.First().Name;
+            else
+                NewEntry.SetAttachmentName(items.Count);
 
             Responses.Clear();
             Responses.Add(new NewEntryContainer());
@@ -191,7 +191,76 @@ namespace Mirko_v2.ViewModel
             string suffix = NewEntry.EntryID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam" + suffix + "...");
 
-            uint entryID = await App.ApiService.addEntry(NewEntry);
+            var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
+            var files = NewEntry.Files;
+            if(NewEntry.EntryID == 0 && files != null && files.Length > 1)
+            {
+                // add multiple attachments
+                var firstFile = files[0];
+                uint mainEntryID = 0;
+
+                using (var fileStream = await firstFile.OpenStreamForReadAsync())
+                    mainEntryID = await App.ApiService.addEntry(NewEntry, fileStream, firstFile.Name);
+
+                if(mainEntryID == 0)
+                {
+                    await StatusBarManager.ShowTextAsync("Nie udało się dodać wpisu.");
+                    return;
+                }
+
+                EntryViewModel entryVM = null;
+
+                if (!App.ShareTargetActivated)
+                {
+                    NavService.GoBack();
+
+                    var entry = await App.ApiService.getEntry(mainEntryID);
+                    entryVM = new EntryViewModel(entry);
+                    if (entry != null)
+                        mainVM.MirkoEntries.Insert(0, entryVM);
+                }
+
+                NewEntry.EntryID = mainEntryID;
+                NewEntry.Text = " \n ";
+
+                await StatusBarManager.ShowTextAndProgressAsync("Wysyłam komentarze...");
+                for (int i = 1; i < files.Length; i++)
+                {
+                    using (var fileStream = await files[i].OpenStreamForReadAsync())
+                        await App.ApiService.addEntry(NewEntry, fileStream, files[i].Name);
+                }
+
+                await StatusBarManager.ShowTextAsync("Wpis został dodany.");
+
+                NewEntry.RemoveAttachment();
+                NewEntry.Text = null;
+
+                if (!App.ShareTargetActivated)
+                {
+                    var entry = await App.ApiService.getEntry(mainEntryID);
+                    var idx = mainVM.MirkoEntries.GetIndex(entryVM);
+                    mainVM.MirkoEntries.Replace(idx, new EntryViewModel(entry));
+                }
+                else
+                {
+                    await Task.Delay(600);
+                    NavService.GoBack();
+                }
+
+                return;
+            }
+
+            // add single attachment
+            uint entryID = 0;
+            if(NewEntry.Files != null)
+            {
+                using (var fileStream = await NewEntry.Files[0].OpenStreamForReadAsync())
+                    entryID = await App.ApiService.addEntry(NewEntry, fileStream, NewEntry.Files[0].Name);
+            }
+            else
+            {
+                entryID = await App.ApiService.addEntry(NewEntry);
+            }
 
             if (entryID != 0)
             {
@@ -199,9 +268,16 @@ namespace Mirko_v2.ViewModel
                 NewEntry.RemoveAttachment();
                 NewEntry.Text = null;
 
+                if(App.ShareTargetActivated)
+                {
+                    await Task.Delay(600);
+                    NavService.GoBack();
+
+                    return;
+                }
+
                 NavService.GoBack();
 
-                var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
                 if (NewEntry.EntryID == 0)
                 {
                     var entry = await App.ApiService.getEntry(entryID);

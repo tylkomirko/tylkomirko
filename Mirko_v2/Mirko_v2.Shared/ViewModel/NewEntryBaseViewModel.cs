@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Windows.ApplicationModel.Activation;
@@ -63,21 +64,26 @@ namespace Mirko_v2.ViewModel
             openPicker.ViewMode = PickerViewMode.Thumbnail;
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
-            openPicker.PickSingleFileAndContinue();
+            if(NewEntry.EntryID == 0)
+                openPicker.PickMultipleFilesAndContinue();
+            else
+                openPicker.PickSingleFileAndContinue();
         }
 
-        public async void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs args)
+        public void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs args)
         {
-            if (args.Files.Count() > 0)
-            {
-                StorageFile file = args.Files[0];
-                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-                NewEntry.FileStream = stream.AsStreamForRead();
-                NewEntry.FileName = file.Name;
-                NewEntry.AttachmentName = file.DisplayName;
+            var files = args.Files;
+            if (files.Count == 0)
+                return;
 
-                SimpleIoc.Default.GetInstance<NavigationService>().GoBack();
-            }
+            NewEntry.Files = files.ToArray();
+
+            if (files.Count() == 1)
+                NewEntry.AttachmentName = files[0].DisplayName;
+            else
+                NewEntry.SetAttachmentName(files.Count);
+
+            SimpleIoc.Default.GetInstance<NavigationService>().GoBack();
         }
     }
 }

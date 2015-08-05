@@ -61,6 +61,7 @@ namespace Mirko_v2
 
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
+        public static bool ShareTargetActivated { get; set; }
         private Mirko_v2.ViewModel.NavigationService NavService = null;
         private readonly ILogger Logger = null;
 
@@ -272,10 +273,12 @@ namespace Mirko_v2
 
         protected override async void OnShareTargetActivated(ShareTargetActivatedEventArgs args)
         {
+            ShareTargetActivated = true;
+
             var data = args.ShareOperation.Data;
             var files = await data.GetStorageItemsAsync();
             var VM = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-            await VM.AddFile(files[0]);
+            VM.AddFiles(files);
             args.ShareOperation.ReportDataRetrieved();
 
 #if DEBUG
