@@ -73,11 +73,12 @@ namespace Mirko_v2.ViewModel
 
                         if (newEntries != null)
                         {
-                            if (mainVM.HotEntries.Count > 0 || entries.Count > 0)
+                            if (mainVM.HotEntries.Count > 0 || entries.Count > 0 || entriesToReturn.Count > 0)
                             {
                                 // this is to avoid duplicates.
                                 var currentIDs = mainVM.HotEntries.Select(x => x.Data.ID).ToList();
                                 currentIDs.AddRange(entries.Select(x => x.ID));
+                                currentIDs.AddRange(entriesToReturn.Select(x => x.ID));
 
                                 newEntries = newEntries.Where(x => !currentIDs.Contains(x.ID));
                             }
