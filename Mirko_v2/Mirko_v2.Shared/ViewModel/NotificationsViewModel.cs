@@ -378,7 +378,16 @@ namespace Mirko_v2.ViewModel
                 if (notification != null && notification.Data.IsNew)
                 {
                     notification.MarkAsReadCommand.Execute(null);
-                    await DispatcherHelper.RunAsync(() => collection.Remove(notification));
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        collection.Remove(notification);
+                        if (collection.Count == 0)
+                        {
+                            var keyValuePair = HashtagsDictionary.FirstOrDefault(x => x.Value.Equals(collection));
+                            if(!string.IsNullOrEmpty(keyValuePair.Key))
+                                HashtagsDictionary.Remove(keyValuePair.Key);
+                        }
+                    });
                     UpdateHashtagsCollection();
 
                     UpdateBadge();
@@ -740,9 +749,7 @@ namespace Mirko_v2.ViewModel
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var sum = HashtagsCollection.Sum(x => x.Count);
-                Debug.WriteLine("-------> sum: " + sum);
                 HashtagNotificationsCount = (uint)sum;
-
                 HashtagsCollection.Sort();
             });
 
