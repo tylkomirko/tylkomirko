@@ -2,7 +2,7 @@
 using System.Linq;
 using WykopSDK.Utils;
 
-namespace WykopSDK.Parser
+namespace WykopSDK.Parsers
 {
     public static class WykopHTMLParser
     {

@@ -66,7 +66,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Gfycat.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\HTMLUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\IncrementalLoadingCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuFlyoutUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenEntryMenuFlyout.cs" />

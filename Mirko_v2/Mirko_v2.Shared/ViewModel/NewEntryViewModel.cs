@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Storage;
 using WykopSDK.API.Models;
+using WykopSDK.Parsers;
 
 namespace Mirko_v2.ViewModel
 {
@@ -128,7 +129,7 @@ namespace Mirko_v2.ViewModel
                 {
                     Responses.Add(new NewEntryContainer()
                     {
-                        Text = HTMLUtils.HTMLtoWYPOK(entries.First().DataBase.Text),
+                        Text = HtmlToWykop.Convert(entries.First().DataBase.Text),
                     });
                 }
                 else

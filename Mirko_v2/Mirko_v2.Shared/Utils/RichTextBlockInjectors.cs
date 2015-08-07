@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using WykopSDK.API.Models;
-using WykopSDK.Parser;
+using WykopSDK.Parsers;
 
 namespace Mirko_v2.Utils
 {

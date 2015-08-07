@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WykopSDK.API.Models;
+using WykopSDK.Parsers;
 
 namespace Mirko_v2.ViewModel
 {
@@ -149,7 +150,7 @@ namespace Mirko_v2.ViewModel
                 vms = null;
 
                 Data.LastUpdate = this.Messages.Last().Data.Date;
-                Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
+                Data.LastMessage = HtmlToText.Convert(this.Messages.Last().Data.Text);
                 ProcessMessages();
             });
 
@@ -174,7 +175,7 @@ namespace Mirko_v2.ViewModel
             await ExecuteUpdateMessagesCommand();
 
             if (this.Messages.Count > 0)
-                Data.LastMessage = HTMLUtils.HTMLtoTEXT(this.Messages.Last().Data.Text);
+                Data.LastMessage = HtmlToText.Convert(this.Messages.Last().Data.Text);
             else
                 Data.LastMessage = "";
         }

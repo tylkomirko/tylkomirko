@@ -1,13 +1,13 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using WykopSDK.API.Models;
+using WykopSDK.Parsers;
 
 namespace Mirko_v2.ViewModel
 {
@@ -84,7 +84,7 @@ namespace Mirko_v2.ViewModel
         private void ShareLinkHandler(DataTransferManager sender, DataRequestedEventArgs args)
         {
             var url = "http://wykop.pl/wpis/" + Data.ID;
-            var body = HTMLUtils.HTMLtoTEXT(Data.Text.Replace("\n", " "));
+            var body = HtmlToText.Convert(Data.Text.Replace("\n", " "));
             var splittedBody = new List<string>(body.Split(' '));
             const int wordsToGet = 4;
 
