@@ -82,7 +82,9 @@ namespace Mirko_v2.ViewModel
                 DataBase.Voted = !DataBase.Voted;
                 DataBase.Voters = reply.Voters;
 
-                if(verbose)
+                App.TelemetryClient.TrackEvent(DataBase.Voted ? "Upvote" : "Downvote");
+
+                if (verbose)
                     StatusBarManager.ShowText(DataBase.Voted ? "Dodano plusa." : "Cofnięto plusa.");
             }
             else

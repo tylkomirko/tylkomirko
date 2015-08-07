@@ -166,6 +166,8 @@ namespace Mirko_v2.Pages
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
             {
+                App.TelemetryClient.TrackPageView("PivotPage-Mirko");
+
                 AppBar.MakeButtonVisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)
                     HideTimeSpanIndicatorPopup();
@@ -177,6 +179,8 @@ namespace Mirko_v2.Pages
             }
             else if (currentPage == 1)
             {
+                App.TelemetryClient.TrackPageView("PivotPage-Hot");
+
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
                 ShowTimeSpanIndicatorPopup();
@@ -188,6 +192,8 @@ namespace Mirko_v2.Pages
             } 
             else if(currentPage == 2)
             {
+                App.TelemetryClient.TrackPageView("PivotPage-Fav");
+
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)
@@ -200,6 +206,8 @@ namespace Mirko_v2.Pages
             }
             else if (currentPage == 3)
             {
+                App.TelemetryClient.TrackPageView("PivotPage-My");
+
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
                 if (TimeSpanIndicatorPopup.IsOpen)

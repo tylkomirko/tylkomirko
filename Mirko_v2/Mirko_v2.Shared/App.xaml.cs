@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using MetroLog;
 using MetroLog.Targets;
+using Microsoft.ApplicationInsights;
 using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
 using Newtonsoft.Json;
@@ -59,6 +60,12 @@ namespace Mirko_v2
             }
         }
 
+        private static TelemetryClient _telemetryClient = null;
+        public static TelemetryClient TelemetryClient
+        {
+            get { return _telemetryClient ?? (_telemetryClient = new TelemetryClient()); }
+        }
+
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         public static bool ShareTargetActivated { get; set; }
@@ -106,6 +113,8 @@ namespace Mirko_v2
         /// </summary>
         public App()
         {
+            WindowsAppInitializer.InitializeAsync();
+
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             GlobalCrashHandler.Configure();

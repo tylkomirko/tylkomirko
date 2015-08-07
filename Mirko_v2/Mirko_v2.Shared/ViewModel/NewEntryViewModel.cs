@@ -208,6 +208,8 @@ namespace Mirko_v2.ViewModel
                     return;
                 }
 
+                App.TelemetryClient.TrackEvent("New entry");
+
                 EntryViewModel entryVM = null;
 
                 if (!App.ShareTargetActivated)
@@ -227,7 +229,11 @@ namespace Mirko_v2.ViewModel
                 for (int i = 1; i < files.Length; i++)
                 {
                     using (var fileStream = await files[i].OpenStreamForReadAsync())
-                        await App.ApiService.addEntry(NewEntry, fileStream, files[i].Name);
+                    {
+                        var id = await App.ApiService.addEntry(NewEntry, fileStream, files[i].Name);
+                        if(id != 0)
+                            App.TelemetryClient.TrackEvent("New comment");
+                    }
                 }
 
                 await StatusBarManager.ShowTextAsync("Wpis został dodany.");
@@ -280,12 +286,16 @@ namespace Mirko_v2.ViewModel
 
                 if (NewEntry.EntryID == 0)
                 {
+                    App.TelemetryClient.TrackEvent("New entry");
+
                     var entry = await App.ApiService.getEntry(entryID);
                     if (entry != null)
                         mainVM.MirkoEntries.Insert(0, new EntryViewModel(entry));
                 }
                 else
                 {
+                    App.TelemetryClient.TrackEvent("New comment");
+
                     var entry = await App.ApiService.getEntry(NewEntry.EntryID);
                     if (entry != null)
                         Messenger.Default.Send<EntryViewModel>(new EntryViewModel(entry), "Update");
@@ -317,9 +327,15 @@ namespace Mirko_v2.ViewModel
                 Entry entry = null;
 
                 if (NewEntry.EntryID == 0)
+                {
                     entry = await App.ApiService.getEntry(entryID);
+                    App.TelemetryClient.TrackEvent("Edited entry");
+                }
                 else
+                {
                     entry = await App.ApiService.getEntry(NewEntry.EntryID);
+                    App.TelemetryClient.TrackEvent("Edited comment");
+                }
 
                 if (entry != null)
                     Messenger.Default.Send<EntryViewModel>(new EntryViewModel(entry), "Update");

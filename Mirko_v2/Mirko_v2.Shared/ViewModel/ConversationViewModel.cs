@@ -100,6 +100,8 @@ namespace Mirko_v2.ViewModel
             NewEntry.RemoveAttachment();
             if (success)
             {
+                App.TelemetryClient.TrackEvent("New PM");
+
                 await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");
                 await ExecuteUpdateMessagesCommand();
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));

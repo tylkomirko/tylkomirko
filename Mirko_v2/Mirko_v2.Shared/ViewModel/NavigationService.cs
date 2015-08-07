@@ -117,6 +117,9 @@ namespace Mirko_v2.ViewModel
             if (string.IsNullOrEmpty(key) || CurrentPageKey == key)
                 return;
 
+            if(key != "PivotPage") // PivotPage handles it on it's own
+                App.TelemetryClient.TrackPageView(key);
+
             var currentFrame = Window.Current.Content as Frame;
 
             if(!navigatedToRootPage)
