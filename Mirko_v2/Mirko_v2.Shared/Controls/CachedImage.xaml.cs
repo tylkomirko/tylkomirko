@@ -31,18 +31,15 @@ namespace Mirko_v2.Controls
             Ring.Visibility = Visibility.Visible;
 
             var uri = await Cache.GetImageUri(previewURL, fullURL);
-            var vm = DataContext as EmbedViewModel;
 
             if (uri != null)
-            {
                 Image.Source = new BitmapImage() { UriSource = uri, CreateOptions = BitmapCreateOptions.IgnoreImageCache };
-                vm.ErrorShown = false;
-            }
             else
-            {
                 Image.Source = new BitmapImage() { UriSource = new Uri("ms-appx:///Assets/image_error.png") };
-                vm.ErrorShown = true;
-            }
+
+            var vm = DataContext as EmbedViewModel;
+            if (vm != null)
+                vm.ErrorShown = uri == null;
 
             Grid.Visibility = Visibility.Visible;
             Ring.Visibility = Visibility.Collapsed;
