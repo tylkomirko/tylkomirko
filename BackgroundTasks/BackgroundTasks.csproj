@@ -35,9 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Mirko_v2\WykopAPI\WykopAPI.csproj">
+    <ProjectReference Include="..\Mirko_v2\WykopSDK\WykopSDK.csproj">
       <Project>{93a3f254-c9b1-4bec-8001-7a8abf648e27}</Project>
-      <Name>WykopAPI</Name>
+      <Name>WykopSDK</Name>
     </ProjectReference>
     <ProjectReference Include="..\NotificationsExtensions\NotificationsExtensions.csproj">
       <Project>{c5721b58-be5e-4725-843c-6773d9688c31}</Project>

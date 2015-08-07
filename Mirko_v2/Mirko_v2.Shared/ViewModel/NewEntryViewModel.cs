@@ -11,7 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Storage;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {

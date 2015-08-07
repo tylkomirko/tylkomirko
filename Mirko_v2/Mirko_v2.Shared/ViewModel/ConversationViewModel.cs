@@ -1,21 +1,15 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using WykopAPI.Models;
-using Mirko_v2.Utils;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Views;
-using System.Collections.ObjectModel;
-using Windows.Storage;
-using System.IO;
-using Windows.Storage.Pickers;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using Mirko_v2.Utils;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -286,9 +280,9 @@ namespace Mirko_v2.ViewModel
             get { return _checkIfOnline ?? (_checkIfOnline = new RelayCommand(ExecuteCheckIfOnline)); }
         }
 
-        private async void ExecuteCheckIfOnline()
+        private void ExecuteCheckIfOnline()
         {
-            IsOnline = await App.ApiService.isUserOnline(Data.AuthorName);
+            IsOnline = false;
         }
     }
 }

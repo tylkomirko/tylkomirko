@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko_v2.ViewModel

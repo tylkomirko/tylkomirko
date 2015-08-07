@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
-using WykopAPI.Models;
+using WykopSDK.API;
+using WykopSDK.API.Models;
 
 namespace BackgroundTasks
 {
     public sealed class PseudoPush : IBackgroundTask
     {
         private readonly ILogger Logger = null;
-        private WykopAPI.WykopAPI ApiService;
+        private WykopAPI ApiService;
 
         public PseudoPush()
         {
@@ -31,7 +32,7 @@ namespace BackgroundTasks
             {
                 LogManagerFactory.DefaultConfiguration = configuration;
             }
-            catch (System.InvalidOperationException) { }
+            catch (InvalidOperationException) { }
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<PseudoPush>();
         }
@@ -49,7 +50,7 @@ namespace BackgroundTasks
             if(appRunning)
                 Logger.Trace("App is running.");
 
-            ApiService = new WykopAPI.WykopAPI();
+            ApiService = new WykopAPI();
 
             if (ApiService.UserInfo == null ||
                 appRunning ||

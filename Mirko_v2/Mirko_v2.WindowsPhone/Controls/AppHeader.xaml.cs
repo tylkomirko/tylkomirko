@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using WykopSDK.Utils;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -93,7 +94,7 @@ namespace Mirko_v2.Controls
             }
         }
 
-        private void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
+        private void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
         {
             if (e.IsNetworkAvailable)
                 DispatcherHelper.CheckBeginInvokeOnUI(() => DrawLogo());

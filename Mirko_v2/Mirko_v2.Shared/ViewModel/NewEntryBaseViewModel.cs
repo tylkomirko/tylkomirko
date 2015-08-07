@@ -9,7 +9,7 @@ using System.Linq;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {

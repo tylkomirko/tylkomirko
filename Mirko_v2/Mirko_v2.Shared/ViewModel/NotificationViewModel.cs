@@ -3,7 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {

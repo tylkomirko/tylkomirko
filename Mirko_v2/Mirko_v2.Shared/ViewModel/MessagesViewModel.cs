@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -151,7 +151,7 @@ namespace Mirko_v2.ViewModel
                 list.Add(tmp);
             }
 
-            await App.ApiService.LocalStorage.SaveConversations(list);
+            await WykopSDK.WykopSDK.LocalStorage.SaveConversations(list);
         }
 
         private void SortConversationList()

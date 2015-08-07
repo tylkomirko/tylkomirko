@@ -6,7 +6,7 @@ using GalaSoft.MvvmLight.Threading;
 using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {

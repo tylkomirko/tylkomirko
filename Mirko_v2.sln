@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirko_v2", "Mirko_v2", "{6152F080-8793-4040-A7FA-E7B06BA87931}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirko_v2.Windows", "Mirko_v
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirko_v2.WindowsPhone", "Mirko_v2\Mirko_v2.WindowsPhone\Mirko_v2.WindowsPhone.csproj", "{9520CC96-0693-4653-9005-17DD645134D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WykopAPI", "Mirko_v2\WykopAPI\WykopAPI.csproj", "{93A3F254-C9B1-4BEC-8001-7A8ABF648E27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WykopSDK", "Mirko_v2\WykopSDK\WykopSDK.csproj", "{93A3F254-C9B1-4BEC-8001-7A8ABF648E27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationsExtensions", "NotificationsExtensions\NotificationsExtensions.csproj", "{C5721B58-BE5E-4725-843C-6773D9688C31}"
 EndProject

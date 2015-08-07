@@ -2,7 +2,7 @@
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.Converters
 {
@@ -11,10 +11,9 @@ namespace Mirko_v2.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var status = (ConversationStatus)value;
-            if (status == ConversationStatus.New)
-                return new SolidColorBrush(Colors.White);
-            else
-                return new SolidColorBrush(Colors.Gray);
+
+            var color = status == ConversationStatus.New ? Colors.White : Colors.Gray;
+            return new SolidColorBrush(color);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

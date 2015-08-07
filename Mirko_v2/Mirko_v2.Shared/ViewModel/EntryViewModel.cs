@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {

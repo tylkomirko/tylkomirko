@@ -13,7 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
+using WykopSDK.Utils;
 
 namespace Mirko_v2.ViewModel
 {
@@ -133,7 +134,7 @@ namespace Mirko_v2.ViewModel
             });
         }
 
-        private async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
+        private async void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
         {
             if(e.IsNetworkAvailable)
             {
@@ -468,7 +469,7 @@ namespace Mirko_v2.ViewModel
             {
                 // log out
                 var loginVM = SimpleIoc.Default.GetInstance<LoginViewModel>();
-                loginVM.RemoveCredentials();
+                WykopSDK.WykopSDK.VaultStorage.RemoveCredentials();
                 settingsVM.Delete();
                 MyEntries.ClearAll();
                 FavEntries.ClearAll();

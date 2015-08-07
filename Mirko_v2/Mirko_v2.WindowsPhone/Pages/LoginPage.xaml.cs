@@ -1,21 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Mirko_v2.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Mirko_v2.Utils;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -28,19 +14,14 @@ namespace Mirko_v2.Pages
         public LoginPage()
         {
             this.InitializeComponent();
-            Messenger.Default.Register<LoginShowFlyoutMessage>(this, LoginShowFlyoutAction);
+
+            Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
         }
 
-        private void LoginShowFlyoutAction(LoginShowFlyoutMessage obj)
+        private void ReadMessage(NotificationMessage<string> obj)
         {
-            if (obj.FlyoutType == LoginShowFlyoutMessage.FlyoutTypeEnum.Error)
-            {
-                ShowErrorFlyoutWithText(obj.ErrorMessage);
-            }
-            else
-            {
-                ShowPermissionFlyout(obj.PermissionsTitle, obj.Permissions);
-            }
+            if(obj.Notification == "LoginPageFlyout")
+                ShowErrorFlyoutWithText(obj.Content);
         }
 
         private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -68,37 +49,12 @@ namespace Mirko_v2.Pages
         private void ShowErrorFlyoutWithText(string txt)
         {
             if (txt == null) return;
+
             var flyout = this.Resources["ErrorFlyout"] as Flyout;
             var tb = flyout.Content as TextBlock;
             tb.Text = txt;
 
             flyout.ShowAt(this);
-        }
-
-        private void ShowPermissionFlyout(string title, List<string> items)
-        {
-            var flyout = this.Resources["PermissionFlyout"] as Flyout;
-            var sp = flyout.Content as StackPanel;
-            var permissionTitleTB = sp.GetDescendant<TextBlock>("PermissionNeededTB");
-            permissionTitleTB.Text = title;
-
-            var permissionsLV = sp.GetDescendant<ListView>("PermissionListView");
-            permissionsLV.ItemsSource = items;
-
-            flyout.ShowAt(this);
-        }
-
-        private async void ShowProgressIndicator()
-        {
-            var statusBar = StatusBar.GetForCurrentView();
-            await statusBar.ShowAsync();
-            await statusBar.ProgressIndicator.ShowAsync();
-        }
-
-        private async void HideProgressIndicator()
-        {
-            var statusBar = StatusBar.GetForCurrentView();
-            await statusBar.ProgressIndicator.HideAsync();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -116,12 +72,6 @@ namespace Mirko_v2.Pages
 
             var VM = this.DataContext as LoginViewModel;
             VM.LoginCommand.Execute(null);
-        }
-
-        private void GrantPermissionButton_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = this.Resources["PermissionFlyout"] as Flyout;
-            flyout.Hide();
         }
 
         public CommandBar CreateCommandBar()

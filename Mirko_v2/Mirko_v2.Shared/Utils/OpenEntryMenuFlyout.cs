@@ -4,7 +4,7 @@ using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.Utils
 {

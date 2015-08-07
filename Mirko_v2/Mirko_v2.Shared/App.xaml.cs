@@ -16,6 +16,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using WykopSDK.API;
+using WykopSDK.API.Models;
+using WykopSDK.Utils;
+using WykopSDK.WWW;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -31,14 +35,14 @@ namespace Mirko_v2
         private ContinuationManager continuationManager;
 #endif
 
-        private static WykopAPI.WykopAPI _apiService = null;
-        public static WykopAPI.WykopAPI ApiService
+        private static WykopAPI _apiService = null;
+        public static WykopAPI ApiService
         {
             get
             {
                 if(_apiService == null)
                 {
-                    _apiService = new WykopAPI.WykopAPI();
+                    _apiService = new WykopAPI();
                     _apiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
                     _apiService.MessageReceiver += ApiService_MessageReceiver;
                 }
@@ -46,18 +50,24 @@ namespace Mirko_v2
             }
         }
 
-        static async void ApiService_MessageReceiver(object sender, WykopAPI.MessageEventArgs e)
+        static async void ApiService_MessageReceiver(object sender, MessageEventArgs e)
         {
             if (e.Code == 61)
                 await StatusBarManager.ShowTextAsync(e.Message);
         }
 
-        static async void ApiService_NetworkStatusChanged(object sender, WykopAPI.NetworkEventArgs e)
+        static async void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
         {
             if(!e.IsNetworkAvailable)
             {
                 await StatusBarManager.ShowTextAsync("Brak połączenia z Internetem.");
             }
+        }
+
+        private static WykopWWW _wwwService = null;
+        public static WykopWWW WWWService
+        {
+            get { return _wwwService ?? (_wwwService = new WykopWWW()); }
         }
 
         private static TelemetryClient _telemetryClient = null;
@@ -113,7 +123,7 @@ namespace Mirko_v2
         /// </summary>
         public App()
         {
-            WindowsAppInitializer.InitializeAsync();
+            //WindowsAppInitializer.InitializeAsync();
 
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
@@ -238,7 +248,7 @@ namespace Mirko_v2
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                App.ApiService.LocalStorage.InitAction();
+                WykopSDK.WykopSDK.LocalStorage.InitAction();
 
                 if (!string.IsNullOrEmpty(e.Arguments))
                     ProcessLaunchArguments(e.Arguments);
@@ -262,14 +272,14 @@ namespace Mirko_v2
 
             NavService.InsertMainPage();
 
-            var notification = JsonConvert.DeserializeObject<WykopAPI.Models.Notification>(args);
-            if(notification.Type == WykopAPI.Models.NotificationType.EntryDirected || notification.Type == WykopAPI.Models.NotificationType.CommentDirected)
+            var notification = JsonConvert.DeserializeObject<Notification>(args);
+            if(notification.Type == NotificationType.EntryDirected || notification.Type == NotificationType.CommentDirected)
             {
                 var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>(); // make sure it exists
-                Messenger.Default.Send<NotificationMessage<WykopAPI.Models.Notification>>
-                    (new NotificationMessage<WykopAPI.Models.Notification>(notification, "Go to"));
+                Messenger.Default.Send<NotificationMessage<Notification>>
+                    (new NotificationMessage<Notification>(notification, "Go to"));
             }
-            else if(notification.Type == WykopAPI.Models.NotificationType.PM)
+            else if(notification.Type == NotificationType.PM)
             {
                 var VM = SimpleIoc.Default.GetInstance<MessagesViewModel>(); // make sure it exists
                 Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(notification.AuthorName, "Go to"));
@@ -352,7 +362,7 @@ namespace Mirko_v2
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                App.ApiService.LocalStorage.InitAction();
+                WykopSDK.WykopSDK.LocalStorage.InitAction();
 
                 NavService.NavigateTo("NewEntryPage");
             }

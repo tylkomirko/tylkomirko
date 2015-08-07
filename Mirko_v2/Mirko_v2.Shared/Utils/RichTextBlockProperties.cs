@@ -1,5 +1,4 @@
 ﻿using Mirko_v2.Controls;
-using Mirko_v2.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,14 +8,12 @@ using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using WykopAPI;
-using WykopAPI.JSON;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
+using WykopSDK.Parser;
 
 namespace Mirko_v2.Utils
 {

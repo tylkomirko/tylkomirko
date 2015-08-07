@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI.Xaml.Data;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.Converters
 {

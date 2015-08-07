@@ -9,6 +9,7 @@ using System.Linq;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
+using WykopSDK.API;
 
 namespace Mirko_v2.ViewModel
 {
@@ -38,8 +39,8 @@ namespace Mirko_v2.ViewModel
 
     public class SettingsViewModel : ViewModelBase
     {
-        private WykopAPI.UserInfo _userInfo = null;
-        public WykopAPI.UserInfo UserInfo
+        private UserInfo _userInfo = null;
+        public UserInfo UserInfo
         {
             get { return _userInfo; }
             set { Set(() => UserInfo, ref _userInfo, value); }

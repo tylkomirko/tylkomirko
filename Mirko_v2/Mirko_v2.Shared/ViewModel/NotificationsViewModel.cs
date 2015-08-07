@@ -15,7 +15,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {
@@ -106,7 +106,7 @@ namespace Mirko_v2.ViewModel
                 });
 
                 Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Delete ObservedHashtags"));
-                await App.ApiService.LocalStorage.DeleteConversations();
+                //await App.ApiService.LocalStorage.DeleteConversations(); FIXME
             }
             else if(obj.Notification == "Login")
             {

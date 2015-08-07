@@ -17,44 +17,6 @@
                        Style="{StaticResource FlyoutPickerTitleTextBlockStyle}"/>
         </Flyout>
 
-        <Flyout x:Key="PermissionFlyout"
-                Placement="Full">
-            <Flyout.FlyoutPresenterStyle>
-                <Style TargetType="FlyoutPresenter">
-                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
-                    <Setter Property="VerticalAlignment" Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                    <Setter Property="MaxHeight" Value="800" />
-                </Style>
-            </Flyout.FlyoutPresenterStyle>
-
-            <StackPanel Margin="19.5,9.5,19,0">
-                <TextBlock x:Name="PermissionNeededTB"
-                           TextWrapping="Wrap"
-                           Style="{StaticResource FlyoutPickerTitleTextBlockStyle}" />
-
-                <ListView x:Name="PermissionListView"
-                          SelectionMode="None"
-                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                          IsItemClickEnabled="False">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock TextWrapping="Wrap"
-                                       Style="{StaticResource BodyTextBlockStyle}">
-                                <Run Text="●" />
-                                <Run Text="{Binding}" />
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-                <Button Content="OK"
-                        Click="GrantPermissionButton_Click"
-                        Command="{Binding PermissionGrantedCommand}" />
-
-            </StackPanel>
-        </Flyout>
-
         <Style x:Key="UsernameStyle" TargetType="TextBox">
             <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}"/>
             <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}"/>

@@ -2,7 +2,7 @@
 using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.Converters
 {

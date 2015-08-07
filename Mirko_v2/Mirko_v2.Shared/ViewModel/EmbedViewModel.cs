@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using Windows.Storage;
 using Windows.System;
-using WykopAPI.Models;
+using WykopSDK.API.Models;
 
 namespace Mirko_v2.ViewModel
 {
