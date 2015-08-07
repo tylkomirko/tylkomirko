@@ -46,7 +46,7 @@ namespace Mirko_v2.Utils
                 return;
             }
 
-            var parsed = WypokHTMLParser.Parse(xhtml);
+            var parsed = WykopHTMLParser.Parse(xhtml);
             var block = GenerateBlock(parsed);
 
             //Add the blocks to the RichTextBlock

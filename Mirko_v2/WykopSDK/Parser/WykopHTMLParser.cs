@@ -4,7 +4,7 @@ using WykopSDK.Utils;
 
 namespace WykopSDK.Parser
 {
-    public static class WypokHTMLParser
+    public static class WykopHTMLParser
     {
         public static List<ParserToken> Parse(string str, bool isInSpoiler = false)
         {

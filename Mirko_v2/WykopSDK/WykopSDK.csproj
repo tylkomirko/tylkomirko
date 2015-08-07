@@ -112,7 +112,7 @@
     <Compile Include="API\UserInfo.cs" />
     <Compile Include="API\WykopAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Parser\WypokHTMLParser.cs" />
+    <Compile Include="Parser\WykopHTMLParser.cs" />
     <Compile Include="WWW\ConnectAccountReply.cs" />
     <Compile Include="WWW\WykopWWW.cs" />
     <Compile Include="WykopSDK.cs" />
