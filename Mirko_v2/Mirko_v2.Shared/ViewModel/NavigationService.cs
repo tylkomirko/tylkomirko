@@ -75,7 +75,7 @@ namespace Mirko_v2.ViewModel
             {
                 if (pagesCache.Count > cachedPagesCount)
                 {
-                    var item = pagesCache.First();
+                    var item = pagesCache.First(x => x.Key.Name != "PivotPage");
                     var page = item.Value;
                     var key = item.Key;
 
