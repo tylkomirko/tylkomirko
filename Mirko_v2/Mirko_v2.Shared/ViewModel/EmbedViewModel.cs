@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using Windows.Storage;
+using Windows.System;
 using WykopAPI.Models;
 
 namespace Mirko_v2.ViewModel
@@ -15,6 +16,7 @@ namespace Mirko_v2.ViewModel
     {
         public Embed EmbedData { get; set; }
         public bool ImageShown { get; set; }
+        public bool ErrorShown { get; set; }
 
         private string _mediaElementSrc = null;
         public string MediaElementSrc
@@ -77,6 +79,9 @@ namespace Mirko_v2.ViewModel
 
         private async void ExecuteOpenEmbedCommand()
         {
+            if (ErrorShown)
+                return;
+
             var url = EmbedData.URL;
             if (url.EndsWith(".jpg") || url.EndsWith(".jpeg") || url.EndsWith(".png") || (url.Contains("imgwykop.pl") && !url.EndsWith("gif")))
             {
@@ -91,7 +96,7 @@ namespace Mirko_v2.ViewModel
                 if (!string.IsNullOrEmpty(mp4))
                     MediaElementSrc = mp4;
                 else
-                    await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
+                    StatusBarManager.ShowText("Coś poszło nie tak...");
             }
             else if (url.Contains("gfycat.com"))
             {
@@ -101,7 +106,7 @@ namespace Mirko_v2.ViewModel
                 if (!string.IsNullOrEmpty(mp4))
                     MediaElementSrc = mp4;
                 else
-                    await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
+                    StatusBarManager.ShowText("Coś poszło nie tak...");
             }
             else if (url.Contains("youtube")) // FIXME
             {
@@ -127,7 +132,7 @@ namespace Mirko_v2.ViewModel
                     uri = url;
                 }
 
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+                await Launcher.LaunchUriAsync(new Uri(uri));
             }
             else if (url.Contains("youtu.be"))
             {
@@ -153,11 +158,11 @@ namespace Mirko_v2.ViewModel
                     uri = url;
                 }
 
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+                await Launcher.LaunchUriAsync(new Uri(uri));
             }
             else
             {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+                await Launcher.LaunchUriAsync(new Uri(url));
             }
         }
     }

@@ -182,6 +182,7 @@
     <Content Include="Assets\appbar.text.italic.png" />
     <Content Include="Assets\czacha.png" />
     <Content Include="Assets\gif_icon.png" />
+    <Content Include="Assets\image_error.png" />
     <Content Include="Assets\medium_badge.png" />
     <Content Include="Assets\mirko_icon_150x150.scale-100.png" />
     <Content Include="Assets\mirko_icon_150x150.scale-140.png" />

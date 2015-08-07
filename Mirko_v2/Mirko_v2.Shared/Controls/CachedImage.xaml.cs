@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko_v2.ViewModel;
+using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -30,21 +31,22 @@ namespace Mirko_v2.Controls
             Ring.Visibility = Visibility.Visible;
 
             var uri = await Cache.GetImageUri(previewURL, fullURL);
+            var vm = DataContext as EmbedViewModel;
 
             if (uri != null)
             {
-                var bitmap = new BitmapImage() { UriSource = uri, CreateOptions = BitmapCreateOptions.IgnoreImageCache };
-                Image.Source = bitmap;
-
-                Grid.Visibility = Visibility.Visible;
-                Ring.Visibility = Visibility.Collapsed;
-                Image.Visibility = Visibility.Visible;
+                Image.Source = new BitmapImage() { UriSource = uri, CreateOptions = BitmapCreateOptions.IgnoreImageCache };
+                vm.ErrorShown = false;
             }
             else
             {
-                Image.Source = null;
-                Visibility = Visibility.Collapsed;
+                Image.Source = new BitmapImage() { UriSource = new Uri("ms-appx:///Assets/image_error.png") };
+                vm.ErrorShown = true;
             }
+
+            Grid.Visibility = Visibility.Visible;
+            Ring.Visibility = Visibility.Collapsed;
+            Image.Visibility = Visibility.Visible;
         }
 
         public new Visibility Visibility

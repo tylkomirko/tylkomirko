@@ -195,8 +195,8 @@
                                  Margin="0,3,0,0"
                                  MinHeight="50"
                                  MinWidth="50"
-                                 MaxHeight="250"
-                                 MaxWidth="250"
+                                 MaxHeight="220"
+                                 MaxWidth="220"
                                  HorizontalAlignment="Left"
                                  DataContext="{Binding EmbedVM}"/>
         </Grid>

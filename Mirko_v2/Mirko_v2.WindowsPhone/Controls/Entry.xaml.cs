@@ -48,8 +48,8 @@ namespace Mirko_v2.Controls
             }
             else
             {
-                embed.MaxHeight = 250;
-                embed.MaxWidth = 250;
+                embed.MaxHeight = 220;
+                embed.MaxWidth = 220;
             }
         }
 
