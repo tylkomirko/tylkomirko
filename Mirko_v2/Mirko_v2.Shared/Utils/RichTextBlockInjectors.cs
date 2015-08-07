@@ -17,23 +17,23 @@ using WykopSDK.Parser;
 
 namespace Mirko_v2.Utils
 {
-    public class Properties : DependencyObject
+    public class Injectors : DependencyObject
     {
         #region HTML
-        public static void SetHtml(DependencyObject obj, string value)
+        public static void SetHTML(DependencyObject obj, string value)
         {
-            obj.SetValue(HtmlProperty, value);
+            obj.SetValue(HTMLProperty, value);
         }
 
-        public static string GetHtml(DependencyObject obj)
+        public static string GetHTML(DependencyObject obj)
         {
-            return (string)obj.GetValue(HtmlProperty);
+            return (string)obj.GetValue(HTMLProperty);
         }
 
-        public static readonly DependencyProperty HtmlProperty =
-            DependencyProperty.RegisterAttached("Html", typeof(string), typeof(Properties), new PropertyMetadata(null, HtmlChanged));
+        public static readonly DependencyProperty HTMLProperty =
+            DependencyProperty.RegisterAttached("HTML", typeof(string), typeof(Injectors), new PropertyMetadata(null, HTMLChanged));
 
-        private static void HtmlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void HTMLChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var richText = d as RichTextBlock;
             if (richText == null) return;
@@ -324,7 +324,7 @@ namespace Mirko_v2.Utils
 
         // Using a DependencyProperty as the backing store for Notification.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NotificationProperty =
-            DependencyProperty.RegisterAttached("Notification", typeof(Notification), typeof(Properties), new PropertyMetadata(null, NotificationChanged));
+            DependencyProperty.RegisterAttached("Notification", typeof(Notification), typeof(Injectors), new PropertyMetadata(null, NotificationChanged));
 
         private static void NotificationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -503,7 +503,7 @@ namespace Mirko_v2.Utils
 
         // Using a DependencyProperty as the backing store for Voters.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VotersProperty =
-            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<string>), typeof(Properties), new PropertyMetadata(null, VotersChanged));
+            DependencyProperty.RegisterAttached("Voters", typeof(ObservableCollection<string>), typeof(Injectors), new PropertyMetadata(null, VotersChanged));
 
         private static void VotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -531,7 +531,7 @@ namespace Mirko_v2.Utils
 
         // Using a DependencyProperty as the backing store for ShowVoters.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowVotersProperty =
-            DependencyProperty.RegisterAttached("ShowVoters", typeof(bool), typeof(Properties), new PropertyMetadata(false, ShowVotersChanged));
+            DependencyProperty.RegisterAttached("ShowVoters", typeof(bool), typeof(Injectors), new PropertyMetadata(false, ShowVotersChanged));
 
         private static void ShowVotersChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

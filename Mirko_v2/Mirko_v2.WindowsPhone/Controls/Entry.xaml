@@ -179,7 +179,7 @@
                        
                        FontSize="{Binding Fonts.EntryFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Foreground="{ThemeResource EntryBodyForeground}"
-                       utils:Properties.Html="{Binding Data.Text}"/>
+                       utils:Injectors.HTML="{Binding Data.Text}"/>
 
         <Grid x:Name="EmbedPreviewGrid"
               Grid.Column="0"
@@ -208,8 +208,8 @@
                        Margin="5,0,0,0"
                        IsTextSelectionEnabled="False"
                        Visibility="Collapsed"
-                       utils:Properties.Voters="{Binding Data.Voters}"
-                       utils:Properties.ShowVoters="{Binding ShowVoters}"/>       
+                       utils:Injectors.Voters="{Binding Data.Voters}"
+                       utils:Injectors.ShowVoters="{Binding ShowVoters}"/>       
 
         <Grid x:Name="RightSpacer"
               Grid.Column="2"

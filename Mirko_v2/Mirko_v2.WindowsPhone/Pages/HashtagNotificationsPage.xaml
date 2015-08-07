@@ -80,7 +80,7 @@
                                            IsTextSelectionEnabled="False"
                                            MaxLines="1"
                                            TextTrimming="CharacterEllipsis"
-                                           utils:Properties.Html="{Binding Data.Entry.Text}"/>
+                                           utils:Injectors.HTML="{Binding Data.Entry.Text}"/>
 
                         </Grid>
                     </DataTemplate>
