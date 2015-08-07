@@ -62,7 +62,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandBarUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Cryptography.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuFlyoutUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenEntryMenuFlyout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenMenuFlyout.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\PageNavigationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StackList.cs" />

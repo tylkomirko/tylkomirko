@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
-using Mirko_v2.Utils;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,6 +10,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
+using WykopSDK.Utils;
 
 namespace Mirko_v2.ViewModel
 {
@@ -25,7 +25,7 @@ namespace Mirko_v2.ViewModel
 
         public CacheViewModel()
         {
-            TempFolder = Windows.Storage.ApplicationData.Current.TemporaryFolder;
+            TempFolder = ApplicationData.Current.TemporaryFolder;
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
             GetPopularHashtags = new Action(async () => await DownloadPopularHashtags());
 
