@@ -39,8 +39,8 @@ namespace Mirko_v2.Controls
                 var VM = DataContext as EmbedViewModel;
                 if (VM == null || VM.EmbedData == null) return;
 
-                if (!App.ApiService.IsNetworkAvailable ||
-                    (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable) ||
+                if ((!App.ApiService.IsNetworkAvailable && !VM.ImageShown) ||
+                    (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable && !VM.ImageShown) ||
                     (VM.EmbedData.NSFW && !Settings.ShowPlus18))
                 {
                     Image.Visibility = Visibility.Collapsed;
