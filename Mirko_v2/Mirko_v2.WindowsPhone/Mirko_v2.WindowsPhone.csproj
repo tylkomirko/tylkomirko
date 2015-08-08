@@ -146,6 +146,9 @@
       <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\IHaveAppBar.cs" />
+    <Compile Include="Pages\BlacklistPage.xaml.cs">
+      <DependentUpon>BlacklistPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -292,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\HashtagSelectionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\BlacklistPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

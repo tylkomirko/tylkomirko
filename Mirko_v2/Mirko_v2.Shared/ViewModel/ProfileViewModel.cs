@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
-using GalaSoft.MvvmLight.Views;
 using Mirko_v2.Utils;
 using Newtonsoft.Json;
 using WykopSDK.API.Models;
@@ -73,28 +72,19 @@ namespace Mirko_v2.ViewModel
             get { return _blacklist ?? (_blacklist = new RelayCommand(ExecuteBlacklist)); }
         }
 
-        private async void ExecuteBlacklist()
+        private void ExecuteBlacklist()
         {
             bool blacklisted = (bool)Data.Blacklisted;
-            var user = Data.Login;
-            bool success;
+            var user = "@" + Data.Login;
 
-            await StatusBarManager.ShowProgressAsync();
+            var blacklistVM = SimpleIoc.Default.GetInstance<BlacklistViewModel>();
+
             if (blacklisted)
-                success = await App.ApiService.unblockUser(user);
+                blacklistVM.UnblockPerson.Execute(user);
             else
-                success = await App.ApiService.blockUser(user);
+                blacklistVM.BlockPerson.Execute(user);
 
-            if (success)
-            {
-                string text = blacklisted ? "Odblokowałeś @" + user : "Zablokowałeś @" + user;
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Blacklisted = !blacklisted);
-                await StatusBarManager.ShowTextAsync(text);
-            }
-            else
-            {
-                await StatusBarManager.ShowTextAsync("Coś poszło nie tak...");
-            }
+            DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Blacklisted = !blacklisted);
         }
 
         private RelayCommand _pm = null;
@@ -106,7 +96,7 @@ namespace Mirko_v2.ViewModel
 
         private void ExecutePM()
         {
-            Messenger.Default.Send<NotificationMessage<Profile>>(new NotificationMessage<Profile>(Data, "Go to"));
+            Messenger.Default.Send(new NotificationMessage<Profile>(Data, "Go to"));
         }
         
     }

@@ -44,6 +44,9 @@ namespace WykopSDK.WWW
             get { return _parser ?? (_parser = new HtmlParser()); }
         }
 
+        private bool loggedIn = false;
+
+        #region Account
         public async Task ConnectAccount(
             string username, string password,
             string appKey, string secretKey,
@@ -162,8 +165,22 @@ namespace WykopSDK.WWW
             }
         }
 
-        public async Task<bool> Login(string username, string password)
+        public async Task<bool> Login(string username = null, string password = null)
         {
+            if (username == null || password == null)
+            {
+                var credentials = WykopSDK.VaultStorage.ReadCredentials();
+                if (credentials != null)
+                {
+                    username = credentials.Item1;
+                    password = credentials.Item2;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             string token = null;
             string loginURL = null;
 
@@ -200,6 +217,84 @@ namespace WykopSDK.WWW
                     return false;
             }
         }
+        #endregion
+
+        #region Blacklist
+        public async Task<Tuple<List<string>, List<string>>> GetBlacklists()
+        {
+            List<string> tags = await WykopSDK.LocalStorage.ReadBlacklistedTags();
+            List<string> users = await WykopSDK.LocalStorage.ReadBlacklistedUsers();
+
+            if(tags == null || users == null)
+            {
+                if (!loggedIn)
+                {
+                    loggedIn = await Login();
+                    if (!loggedIn) return null;
+                }
+            }
+
+            if (tags == null)
+                tags = await GetBlacklistedTags();
+
+            if (users == null)
+                users = await GetBlacklistedUsers();
+
+            await WykopSDK.LocalStorage.SaveBlacklists(tags, users);
+
+            return new Tuple<List<string>, List<string>>(tags, users);
+        }
+
+        private async Task<List<string>> GetBlacklistedUsers()
+        {
+            var users = new List<string>();
+
+            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                var doc = parser.Parse(stream);
+                if (doc == null) return null;
+
+                var divs = doc.QuerySelector(@"div[data-type=""users""]").QuerySelectorAll("div");
+                foreach (var item in divs)
+                {
+                    var ahref = item.Children[1] as IHtmlAnchorElement;
+                    var url = ahref.Href;
+
+                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    users.Add(splitUrl.Last());
+                }
+            }
+
+            users.Sort();
+            return users;
+        }
+
+        private async Task<List<string>> GetBlacklistedTags()
+        {
+            var tags = new List<string>();
+
+            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                var doc = parser.Parse(stream);
+                if (doc == null) return null;
+
+                var spans = doc.QuerySelector(@"div[data-type=""hashtags""]").QuerySelectorAll("span");
+                foreach (var item in spans)
+                {
+                    var ahref = item.Children[0] as IHtmlAnchorElement;
+                    var url = ahref.Href;
+
+                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    tags.Add(splitUrl.Last());
+                }
+            }
+
+            tags.Sort();
+            return tags;
+        }
+        #endregion
 
         public async Task<List<string>> GetObservedUsers()
         {
@@ -223,31 +318,7 @@ namespace WykopSDK.WWW
             }
 
             return users;
-        }
-
-        public async Task<List<string>> GetBlacklistedUsers()
-        {
-            var users = new List<string>();
-
-            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            {
-                var doc = parser.Parse(stream);
-                if (doc == null) return null;
-
-                var divs = doc.QuerySelector(@"div[data-type=""users""]").QuerySelectorAll("div");
-                foreach (var item in divs)
-                {
-                    var ahref = item.Children[1] as IHtmlAnchorElement;
-                    var url = ahref.Href;
-
-                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    users.Add(splitUrl.Last());
-                }
-            }
-
-            return users;
-        }
+        }        
 
         public async Task GetUserNotes()
         {
@@ -311,31 +382,7 @@ namespace WykopSDK.WWW
                     var str = await response.Content.ReadAsStringAsync();
                 }
             }
-        }
-
-        public async Task<List<string>> GetBlacklistedTags()
-        {
-            var tags = new List<string>();
-
-            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            {
-                var doc = parser.Parse(stream);
-                if (doc == null) return null;
-
-                var spans = doc.QuerySelector(@"div[data-type=""hashtags""]").QuerySelectorAll("span");
-                foreach (var item in spans)
-                {
-                    var ahref = item.Children[0] as IHtmlAnchorElement;
-                    var url = ahref.Href;
-
-                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    tags.Add(splitUrl.Last());
-                }
-            }
-
-            return tags;
-        }
+        }        
 
         public async Task ForgotPassword(string email)
         {

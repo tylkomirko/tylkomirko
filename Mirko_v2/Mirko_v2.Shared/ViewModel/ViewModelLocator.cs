@@ -67,6 +67,7 @@ namespace Mirko_v2.ViewModel
             NavService.RegisterPage("NewEntryPage", typeof(NewEntryPage));
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
             NavService.RegisterPage("DonationPage", typeof(DonationPage));
+            NavService.RegisterPage("BlacklistPage", typeof(BlacklistPage));
             SimpleIoc.Default.Register<NavigationService>(() => NavService);
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });
@@ -80,6 +81,7 @@ namespace Mirko_v2.ViewModel
             SimpleIoc.Default.Register<DebugViewModel>(true);
             SimpleIoc.Default.Register<ProfilesViewModel>(() => { return new ProfilesViewModel(NavService); });
             SimpleIoc.Default.Register<NewEntryViewModel>(() => { return new NewEntryViewModel(NavService); });
+            SimpleIoc.Default.Register<BlacklistViewModel>(true);
 
             initialized = true;
         }
@@ -143,6 +145,11 @@ namespace Mirko_v2.ViewModel
         public NewEntryViewModel NewEntry
         {
             get { return ServiceLocator.Current.GetInstance<NewEntryViewModel>(); }
+        }
+
+        public BlacklistViewModel Blacklist
+        {
+            get {return ServiceLocator.Current.GetInstance<BlacklistViewModel>(); }
         }
 
         public static void Cleanup()

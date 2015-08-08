@@ -453,6 +453,23 @@ namespace Mirko_v2.Pages
                 Converter = App.Current.Resources["InvertVisibility"] as IValueConverter,
             });
 
+            var blacklist = new AppBarButton()
+            {
+                Label = "czarnolisto",
+            };
+            blacklist.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as MainViewModel,
+                Path = new PropertyPath("GoToBlacklistPage"),
+            });
+            blacklist.SetBinding(AppBarButton.VisibilityProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
+                Path = new PropertyPath("UserInfo"),
+                Mode = BindingMode.OneWay,
+                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+            });
+
             var donation = new AppBarButton()
             {
                 Label = "podziękuj",
@@ -470,6 +487,7 @@ namespace Mirko_v2.Pages
             c.SecondaryCommands.Add(settings);
             c.SecondaryCommands.Add(login);
             c.SecondaryCommands.Add(logout);
+            c.SecondaryCommands.Add(blacklist);
             c.SecondaryCommands.Add(donation);
             AppBar = c;
 

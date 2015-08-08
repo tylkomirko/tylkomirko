@@ -14,6 +14,18 @@ namespace WykopSDK.Storage
             vault.Add(credential);
         }
 
+        public Tuple<string, string> ReadCredentials()
+        {
+            var vault = new PasswordVault();
+            var creds = vault.FindAllByResource(CREDENTIALS);
+            if (creds == null || creds.Count == 0)
+                return null;
+
+            var cred = creds[0];
+            cred.RetrievePassword();
+            return new Tuple<string, string>(cred.UserName, cred.Password);
+        }
+
         public void RemoveCredentials()
         {
             var vault = new PasswordVault();

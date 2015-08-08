@@ -80,6 +80,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\TextBoxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AddEntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\BlacklistViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />

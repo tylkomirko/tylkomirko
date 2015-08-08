@@ -489,6 +489,12 @@ namespace Mirko_v2.ViewModel
             get { return _goToDonationPage ?? (_goToDonationPage = new RelayCommand(() => NavService.NavigateTo("DonationPage"))); }
         }
 
+        private RelayCommand _goToBlacklistPage;
+        public RelayCommand GoToBlacklistPage
+        {
+            get { return _goToBlacklistPage ?? (_goToBlacklistPage = new RelayCommand(() => NavService.NavigateTo("BlacklistPage"))); }
+        }
+
         private RelayCommand _addNewMirkoEntries = null;
         public RelayCommand AddNewMirkoEntries
         {

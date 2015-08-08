@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using WykopSDK.API.Models;
+using System.Linq;
 
 namespace WykopSDK.Storage
 {
@@ -16,13 +17,6 @@ namespace WykopSDK.Storage
 
         private StorageFolder RootFolder = null;
         public Action InitAction = null;
-
-        private List<Conversation> _conversations = null;
-        public  List<Conversation> Conversations
-        {
-            get { return _conversations ?? (_conversations = new List<Conversation>()); }
-            set { _conversations = value; }
-        }
 
         public LocalStorage()
         {
@@ -36,6 +30,7 @@ namespace WykopSDK.Storage
             RootFolder = await tempFolder.CreateFolderAsync("Storage", CreationCollisionOption.OpenIfExists);
         }
 
+        #region Conversations
         public async Task<List<Conversation>> ReadConversations()
         {
             try
@@ -64,7 +59,7 @@ namespace WykopSDK.Storage
             }
             catch (Exception e)
             {
-                _log.Error("Something went wrong reading Conversations: ", e);
+                _log.Error("Reading Conversations: ", e);
                 return null;
             }
         }
@@ -87,7 +82,7 @@ namespace WykopSDK.Storage
             }
             catch (Exception e)
             {
-                _log.Error("Something went wrong saving Conversations: ", e);
+                _log.Error("Saving Conversations: ", e);
             }
             finally
             {
@@ -106,8 +101,109 @@ namespace WykopSDK.Storage
             }
             catch (Exception e)
             {
-                _log.Error("Something went wrong deleting Conversations: ", e);
+                _log.Error("Deleting Conversations: ", e);
             }
         }
+        #endregion
+
+        #region Blacklists
+        public async Task<List<string>> ReadBlacklistedTags()
+        {
+            try
+            {
+                if (RootFolder == null)
+                    await Init();
+
+                var file = await RootFolder.GetFileAsync("BlacklistedTags");
+                var props = await file.GetBasicPropertiesAsync();
+                if (DateTime.Now - props.DateModified > new TimeSpan(6, 0, 0))
+                    return null;
+
+                _log.Info("Reading BlacklistedTags.");
+                var ilist = await FileIO.ReadLinesAsync(file);
+                return ilist.ToList();
+            }
+            catch (Exception e)
+            {
+                _log.Error("ReadBlacklistedTags", e);
+                return null;
+            }
+        }
+
+        public async Task<List<string>> ReadBlacklistedUsers()
+        {
+            try
+            {
+                if (RootFolder == null)
+                    await Init();
+
+                var file = await RootFolder.GetFileAsync("BlacklistedUsers");
+                var props = await file.GetBasicPropertiesAsync();
+                if (DateTime.Now - props.DateModified > new TimeSpan(6, 0, 0))
+                    return null;
+
+                _log.Info("Reading BlacklistedUsers.");
+                var ilist = await FileIO.ReadLinesAsync(file);
+                return ilist.ToList();
+            }
+            catch (Exception e)
+            {
+                _log.Error("BlacklistedUsers", e);
+                return null;
+            }
+        }
+
+        public async Task SaveBlacklists(IEnumerable<string> tags = null, IEnumerable<string> users = null)
+        {
+            if (tags != null)
+            {
+                try
+                {
+                    var file = await RootFolder.CreateFileAsync("BlacklistedTags", CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteLinesAsync(file, tags);
+                }
+                catch (Exception e)
+                {
+                    _log.Error("Saving BlacklistedTags: ", e);
+                }
+            }
+
+            if (users != null)
+            {
+                try
+                {
+                    var file = await RootFolder.CreateFileAsync("BlacklistedUsers", CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteLinesAsync(file, users);
+                }
+                catch (Exception e)
+                {
+                    _log.Error("Saving BlacklistedUsers: ", e);
+                }
+            }
+        }
+
+        public async Task DeleteBlacklists()
+        {
+            try
+            {
+                var file = await RootFolder.GetFileAsync("BlacklistedTags");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception e)
+            {
+                _log.Error("Deleting BlacklistedTags: ", e);
+            }
+
+            try
+            {
+                var file = await RootFolder.GetFileAsync("BlacklistedUsers");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception e)
+            {
+                _log.Error("Deleting BlacklistedUsers: ", e);
+            }
+        }
+        #endregion
     }
 }

@@ -257,8 +257,8 @@ namespace Mirko_v2.ViewModel
                 }
             }
 
-            /*
-            if (App.MainViewModel.BlacklistedTags.Contains(tag))
+            var blacklistedTags = SimpleIoc.Default.GetInstance<BlacklistViewModel>().Tags;            
+            if (blacklistedTags.Contains(tag))
             {
                 MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
                 MenuFlyoutUtils.MakeItemVisible(ref mf, "unblacklistTag");
@@ -267,26 +267,6 @@ namespace Mirko_v2.ViewModel
             {
                 MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
                 MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
-            }*/
-        }
-
-        private RelayCommand _blacklistHashtag = null;
-        [JsonIgnore]
-        public RelayCommand BlacklistHashtag
-        {
-            get { return _blacklistHashtag ?? (_blacklistHashtag = new RelayCommand(ExecuteBlacklistHashtag)); }
-        }
-
-        private async void ExecuteBlacklistHashtag()
-        {
-            var success = await App.ApiService.blockTag(TappedHashtag);
-            if (success)
-            {
-                await StatusBarManager.ShowTextAsync("Tag " + TappedHashtag + " został zablokowany.");
-            }
-            else
-            {
-                await StatusBarManager.ShowTextAsync("Nie udało się zablokować tagu " + TappedHashtag + ".");
             }
         }
         #endregion
