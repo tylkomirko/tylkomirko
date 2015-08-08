@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WykopSDK.API.Models;
 using WykopSDK.Parsers;
+using WykopSDK.Utils;
 
 namespace Mirko_v2.ViewModel
 {
@@ -183,10 +184,23 @@ namespace Mirko_v2.ViewModel
 
             await ExecuteUpdateMessagesCommand();
 
-            if (this.Messages.Count > 0)
-                Data.LastMessage = HtmlToText.Convert(this.Messages.Last().Data.Text);
+            if (Messages.Count > 0)
+            {
+                var lastMsg = Messages.Last();
+                var text = HtmlToText.Convert(lastMsg.Data.Text);
+                var selected = text.FirstWords(20);
+                if (text.Length > selected.Length)
+                    text = selected + "...";
+
+                if (string.IsNullOrWhiteSpace(text) && lastMsg.EmbedVM != null)
+                    text = "(obraz)";
+
+                Data.LastMessage = text;
+            }
             else
+            {
                 Data.LastMessage = "";
+            }
         }
 
         private RelayCommand _deleteConversation = null;
