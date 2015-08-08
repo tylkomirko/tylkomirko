@@ -123,7 +123,7 @@ namespace Mirko_v2
         /// </summary>
         public App()
         {
-            //WindowsAppInitializer.InitializeAsync();
+            WindowsAppInitializer.InitializeAsync();
 
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
