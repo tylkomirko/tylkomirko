@@ -2,19 +2,9 @@
 using Mirko_v2.Controls;
 using Mirko_v2.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -33,29 +23,26 @@ namespace Mirko_v2.Pages
             var c = new CommandBar();
             c.SetBinding(CommandBar.VisibilityProperty, new Binding()
             {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
+                Source = SimpleIoc.Default.GetInstance<ProfilesViewModel>(),
+                Path = new PropertyPath("CurrentProfile.Data.Login"),
+                Converter = App.Current.Resources["ProfileAppBar"] as IValueConverter,
             });
 
             var observe = new AppBarToggleButton()
             {
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/appbar.eye.png") },
             };
-
             observe.SetBinding(AppBarToggleButton.IsCheckedProperty, new Binding()
             {
                 Source = SimpleIoc.Default.GetInstance<ProfilesViewModel>(),
                 Path = new PropertyPath("CurrentProfile.Data.Observed"),
             });
-
             observe.SetBinding(AppBarToggleButton.LabelProperty, new Binding()
             {
                 Source = observe,
                 Path = new PropertyPath("IsChecked"),
                 Converter = App.Current.Resources["ObservedToText"] as IValueConverter,
             });
-
             observe.SetBinding(AppBarToggleButton.CommandProperty, new Binding()
             {
                 Source = SimpleIoc.Default.GetInstance<ProfilesViewModel>(),

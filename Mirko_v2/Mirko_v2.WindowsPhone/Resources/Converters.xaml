@@ -30,5 +30,6 @@
     <converters:BlacklistToText x:Key="BlacklistToText" />
     <converters:InvertBool x:Key="InvertBool" />
     <converters:AuthorIndicator x:Key="AuthorIndicator" />
+    <converters:ProfileAppBar x:Key="ProfileAppBar" />
 
 </ResourceDictionary>

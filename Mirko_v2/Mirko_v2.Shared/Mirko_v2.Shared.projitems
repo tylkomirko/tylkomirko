@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ObservedToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ProfileAppBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />
