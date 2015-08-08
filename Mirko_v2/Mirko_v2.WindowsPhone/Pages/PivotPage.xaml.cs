@@ -485,10 +485,10 @@ namespace Mirko_v2.Pages
             c.PrimaryCommands.Add(up);
             c.SecondaryCommands.Add(profile);
             c.SecondaryCommands.Add(settings);
-            c.SecondaryCommands.Add(login);
-            c.SecondaryCommands.Add(logout);
             c.SecondaryCommands.Add(blacklist);
             c.SecondaryCommands.Add(donation);
+            c.SecondaryCommands.Add(login);
+            c.SecondaryCommands.Add(logout);
             AppBar = c;
 
             return c;
