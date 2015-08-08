@@ -27,7 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml.cs">
       <DependentUpon>NotificationCounter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\PullToRefreshListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml.cs">
       <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
     </Compile>
