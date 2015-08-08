@@ -104,9 +104,6 @@ namespace Mirko_v2.ViewModel
                     this.AtNotificationsCount = 0;
                     this.PMNotificationsCount = 0;
                 });
-
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Delete ObservedHashtags"));
-                //await App.ApiService.LocalStorage.DeleteConversations(); FIXME
             }
             else if(obj.Notification == "Login")
             {

@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Threading;
 using MetroLog;
 using System;
 using System.IO;
@@ -22,24 +23,50 @@ namespace Mirko_v2.ViewModel
         private StorageFolder ImageCacheFolder = null;
 
         public Action GetPopularHashtags = null;
+        public Action GetObservedUsers = null;
 
         public CacheViewModel()
         {
             TempFolder = ApplicationData.Current.TemporaryFolder;
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
+
             GetPopularHashtags = new Action(async () => await DownloadPopularHashtags());
+            GetObservedUsers = new Action(async () =>
+            {
+                var users = await Task.Run(App.WWWService.GetObservedUsers);
+
+                if (users != null)
+                {
+                    ObservedUsers.Clear();
+                    ObservedUsers.AddRange(users.Select(x => "@" + x));
+                }
+            });
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
         private async void ReadMessage(NotificationMessage obj)
         {
-            if (obj.Notification == "Update ObservedHashtags")
+            if (obj.Notification == "Logout")
+                await Logout();
+            else if (obj.Notification == "Update ObservedHashtags")
                 await DownloadObservedHashtags();
             else if (obj.Notification == "Save ObservedHashtags")
                 await SaveObservedHashtags();
             else if (obj.Notification == "Delete ObservedHashtags")
                 await DeleteObservedHashtags();
+        }
+
+        private async Task Logout()
+        {
+            await DispatcherHelper.RunAsync(() => ObservedHashtags.Clear());
+            await DeleteObservedHashtags();
+
+            await DispatcherHelper.RunAsync(() => ObservedUsers.Clear());
+            await WykopSDK.WykopSDK.LocalStorage.DeleteObservedUsers();
+
+            await WykopSDK.WykopSDK.LocalStorage.DeleteConversations();
+            await WykopSDK.WykopSDK.LocalStorage.DeleteBlacklists();
         }
 
         #region ObservedHashtags
@@ -199,6 +226,20 @@ namespace Mirko_v2.ViewModel
                 Logger.Error("Couldn't save PopularHashtags.", e);
             }
           
+        }
+        #endregion
+
+        #region Users
+        private ObservableCollectionEx<string> _observedUsers = null;
+        public ObservableCollectionEx<string> ObservedUsers
+        {
+            get { return _observedUsers ?? (_observedUsers = new ObservableCollectionEx<string>()); }
+        }
+
+        private ObservableCollectionEx<string> _tempUsers = null;
+        public ObservableCollectionEx<string> TempUsers
+        {
+            get { return _tempUsers ?? (_tempUsers = new ObservableCollectionEx<string>()); }
         }
         #endregion
 
@@ -368,14 +409,24 @@ namespace Mirko_v2.ViewModel
             get { return _hashtagSuggestions ?? (_hashtagSuggestions = new ObservableCollectionEx<string>()); }
         }
 
-        public void GenerateSuggestions(string input)
+        public void GenerateSuggestions(string input, bool hashtag)
         {
             HashtagSuggestions.Clear();
 
-            var sugs = ObservedHashtags.Where(x => x.StartsWith(input));
-            HashtagSuggestions.AddRange(sugs);
-            sugs = PopularHashtags.Where(x => x.StartsWith(input));
-            HashtagSuggestions.AddRange(sugs);
+            if (hashtag)
+            {
+                var sugs = ObservedHashtags.Where(x => x.StartsWith(input));
+                HashtagSuggestions.AddRange(sugs);
+                sugs = PopularHashtags.Where(x => x.StartsWith(input));
+                HashtagSuggestions.AddRange(sugs);
+            }
+            else
+            {
+                var sugs = TempUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase));
+                HashtagSuggestions.AddRange(sugs);
+                sugs = ObservedUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase));
+                HashtagSuggestions.AddRange(sugs);
+            }
         }
         #endregion
     }

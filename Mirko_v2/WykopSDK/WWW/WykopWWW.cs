@@ -298,13 +298,24 @@ namespace WykopSDK.WWW
 
         public async Task<List<string>> GetObservedUsers()
         {
-            var users = new List<string>();
+            List<string> users = await WykopSDK.LocalStorage.ReadObservedUsers();
+
+            if (users == null && !loggedIn)
+            {
+                loggedIn = await Login();
+                if (!loggedIn) return null;
+            }
+
+            if(users != null)
+                return users;
 
             using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/"))
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
                 var doc = parser.Parse(stream);
                 if (doc == null) return null;
+
+                users = new List<string>();
 
                 var divs = doc.QuerySelector("#observedUsers").QuerySelectorAll("div");
                 foreach (var item in divs)
@@ -316,6 +327,8 @@ namespace WykopSDK.WWW
                     users.Add(splitUrl.Last());
                 }
             }
+
+            await WykopSDK.LocalStorage.SaveObservedUsers(users);
 
             return users;
         }        

@@ -123,7 +123,10 @@ namespace Mirko_v2.ViewModel
         {
             Responses.Clear();
 
-            if(entries != null)
+            var usernames = SimpleIoc.Default.GetInstance<CacheViewModel>().TempUsers;
+            usernames.Clear();
+
+            if (entries != null)
             {
                 if (NewEntry.IsEditing)
                 {
@@ -141,6 +144,8 @@ namespace Mirko_v2.ViewModel
                             Text = "@" + entry.DataBase.AuthorName + ": ",
                         });
                 }
+
+                usernames.AddRange(entries.Select(x => '@' + x.DataBase.AuthorName));
             }
             else
             {

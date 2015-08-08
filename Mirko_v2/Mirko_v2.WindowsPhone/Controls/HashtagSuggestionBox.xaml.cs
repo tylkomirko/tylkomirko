@@ -43,7 +43,7 @@ namespace Mirko_v2.Controls
         {
             var query = HashtagBox.Text;
             if (query.StartsWith("#"))
-                Cache.GenerateSuggestions(query);
+                Cache.GenerateSuggestions(query, hashtag: true);
         }
 
         private void HashtagBox_KeyDown(object sender, KeyRoutedEventArgs e)

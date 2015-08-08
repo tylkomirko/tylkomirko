@@ -1,19 +1,19 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko_v2.Utils;
 using Mirko_v2.ViewModel;
-using System;
 using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Mirko_v2.Utils;
 
 namespace Mirko_v2.Controls
 {
     public class AutoCompletingTextBox : TextBox
     {
         private bool HashtagDetected = false;
+        private bool AtDetected = false; // '@'
         private Popup SuggestionsPopup = null;
         private static CacheViewModel Cache = null;
         
@@ -34,6 +34,8 @@ namespace Mirko_v2.Controls
                 Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
                 if (Cache.PopularHashtags.Count == 0)
                     Cache.GetPopularHashtags();
+                if (Cache.ObservedUsers.Count == 0)
+                    Cache.GetObservedUsers();
             }
 
             Windows.UI.ViewManagement.InputPane.GetForCurrentView().Showing += (s, args) =>
@@ -93,11 +95,15 @@ namespace Mirko_v2.Controls
 
             Debug.WriteLine("currentWord: " + currentWord);
 
-            if(currentWord.StartsWith("#"))
+            if(currentWord.StartsWith("#") || currentWord.StartsWith("@"))
             {
-                Cache.GenerateSuggestions(currentWord);
+                if (currentWord.StartsWith("#"))
+                    HashtagDetected = true;
+                else
+                    AtDetected = true;
 
-                HashtagDetected = true;
+                Cache.GenerateSuggestions(currentWord, HashtagDetected);
+
                 this.IsTextPredictionEnabled = false;
                 SuggestionsPopup.IsOpen = true;
                 AreSuggestionsOpen = true;
@@ -106,12 +112,13 @@ namespace Mirko_v2.Controls
                 this.IsEnabled = true;
                 this.Focus(FocusState.Programmatic);
             }
-            else if(currentWord.StartsWith("") && HashtagDetected)
+            else if(currentWord.StartsWith("") && (HashtagDetected || AtDetected))
             {
                 this.IsTextPredictionEnabled = true;
                 SuggestionsPopup.IsOpen = false;
                 AreSuggestionsOpen = false;
                 HashtagDetected = false;
+                AtDetected = false;
 
                 this.IsEnabled = false;
                 this.IsEnabled = true;
@@ -122,7 +129,7 @@ namespace Mirko_v2.Controls
         private bool CharPredicate(char c)
         {
             bool isSeparator = char.IsSeparator(c) || c == '\r' || c == '\n';
-            bool isPunctuation = c == '#' || !char.IsPunctuation(c);
+            bool isPunctuation = c == '#' || c == '@' || !char.IsPunctuation(c);
 
             return !isSeparator && isPunctuation;
         }

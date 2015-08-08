@@ -468,12 +468,11 @@ namespace Mirko_v2.ViewModel
             else
             {
                 // log out
-                var loginVM = SimpleIoc.Default.GetInstance<LoginViewModel>();
                 WykopSDK.WykopSDK.VaultStorage.RemoveCredentials();
                 settingsVM.Delete();
                 MyEntries.ClearAll();
                 FavEntries.ClearAll();
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Logout"));
+                Messenger.Default.Send(new NotificationMessage("Logout"));
             }
         }
 

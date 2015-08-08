@@ -205,5 +205,59 @@ namespace WykopSDK.Storage
             }
         }
         #endregion
+
+        #region ObservedUsers
+        public async Task<List<string>> ReadObservedUsers()
+        {
+            try
+            {
+                if (RootFolder == null)
+                    await Init();
+
+                var file = await RootFolder.GetFileAsync("ObservedUsers");
+                var props = await file.GetBasicPropertiesAsync();
+                if (DateTime.Now - props.DateModified > new TimeSpan(6, 0, 0))
+                    return null;
+
+                _log.Info("Reading ObservedUsers.");
+                var ilist = await FileIO.ReadLinesAsync(file);
+                return ilist.ToList();
+            }
+            catch (Exception e)
+            {
+                _log.Error("ObservedUsers", e);
+                return null;
+            }
+        }
+
+        public async Task SaveObservedUsers(IEnumerable<string> users)
+        {
+            if (users != null)
+            {
+                try
+                {
+                    var file = await RootFolder.CreateFileAsync("ObservedUsers", CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteLinesAsync(file, users);
+                }
+                catch (Exception e)
+                {
+                    _log.Error("Saving ObservedUsers: ", e);
+                }
+            }
+        }
+
+        public async Task DeleteObservedUsers()
+        {
+            try
+            {
+                var file = await RootFolder.GetFileAsync("ObservedUsers");
+                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
+            catch (Exception e)
+            {
+                _log.Error("Deleting ObservedUsers: ", e);
+            }
+        }
+        #endregion
     }
 }
