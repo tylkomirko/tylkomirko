@@ -79,17 +79,26 @@ namespace Mirko_v2.ViewModel
                 NewEntry.Text = " \n ";
 
             bool success = true;
-            if(NewEntry.Files != null)
+            try
             {
-                foreach(var file in NewEntry.Files)
+                if (NewEntry.Files != null)
                 {
-                    using (var fileStream = await file.OpenStreamForReadAsync())
-                        success = await App.ApiService.sendPM(NewEntry, Data.AuthorName, fileStream, file.Name);
+                    foreach (var file in NewEntry.Files)
+                    {
+                        using (var fileStream = await file.OpenStreamForReadAsync())
+                            success = await App.ApiService.sendPM(NewEntry, Data.AuthorName, fileStream, file.Name);
+                    }
+                }
+                else
+                {
+                    success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
                 }
             }
-            else
+            catch(Exception e)
             {
-                success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+                App.TelemetryClient.TrackException(e);
+                StatusBarManager.HideProgress();
+                return;
             }
 
             NewEntry.RemoveAttachment();
@@ -99,11 +108,11 @@ namespace Mirko_v2.ViewModel
 
                 await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");
                 await ExecuteUpdateMessagesCommand();
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Success"));
+                Messenger.Default.Send(new NotificationMessage("PM-Success"));
             }
             else
             {
-                Messenger.Default.Send<NotificationMessage>(new NotificationMessage("PM-Fail"));
+                Messenger.Default.Send(new NotificationMessage("PM-Fail"));
                 await StatusBarManager.ShowTextAsync("Wiadomość nie została wysłana.");
             }
         }
