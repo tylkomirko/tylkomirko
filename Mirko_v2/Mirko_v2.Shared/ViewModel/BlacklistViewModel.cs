@@ -30,26 +30,34 @@ namespace Mirko_v2.ViewModel
 
         private async void ReadMessage(NotificationMessage obj)
         {
-            if(obj.Notification == "Init")
+            if(obj.Notification == "Init" || obj.Notification == "Login")
             {
                 Tuple<List<string>, List<string>> tuple = null;
                 try
                 {
                     tuple = await Task.Run(() => App.WWWService.GetBlacklists());
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    return;
+                    App.TelemetryClient.TrackException(e);
                 }
 
-                var tags = tuple.Item1;
-                var users = tuple.Item2;
+                if (tuple != null)
+                {
+                    var tags = tuple.Item1;
+                    var users = tuple.Item2;
 
+                    Tags.Clear();
+                    Tags.AddRange(tags.Select(x => "#" + x));
+
+                    People.Clear();
+                    People.AddRange(users.Select(x => "@" + x));
+                }
+            } 
+            else if(obj.Notification == "Logout")
+            {
                 Tags.Clear();
-                Tags.AddRange(tags.Select(x => "#" + x));
-
                 People.Clear();
-                People.AddRange(users.Select(x => "@" + x));
             }
         }
 
