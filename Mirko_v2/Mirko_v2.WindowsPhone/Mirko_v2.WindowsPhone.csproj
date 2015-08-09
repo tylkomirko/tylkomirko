@@ -213,8 +213,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
     <None Include="Package.StoreAssociation.xml" />
+    <None Include="app.config" />
     <None Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
