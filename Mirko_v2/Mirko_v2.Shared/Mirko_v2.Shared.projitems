@@ -57,7 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\YouTubeApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\Enums.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />

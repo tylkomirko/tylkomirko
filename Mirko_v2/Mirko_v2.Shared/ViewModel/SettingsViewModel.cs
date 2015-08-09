@@ -37,6 +37,18 @@ namespace Mirko_v2.ViewModel
         MYTUBE,
     };
 
+    public enum StartPage
+    {
+        [StringValue("Mirko")]
+        MIRKO,
+        [StringValue("Gorące")]
+        HOT,
+        [StringValue("Ulubione")]
+        FAV,
+        [StringValue("Mój Wykop")]
+        MY,
+    };
+
     public class SettingsViewModel : ViewModelBase
     {
         private UserInfo _userInfo = null;
@@ -157,6 +169,34 @@ namespace Mirko_v2.ViewModel
             }
         }
 
+        private List<string> _startPages;
+        public List<string> StartPages
+        {
+            get { return _startPages; }
+        }
+
+        public StartPage SelectedStartPage
+        {
+            get
+            {
+                if (RoamingValues.ContainsKey("StartPage"))
+                {
+                    StartPage temp = StartPage.MIRKO;
+                    Enum.TryParse<StartPage>((string)RoamingValues["StartPage"], false, out temp);
+                    return temp;
+                }
+                else
+                {
+                    return StartPage.MIRKO;
+                }
+            }
+
+            set
+            {
+                RoamingValues["StartPage"] = value.ToString();
+            }
+        }
+
         public SettingsViewModel()
         {
             UserInfo = App.ApiService.UserInfo;
@@ -167,6 +207,11 @@ namespace Mirko_v2.ViewModel
             _youTubeApps = new List<string>(values.Length);
             foreach (YouTubeApp value in values)
                 _youTubeApps.Add(value.GetStringValue());
+
+            values = Enum.GetValues(typeof(StartPage));
+            _startPages = new List<string>(values.Length);
+            foreach (StartPage value in values)
+                _startPages.Add(value.GetStringValue());
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
@@ -203,6 +248,18 @@ namespace Mirko_v2.ViewModel
         {
             var values = Enum.GetValues(typeof(YouTubeApp)).Cast<YouTubeApp>();
             SelectedYouTubeApp = (YouTubeApp)values.ElementAt(id);
+        }
+
+        private RelayCommand<int> _startPageChanged = null;
+        public RelayCommand<int> StartPageChanged
+        {
+            get { return _startPageChanged ?? (_startPageChanged = new RelayCommand<int>(ExecuteStartPageChanged)); }
+        }
+
+        private void ExecuteStartPageChanged(int id)
+        {
+            var values = Enum.GetValues(typeof(StartPage)).Cast<StartPage>();
+            SelectedStartPage = (StartPage)values.ElementAt(id);
         }
 
         private RelayCommand _pseudoPushToggled = null;

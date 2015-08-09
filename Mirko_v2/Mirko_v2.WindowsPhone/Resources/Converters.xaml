@@ -21,6 +21,7 @@
     <converters:NullToVisibility x:Key="NullToVisibility" />
     <converters:MoreThanOneToString x:Key="MoreThanOneToString" />
     <converters:YouTubeApp x:Key="YouTubeApp" />
+    <converters:StartPage x:Key="StartPage" />
     <converters:CountToBool x:Key="CountToBool" />
     <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
     <converters:HotTimeSpanIndexConverter x:Key="HotTimeSpanIndexConverter" />

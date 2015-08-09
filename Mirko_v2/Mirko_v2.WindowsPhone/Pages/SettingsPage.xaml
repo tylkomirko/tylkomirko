@@ -8,7 +8,7 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
-    d:DesignHeight="800"
+    d:DesignHeight="1000"
     DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}">
     
     <UserControl.Resources>
@@ -143,12 +143,18 @@
                     <Grid Margin="0,20,0,0"
                           HorizontalAlignment="Stretch">
 
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
                                    Text="Aplikacja YouTube"
                                    Margin="0,0,25,0"
                                    FontSize="20"
@@ -156,6 +162,7 @@
 
                         <ComboBox x:Name="YoutubeApp"
                                   Grid.Column="1"
+                                  Grid.Row="0"
                                   Margin="0,-12,0,0"
                                   ItemsSource="{Binding YouTubeApps}"
                                   SelectedItem="{Binding SelectedYouTubeApp, Mode=OneWay, Converter={StaticResource YouTubeApp}}">
@@ -164,6 +171,29 @@
                                 <core:EventTriggerBehavior EventName="SelectionChanged">
                                     <core:InvokeCommandAction Command="{Binding YouTubeAppChanged}"
                                                               CommandParameter="{Binding ElementName=YoutubeApp, Path=SelectedIndex}"/>
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+
+                        </ComboBox>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Text="Strona startowa"
+                                   Margin="0,20,25,0"
+                                   FontSize="20"
+                                   TextWrapping="Wrap"/>
+
+                        <ComboBox x:Name="StartPage"
+                                  Grid.Column="1"
+                                  Grid.Row="1"
+                                  Margin="0,6,0,0"
+                                  ItemsSource="{Binding StartPages}"
+                                  SelectedItem="{Binding SelectedStartPage, Mode=OneWay, Converter={StaticResource StartPage}}">
+
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="SelectionChanged">
+                                    <core:InvokeCommandAction Command="{Binding StartPageChanged}"
+                                                              CommandParameter="{Binding ElementName=StartPage, Path=SelectedIndex}"/>
                                 </core:EventTriggerBehavior>
                             </i:Interaction.Behaviors>
 

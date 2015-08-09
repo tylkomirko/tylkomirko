@@ -55,6 +55,14 @@ namespace Mirko_v2.ViewModel
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<MainViewModel>();
 
+            var startPage = SimpleIoc.Default.GetInstance<SettingsViewModel>().SelectedStartPage;
+            if (startPage == StartPage.HOT)
+                _currentPivotItem = 1;
+            else if (startPage == StartPage.FAV)
+                _currentPivotItem = 2;
+            else if (startPage == StartPage.MY)
+                _currentPivotItem = 3;
+
             Timer = new Timer(TimerCallback, null, 60 * 1000, 60 * 1000);
 
             StartedOffline = !App.ApiService.IsNetworkAvailable;

@@ -17,4 +17,18 @@ namespace Mirko_v2.Converters
             throw new NotImplementedException();
         }
     }
+
+    public class StartPage : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var page = (Mirko_v2.ViewModel.StartPage)value;
+            return page.GetStringValue();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
