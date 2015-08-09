@@ -43,6 +43,7 @@ namespace Mirko_v2.ViewModel
             });
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
         }
 
         private async void ReadMessage(NotificationMessage obj)
@@ -55,6 +56,28 @@ namespace Mirko_v2.ViewModel
                 await SaveObservedHashtags();
             else if (obj.Notification == "Delete ObservedHashtags")
                 await DeleteObservedHashtags();
+        }
+
+        private async void ReadMessage(NotificationMessage<string> obj)
+        {
+            if (obj.Notification == "Add ObservedUser")
+            {
+                var username = obj.Content;
+
+                await DispatcherHelper.RunAsync(() =>
+                {
+                    ObservedUsers.Add(username);
+                    ObservedUsers.Sort();
+                });
+                await WykopSDK.WykopSDK.LocalStorage.SaveObservedUsers(ObservedUsers);
+            }
+            else if(obj.Notification == "Remove ObservedUser")
+            {
+                var username = obj.Content;
+
+                await DispatcherHelper.RunAsync(() => ObservedUsers.Remove(username));
+                await WykopSDK.WykopSDK.LocalStorage.SaveObservedUsers(ObservedUsers);
+            }
         }
 
         private async Task Logout()

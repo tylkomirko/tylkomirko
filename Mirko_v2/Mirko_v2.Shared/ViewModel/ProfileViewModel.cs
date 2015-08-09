@@ -55,9 +55,22 @@ namespace Mirko_v2.ViewModel
 
             if(success)
             {
-                string text = observed ? "Przestałeś obserwować @" + user : "Obserwujesz @" + user;
+                string text = null;
+                if(observed)
+                {
+                    text = "Przestałeś obserwować @" + user + ".";
+                    Messenger.Default.Send(new NotificationMessage<string>(user, "Remove ObservedUser"));
+                }
+                else
+                {
+                    text = "Obserwujesz @" + user;
+                    Messenger.Default.Send(new NotificationMessage<string>(user, "Add ObservedUser"));
+                }
+
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Observed = !observed);
                 await StatusBarManager.ShowTextAsync(text);
+
+
             }
             else
             {
