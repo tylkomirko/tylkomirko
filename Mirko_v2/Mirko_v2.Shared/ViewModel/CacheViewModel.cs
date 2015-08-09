@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using MetroLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -33,7 +34,10 @@ namespace Mirko_v2.ViewModel
             GetPopularHashtags = new Action(async () => await DownloadPopularHashtags());
             GetObservedUsers = new Action(async () =>
             {
-                var users = await Task.Run(App.WWWService.GetObservedUsers);
+                var users = await Task.Run<List<string>>(async () => 
+                {
+                    return await App.WWWService.GetObservedUsers();
+                });
 
                 if (users != null)
                 {
