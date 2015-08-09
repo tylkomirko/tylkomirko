@@ -222,9 +222,9 @@ namespace Mirko_v2.Pages
             { FormattingEnum.SPOILER, Tuple.Create<string, string>("\r\n! ", "\r\n") },
         };
 
-        private void AppendTextAndHideFlyout(string text, string flyoutName)
+        private void InsertTextAndHideFlyout(string text, string flyoutName)
         {
-            var start = CurrentEditor().SelectionStart;
+            var start = CurrentEditor().GetNormalizedSelectionStart();
             var newText = CurrentEditor().Text.Insert(start, text);
 
             CurrentEditor().Text = newText;
@@ -237,7 +237,7 @@ namespace Mirko_v2.Pages
         private void HyperlinkFlyoutButton_Click(object sender, RoutedEventArgs e)
         {
             string txt = "[" + this.DescriptionTextBox.Text + "](" + this.LinkTextBox.Text + ")";
-            AppendTextAndHideFlyout(txt, "HyperlinkFlyout");
+            InsertTextAndHideFlyout(txt, "HyperlinkFlyout");
 
             this.DescriptionTextBox.Text = "";
             this.LinkTextBox.Text = "";
@@ -246,7 +246,7 @@ namespace Mirko_v2.Pages
         private void LennyChooser_LennySelected(object sender, StringEventArgs e)
         {
             var txt = e.String + " ";
-            AppendTextAndHideFlyout(txt, "LennysFlyout");
+            InsertTextAndHideFlyout(txt, "LennysFlyout");
         }
 
         private void FormattingPopup_Loaded(object sender, RoutedEventArgs e)
