@@ -605,11 +605,11 @@ namespace Mirko.ViewModel
             while (true)
             {
                 var taggedEntries = await App.ApiService.GetTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
-                var newEntries = taggedEntries.Entries;
 
-                if (newEntries == null || newEntries.First().ID <= firstEntryID)
+                if (taggedEntries == null || taggedEntries.Entries.First().ID <= firstEntryID)
                     break;
 
+                var newEntries = taggedEntries.Entries;
                 var unique = newEntries.Where(x => x.ID > firstEntryID);
 
                 foreach(var uniqueEntry in unique)
