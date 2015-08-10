@@ -60,7 +60,7 @@ namespace Mirko.ViewModel
                 // there is a large chance this piece of code will run very shortly after the app is started.
                 if(ConversationsList.Count == 0)
                 {
-                    var tmp = await App.ApiService.getConversations();
+                    var tmp = await App.ApiService.GetConversations();
                     if (tmp == null) return;
                     foreach (var item in tmp)
                         ConversationsList.Add(new ConversationViewModel(item));

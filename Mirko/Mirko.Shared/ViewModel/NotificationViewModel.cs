@@ -25,7 +25,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteMarkAsReadCommand()
         {
-            await App.ApiService.markAsReadNotification(Data.ID);
+            await App.ApiService.MarkAsReadNotification(Data.ID);
         }
 
         public int CompareTo(object obj)

@@ -69,7 +69,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteBlacklistTag(string hashtag)
         {
-            var success = await App.ApiService.blockTag(hashtag);
+            var success = await App.ApiService.BlockTag(hashtag);
             if (success)
             {
                 Tags.Add(hashtag);
@@ -93,7 +93,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteUnblacklistTag(string hashtag)
         {
-            var success = await App.ApiService.unblockTag(hashtag);
+            var success = await App.ApiService.UnblockTag(hashtag);
             if (success)
             {
                 Tags.Remove(hashtag);
@@ -115,7 +115,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteBlockPerson(string username)
         {
-            var success = await App.ApiService.blockUser(username.Substring(1)); // skip '@'
+            var success = await App.ApiService.BlockUser(username.Substring(1)); // skip '@'
             if (success)
             {
                 People.Add(username);
@@ -139,7 +139,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteUnblockPerson(string username)
         {
-            var success = await App.ApiService.unblockUser(username.Substring(1)); // skip '@'
+            var success = await App.ApiService.UnblockUser(username.Substring(1)); // skip '@'
             if (success)
             {
                 People.Remove(username);

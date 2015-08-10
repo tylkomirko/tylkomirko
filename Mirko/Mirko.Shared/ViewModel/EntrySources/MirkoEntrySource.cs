@@ -26,12 +26,12 @@ namespace Mirko.ViewModel
 
                 if (mainVM.MirkoEntries.Count == 0)
                 {
-                    newEntries = await App.ApiService.getEntries(0, ct);
+                    newEntries = await App.ApiService.GetEntries(0, ct);
                 }
                 else
                 {
                     var lastID = mainVM.MirkoEntries.Last().Data.ID;
-                    var tmp = await App.ApiService.getEntries(lastID, 0, ct);
+                    var tmp = await App.ApiService.GetEntries(0, ct, lastID);
                     if(tmp != null)
                         newEntries = tmp.Skip(1);
                 }

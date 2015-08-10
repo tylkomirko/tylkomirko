@@ -85,7 +85,7 @@ namespace Mirko.Gfycat
         {
             string URL = "http://upload.gfycat.com/transcode?fetchUrl=" + gifURL;
 
-            using (var result = await App.ApiService.httpClient.PostAsync(URL, null))
+            using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
             {
                 if (result.IsSuccessStatusCode)
                 {
@@ -107,7 +107,7 @@ namespace Mirko.Gfycat
             var name = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2];
             string URL = "http://gfycat.com/cajax/get/" + name;
 
-            using (var result = await App.ApiService.httpClient.PostAsync(URL, null))
+            using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
             {
                 if (result.IsSuccessStatusCode)
                 {

@@ -55,7 +55,7 @@ namespace Mirko.ViewModel
 
                     do
                     {
-                        var newEntriesTemp = await App.ApiService.getTaggedEntries(tag, pageIndex++);
+                        var newEntriesTemp = await App.ApiService.GetTaggedEntries(tag, pageIndex++);
                         if (newEntriesTemp != null)
                         {
                             if (newEntriesTemp.Entries.Count > 0)

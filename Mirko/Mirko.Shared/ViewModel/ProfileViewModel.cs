@@ -49,9 +49,9 @@ namespace Mirko.ViewModel
 
             await StatusBarManager.ShowProgressAsync();
             if (observed)
-                success = await App.ApiService.unobserveUser(user);
+                success = await App.ApiService.UnobserveUser(user);
             else
-                success = await App.ApiService.observeUser(user);
+                success = await App.ApiService.ObserveUser(user);
 
             if(success)
             {

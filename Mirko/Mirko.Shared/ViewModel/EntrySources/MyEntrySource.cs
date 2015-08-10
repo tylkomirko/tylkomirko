@@ -56,7 +56,7 @@ namespace Mirko.ViewModel
 
                     do
                     {                       
-                        newEntries = await App.ApiService.getMyEntries(pageIndex++, ct);
+                        newEntries = await App.ApiService.GetMyEntries(pageIndex++, ct);
                         if (newEntries != null)
                             entries.AddRange(newEntries);
 

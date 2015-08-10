@@ -62,11 +62,11 @@ namespace Mirko.ViewModel
                     {
                         if (timeSpan >= 6)
                         {
-                            newEntries = await App.ApiService.getHotEntries(timeSpan, pageIndex++, ct);
+                            newEntries = await App.ApiService.GetHotEntries(timeSpan, pageIndex++, ct);
                         }
                         else
                         {
-                            var newEntries_temp = await App.ApiService.getHotEntries(6, pageIndex++, ct);
+                            var newEntries_temp = await App.ApiService.GetHotEntries(6, pageIndex++, ct);
                             var limitingTime = DateTime.UtcNow.AddHours(-timeSpan);
                             newEntries = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
                         }

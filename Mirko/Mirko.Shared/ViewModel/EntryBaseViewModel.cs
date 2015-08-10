@@ -69,11 +69,11 @@ namespace Mirko.ViewModel
             if (DataBase is EntryComment)
             {
                 var c = DataBase as EntryComment;
-                reply = await App.ApiService.voteEntry(id: c.EntryID, commentID: c.ID, upVote: !c.Voted, isItEntry: false);
+                reply = await App.ApiService.VoteEntry(id: c.EntryID, commentID: c.ID, upVote: !c.Voted, isItEntry: false);
             }
             else
             {
-                reply = await App.ApiService.voteEntry(id: DataBase.ID, upVote: !DataBase.Voted);
+                reply = await App.ApiService.VoteEntry(id: DataBase.ID, upVote: !DataBase.Voted);
             }
 
             if (reply != null)
@@ -132,7 +132,7 @@ namespace Mirko.ViewModel
             if (DataBase is EntryComment)
             {
                 var d = DataBase as EntryComment;
-                var result = await App.ApiService.deleteEntry(rootID: d.EntryID, id: d.ID, isComment: true);
+                var result = await App.ApiService.DeleteEntry(rootID: d.EntryID, id: d.ID, isComment: true);
                 if(result == d.ID)
                 {
                     StatusBarManager.ShowText("Komentarz został usunięty.");
@@ -141,7 +141,7 @@ namespace Mirko.ViewModel
             }
             else
             {
-                var result = await App.ApiService.deleteEntry(id: DataBase.ID);
+                var result = await App.ApiService.DeleteEntry(id: DataBase.ID);
                 if(result == DataBase.ID)
                 {
                     StatusBarManager.ShowText("Wpis został usunięty.");
@@ -188,7 +188,7 @@ namespace Mirko.ViewModel
             if (DataBase == null) return;
 
             await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
-            var newEntry = await App.ApiService.getEntry(DataBase.ID);
+            var newEntry = await App.ApiService.GetEntry(DataBase.ID);
             if (newEntry == null)
             {
                 await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");

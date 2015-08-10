@@ -206,7 +206,7 @@ namespace Mirko.ViewModel
                 uint mainEntryID = 0;
 
                 using (var fileStream = await firstFile.OpenStreamForReadAsync())
-                    mainEntryID = await App.ApiService.addEntry(NewEntry, fileStream, firstFile.Name);
+                    mainEntryID = await App.ApiService.AddEntry(NewEntry, fileStream, firstFile.Name);
 
                 if(mainEntryID == 0)
                 {
@@ -222,7 +222,7 @@ namespace Mirko.ViewModel
                 {
                     NavService.GoBack();
 
-                    var entry = await App.ApiService.getEntry(mainEntryID);
+                    var entry = await App.ApiService.GetEntry(mainEntryID);
                     entryVM = new EntryViewModel(entry);
                     if (entry != null)
                         mainVM.MirkoEntries.Insert(0, entryVM);
@@ -236,7 +236,7 @@ namespace Mirko.ViewModel
                 {
                     using (var fileStream = await files[i].OpenStreamForReadAsync())
                     {
-                        var id = await App.ApiService.addEntry(NewEntry, fileStream, files[i].Name);
+                        var id = await App.ApiService.AddEntry(NewEntry, fileStream, files[i].Name);
                         if(id != 0)
                             App.TelemetryClient.TrackEvent("New comment");
                     }
@@ -249,7 +249,7 @@ namespace Mirko.ViewModel
 
                 if (!App.ShareTargetActivated)
                 {
-                    var entry = await App.ApiService.getEntry(mainEntryID);
+                    var entry = await App.ApiService.GetEntry(mainEntryID);
                     var idx = mainVM.MirkoEntries.GetIndex(entryVM);
                     mainVM.MirkoEntries.Replace(idx, new EntryViewModel(entry));
                 }
@@ -267,11 +267,11 @@ namespace Mirko.ViewModel
             if(NewEntry.Files != null)
             {
                 using (var fileStream = await NewEntry.Files[0].OpenStreamForReadAsync())
-                    entryID = await App.ApiService.addEntry(NewEntry, fileStream, NewEntry.Files[0].Name);
+                    entryID = await App.ApiService.AddEntry(NewEntry, fileStream, NewEntry.Files[0].Name);
             }
             else
             {
-                entryID = await App.ApiService.addEntry(NewEntry);
+                entryID = await App.ApiService.AddEntry(NewEntry);
             }
 
             if (entryID != 0)
@@ -294,7 +294,7 @@ namespace Mirko.ViewModel
                 {
                     App.TelemetryClient.TrackEvent("New entry");
 
-                    var entry = await App.ApiService.getEntry(entryID);
+                    var entry = await App.ApiService.GetEntry(entryID);
                     if (entry != null)
                         mainVM.MirkoEntries.Insert(0, new EntryViewModel(entry));
                 }
@@ -302,7 +302,7 @@ namespace Mirko.ViewModel
                 {
                     App.TelemetryClient.TrackEvent("New comment");
 
-                    var entry = await App.ApiService.getEntry(NewEntry.EntryID);
+                    var entry = await App.ApiService.GetEntry(NewEntry.EntryID);
                     if (entry != null)
                         Messenger.Default.Send<EntryViewModel>(new EntryViewModel(entry), "Update");
                 }
@@ -319,7 +319,7 @@ namespace Mirko.ViewModel
             string suffix = NewEntry.CommentID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Edytuje" + suffix + "...");
 
-            uint entryID = await App.ApiService.editEntry(NewEntry);
+            uint entryID = await App.ApiService.EditEntry(NewEntry);
 
             if(entryID != 0)
             {
@@ -334,12 +334,12 @@ namespace Mirko.ViewModel
 
                 if (NewEntry.EntryID == 0)
                 {
-                    entry = await App.ApiService.getEntry(entryID);
+                    entry = await App.ApiService.GetEntry(entryID);
                     App.TelemetryClient.TrackEvent("Edited entry");
                 }
                 else
                 {
-                    entry = await App.ApiService.getEntry(NewEntry.EntryID);
+                    entry = await App.ApiService.GetEntry(NewEntry.EntryID);
                     App.TelemetryClient.TrackEvent("Edited comment");
                 }
 

@@ -189,7 +189,7 @@ namespace Mirko.ViewModel
                 {
                     await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                     mainVM.SelectedEntry = null;
-                    var entry = await App.ApiService.getEntry(entryID);
+                    var entry = await App.ApiService.GetEntry(entryID);
 
                     if (entry != null)
                     {
@@ -411,7 +411,7 @@ namespace Mirko.ViewModel
             var notifications = HashtagsDictionary[hashtag].ToList(); // make a copy
             foreach (var notification in notifications)
             {
-                bool success = await App.ApiService.markAsReadNotification(notification.Data.ID);
+                bool success = await App.ApiService.MarkAsReadNotification(notification.Data.ID);
                 Logger.Trace("Removing notification " + notification.Data.ID + ". success: " + success);
             }
 
@@ -431,7 +431,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteDeleteAllHashtagNotifications()
         {
-            var success = await App.ApiService.readHashtagNotifications();
+            var success = await App.ApiService.ReadHashtagNotifications();
             if(success)
             {
                 HashtagsDictionary.Clear();
@@ -461,7 +461,7 @@ namespace Mirko.ViewModel
         {
             if (string.IsNullOrEmpty(hashtag)) return;
 
-            var success = await App.ApiService.observeTag(hashtag);
+            var success = await App.ApiService.ObserveTag(hashtag);
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Add(hashtag));
@@ -489,7 +489,7 @@ namespace Mirko.ViewModel
             if (HashtagsDictionary.ContainsKey(hashtag) && HashtagsDictionary[hashtag].Count > 0)
                 await ExecuteDeleteHashtagNotifications(hashtag);
 
-            var success = await App.ApiService.unobserveTag(hashtag);
+            var success = await App.ApiService.UnobserveTag(hashtag);
             if (success)
             {
                 await DispatcherHelper.RunAsync(() => ObservedHashtags.Remove(hashtag));
@@ -538,7 +538,7 @@ namespace Mirko.ViewModel
                 var notification = CurrentHashtagNotifications[0].Data;
 
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
-                var entry = await App.ApiService.getEntry(notification.Entry.ID);
+                var entry = await App.ApiService.GetEntry(notification.Entry.ID);
                 if (entry != null)
                 {
                     var entryVM = new EntryViewModel(entry);
@@ -612,7 +612,7 @@ namespace Mirko.ViewModel
             await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
 
             var currentEntryID = HashtagFlipEntries[currentIndex].Data.ID;
-            var entry = await App.ApiService.getEntry(currentEntryID);
+            var entry = await App.ApiService.GetEntry(currentEntryID);
             if (entry != null)
             {
                 var entryVM = new EntryViewModel(entry);
@@ -638,7 +638,7 @@ namespace Mirko.ViewModel
 
             while (true)
             {
-                var notifications = await App.ApiService.getHashtagNotifications(pageIndex++);
+                var notifications = await App.ApiService.GetHashtagNotifications(pageIndex++);
 
                 if (notifications == null || notifications.Count == 0)
                     break;
@@ -798,7 +798,7 @@ namespace Mirko.ViewModel
                 else
                 {
                     await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
-                    var entryData = await App.ApiService.getEntry(entryID);
+                    var entryData = await App.ApiService.GetEntry(entryID);
                     if (entryData == null)
                     {
                         await StatusBarManager.ShowTextAsync("Nie udało się pobrać wpisu.");
@@ -847,7 +847,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteDeleteAllAtNotifications()
         {
-            var success = await App.ApiService.readNotifications();
+            var success = await App.ApiService.ReadNotifications();
             if (!success) return;
 
             foreach (var notificationVM in AtNotifications)
@@ -883,7 +883,7 @@ namespace Mirko.ViewModel
 
                 if (notification != null && notification.IsNew)
                 {
-                    await App.ApiService.markAsReadNotification(ID);
+                    await App.ApiService.MarkAsReadNotification(ID);
 
                     var conversations = SimpleIoc.Default.GetInstance<MessagesViewModel>().ConversationsList;
                     var conversation = conversations.SingleOrDefault(x => x.Data.AuthorName == notification.AuthorName);
@@ -922,7 +922,7 @@ namespace Mirko.ViewModel
             // download new notifications
             do
             {
-                var notificationsDL = await App.ApiService.getNotifications(pageIndex++);
+                var notificationsDL = await App.ApiService.GetNotifications(pageIndex++);
                 if (notificationsDL == null || notificationsDL.Count == 0)
                     break;
 
@@ -947,7 +947,7 @@ namespace Mirko.ViewModel
 
             if (pmVM.ConversationsList.Count == 0)
             {
-                var conversations = await App.ApiService.getConversations();
+                var conversations = await App.ApiService.GetConversations();
                 if (conversations != null)
                 {
                     var tmp = new List<ConversationViewModel>(conversations.Count);

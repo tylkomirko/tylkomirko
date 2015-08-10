@@ -28,7 +28,7 @@ namespace Mirko.ViewModel
             if (App.ApiService.IsNetworkAvailable)
             {
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
-                var newEntries = await App.ApiService.getUserEntries(currentUserName, pageIndex++);
+                var newEntries = await App.ApiService.GetUserEntries(currentUserName, pageIndex++);
                 await StatusBarManager.HideProgressAsync();
 
                 if (newEntries != null)

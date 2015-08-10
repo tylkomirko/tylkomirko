@@ -59,7 +59,7 @@ namespace Mirko.ViewModel
 
                 do
                 {
-                    var temp = await App.ApiService.getNotifications(pageIndex++);
+                    var temp = await App.ApiService.GetNotifications(pageIndex++);
 
                     if (temp == null || (temp != null && temp.Count == 0 && pageIndex == 2))
                         return null;

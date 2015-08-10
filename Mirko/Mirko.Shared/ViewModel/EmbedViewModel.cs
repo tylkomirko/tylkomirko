@@ -59,7 +59,7 @@ namespace Mirko.ViewModel
             {
                 var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
-                using (var stream = await App.ApiService.httpClient.GetStreamAsync(new Uri(EmbedData.URL)))
+                using (var stream = await App.ApiService.HttpClient.GetStreamAsync(new Uri(EmbedData.URL)))
                 using (var fileStream = await file.OpenStreamForWriteAsync())
                 {
                     await stream.CopyToAsync(fileStream);

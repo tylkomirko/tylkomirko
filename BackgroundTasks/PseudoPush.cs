@@ -64,7 +64,7 @@ namespace BackgroundTasks
             }
 
             // everything is fine, let's log in and check notifications
-            var hashtagCount = await ApiService.getHashtagNotificationsCount();
+            var hashtagCount = await ApiService.GetHashtagNotificationsCount();
             var notifications = await GetNotifications();
 
             Logger.Trace(hashtagCount.Count + " hashtag notifications");
@@ -101,7 +101,7 @@ namespace BackgroundTasks
 
             do
             {
-                temp = await ApiService.getNotifications(pageIndex++);
+                temp = await ApiService.GetNotifications(pageIndex++);
                 if (temp == null) 
                     break;
                 

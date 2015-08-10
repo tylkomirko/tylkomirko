@@ -54,7 +54,7 @@ namespace Mirko.ViewModel
             {
                 // download profile info
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram profil...");
-                var profile = await App.ApiService.getProfile(username);
+                var profile = await App.ApiService.GetProfile(username);
                 if(profile != null)
                 {
                     await StatusBarManager.HideProgressAsync();

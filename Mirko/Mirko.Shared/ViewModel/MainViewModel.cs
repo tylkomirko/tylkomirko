@@ -418,7 +418,7 @@ namespace Mirko.ViewModel
             {
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
                 SelectedEntry = null;
-                var entry = await App.ApiService.getEntry(entryID);
+                var entry = await App.ApiService.GetEntry(entryID);
 
                 if (entry != null)
                 {
@@ -560,7 +560,7 @@ namespace Mirko.ViewModel
 
             while (true)
             {
-                var newEntries = await App.ApiService.getEntries(pageIndex++);
+                var newEntries = await App.ApiService.GetEntries(pageIndex++);
 
                 if (newEntries == null || newEntries.First().ID <= firstEntryID)
                     break;
@@ -604,7 +604,7 @@ namespace Mirko.ViewModel
 
             while (true)
             {
-                var taggedEntries = await App.ApiService.getTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
+                var taggedEntries = await App.ApiService.GetTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
                 var newEntries = taggedEntries.Entries;
 
                 if (newEntries == null || newEntries.First().ID <= firstEntryID)

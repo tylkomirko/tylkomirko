@@ -134,7 +134,7 @@ namespace Mirko.ViewModel
 
             if (needToDownload)
             {
-                var data = await App.ApiService.getUserObservedTags();
+                var data = await App.ApiService.GetUserObservedTags();
                 if (data != null)
                 {
                     ObservedHashtags.Clear();
@@ -224,7 +224,7 @@ namespace Mirko.ViewModel
             if (needToDownload)
             {
                 Logger.Info("Downloading PopularHashtags.");
-                var data = await App.ApiService.getPopularTags();
+                var data = await App.ApiService.GetPopularTags();
                 if (data != null)
                 {
                     PopularHashtags.Clear();
@@ -381,7 +381,7 @@ namespace Mirko.ViewModel
 
             try
             {
-                using (var response = await App.ApiService.httpClient.GetAsync(previewURL))
+                using (var response = await App.ApiService.HttpClient.GetAsync(previewURL))
                 {
                     var pixels = await response.Content.ReadAsByteArrayAsync();
                     InMemoryRandomAccessStream stream = null;

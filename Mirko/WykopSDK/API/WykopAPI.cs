@@ -53,7 +53,7 @@ namespace WykopSDK.API
         }
 
         private HttpClient _httpClient = null;
-        public HttpClient httpClient
+        public HttpClient HttpClient
         {
             get
             {
@@ -186,7 +186,7 @@ namespace WykopSDK.API
         {
             _log.Info("Dispose.");
 
-            httpClient.Dispose();
+            HttpClient.Dispose();
             _httpClient = null;
 
             retryHandler.Dispose();
@@ -198,8 +198,8 @@ namespace WykopSDK.API
 
         private void limitTimer_Callback(object state)
         {
-            this.limitExceeded = false;
-            this.limitTimer.Change(Timeout.Infinite, 0); // stop the timer
+            limitExceeded = false;
+            limitTimer.Change(Timeout.Infinite, 0); // stop the timer
         }
 
         #region HelperFunctions
@@ -245,13 +245,13 @@ namespace WykopSDK.API
                             if (errorCode == 5) // limit exceeded
                             {
                                 this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                                this.limitExceeded = true;
+                                limitExceeded = true;
                             }
                             else if (errorCode == 11 || errorCode == 12) // wrong user key
                             {
                                 var oldUserKey = UserInfo.UserKey;
                                 _log.Warn("old URL: " + URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                                await login(force: true);
+                                await Login(force: true);
                                 var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
                                 _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
                                 return await deserialize<T>(updatedURL, post, fileStream, fileName, ct);
@@ -321,12 +321,12 @@ namespace WykopSDK.API
                             if (errorCode == 5) // limit exceeded
                             {
                                 this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                                this.limitExceeded = true;
+                                limitExceeded = true;
                             }
                             else if (errorCode == 11 || errorCode == 12) // wrong user key
                             {
                                 var oldUserKey = UserInfo.UserKey;
-                                await login(force: true);
+                                await Login(force: true);
                                 var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
                                 return await deserializeList<T>(updatedURL, post, ct);
                             }
@@ -400,7 +400,7 @@ namespace WykopSDK.API
 
                 try
                 {
-                    response = await httpClient.PostAsync(url, content, ct);
+                    response = await HttpClient.PostAsync(url, content, ct);
                 } 
                 catch(Exception e)
                 {
@@ -444,12 +444,12 @@ namespace WykopSDK.API
         #endregion
 
         #region User Account Management
-        public async Task<bool> login(bool force = false)
+        public async Task<bool> Login(bool force = false)
         {
-            if (!force && this.limitExceeded)
+            if (!force && limitExceeded)
                 return false;
 
-            if (!force && this.isLoggedIn)
+            if (!force && isLoggedIn)
                 return true;
 
             if (UserInfo == null)
@@ -458,7 +458,7 @@ namespace WykopSDK.API
             if (force)
                 _log.Trace("Forced login.");
 
-            string URL = "user/login/appkey," + this.APPKEY + "/";
+            string URL = "user/login/appkey," + APPKEY + "/";
             var post = new SortedDictionary<string, string>();
             post.Add("login", UserInfo.UserName);
             post.Add("accountkey", UserInfo.AccountKey);
@@ -468,7 +468,7 @@ namespace WykopSDK.API
             if (result != null)
             {
                 UserInfo.UserKey = result.userkey;
-                this.isLoggedIn = true;
+                isLoggedIn = true;
                 SaveUserInfo();
                 return true;
             }
@@ -481,141 +481,85 @@ namespace WykopSDK.API
         #endregion
 
         #region Entries getters
-
-        public async Task<IEnumerable<Entry>> getEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
+        public async Task<IEnumerable<Entry>> GetEntries(int pageIndex, CancellationToken ct = default(CancellationToken), uint firstID = 0)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || pageIndex < 0)
                 return null;
+
+            string URL = null;
+
+            if (firstID == 0)
+                URL = "stream/index";
+            else
+                URL = "stream/index/firstid/" + firstID;
+                
+            if(UserInfo != null)
+                URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
+            else
+                URL += "/appkey," + APPKEY + ",page," + pageIndex;
+
+            var result = await deserialize<List<Entry>>(URL, ct: ct);
+            return result != null ? result.Where(x => !x.Blacklisted) : null;
+        }
+
+        public async Task<IEnumerable<Entry>> GetHotEntries(int period, int pageIndex, CancellationToken ct = default(CancellationToken), uint firstID = 0)
+        {
+            if (limitExceeded || pageIndex < 0)
+                return null;
+
+            string URL = null;
+
+            if (firstID == 0)
+                URL = "stream/hot";
+            else
+                URL = "stream/hot/firstid/" + firstID;
 
             if (UserInfo != null)
-            {
-                var URL = "stream/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
-
-                var result = await deserialize<List<Entry>>(URL, ct: ct);
-                if (result != null)
-                    return result.Where(x => !x.Blacklisted);
-                else
-                    return null;
-            }
+                URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",period," + period + ",page," + pageIndex;
             else
-            {
-                var URL = "stream/index/appkey," + this.APPKEY + ",page," + pageIndex;
+                URL += "/appkey," + APPKEY + ",period," + period + ",page," + pageIndex;
 
-                var result = await deserialize<List<Entry>>(URL);
-                return result;
-            }
+            var result = await deserialize<List<Entry>>(URL, ct: ct);
+            return result != null ? result.Where(x => !x.Blacklisted) : null;
         }
 
-        public async Task<IEnumerable<Entry>> getEntries(uint id, int pageIndex, CancellationToken ct = default(CancellationToken))
+        public async Task<List<Entry>> GetMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || pageIndex < 0)
                 return null;
 
-            if (UserInfo != null)
-            {
-                var URL = "stream/index/firstid/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
-
-                var result = await deserialize<List<Entry>>(URL, ct: ct);
-                if (result != null)
-                    return result.Where(x => !x.Blacklisted);
-                else
-                    return null;
-            }
-            else
-            {
-                var URL = "stream/index/firstid/" + id + "/appkey," + this.APPKEY + ",page," + pageIndex;
-
-                var result = await deserialize<List<Entry>>(URL);
-                return result;
-            }
-        }
-
-        public async Task<IEnumerable<Entry>> getHotEntries(int period, int pageIndex, CancellationToken ct = default(CancellationToken))
-        {
-            if (this.limitExceeded)
-                return null;
-
-            if (UserInfo != null)
-            {
-                var URL = "stream/hot/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
-
-                var result = await deserialize<List<Entry>>(URL, ct: ct);
-                if (result != null)
-                    return result.Where(x => !x.Blacklisted);
-                else
-                    return null;
-            }
-            else
-            {
-                var URL = "stream/hot/appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
-
-                var result = await deserialize<List<Entry>>(URL, ct: ct);
-                return result;
-            }
-        }
-
-        public async Task<IEnumerable<Entry>> getHotEntries(int period, uint id, uint pageIndex, CancellationToken ct = default(CancellationToken))
-        {
-            if (this.limitExceeded)
-                return null;
-
-            var URL = "stream/hot/firstid/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",period," + period + ",page," + pageIndex;
-
-            var result = await deserialize<List<Entry>>(URL);
-            if (result != null)
-                return result.Where(x => !x.Blacklisted);
-            else
-                return null;
-        }
-
-        public async Task<List<Entry>> getMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
-        {
-            if (this.limitExceeded || UserInfo == null)
-                return null;
-
-            var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+            var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
 
             return await deserializeList<Entry>(URL, ct: ct);
-        }
-
-        public async Task<List<Entry>> getMyEntries(uint firstID, int pageIndex)
-        {
-            if (this.limitExceeded || UserInfo == null)
-                return null;
-
-            var URL = "mywykop/index/firstid/" + firstID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
-
-            return await deserializeList<Entry>(URL);
         }
 
         #endregion
 
         #region Entry management
-
-        public async Task<Entry> getEntry(uint id)
+        public async Task<Entry> GetEntry(uint id)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || id == 0)
                 return null;
 
             string URL;
             if(UserInfo != null)
-                URL = "entries/index/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+                URL = "entries/index/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             else
-                URL = "entries/index/" + id + "/appkey," + this.APPKEY;
+                URL = "entries/index/" + id + "/appkey," + APPKEY;
 
             return await deserialize<Entry>(URL);
         }
 
-        public async Task<uint> addEntry(NewEntry newEntry, Stream fileStream = null, string fileName = null)
+        public async Task<uint> AddEntry(NewEntry newEntry, Stream fileStream = null, string fileName = null)
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null || newEntry == null)
                 return 0;
 
             string URL = "entries/add";
             if (newEntry.EntryID != 0)
                 URL += "comment/" + newEntry.EntryID;
 
-            URL += "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             var post = new SortedDictionary<string, string>();
             post.Add("body", newEntry.Text);
@@ -626,16 +570,16 @@ namespace WykopSDK.API
             return result != null ? result.ID : 0;
         }
 
-        public async Task<uint> editEntry(NewEntry entry)
+        public async Task<uint> EditEntry(NewEntry entry)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || entry == null)
                 return 0;
 
             string URL = "entries/edit";
             if (entry.CommentID != 0)
-                URL += "comment/" + entry.EntryID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+                URL += "comment/" + entry.EntryID + "/" + entry.CommentID + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             else
-                URL += "/" + entry.EntryID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+                URL += "/" + entry.EntryID + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             var post = new SortedDictionary<string, string>();
             post.Add("body", entry.Text);
@@ -644,24 +588,24 @@ namespace WykopSDK.API
             return result != null ? result.ID : 0;
         }
 
-        public async Task<uint> deleteEntry(uint id, uint rootID = 0, bool isComment = false)
+        public async Task<uint> DeleteEntry(uint id, uint rootID = 0, bool isComment = false)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || id == 0)
                 return 0;
 
             string URL = "entries/delete";
             if (isComment)
                 URL += "comment/" + rootID;
 
-            URL += "/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            URL += "/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             var result = await deserialize<EntryIDReply>(URL);
             return result != null ? result.ID : 0;
         }
 
-        public async Task<Vote> voteEntry(uint id, uint commentID = 0, bool upVote = true, bool isItEntry = true)
+        public async Task<Vote> VoteEntry(uint id, uint commentID = 0, bool upVote = true, bool isItEntry = true)
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null || id == 0)
                 return null;
 
             string URL = "entries/";
@@ -680,201 +624,191 @@ namespace WykopSDK.API
             if (!isItEntry)
                 URL += commentID + "/";
 
-            URL += "userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            URL += "userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<Vote>(URL);
         }
-
         #endregion
 
         #region Tags
-        public async Task<List<Hashtag>> getPopularTags()
+        public async Task<List<Hashtag>> GetPopularTags()
         {
-            if (this.limitExceeded)
+            if (limitExceeded)
                 return null;
 
-            string URL = "tags/index/appkey," + this.APPKEY;
+            string URL = "tags/index/appkey," + APPKEY;
 
             return await deserialize<List<Hashtag>>(URL);
         }
 
-        public async Task<List<string>> getUserObservedTags()
+        public async Task<List<string>> GetUserObservedTags()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "user/tags/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "user/tags/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<List<string>>(URL);
         }
 
-        public async Task<TaggedEntries> getTaggedEntries(string hashtag, int pageIndex)
+        public async Task<TaggedEntries> GetTaggedEntries(string hashtag, int pageIndex, CancellationToken ct = default(CancellationToken), uint firstID = 0)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(hashtag))
+            if (limitExceeded || string.IsNullOrEmpty(hashtag) || pageIndex < 0)
                 return null;
 
-            string URL = null;
+            string URL = string.Format("tag/entries/{0}", hashtag.Substring(1));
+
+            if (firstID != 0)
+                URL += string.Format("/firstid/{0}", firstID);
+
             if (UserInfo != null)
-                URL = "tag/entries/" + hashtag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+                URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
             else
-                URL = "tag/entries/" + hashtag.Substring(1) + "/appkey," + this.APPKEY + ",page," + pageIndex;
+                URL += "/appkey," + APPKEY + ",page," + pageIndex;
 
-            var result = await deserialize<TaggedEntries>(URL);
-            return result;
+            return await deserialize<TaggedEntries>(URL, ct: ct);
         }
 
-        public async Task<TaggedEntries> getTaggedEntries(string hashtag, int firstID, uint pageIndex)
+        public async Task<bool> ObserveTag(string tag)
         {
-            if (this.limitExceeded)
-                return null;
-
-            string URL = "tag/entries/" + hashtag + "/firstid/" + firstID + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
-
-            return await deserialize<TaggedEntries>(URL);
-        }
-
-        public async Task<bool> observeTag(string tag)
-        {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
+            if (limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
                 return false;
 
-            string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
 
-        public async Task<bool> unobserveTag(string tag)
+        public async Task<bool> UnobserveTag(string tag)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
+            if (limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
                 return false;
 
-            string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
-
         #endregion
 
         #region User profile
-        public async Task<Profile> getProfile(string user)
+        public async Task<Profile> GetProfile(string user)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || string.IsNullOrEmpty(user))
                 return null;
 
-            string URL;
+            string URL = "profile/index/" + user;
             if(UserInfo != null)
-                URL = "profile/index/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+                URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             else
-                URL = "profile/index/" + user + "/appkey," + this.APPKEY;
+                URL += "/appkey," + APPKEY;
 
             return await deserialize<Profile>(URL);
         }
 
-        public async Task<bool> observeUser(string user)
+        public async Task<bool> ObserveUser(string user)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || string.IsNullOrEmpty(user) || UserInfo == null)
                 return false;
 
-            string URL = "profile/observe/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "profile/observe/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
 
-        public async Task<bool> unobserveUser(string user)
+        public async Task<bool> UnobserveUser(string user)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || string.IsNullOrEmpty(user) || UserInfo == null)
                 return false;
 
-            string URL = "profile/unobserve/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "profile/unobserve/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
 
-        public async Task<List<Entry>> getUserEntries(string user, int pageIndex)
+        public async Task<List<Entry>> GetUserEntries(string user, int pageIndex)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || string.IsNullOrEmpty(user) || pageIndex < 0)
                 return null;
 
-            string URL;
+            string URL = "profile/entries/" + user;
             if (UserInfo != null)
-                URL = "profile/entries/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
+                URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
             else
-                URL = "profile/entries/" + user + "/appkey," + this.APPKEY + ",page," + pageIndex;
+                URL += "/appkey," + APPKEY + ",page," + pageIndex;
 
             return await deserialize<List<Entry>>(URL);
         }
         #endregion
 
         #region Notifications
-
-        public async Task<List<Notification>> getNotifications(uint page)
+        public async Task<List<Notification>> GetNotifications(uint page)
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "mywykop/notifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + page;
+            string URL = "mywykop/notifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + page;
 
             return await deserialize<List<Notification>>(URL);
         }
 
-        public async Task<NotificationsCount> getNotificationsCount()
+        public async Task<NotificationsCount> GetNotificationsCount()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "mywykop/notificationscount/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "mywykop/notificationscount/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<NotificationsCount>(URL);
         }
 
-        public async Task<List<Notification>> getHashtagNotifications(uint page)
+        public async Task<List<Notification>> GetHashtagNotifications(uint page)
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "mywykop/hashtagsnotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + page;
+            string URL = "mywykop/hashtagsnotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + page;
 
             return await deserialize<List<Notification>>(URL);
         }
 
-        public async Task<NotificationsCount> getHashtagNotificationsCount()
+        public async Task<NotificationsCount> GetHashtagNotificationsCount()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "mywykop/hashtagsnotificationscount/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "mywykop/hashtagsnotificationscount/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<NotificationsCount>(URL);
         }
 
-        public async Task<bool> readNotifications()
+        public async Task<bool> ReadNotifications()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return false;
 
-            string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             await deserialize<List<object>>(URL);
             return true;
         }
 
-        public async Task<bool> readHashtagNotifications()
+        public async Task<bool> ReadHashtagNotifications()
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return false;
 
-            string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             await deserialize<List<object>>(URL);
             return true;
         }
 
-        public async Task<bool> markAsReadNotification(uint id)
+        public async Task<bool> MarkAsReadNotification(uint id)
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null || id == 0)
                 return false;
 
-            string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             using (var stream = await getAsync(URL))
             using (var sr = new StreamReader(stream))
@@ -890,8 +824,7 @@ namespace WykopSDK.API
         #endregion
 
         #region PM
-
-        public async Task<List<Conversation>> getConversations(bool force = false)
+        public async Task<List<Conversation>> GetConversations(bool force = false)
         {
             if (!force)
             {
@@ -901,10 +834,10 @@ namespace WykopSDK.API
                     return tmp;
             }
 
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var reply = await deserialize<List<Conversation>>(URL);
 
             if (reply != null)
@@ -913,22 +846,22 @@ namespace WykopSDK.API
                 return null;
         }
 
-        public async Task<List<PM>> getPMs(string userName)
+        public async Task<List<PM>> GetPMs(string username)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(username))
                 return null;
 
-            string URL = "pm/Conversation/" + userName + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "pm/Conversation/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<List<PM>>(URL);
         }
 
-        public async Task<bool> sendPM(NewEntry newEntry, string userName, Stream fileStream = null, string fileName = null)
+        public async Task<bool> SendPM(NewEntry newEntry, string username, Stream fileStream = null, string fileName = null)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || newEntry == null || string.IsNullOrEmpty(username))
                 return false;
 
-            string URL = "pm/SendMessage/" + userName + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "pm/SendMessage/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             var post = new SortedDictionary<string, string>();
             post.Add("body", newEntry.Text);
@@ -939,77 +872,76 @@ namespace WykopSDK.API
             return result != null ? result[0] : false;
         }
 
-        public async Task<bool> deleteConversation(string userName)
+        public async Task<bool> DeleteConversation(string username)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(username))
                 return false;
 
-            string URL = "pm/DeleteConversation/" + userName + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "pm/DeleteConversation/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return result != null ? result[0] : false;
         }
         #endregion
 
         #region Blacklist
-        public async Task<bool> blockTag(string tag)
+        public async Task<bool> BlockTag(string tag)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag))
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/block/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/block/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
 
-        public async Task<bool> unblockTag(string tag)
+        public async Task<bool> UnblockTag(string tag)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag))
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(tag))
                 return false;
 
-            string URL = "tag/unblock/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "tag/unblock/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return (result != null) ? result[0] : false;
         }
 
-        public async Task<bool> blockUser(string name)
+        public async Task<bool> BlockUser(string username)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(username))
                 return false;
 
-            string URL = "profile/block/" + name + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "profile/block/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return result[0];
         }
 
-        public async Task<bool> unblockUser(string name)
+        public async Task<bool> UnblockUser(string username)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || string.IsNullOrEmpty(username))
                 return false;
 
-            string URL = "profile/unblock/" + name + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "profile/unblock/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
             return result[0];
         }
         #endregion
 
         #region Favourites
-
-        public async Task<List<Entry>> getFavourites(CancellationToken ct = default(CancellationToken))
+        public async Task<List<Entry>> GetFavourites(CancellationToken ct = default(CancellationToken))
         {
-            if (this.limitExceeded || UserInfo == null)
+            if (limitExceeded || UserInfo == null)
                 return null;
 
-            string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page,0";
+            string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page,0";
 
             return await deserialize<List<Entry>>(URL, ct: ct);
         }
 
-        public async Task<UserFavorite> addToFavourites(uint id)
+        public async Task<UserFavorite> AddToFavourites(uint id)
         {
-            if (this.limitExceeded)
+            if (limitExceeded || UserInfo == null || id == 0)
                 return null;
 
-            string URL = "entries/favorite/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
+            string URL = "entries/favorite/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             return await deserialize<UserFavorite>(URL);
         }

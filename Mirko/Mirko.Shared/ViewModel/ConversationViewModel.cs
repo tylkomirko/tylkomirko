@@ -87,12 +87,12 @@ namespace Mirko.ViewModel
                     foreach (var file in NewEntry.Files)
                     {
                         using (var fileStream = await file.OpenStreamForReadAsync())
-                            success = await App.ApiService.sendPM(NewEntry, Data.AuthorName, fileStream, file.Name);
+                            success = await App.ApiService.SendPM(NewEntry, Data.AuthorName, fileStream, file.Name);
                     }
                 }
                 else
                 {
-                    success = await App.ApiService.sendPM(NewEntry, Data.AuthorName);
+                    success = await App.ApiService.SendPM(NewEntry, Data.AuthorName);
                 }
             }
             catch(Exception e)
@@ -130,7 +130,7 @@ namespace Mirko.ViewModel
             DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "Pobieram...");
 
             await StatusBarManager.ShowProgressAsync();
-            var pms = await App.ApiService.getPMs(Data.AuthorName);
+            var pms = await App.ApiService.GetPMs(Data.AuthorName);
             if (pms == null || pms.Count == 0)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "");
@@ -213,7 +213,7 @@ namespace Mirko.ViewModel
         private async void ExecuteDeleteConversation()
         {
             await StatusBarManager.ShowProgressAsync();
-            bool success = await App.ApiService.deleteConversation(Data.AuthorName);
+            bool success = await App.ApiService.DeleteConversation(Data.AuthorName);
             if(success)
             {
                 Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Remove"));

@@ -61,7 +61,7 @@ namespace Mirko.ViewModel
 
         private async void ExecuteFavouriteCommand()
         {
-            var reply = await App.ApiService.addToFavourites(Data.ID);
+            var reply = await App.ApiService.AddToFavourites(Data.ID);
             Data.Favourite = reply.user_favorite;
         }
 
