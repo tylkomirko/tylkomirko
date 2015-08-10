@@ -211,8 +211,14 @@ namespace Mirko.Pages
 
         private void HandleSendButton()
         {
-            string txt = TextBox.Text;
             var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
+            if (vm == null)
+            {
+                this.SendButton.IsEnabled = true;
+                return;
+            }
+
+            var txt = TextBox.Text;
             var attachmentName = vm.NewEntry.AttachmentName;
 
             if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
