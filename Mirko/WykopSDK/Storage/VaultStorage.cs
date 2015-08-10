@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Windows.Security.Credentials;
 
 namespace WykopSDK.Storage
@@ -17,11 +19,17 @@ namespace WykopSDK.Storage
         public Tuple<string, string> ReadCredentials()
         {
             var vault = new PasswordVault();
-            var creds = vault.FindAllByResource(CREDENTIALS);
+            IReadOnlyList<PasswordCredential> creds = null;
+            try
+            {
+                creds = vault.FindAllByResource(CREDENTIALS);
+            }
+            catch (Exception) { }
+
             if (creds == null || creds.Count == 0)
                 return null;
 
-            var cred = creds[0];
+            var cred = creds.First();
             cred.RetrievePassword();
             return new Tuple<string, string>(cred.UserName, cred.Password);
         }
