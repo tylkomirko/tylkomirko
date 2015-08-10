@@ -782,8 +782,10 @@ namespace Mirko.ViewModel
 
         private async void ExecuteGoToNotification()
         {
-            var notification = SelectedAtNotification.Data;
+            if (SelectedAtNotification == null || SelectedAtNotification.Data == null)
+                return;
 
+            var notification = SelectedAtNotification.Data;
             if (notification.Type == NotificationType.EntryDirected || notification.Type == NotificationType.CommentDirected)
             {
                 var entryID = notification.Entry.ID;
