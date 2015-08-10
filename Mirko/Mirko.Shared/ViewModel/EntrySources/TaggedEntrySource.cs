@@ -31,6 +31,9 @@ namespace Mirko.ViewModel
             missingEntries = Math.Max(0, missingEntries);
             var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
+            if (mainVM.SelectedHashtag == null || string.IsNullOrEmpty(mainVM.SelectedHashtag.Hashtag))
+                return null;
+
             if (entriesInCache > 0)
             {
                 int itemsToMove;

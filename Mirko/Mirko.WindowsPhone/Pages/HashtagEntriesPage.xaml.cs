@@ -140,7 +140,8 @@ namespace Mirko.Pages
             {
                 var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
                 var mainVM = this.DataContext as MainViewModel;
-                if (cacheVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
+                if (mainVM.SelectedHashtag != null && !string.IsNullOrEmpty(mainVM.SelectedHashtag.Hashtag) &&
+                    cacheVM.ObservedHashtags.Contains(mainVM.SelectedHashtag.Hashtag))
                 {
                     ObserveButton.IsChecked = true;
                     ObserveButton.Label = "nie obserwuj";
