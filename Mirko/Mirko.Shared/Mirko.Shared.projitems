@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9f32d069-f886-48d6-8200-f81dc356af12</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Mirko</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AutoCompletingTextBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml.cs">
+      <DependentUpon>CachedImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\HyperlinkTextBlock.xaml.cs">
+      <DependentUpon>HyperlinkTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml.cs">
+      <DependentUpon>NotificationCounter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml.cs">
+      <DependentUpon>SpoilerTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SuggestionsPopupContent.xaml.cs">
+      <DependentUpon>SuggestionsPopupContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\AuthorIndicator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BlacklistToText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BoolToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CommentListToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToBool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\DateConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FontSizeScaler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\GroupToColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\HotTimeSpanConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertBool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NewEntriesNumeral.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ObservedToText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ProfileAppBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\SexToText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UpperCase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\UserVotedToBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\Enums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandBarUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Gfycat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\IncrementalLoadingCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuFlyoutUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenEntryMenuFlyout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenMenuFlyout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockInjectors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StackList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusBarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StoryboardExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TextBoxExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\VisualTreeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\AddEntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\BlacklistViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CacheViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\CommentViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ConversationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\DebugViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EmbedViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryBaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\FavEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\HotEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MyEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\UserEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\FontsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\IResumable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\LoginViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MainViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\AtNotificationsSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\MirkoEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\EntrySources\TaggedEntrySource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryBaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NewEntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\NotificationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableCollectionEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ObservableDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\MessagesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\PMViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfilesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ProfileViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\HyperlinkTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\SpoilerTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\SuggestionsPopupContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

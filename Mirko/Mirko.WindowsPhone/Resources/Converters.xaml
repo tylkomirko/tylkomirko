@@ -1,0 +1,36 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:Mirko.Converters"
+    xmlns:local="using:Mirko.Resources">
+
+    <converters:GroupToColor x:Key="GroupToColor" />
+    <converters:SexToColor x:Key="SexToColor" />
+    <converters:DateConverter x:Key="DateConverter" />
+    <converters:LongDateConverter x:Key="LongDateConverter" />
+    <converters:BoolToVisibility x:Key="BoolToVisibility" />
+    <converters:UpperCase x:Key="UpperCase" />
+    <converters:CountToVisibility x:Key="CountToVisibility" />
+    <converters:CountToVisibilityInv x:Key="CountToVisibilityInv" />
+    <converters:InvertVisibility x:Key="InvertVisibility" />
+    <converters:ConversationStatusToBrush x:Key="ConversationStatusToBrush" />
+    <converters:UserVotedToBrush x:Key="UserVotedToBrush" />
+    <converters:NewEntriesNumeral x:Key="NewEntriesNumeral" />
+    <converters:FontSizeScaler x:Key="FontSizeScaler" />
+    <converters:SexToText x:Key="SexToText" />
+    <converters:NullToVisibility x:Key="NullToVisibility" />
+    <converters:MoreThanOneToString x:Key="MoreThanOneToString" />
+    <converters:YouTubeApp x:Key="YouTubeApp" />
+    <converters:StartPage x:Key="StartPage" />
+    <converters:CountToBool x:Key="CountToBool" />
+    <converters:HotTimeSpanStringConverter x:Key="HotTimeSpanStringConverter" />
+    <converters:HotTimeSpanIndexConverter x:Key="HotTimeSpanIndexConverter" />
+    <converters:NSFWToString x:Key="NSFWToString" />
+    <converters:NumberSeparator x:Key="NumberSeparator" />
+    <converters:ObservedToText x:Key="ObservedToText" />
+    <converters:BlacklistToText x:Key="BlacklistToText" />
+    <converters:InvertBool x:Key="InvertBool" />
+    <converters:AuthorIndicator x:Key="AuthorIndicator" />
+    <converters:ProfileAppBar x:Key="ProfileAppBar" />
+
+</ResourceDictionary>

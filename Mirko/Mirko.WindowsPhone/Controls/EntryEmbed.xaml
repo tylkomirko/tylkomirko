@@ -1,0 +1,62 @@
+﻿<UserControl
+    x:Class="Mirko.Controls.EntryEmbed"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Mirko.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:utils="using:Mirko.Utils"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    
+    IsTapEnabled="True"
+    Tapped="UserControl_Tapped"
+    DataContextChanged="UserControl_DataContextChanged">
+
+    <FlyoutBase.AttachedFlyout>
+        <MenuFlyout>
+            <MenuFlyoutItem Text="odśwież"
+                            Click="RefreshImage_Click"/>
+            
+            <MenuFlyoutItem Text="zapisz"
+                            Click="SaveImage_Click"/>
+        </MenuFlyout>
+    </FlyoutBase.AttachedFlyout>
+
+    <Grid x:Name="EntryEmbedGrid"
+          HorizontalAlignment="Stretch">
+
+        <controls:CachedImage x:Name="Image"
+                              Embed="{Binding EmbedData}"/>
+        
+        <MediaElement x:Name="MediaElement"
+                      Source="{Binding MediaElementSrc}"
+                      AutoPlay="True"
+                      IsLooping="True"
+                      AreTransportControlsEnabled="False"
+                      Stretch="Uniform"
+                      MediaOpened="MediaElement_MediaOpened"
+                      MediaFailed="MediaElement_MediaFailed"
+                      Tapped="MediaElement_Tapped"
+                      Visibility="Collapsed" />
+
+        <TextBlock x:Name="AttachmentTB"
+                   Visibility="Collapsed"
+                   TextTrimming="CharacterEllipsis"
+                   IsColorFontEnabled="False">
+            
+            <Run Text="&#x1f4ce;"
+                 FontSize="{Binding Fonts.EmbedSymbolFontSize, Mode=OneWay, Source={StaticResource Locator}}"
+                 Foreground="Gray" />
+            
+            <Run Text="{Binding EmbedData, Converter={StaticResource NSFWToString}}"
+                 FontSize="{Binding Fonts.AttachmentFontSize, Mode=OneWay, Source={StaticResource Locator}}"
+                 Foreground="{ThemeResource AttachmentNameForeground}" />
+        </TextBlock>
+
+    </Grid>
+</UserControl>

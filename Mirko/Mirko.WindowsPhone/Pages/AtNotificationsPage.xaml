@@ -1,0 +1,69 @@
+﻿<UserControl
+    x:Class="Mirko.Pages.AtNotificationsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:Mirko.Utils"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <Rectangle Grid.Row="0"
+                   Canvas.ZIndex="1"
+                   Height="1" 
+                   Fill="{ThemeResource TinySeparator}"
+                   Opacity="{StaticResource AppBarOpacity}" />
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" 
+              x:Name="ContentRoot">           
+
+            <ListView x:Name="ListView"
+                      IsItemClickEnabled="True"
+                      ItemClick="ListView_ItemClick"
+                      Loaded="ListView_Loaded"
+                      ItemsSource="{Binding AtNotifications}"
+                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling">
+
+                <ListView.Transitions>
+                    <TransitionCollection>
+                        <EdgeUIThemeTransition Edge="Right" />
+                    </TransitionCollection>
+                </ListView.Transitions>
+
+                <ListView.Header>
+                    <StackPanel>
+                        <Rectangle Fill="Transparent" />
+
+                        <TextBlock Text="Nie masz żadnych powiadomień."
+                                   Style="{StaticResource TextBlockNoItems}"
+                                   Visibility="{Binding AtNotifications.HasNoItems, Converter={StaticResource BoolToVisibility}}"/>
+                    </StackPanel>
+                </ListView.Header>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <RichTextBlock x:Name="BodyRTB"
+                                       Margin="10,0,10,9"
+                                       FontSize="14"
+                                       IsTextSelectionEnabled="False"
+                                       utils:Injectors.Notification="{Binding Data}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>

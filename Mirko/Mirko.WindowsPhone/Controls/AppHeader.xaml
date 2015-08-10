@@ -1,0 +1,277 @@
+﻿<UserControl
+    x:Class="Mirko.Controls.AppHeader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:controls="using:Mirko.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="100"
+    d:DesignWidth="400"
+    x:Name="AppHeaderControl"
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
+    
+    <Grid Background="{Binding ElementName=AppHeaderControl, Path=Background}">        
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid x:Name="LogoGrid"
+                  Grid.Column="0"
+                  Height="60"
+                  Width="61"
+                  Background="Transparent">
+                
+                <i:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="Tapped">
+                        <core:InvokeCommandAction Command="{Binding LogoTappedCommand}" />
+                    </core:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+
+                <Grid x:Name="Logo"
+                      Margin="15,10,0,10">
+
+                    <!-- Actual content is added in C# -->
+
+                    <Grid.Resources>
+                        <QuadraticEase x:Key="LogoEasing"
+                                       EasingMode="EaseIn"/>
+
+                        <Storyboard x:Name="LogoAnimation">
+                            <DoubleAnimation Storyboard.TargetName="Logo"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0.0"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Logo"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                           EnableDependentAnimation="True"
+                                                           Duration="0:0:0.7">
+
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.35"
+                                                      Value="1.2" 
+                                                      EasingFunction="{StaticResource LogoEasing}" />
+
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.7"
+                                                      Value="1.0" 
+                                                      EasingFunction="{StaticResource LogoEasing}" />
+                            </DoubleAnimationUsingKeyFrames>
+
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Logo"
+                                                           Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                           EnableDependentAnimation="True"
+                                                           Duration="0:0:0.7">
+
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.35"
+                                                      Value="1.2" 
+                                                      EasingFunction="{StaticResource LogoEasing}" />
+
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.7"
+                                                      Value="1.0" 
+                                                      EasingFunction="{StaticResource LogoEasing}" />
+
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </Grid.Resources>
+
+                    <Grid.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1" CenterX="0.5" CenterY="0.5" />
+                    </Grid.RenderTransform>
+                </Grid>
+            </Grid>
+
+            <ListBox x:Name="StreamsPanel"
+                     Grid.Column="1"
+                     Background="Transparent"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     Style="{StaticResource ListBoxNoBorder}"
+                     ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                     SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}, Path=CurrentPivotItem, Mode=TwoWay}">
+
+                <ListBox.RenderTransform>
+                    <TranslateTransform X="0" Y="0" />
+                </ListBox.RenderTransform>
+
+                <ListBox.Resources>
+                    <QuadraticEase x:Name="Ease"
+                                   EasingMode="EaseIn" />
+
+                    <Storyboard x:Name="EnterStreams"
+                                Completed="EnterStreams_Completed">
+                        <DoubleAnimation Storyboard.TargetName="StreamsPanel"
+                                         Storyboard.TargetProperty="Opacity"
+                                         To="1.0"
+                                         EasingFunction="{StaticResource Ease}"                                        
+                                         Duration="0:0:0.5" />
+
+                        <DoubleAnimation Storyboard.TargetName="StreamsPanel"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                         EasingFunction="{StaticResource Ease}"
+                                         From="-80"
+                                         To="0"
+                                         Duration="0:0:0.5" />
+                    </Storyboard>
+
+                    <Storyboard x:Name="LeaveStreams"
+                                Completed="LeaveStreams_Completed">
+                        <DoubleAnimation Storyboard.TargetName="StreamsPanel"
+                                         Storyboard.TargetProperty="Opacity"
+                                         EasingFunction="{StaticResource Ease}"
+                                         To="0.0"
+                                         Duration="0:0:0.5" />
+
+                        <DoubleAnimation Storyboard.TargetName="StreamsPanel"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                         EasingFunction="{StaticResource Ease}"
+                                         From="0"
+                                         To="-80"
+                                         Duration="0:0:0.5" />
+                    </Storyboard>
+                </ListBox.Resources>
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="Center"
+                                   Typography.Kerning="True"
+                                   FontSize="18"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+                <ListBox.Items>
+                    <x:String>MIRKO</x:String>
+                    <x:String>GORĄCE</x:String>
+                    <x:String>ULUBIONE</x:String>
+                    <x:String>MÓJ</x:String>
+                </ListBox.Items>
+            </ListBox>
+            
+            <StackPanel x:Name="NotificationsPanel"
+                        Orientation="Horizontal"
+                        Grid.Column="1"
+                        Margin="0,0,0,4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Opacity="0.0"
+                        IsHitTestVisible="False"
+                        Visibility="{Binding Source={StaticResource Locator}, Mode=OneWay, Path=Settings.UserInfo,
+                                     Converter={StaticResource NullToVisibility}}">          
+            
+                <StackPanel.RenderTransform>
+                    <TranslateTransform X="0" Y="0" />
+                </StackPanel.RenderTransform>           
+            
+                <StackPanel.Resources>
+                    <QuadraticEase x:Name="NotificationsEase"
+                                   EasingMode="EaseIn" />
+                    
+                    <Storyboard x:Name="LeaveNotifications"
+                                Completed="LeaveNotifications_Completed">
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                         EasingFunction="{StaticResource NotificationsEase}"
+                                         To="80"
+                                         Duration="0:0:0.5" />
+                        
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="Opacity"
+                                         To="0.0"
+                                         Duration="0:0:0.5" />
+                    </Storyboard>
+
+                    <Storyboard x:Name="EnterNotifications"
+                                Completed="EnterNotifications_Completed">
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                         EasingFunction="{StaticResource NotificationsEase}"
+                                         From="80"
+                                         To="0"
+                                         Duration="0:0:0.5" />
+                        
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="Opacity"
+                                         To="1.0"
+                                         Duration="0:0:0.5" />
+                    </Storyboard>
+
+                    <Storyboard x:Name="NotificationsAnimation">
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="Opacity"
+                                         From="0.0"
+                                         To="1.0"
+                                         Duration="0:0:0.4"/>
+                        
+                        <DoubleAnimation Storyboard.TargetName="NotificationsPanel"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                         From="-35"
+                                         To="0"
+                                         Duration="0:0:0.4">
+                        </DoubleAnimation>
+                    </Storyboard>
+                </StackPanel.Resources>
+
+                <Grid Margin="18,5,0,5"
+                      Background="Transparent">
+                    
+                    <i:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{Binding HashtagTappedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                    
+                    <controls:NotificationCounter x:Name="HashCounter"
+                                                  Prefix="#"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
+                                                  Count="{Binding HashtagNotificationsCount}" />
+                </Grid>
+                
+                <Grid Margin="35,5,0,5"
+                      Background="Transparent">
+                    
+                    <i:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{Binding AtTappedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                    
+                    <controls:NotificationCounter x:Name="AtCounter"
+                                                  Prefix="@"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
+                                                  Count="{Binding AtNotificationsCount}" />
+                </Grid>
+
+                <Grid Margin="35,5,35,5"
+                      Background="Transparent">
+                    
+                    <i:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{Binding PMTappedCommand}" />
+                        </core:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                    
+                    <controls:NotificationCounter x:Name="PMCounter"
+                                                  Prefix="&#x2709;"
+                                                  NoNotificationsBrush="{ThemeResource NoNotificationsForeground}"
+                                                  NotificationsBrush="{ThemeResource NotificationsForeground}"
+                                                  Count="{Binding PMNotifications.Count}" />
+                </Grid>
+            </StackPanel>
+        </Grid>        
+    
+</UserControl>

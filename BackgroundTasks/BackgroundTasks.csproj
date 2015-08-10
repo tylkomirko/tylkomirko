@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Mirko_v2\WykopSDK\WykopSDK.csproj">
+    <ProjectReference Include="..\Mirko\WykopSDK\WykopSDK.csproj">
       <Project>{93a3f254-c9b1-4bec-8001-7a8abf648e27}</Project>
       <Name>WykopSDK</Name>
     </ProjectReference>
