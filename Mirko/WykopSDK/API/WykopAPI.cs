@@ -779,7 +779,7 @@ namespace WykopSDK.API
 
         public async Task<bool> observeTag(string tag)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag))
+            if (this.limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
                 return false;
 
             string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
@@ -789,7 +789,7 @@ namespace WykopSDK.API
 
         public async Task<bool> unobserveTag(string tag)
         {
-            if (this.limitExceeded || string.IsNullOrEmpty(tag))
+            if (this.limitExceeded || string.IsNullOrEmpty(tag) || UserInfo == null)
                 return false;
 
             string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY;
