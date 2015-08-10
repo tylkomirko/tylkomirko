@@ -35,35 +35,28 @@ namespace Mirko.ViewModel
                     if(tmp != null)
                         newEntries = tmp.Skip(1);
                 }
+                
+                await StatusBarManager.HideProgressAsync();
+
+                if (newEntries == null)
+                    return null;
 
                 ct.ThrowIfCancellationRequested();
 
-                await StatusBarManager.HideProgressAsync();
+                var VMs = new List<EntryViewModel>(newEntries.Count());
+                foreach (var entry in newEntries)
+                    VMs.Add(new EntryViewModel(entry));
 
-                if (newEntries != null)
-                {
-                    var VMs = new List<EntryViewModel>(newEntries.Count());
-                    foreach (var entry in newEntries)
-                        VMs.Add(new EntryViewModel(entry));
-
-                    return VMs;
-                }
+                return VMs;
             }
-            else
+            else if (mainVM.MirkoEntries.Count == 0)
             {
                 // offline mode
-                if (mainVM.MirkoEntries.Count == 0)
-                {
-                    await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
-                    var savedEntries = await mainVM.ReadCollection("MirkoEntries");
-                    await StatusBarManager.HideProgressAsync();
+                await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
+                var savedEntries = await mainVM.ReadCollection("MirkoEntries");
+                await StatusBarManager.HideProgressAsync();
 
-                    return savedEntries;
-                }
-                else
-                {
-                    return null;
-                }
+                return savedEntries;
             }
 
             return null;
