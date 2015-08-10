@@ -509,6 +509,7 @@ namespace WykopSDK.API
 
             string URL = null;
 
+            // sadly this doesn't seem to work
             if (firstID == 0)
                 URL = "stream/hot";
             else
