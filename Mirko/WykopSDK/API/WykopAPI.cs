@@ -74,38 +74,6 @@ namespace WykopSDK.API
             }
         }
 
-        public int CallCount
-        {
-            get
-            {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-                if (settings.ContainsKey("CallCount"))
-                    return (int)settings["CallCount"];
-                else
-                    return 0;
-            }
-
-            set
-            {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-                if(settings.ContainsKey("CallCountUpdateTime"))
-                {
-                    var time = DateTime.FromBinary((long)settings["CallCountUpdateTime"]);
-                    if (DateTime.Now - time > new TimeSpan(1, 0, 0))
-                        settings["CallCount"] = 0;
-                    else
-                        settings["CallCount"] = value;
-                }
-                else
-                {
-                    settings["CallCount"] = value;
-                }
-
-                settings["CallCountUpdateTime"] = DateTime.Now.ToBinary();
-                RaisePropertyChanged();
-            }
-        }
-
         private readonly ILogger _log;
 
         public delegate void MessageEventHandler(object sender, MessageEventArgs e);
@@ -235,7 +203,6 @@ namespace WykopSDK.API
         }
 
         #region HelperFunctions
-
         private async Task<T> deserialize<T>(string URL, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null, CancellationToken ct = default(CancellationToken))
             where T : class
         {
@@ -258,8 +225,6 @@ namespace WykopSDK.API
             {
                 if (stream == null)
                     return null;
-
-                CallCount++;
 
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
@@ -336,8 +301,6 @@ namespace WykopSDK.API
             {
                 if (stream == null || stream.Length == 0 || stream.Length == 2) // length 2 equals []. essentialy an empty response.
                     return null;
-
-                CallCount++;
 
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
@@ -725,7 +688,6 @@ namespace WykopSDK.API
         #endregion
 
         #region Tags
-
         public async Task<List<Hashtag>> getPopularTags()
         {
             if (this.limitExceeded)
@@ -748,23 +710,17 @@ namespace WykopSDK.API
 
         public async Task<TaggedEntries> getTaggedEntries(string hashtag, int pageIndex)
         {
-            if (this.limitExceeded)
+            if (this.limitExceeded || string.IsNullOrEmpty(hashtag))
                 return null;
 
+            string URL = null;
             if (UserInfo != null)
-            {
-                var URL = "tag/entries/" + hashtag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
-
-                var result = await deserialize<TaggedEntries>(URL);
-                return result;
-            }
+                URL = "tag/entries/" + hashtag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + this.APPKEY + ",page," + pageIndex;
             else
-            {
-                string URL = "tag/entries/" + hashtag.Substring(1) + "/appkey," + this.APPKEY + ",page," + pageIndex;
+                URL = "tag/entries/" + hashtag.Substring(1) + "/appkey," + this.APPKEY + ",page," + pageIndex;
 
-                var result = await deserialize<TaggedEntries>(URL);
-                return result;
-            }
+            var result = await deserialize<TaggedEntries>(URL);
+            return result;
         }
 
         public async Task<TaggedEntries> getTaggedEntries(string hashtag, int firstID, uint pageIndex)
