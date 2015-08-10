@@ -1,111 +1,58 @@
-﻿using Mirko.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
+using Mirko.Utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WykopSDK.API.Models;
-using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Threading;
-using System.Threading;
 
 namespace Mirko.ViewModel
 {
     public class TaggedEntrySource : IIncrementalSource<EntryViewModel>
     {
-        private List<Entry> cache = new List<Entry>(25);
         private int pageIndex = 1;
 
         public void ClearCache()
         {
-            cache.Clear();
             pageIndex = 1;
         }
 
         public async Task<IEnumerable<EntryViewModel>> GetPagedItems(int pageSize, CancellationToken ct)
         {
-            var entriesToReturn = new List<Entry>(pageSize);
-            int entriesInCache = cache.Count();
-            int missingEntries = pageSize - entriesInCache;
-            int downloadedEntriesCount = 0;
-            missingEntries = Math.Max(0, missingEntries);
             var mainVM = SimpleIoc.Default.GetInstance<MainViewModel>();
 
             if (mainVM.SelectedHashtag == null || string.IsNullOrEmpty(mainVM.SelectedHashtag.Hashtag))
                 return null;
 
-            if (entriesInCache > 0)
+            var tag = mainVM.SelectedHashtag.Hashtag;
+
+            ct.ThrowIfCancellationRequested();
+
+            List<Entry> newEntries = null;
+            if (App.ApiService.IsNetworkAvailable)
             {
-                int itemsToMove;
-                if (entriesInCache >= pageSize)
-                    itemsToMove = pageSize;
-                else
-                    itemsToMove = entriesInCache;
+                await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
 
-                entriesToReturn.AddRange(cache.GetRange(0, itemsToMove));
+                var newEntriesContainer = await App.ApiService.GetTaggedEntries(tag, pageIndex++);
 
-                this.cache.RemoveRange(0, itemsToMove);
-            }
+                await StatusBarManager.HideProgressAsync();
 
-            if (missingEntries > 0)
-            {                
-                var tag = mainVM.SelectedHashtag.Hashtag;
-                var entries = new List<Entry>(25);
-
-                if (App.ApiService.IsNetworkAvailable)
-                {
-                    await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
-
-                    do
-                    {
-                        var newEntriesTemp = await App.ApiService.GetTaggedEntries(tag, pageIndex++);
-                        if (newEntriesTemp != null)
-                        {
-                            if (newEntriesTemp.Entries.Count > 0)
-                            {
-                                entries.AddRange(newEntriesTemp.Entries);
-                                await DispatcherHelper.RunAsync(() => mainVM.SelectedHashtag = newEntriesTemp.Meta);
-                            }
-                            else
-                                break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-
-                    } while (entries.Count <= missingEntries);
-
-                    await StatusBarManager.HideProgressAsync();
-                }
-                else
-                {
+                if (newEntriesContainer == null)
                     return null;
-                }
 
-                var tmp = new List<Entry>(missingEntries);
-                if (entries.Count >= missingEntries)
-                {
-                    tmp.AddRange(entries.GetRange(0, missingEntries));
-                    entries.RemoveRange(0, missingEntries);
-                }
-                else
-                {
-                    downloadedEntriesCount = entries.Count;
-                    tmp.AddRange(entries);
-                    entries.RemoveRange(0, downloadedEntriesCount);
-                }
-
-                entriesToReturn.AddRange(tmp);
-                cache.AddRange(entries);
-                entries.Clear();
+                newEntries = newEntriesContainer.Entries;
+                if (newEntries.Count > 0)
+                    DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.SelectedHashtag = newEntriesContainer.Meta); // is this needed?
             }
 
-            if (entriesToReturn.Count == 0 && mainVM.TaggedEntries.Count == 0)
+            ct.ThrowIfCancellationRequested();
+
+            if (newEntries.Count == 0 && mainVM.TaggedEntries.Count == 0)
                 await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
 
-            var VMs = new List<EntryViewModel>(entriesToReturn.Count);
-            foreach (var entry in entriesToReturn)
+            var VMs = new List<EntryViewModel>(newEntries.Count);
+            foreach (var entry in newEntries)
                 VMs.Add(new EntryViewModel(entry));
 
             return VMs;
