@@ -852,13 +852,18 @@ namespace WykopSDK.API
             string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
             using (var stream = await getAsync(URL))
-            using (var sr = new StreamReader(stream))
             {
-                var str = sr.ReadToEnd();
-                if (str == "true")
-                    return true;
-                else
+                if (stream == null)
                     return false;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    var str = sr.ReadToEnd();
+                    if (str == "true")
+                        return true;
+                    else
+                        return false;
+                }
             }
         }
 
