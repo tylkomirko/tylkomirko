@@ -109,12 +109,6 @@ namespace WykopSDK.API
                 else
                 {
                     IsNetworkAvailable = true;
-                    /*
-                    MainViewModel.ActionOnCurrentCollection(col =>
-                    {
-                        col._hasMoreItems = true;
-                    });
-                     * */
 
                     if (internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 71) // wifi
                         IsWIFIAvailable = true;
@@ -235,133 +229,49 @@ namespace WykopSDK.API
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    if (stream.Length < 100)
-                    {
-                        var str = sr.ReadToEnd();
-                        if (str.StartsWith(@"{""error"""))
-                        {
-                            Error err = JsonConvert.DeserializeObject<Error>(str);
-                            var errorCode = err.error.code;
-                            var message = err.error.message;
-                            _log.Warn("API ERROR " + errorCode + ", " + message);
+                    JsonSerializer serializer = new JsonSerializer();
+                    Error error = null;
 
-                            if (MessageReceiver != null && (errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12))
+                    try
+                    {
+                        error = serializer.Deserialize<Error>(reader);
+                    }
+                    catch (Exception) { }
+
+                    if(error != null)
+                    {
+                        var errorCode = error.error.code;
+                        var message = error.error.message;
+                        _log.Warn("API ERROR " + errorCode + ", " + message);
+
+                        if (MessageReceiver != null)
+                            if(errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12)
                                 MessageReceiver(this, new MessageEventArgs(message, errorCode));
 
-                            if (errorCode == 5) // limit exceeded
-                            {
-                                this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                                limitExceeded = true;
-                            }
-                            else if (errorCode == 11 || errorCode == 12) // wrong user key
-                            {
-                                var oldUserKey = UserInfo.UserKey;
-                                _log.Warn("old URL: " + URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                                await Login(force: true);
-                                var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
-                                _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                                return await deserialize<T>(updatedURL, post, fileStream, fileName, ct);
-                            }
-                            return null;
-                        }
-                        else
+                        if (errorCode == 5) // limit exceeded
                         {
-                            sr.BaseStream.Position = 0;
+                            this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
+                            limitExceeded = true;
                         }
+                        else if (errorCode == 11 || errorCode == 12) // wrong user key
+                        {
+                            var oldUserKey = UserInfo.UserKey;
+                            _log.Warn("old URL: " + URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
+                            await Login(force: true);
+                            var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
+                            _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
+                            return await deserialize<T>(updatedURL, post, fileStream, fileName, ct, deserializationFunction);
+                        }
+
+                        return null;
                     }
 
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Error += serializer_Error;
-
+                    serializer.Error += (s, e) => _log.Error("Deserialization error: " + e.ErrorContext.Error);
                     result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
                 }
 
                 return result;
             }
-        }
-
-        private void serializer_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
-        {
-            _log.Error("Deserialization error: " + e.ErrorContext.Error);
-        }
-
-        private async Task<List<T>> deserializeList<T>(string URL, SortedDictionary<string, string> post = null, CancellationToken ct = default(CancellationToken))
-            where T : class
-        {
-            List<T> list = new List<T>(50);
-            JsonSerializer serializer = new JsonSerializer();
-
-            var newURL = URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,");
-            var userkeyIndex = newURL.IndexOf("userkey,");
-            if (userkeyIndex != -1)
-            {
-                userkeyIndex += 8;
-                var commaIndex = newURL.IndexOf(',', userkeyIndex);
-                var userkey = newURL.Substring(userkeyIndex, commaIndex - userkeyIndex);
-                if (!string.IsNullOrEmpty(userkey))
-                    newURL = newURL.Replace(userkey, "XXX");
-            }
-
-            _log.Trace(newURL);
-
-            using (var stream = await getAsync(URL, post, ct: ct))
-            {
-                if (stream == null || stream.Length == 0 || stream.Length == 2) // length 2 equals []. essentialy an empty response.
-                    return null;
-
-                using (StreamReader sr = new StreamReader(stream))
-                using (JsonReader reader = new JsonTextReader(sr))
-                {
-                    if (stream.Length < 100)
-                    {
-                        var str = sr.ReadToEnd();
-                        if (str.StartsWith(@"{""error"""))
-                        {
-                            Error err = JsonConvert.DeserializeObject<Error>(str);
-                            var errorCode = err.error.code;
-                            var message = err.error.message;
-                            _log.Warn("API ERROR " + errorCode + ", " + message);
-
-                            if (errorCode != 999 && MessageReceiver != null)
-                                MessageReceiver(this, new MessageEventArgs(message, errorCode));
-
-                            if (errorCode == 5) // limit exceeded
-                            {
-                                this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                                limitExceeded = true;
-                            }
-                            else if (errorCode == 11 || errorCode == 12) // wrong user key
-                            {
-                                var oldUserKey = UserInfo.UserKey;
-                                await Login(force: true);
-                                var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
-                                return await deserializeList<T>(updatedURL, post, ct);
-                            }
-                            return null;
-                        }
-                    }
-                    
-                    JArray array = JArray.Load(reader);
-                    foreach (var item in array)
-                    {
-                        var r = item.CreateReader();
-                        var title = item["title"];
-                        if(title != null)
-                        {
-                            // filter out front page entries.
-                            r.Skip();
-                        }
-                        else
-                        {
-                            var i = serializer.Deserialize<T>(r);
-                            list.Add(i);
-                        }
-                    }
-                }
-
-                return list;
-            }
-
         }
 
         private StreamContent CreateFileContent(Stream stream, string fileName, string contentType)
