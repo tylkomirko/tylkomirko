@@ -404,18 +404,27 @@ namespace Mirko.ViewModel
 
         private async Task ExecuteDeleteHashtagNotifications(string hashtag)
         {
-            if (!HashtagsDictionary.ContainsKey(hashtag)) return;
+            if (!HashtagsDictionary.ContainsKey(hashtag) || string.IsNullOrEmpty(hashtag)) return;
 
             StatusBarManager.ShowTextAndProgress("Usuwam powiadomienia...");
 
-            var notifications = HashtagsDictionary[hashtag].ToList(); // make a copy
-            foreach (var notification in notifications)
+            ObservableCollectionEx<NotificationViewModel> notifications = null;
+            HashtagsDictionary.TryGetValue(hashtag, out notifications);
+
+            if(notifications == null)
+            {
+                StatusBarManager.HideProgress();
+                return;
+            }
+
+            var notificationsCopy = notifications.ToList(); // make a copy
+            foreach (var notification in notificationsCopy)
             {
                 bool success = await App.ApiService.MarkAsReadNotification(notification.Data.ID);
                 Logger.Trace("Removing notification " + notification.Data.ID + ". success: " + success);
             }
 
-            HashtagsDictionary[hashtag].Clear();
+            notifications.Clear();
             
             HashtagsDictionary.Remove(hashtag);
             UpdateHashtagsCollection();
