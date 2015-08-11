@@ -86,6 +86,7 @@
     <Grid x:Name="PivotPageGrid"
           Loaded="PivotPageGrid_Loaded">
 
+        <!-- Hot time span -->
         <Popup x:Name="TimeSpanIndicatorPopup"
                VerticalOffset="-22">
 
@@ -121,18 +122,18 @@
         
         <Popup x:Name="TimeSpanSelectionPopup"
                VerticalOffset="-220"
-               Loaded="TimeSpanSelectionPopup_Loaded"
-               Unloaded="TimeSpanSelectionPopup_Unloaded">
+               Loaded="SelectionPopup_Loaded"
+               Unloaded="SelectionPopup_Unloaded">
 
-            <ListView x:Name="TimeSpanSelectionListBox"
+            <ListView x:Name="TimeSpanSelectionListView"
                       Background="Black"
                       Canvas.ZIndex="1"
                       Opacity="0.85"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       SelectionMode="Single"
-                      SelectionChanged="TimeSpanSelectionListBox_SelectionChanged"
-                      Loaded="TimeSpanSelectionListBox_Loaded"
+                      SelectionChanged="TimeSpanSelectionListView_SelectionChanged"
+                      Loaded="TimeSpanSelectionListView_Loaded"
                       SelectedIndex="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanIndexConverter}, Mode=TwoWay}"
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -162,9 +163,86 @@
                 </ListView.Items>
 
             </ListView>
-
         </Popup>
 
+        <!-- My entries type -->
+        <Popup x:Name="MyEntriesIndicatorPopup"
+               VerticalOffset="-22">
+
+            <Popup.Resources>
+                <Storyboard x:Name="MyEntriesIndicatorFadeIn">
+                    <DoubleAnimation Storyboard.TargetName="MyEntriesIndicatorGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="{StaticResource AppHeaderOpacity}"
+                                     Duration="0:0:0.2" />
+                </Storyboard>
+
+                <Storyboard x:Name="MyEntriesIndicatorFadeOut">
+                    <DoubleAnimation Storyboard.TargetName="MyEntriesIndicatorGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0.0"
+                                     Duration="0:0:0.2"/>
+                </Storyboard>
+            </Popup.Resources>
+
+            <Grid x:Name="MyEntriesIndicatorGrid"
+                  Background="Transparent"
+                  Opacity="{StaticResource AppHeaderOpacity}"
+                  Height="49"
+                  Tapped="MyEntriesIndicatorGrid_Tapped">
+                <TextBlock Foreground="{ThemeResource HashtagForeground}"
+                           Margin="75,0,0,0"
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           FontSize="18">
+                    <Run Text="{Binding MyEntriesType, Converter={StaticResource MyEntriesTypeStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
+                </TextBlock>
+            </Grid>
+        </Popup>
+
+        <Popup x:Name="MyEntriesSelectionPopup"
+               VerticalOffset="-220"
+               Loaded="SelectionPopup_Loaded"
+               Unloaded="SelectionPopup_Unloaded">
+
+            <ListView x:Name="MyEntriesSelectionListView"
+                      Background="Black"
+                      Canvas.ZIndex="1"
+                      Opacity="0.85"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      SelectionMode="Single"
+                      SelectionChanged="MyEntriesSelectionListView_SelectionChanged"
+                      Loaded="MyEntriesSelectionListView_Loaded"
+                      SelectedIndex="{Binding MyEntriesType, Converter={StaticResource MyEntriesTypeIndexConverter}, Mode=TwoWay}"
+                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+                <ListView.Header>
+                    <Rectangle Height="360"
+                               Fill="Transparent" />
+                </ListView.Header>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   Margin="0,0,0,40"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Typography.Kerning="True"
+                                   FontSize="24"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <ListView.Items>
+                    <x:String>wszystko</x:String>
+                    <x:String>tagi</x:String>
+                    <x:String>ludzie</x:String>
+                </ListView.Items>
+
+            </ListView>
+        </Popup>
+
+        <!-- End of popups -->
         <Pivot x:Name="MainPivot"
                Loaded="MainPivot_Loaded"
                HorizontalAlignment="Stretch"

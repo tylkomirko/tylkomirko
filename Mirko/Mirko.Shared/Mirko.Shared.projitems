@@ -42,7 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\DateConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\FontSizeScaler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\GroupToColor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\HotTimeSpanConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PivotPageIndicators.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertBool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\InvertVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\MoreThanOneToString.cs" />

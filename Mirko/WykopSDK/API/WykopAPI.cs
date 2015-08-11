@@ -203,7 +203,13 @@ namespace WykopSDK.API
         }
 
         #region HelperFunctions
-        private async Task<T> deserialize<T>(string URL, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null, CancellationToken ct = default(CancellationToken))
+        private async Task<T> deserialize<T>(
+            string URL, 
+            SortedDictionary<string, string> post = null, 
+            Stream fileStream = null, 
+            string fileName = null, 
+            CancellationToken ct = default(CancellationToken),
+            Func<JsonReader, JsonSerializer, T> deserializationFunction = null)
             where T : class
         {
             T result = null;
@@ -266,7 +272,8 @@ namespace WykopSDK.API
 
                     JsonSerializer serializer = new JsonSerializer();
                     serializer.Error += serializer_Error;
-                    result = serializer.Deserialize<T>(reader);
+
+                    result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
                 }
 
                 return result;
@@ -524,14 +531,47 @@ namespace WykopSDK.API
             return result != null ? result.Where(x => !x.Blacklisted) : null;
         }
 
-        public async Task<List<Entry>> GetMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
+        private List<Entry> DeserializeMyEntries(JsonReader reader, JsonSerializer serializer)
+        {
+            var list = new List<Entry>();
+            JArray array = JArray.Load(reader);
+
+            foreach (var item in array)
+            {
+                var r = item.CreateReader();
+                var title = item["title"];
+                if (title != null)
+                {
+                    // filter out front page entries.
+                    r.Skip();
+                }
+                else
+                {
+                    var i = serializer.Deserialize<Entry>(r);
+                    list.Add(i);
+                }
+            }
+
+            return list;
+        }
+
+        public async Task<List<Entry>> GetMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken), bool? getTags = null)
         {
             if (limitExceeded || UserInfo == null || pageIndex < 0)
                 return null;
 
-            var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
+            string URL = "mywykop";
 
-            return await deserializeList<Entry>(URL, ct: ct);
+            if (getTags == null)
+                URL += "/index/";
+            else if (getTags.Value == true)
+                URL += "/tags/";
+            else
+                URL += "/users/";
+
+            URL += "userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
+
+            return await deserialize<List<Entry>>(URL, ct: ct, deserializationFunction: DeserializeMyEntries);
         }
 
         #endregion

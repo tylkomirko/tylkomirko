@@ -32,5 +32,7 @@
     <converters:InvertBool x:Key="InvertBool" />
     <converters:AuthorIndicator x:Key="AuthorIndicator" />
     <converters:ProfileAppBar x:Key="ProfileAppBar" />
+    <converters:MyEntriesTypeIndexConverter x:Key="MyEntriesTypeIndexConverter" />
+    <converters:MyEntriesTypeStringConverter x:Key="MyEntriesTypeStringConverter" />
 
 </ResourceDictionary>
