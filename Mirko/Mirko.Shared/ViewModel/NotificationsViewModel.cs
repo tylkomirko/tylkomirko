@@ -420,7 +420,7 @@ namespace Mirko.ViewModel
             var notificationsCopy = notifications.ToList(); // make a copy
             foreach (var notification in notificationsCopy)
             {
-                bool success = await App.ApiService.MarkAsReadNotification(notification.Data.ID);
+                bool success = await App.ApiService.ReadNotification(notification.Data.ID);
                 Logger.Trace("Removing notification " + notification.Data.ID + ". success: " + success);
             }
 
@@ -894,7 +894,7 @@ namespace Mirko.ViewModel
 
                 if (notification != null && notification.IsNew)
                 {
-                    await App.ApiService.MarkAsReadNotification(ID);
+                    await App.ApiService.ReadNotification(ID);
 
                     var conversations = SimpleIoc.Default.GetInstance<MessagesViewModel>().ConversationsList;
                     var conversation = conversations.SingleOrDefault(x => x.Data.AuthorName == notification.AuthorName);

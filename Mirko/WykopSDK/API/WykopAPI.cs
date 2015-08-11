@@ -822,29 +822,7 @@ namespace WykopSDK.API
             return await deserialize<NotificationsCount>(URL);
         }
 
-        public async Task<bool> ReadNotifications()
-        {
-            if (limitExceeded || UserInfo == null)
-                return false;
-
-            string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-
-            await deserialize<List<object>>(URL);
-            return true;
-        }
-
-        public async Task<bool> ReadHashtagNotifications()
-        {
-            if (limitExceeded || UserInfo == null)
-                return false;
-
-            string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-
-            await deserialize<List<object>>(URL);
-            return true;
-        }
-
-        public async Task<bool> MarkAsReadNotification(uint id)
+        public async Task<bool> ReadNotification(uint id)
         {
             if (limitExceeded || UserInfo == null || id == 0)
                 return false;
@@ -867,6 +845,27 @@ namespace WykopSDK.API
             }
         }
 
+        public async Task<bool> ReadNotifications()
+        {
+            if (limitExceeded || UserInfo == null)
+                return false;
+
+            string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
+
+            await deserialize<List<object>>(URL);
+            return true;
+        }
+
+        public async Task<bool> ReadHashtagNotifications()
+        {
+            if (limitExceeded || UserInfo == null)
+                return false;
+
+            string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
+
+            await deserialize<List<object>>(URL);
+            return true;
+        }
         #endregion
 
         #region PM
