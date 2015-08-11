@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
-using WykopSDK.API.Models.Converters;
-
-namespace WykopSDK.API.Models
+﻿namespace WykopSDK.API.Models
 {
-    [JsonConverter(typeof(ErrorConverter))]
+    public class ErrorInternal
+    {
+        public int code { get; set; }
+        public string message { get; set; }
+    }
+
     public class Error
-    {        
-        public int Code { get; set; }
-        public string Message { get; set; }
+    {
+        public ErrorInternal error { get; set; }
     }
 }

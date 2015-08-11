@@ -213,10 +213,10 @@ namespace WykopSDK.API
 
         #region HelperFunctions
         private async Task<T> deserialize<T>(
-            string URL, 
-            SortedDictionary<string, string> post = null, 
-            Stream fileStream = null, 
-            string fileName = null, 
+            string URL,
+            SortedDictionary<string, string> post = null,
+            Stream fileStream = null,
+            string fileName = null,
             CancellationToken ct = default(CancellationToken),
             Func<JsonReader, JsonSerializer, T> deserializationFunction = null)
             where T : class
@@ -250,8 +250,8 @@ namespace WykopSDK.API
                         if (str.StartsWith(@"{""error"""))
                         {
                             Error err = JsonConvert.DeserializeObject<Error>(str);
-                            var errorCode = err.Code;
-                            var message = err.Message;
+                            var errorCode = err.error.code;
+                            var message = err.error.message;
                             _log.Warn("API ERROR " + errorCode + ", " + message);
 
                             if (MessageReceiver != null && (errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12))
@@ -279,11 +279,19 @@ namespace WykopSDK.API
                         }
                     }
 
-                    result = deserializationFunction == null ? jsonSerializer.Deserialize<T>(reader) : deserializationFunction(reader, jsonSerializer);
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Error += serializer_Error;
+
+                    result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
                 }
 
                 return result;
             }
+        }
+
+        private void serializer_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
+        {
+            _log.Error("Deserialization error: " + e.ErrorContext.Error);
         }
 
         private StreamContent CreateFileContent(Stream stream, string fileName, string contentType)
