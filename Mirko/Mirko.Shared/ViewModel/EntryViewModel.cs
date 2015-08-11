@@ -30,11 +30,7 @@ namespace Mirko.ViewModel
                 Comments = new ObservableCollectionEx<CommentViewModel>();
                 foreach (var com in Data.Comments)
                     Comments.Add(new CommentViewModel(com) { RootEntryAuthor = author });
-
-                Data.Comments = null;
             }
-
-            d = null;
         }
 
         public void GoToEntryPage(bool isHot)

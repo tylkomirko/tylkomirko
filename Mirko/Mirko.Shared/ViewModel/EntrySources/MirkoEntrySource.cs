@@ -43,11 +43,7 @@ namespace Mirko.ViewModel
 
                 ct.ThrowIfCancellationRequested();
 
-                var VMs = new List<EntryViewModel>(newEntries.Count());
-                foreach (var entry in newEntries)
-                    VMs.Add(new EntryViewModel(entry));
-
-                return VMs;
+                return newEntries.Select(x => new EntryViewModel(x));
             }
             else if (mainVM.MirkoEntries.Count == 0)
             {

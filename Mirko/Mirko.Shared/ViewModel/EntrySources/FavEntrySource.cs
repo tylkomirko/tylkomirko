@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopSDK.API.Models;
 
 namespace Mirko.ViewModel
 {
@@ -39,11 +38,7 @@ namespace Mirko.ViewModel
                         });
                     }
 
-                    var VMs = new List<EntryViewModel>(newEntries.Count);
-                    foreach (var entry in newEntries)
-                        VMs.Add(new EntryViewModel(entry));
-
-                    return VMs;
+                    return newEntries.Select(x => new EntryViewModel(x));
                 }
                 else
                 {
@@ -54,21 +49,14 @@ namespace Mirko.ViewModel
                     });
                 }
             }
-            else if (!App.ApiService.IsNetworkAvailable)
+            else if (!App.ApiService.IsNetworkAvailable && mainVM.FavEntries.Count == 0)
             {
                 // offline mode
-                if (mainVM.FavEntries.Count == 0)
-                {
-                    await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
-                    var savedEntries = await mainVM.ReadCollection("FavEntries");
-                    await StatusBarManager.HideProgressAsync();
+                await StatusBarManager.ShowTextAndProgressAsync("Wczytuje wpisy...");
+                var savedEntries = await mainVM.ReadCollection("FavEntries");
+                await StatusBarManager.HideProgressAsync();
 
-                    return savedEntries;
-                }
-                else
-                {
-                    return null;
-                }
+                return savedEntries;
             }
 
             return null;
