@@ -27,13 +27,13 @@ namespace Mirko.Converters
         // timespan - index
         private static Dictionary<int, int> lookupDictionary = new Dictionary<int, int>()
         {
-            { 0, 3 }, // just in case something does wrong
-
             { 1, 0 },
             { 3, 1 },
             { 6, 2 },
             { 12, 3 },
             { 24, 4 },
+            
+            { 0, 3 }, // just in case something does wrong
         };
 
         public object Convert(object value, Type targetType, object parameter, string language)
