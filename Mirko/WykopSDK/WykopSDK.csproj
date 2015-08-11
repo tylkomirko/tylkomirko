@@ -82,6 +82,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="API\Models\Converters\ErrorConverter.cs" />
     <Compile Include="Parsers\HtmlToText.cs" />
     <Compile Include="Parsers\HtmlToWykop.cs" />
     <Compile Include="Storage\LocalStorage.cs" />

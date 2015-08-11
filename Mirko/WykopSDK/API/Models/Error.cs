@@ -1,13 +1,12 @@
-﻿namespace WykopSDK.API.Models
-{
-    public class ErrorInternal
-    {
-        public int code { get; set; }
-        public string message { get; set; }
-    }
+﻿using Newtonsoft.Json;
+using WykopSDK.API.Models.Converters;
 
+namespace WykopSDK.API.Models
+{
+    [JsonConverter(typeof(ErrorConverter))]
     public class Error
-    {
-        public ErrorInternal error { get; set; }
+    {        
+        public int Code { get; set; }
+        public string Message { get; set; }
     }
 }

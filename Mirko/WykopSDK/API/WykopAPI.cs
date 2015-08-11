@@ -74,6 +74,21 @@ namespace WykopSDK.API
             }
         }
 
+        private JsonSerializer _jsonSerializer = null;
+        private JsonSerializer jsonSerializer
+        {
+            get
+            {
+                if (_jsonSerializer == null)
+                {
+                    _jsonSerializer = new JsonSerializer();
+                    _jsonSerializer.Error += (s, e) => _log.Error("Deserialization error: " + e.ErrorContext.Error);
+                }
+
+                return _jsonSerializer;
+            }
+        }
+
         private readonly ILogger _log;
 
         public delegate void MessageEventHandler(object sender, MessageEventArgs e);
@@ -229,45 +244,42 @@ namespace WykopSDK.API
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    Error error = null;
-
-                    try
+                    if (stream.Length < 150)
                     {
-                        error = serializer.Deserialize<Error>(reader);
-                    }
-                    catch (Exception) { }
+                        var str = sr.ReadToEnd();
+                        if (str.StartsWith(@"{""error"""))
+                        {
+                            Error err = JsonConvert.DeserializeObject<Error>(str);
+                            var errorCode = err.Code;
+                            var message = err.Message;
+                            _log.Warn("API ERROR " + errorCode + ", " + message);
 
-                    if(error != null)
-                    {
-                        var errorCode = error.error.code;
-                        var message = error.error.message;
-                        _log.Warn("API ERROR " + errorCode + ", " + message);
-
-                        if (MessageReceiver != null)
-                            if(errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12)
+                            if (MessageReceiver != null && (errorCode != 999 && errorCode != 5 && errorCode != 11 && errorCode != 12))
                                 MessageReceiver(this, new MessageEventArgs(message, errorCode));
 
-                        if (errorCode == 5) // limit exceeded
-                        {
-                            this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                            limitExceeded = true;
+                            if (errorCode == 5) // limit exceeded
+                            {
+                                this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
+                                limitExceeded = true;
+                            }
+                            else if (errorCode == 11 || errorCode == 12) // wrong user key
+                            {
+                                var oldUserKey = UserInfo.UserKey;
+                                _log.Warn("old URL: " + URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
+                                await Login(force: true);
+                                var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
+                                _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
+                                return await deserialize<T>(updatedURL, post, fileStream, fileName, ct, deserializationFunction);
+                            }
+                            return null;
                         }
-                        else if (errorCode == 11 || errorCode == 12) // wrong user key
+                        else
                         {
-                            var oldUserKey = UserInfo.UserKey;
-                            _log.Warn("old URL: " + URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                            await Login(force: true);
-                            var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
-                            _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                            return await deserialize<T>(updatedURL, post, fileStream, fileName, ct, deserializationFunction);
+                            sr.BaseStream.Position = 0;
                         }
-
-                        return null;
                     }
 
-                    serializer.Error += (s, e) => _log.Error("Deserialization error: " + e.ErrorContext.Error);
-                    result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
+                    result = deserializationFunction == null ? jsonSerializer.Deserialize<T>(reader) : deserializationFunction(reader, jsonSerializer);
                 }
 
                 return result;
