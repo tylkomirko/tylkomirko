@@ -25,10 +25,22 @@ namespace Mirko
             NavService = SimpleIoc.Default.GetInstance<NavigationService>();
             NavService.Navigating += NavService_Navigating;
 
+#if WINDOWS_UWP
+            //Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += HostPage_BackRequested;
+#endif
+
             Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += HostPage_VisibleBoundsChanged;
 
             SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += HostPage_ThemeChanged;
         }
+
+#if WINDOWS_UWP
+        private void HostPage_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        {
+            var handled = e.Handled;
+            NavService.BackPressed(ref handled);
+        }
+#endif
 
         private void HostPage_VisibleBoundsChanged(ApplicationView sender, object args)
         {
@@ -38,6 +50,10 @@ namespace Mirko
             var appBarHeight = screen.Bottom - appView.Bottom;
 
             MainGrid.Margin = new Thickness(0, appView.Top, 0, appBarHeight);
+
+#if WINDOWS_UWP
+            MainFrame.Margin = new Thickness(-18, 0, -18, 0);
+#endif
         }
 
         private void HostPage_ThemeChanged(object sender, ThemeChangedEventArgs e)

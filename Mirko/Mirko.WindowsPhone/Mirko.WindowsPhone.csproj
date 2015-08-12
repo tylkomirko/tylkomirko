@@ -117,8 +117,6 @@
     <Content Include="Assets\appbar.text.bold.png" />
     <Content Include="Assets\appbar.text.italic.png" />
     <Content Include="Assets\czacha.png" />
-    <Content Include="Assets\gif_icon.png" />
-    <Content Include="Assets\image_error.png" />
     <Content Include="Assets\medium_badge.png" />
     <Content Include="Assets\mirko_icon_150x150.scale-100.png" />
     <Content Include="Assets\mirko_icon_150x150.scale-140.png" />
@@ -137,9 +135,7 @@
     <Content Include="Assets\small_badge.png" />
     <Content Include="Assets\SplashScreen.scale-140.png" />
     <Content Include="Assets\store_logo_70x70.scale-140.png" />
-    <Content Include="Assets\ust_l.png" />
     <Content Include="Assets\ust_transparent.png" />
-    <Content Include="Assets\video_icon.png" />
     <Content Include="Assets\wide_badge.png" />
     <Content Include="Assets\WindowsStoreProxy.xml" />
     <Content Include="FodyWeavers.xml" />
@@ -164,6 +160,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\NewEntryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

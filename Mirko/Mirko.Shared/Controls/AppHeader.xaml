@@ -148,7 +148,7 @@
                                    Margin="0,0,10,0"
                                    VerticalAlignment="Center"
                                    Typography.Kerning="True"
-                                   FontSize="18"/>
+                                   FontSize="{StaticResource AppHeaderFontSize}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 

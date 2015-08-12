@@ -35,14 +35,27 @@ namespace Mirko.ViewModel
         public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
         public event NavigatingEventHandler Navigating;
 
-#if WINDOWS_PHONE_APP
         public NavigationService()
         {
+#if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+#else
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+#endif
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
+            var handled = e.Handled;
+            e.Handled = true;
+            BackPressed(ref handled);
+        }
+
+        public void BackPressed(ref bool handled)
+        {
+            handled = true;
+
             if (CanGoBack())
             {
                 if (CurrentPageKey == "HashtagFlipPage")
@@ -50,17 +63,16 @@ namespace Mirko.ViewModel
                     var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
                     if (VM.CurrentHashtagNotifications.Count == 0)
                     {
+                        /*
                         var entry = backStack.First(typeof(HashtagNotificationsPage));
-                        if(entry != null)
-                            backStack.Remove(entry);
+                        if (entry != null)
+                            backStack.Remove(entry);*/
                     }
                 }
 
                 GoBack();
-                e.Handled = true;
             }
         }
-#endif
 
         public object CurrentData { get; set; }
 
@@ -183,8 +195,6 @@ namespace Mirko.ViewModel
 
         public void GoBack()
         {
-            if (!CanGoBack()) return;
-
             backStack.Pop();
             var type = backStack.Peek();
             var page = GetCachedPage(type);

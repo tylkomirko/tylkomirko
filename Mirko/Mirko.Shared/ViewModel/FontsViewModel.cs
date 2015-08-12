@@ -31,16 +31,22 @@ namespace Mirko.ViewModel
             };
         }
 
-        private const double EntryBasicFontSize = 14.0;
-        private const double AuthorBasicFontSize = 15.0;
-        private const double AuthorSexBasicFontSize = 18.0;
-        private const double DateBasicFontSize = 12.0;
-        private const double VoteBasicFontSize = 15.0;
-        private const double CommentsBarBasicFontSize = 13.0;
-        private const double EmbedSymbolBasicFontSize = 16.0;
-        private const double AttachmentBasicFontSize = 13.0;
-        private const double PMBasicFontSize = 15.0;
-        private const double PMDateBasicFontSize = 12.5;
+#if WINDOWS_PHONE_APP
+        private const double SystemScaling = 1.0;
+#else
+        private const double SystemScaling = 0.8;
+#endif
+
+        private const double EntryBasicFontSize = 14.0 * SystemScaling;
+        private const double AuthorBasicFontSize = 15.0 * SystemScaling;
+        private const double AuthorSexBasicFontSize = 18.0 * SystemScaling;
+        private const double DateBasicFontSize = 12.0 * SystemScaling;
+        private const double VoteBasicFontSize = 15.0 * SystemScaling;
+        private const double CommentsBarBasicFontSize = 13.0 * SystemScaling;
+        private const double EmbedSymbolBasicFontSize = 16.0 * SystemScaling;
+        private const double AttachmentBasicFontSize = 13.0 * SystemScaling;
+        private const double PMBasicFontSize = 15.0 * SystemScaling;
+        private const double PMDateBasicFontSize = 12.5 * SystemScaling;
 
         public double EntryFontSize
         {

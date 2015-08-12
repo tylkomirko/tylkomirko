@@ -56,6 +56,7 @@
         </Grid.RowDefinitions>
         
         <local:Entry Grid.Row="0"
+                     Margin="0,0,0,0"
                      IsHot="{Binding ElementName=root, Path=IsHot}"
                      LargeEmbed="{Binding ElementName=root, Path=LargeEmbed}"/>
         

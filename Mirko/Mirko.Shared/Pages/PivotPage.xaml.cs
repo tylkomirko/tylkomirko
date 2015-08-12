@@ -88,7 +88,11 @@ namespace Mirko.Pages
                 var margin = appHeaderHeight + 2.5 * statusBarHeight;
 
                 MainPivot.Margin = new Thickness(10, -margin, 0, 0);
+#if WINDOWS_PHONE_APP
                 SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
+#else
+                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = (AppHeader.ActualHeight + statusBarHeight)*1.4;
+#endif
             }
 
             var scroll = MainPivot.GetDescendant<ScrollViewer>();
@@ -246,7 +250,7 @@ namespace Mirko.Pages
             }
         }
 
-        #region Popups
+#region Popups
         private void ShowNewEntriesPopup()
         {
             PopupFadeIn.Begin();
@@ -348,9 +352,9 @@ namespace Mirko.Pages
             var mainVM = this.DataContext as MainViewModel;
             mainVM.CanGoBack = true;
         }
-        #endregion
+#endregion
 
-        #region AppBar
+#region AppBar
         private CommandBar AppBar = null;
 
         public CommandBar CreateCommandBar()

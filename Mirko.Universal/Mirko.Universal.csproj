@@ -97,9 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\EdgeTappedListView.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <None Include="Pages\ConversationPage.xaml.cs">
       <DependentUpon>ConversationPage.xaml</DependentUpon>
     </None>
@@ -131,10 +128,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <None Include="Pages\ConversationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -151,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
+    <Page Include="Resources\Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\QKit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

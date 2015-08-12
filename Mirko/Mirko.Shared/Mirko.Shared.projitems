@@ -306,4 +306,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\gif_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\image_error.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ust_l.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\video_icon.png" />
+  </ItemGroup>
 </Project>

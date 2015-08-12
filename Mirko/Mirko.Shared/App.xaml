@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Resources/Converters.xaml"/>
                 <ResourceDictionary Source="Resources/Common.xaml"/>
                 <ResourceDictionary Source="Resources/QKit.xaml"/>
+                <ResourceDictionary Source="Resources/Fonts.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
