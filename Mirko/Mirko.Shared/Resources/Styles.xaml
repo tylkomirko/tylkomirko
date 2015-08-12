@@ -299,7 +299,7 @@
     <Style x:Key="CustomPivotStyle" TargetType="Pivot">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
-        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"/>
+        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="ItemsPanel">
             <Setter.Value>

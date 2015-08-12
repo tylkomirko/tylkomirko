@@ -355,7 +355,7 @@ namespace Mirko.Pages
 
         public CommandBar CreateCommandBar()
         {
-            var c = new CommandBar() { IsOpen = true };
+            var c = new CommandBar();
             var up = new AppBarButton()
             {
                 Icon = new SymbolIcon(Symbol.Up),
@@ -385,7 +385,11 @@ namespace Mirko.Pages
             {
                 Label = "odśwież",
                 Tag = "refresh",
+#if WINDOWS_PHONE_APP
                 Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+#else
+                Icon = new SymbolIcon(Symbol.Refresh),
+#endif
             };
             refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
             {
@@ -507,6 +511,6 @@ namespace Mirko.Pages
             if(sv != null)
                 sv.ChangeView(null, 0.0, null);
         }
-        #endregion
+#endregion
     }
 }

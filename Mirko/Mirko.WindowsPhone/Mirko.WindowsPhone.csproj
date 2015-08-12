@@ -85,84 +85,17 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controls\AppHeader.xaml.cs">
-      <DependentUpon>AppHeader.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Entry.xaml.cs">
-      <DependentUpon>Entry.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EntryEmbed.xaml.cs">
-      <DependentUpon>EntryEmbed.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FullEntry.xaml.cs">
-      <DependentUpon>FullEntry.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\AttachmentPage.xaml.cs">
-      <DependentUpon>AttachmentPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ConversationsPage.xaml.cs">
-      <DependentUpon>ConversationsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\DebugPage.xaml.cs">
-      <DependentUpon>DebugPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\DonationPage.xaml.cs">
-      <DependentUpon>DonationPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\HashtagEntriesPage.xaml.cs">
-      <DependentUpon>HashtagEntriesPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\HashtagNotificationHeader.xaml.cs">
-      <DependentUpon>HashtagNotificationHeader.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\HashtagSuggestionBox.xaml.cs">
-      <DependentUpon>HashtagSuggestionBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\LennyChooser.xaml.cs">
-      <DependentUpon>LennyChooser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\AtNotificationsPage.xaml.cs">
-      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\ConversationPage.xaml.cs">
       <DependentUpon>ConversationPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\EmbedPage.xaml.cs">
-      <DependentUpon>EmbedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HostPage.xaml.cs">
-      <DependentUpon>HostPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\HashtagFlipPage.xaml.cs">
-      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\HashtagNotificationsPage.xaml.cs">
       <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\HashtagSelectionPage.xaml.cs">
-      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\IHaveAppBar.cs" />
-    <Compile Include="Pages\BlacklistPage.xaml.cs">
-      <DependentUpon>BlacklistPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\NewEntryPage.xaml.cs">
       <DependentUpon>NewEntryPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PivotPage.xaml.cs">
-      <DependentUpon>PivotPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ProfilePage.xaml.cs">
-      <DependentUpon>ProfilePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ContinuationManager.cs" />
@@ -218,129 +151,25 @@
     <None Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\AppHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Entry.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\EntryEmbed.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FullEntry.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\AttachmentPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ConversationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\DebugPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\DonationPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\HashtagEntriesPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\HashtagNotificationHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\HashtagSuggestionBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\LennyChooser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\AtNotificationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\ConversationPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\EmbedPage.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EntryPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HostPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\HashtagFlipPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\HashtagNotificationsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\HashtagSelectionPage.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\BlacklistPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\LoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\NewEntryPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\PivotPage.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ProfilePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\SettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Brushes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Common.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Converters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\QKit.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,11 @@ using WykopSDK.API.Models;
 
 namespace Mirko.ViewModel
 {
-    public class NewEntryBaseViewModel : ViewModelBase, IFileOpenPickerContinuable
+    public class NewEntryBaseViewModel : ViewModelBase
+#if WINDOWS_PHONE_APP
+        , IFileOpenPickerContinuable
+#endif
+
     {
         private NewEntry _newEntry = null;
         public NewEntry NewEntry
@@ -54,7 +58,11 @@ namespace Mirko.ViewModel
             get { return _openPicker ?? (_openPicker = new RelayCommand(ExecuteOpenPicker)); }
         }
 
+#if WINDOWS_PHONE_APP
         private void ExecuteOpenPicker()
+#else
+        private async void ExecuteOpenPicker()
+#endif
         {
             var openPicker = new FileOpenPicker();
             openPicker.FileTypeFilter.Add(".jpg");
@@ -64,10 +72,17 @@ namespace Mirko.ViewModel
             openPicker.ViewMode = PickerViewMode.Thumbnail;
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
+#if WINDOWS_PHONE_APP
             if(NewEntry.EntryID == 0)
                 openPicker.PickMultipleFilesAndContinue();
             else
                 openPicker.PickSingleFileAndContinue();
+#else
+            if (NewEntry.EntryID == 0)
+                await openPicker.PickMultipleFilesAsync();
+            else
+                await openPicker.PickSingleFileAsync();
+#endif
         }
 
         public void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs args)

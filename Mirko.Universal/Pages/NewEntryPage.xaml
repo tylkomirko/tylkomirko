@@ -1,0 +1,296 @@
+﻿<UserControl
+    x:Class="Mirko.Pages.NewEntryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Mirko.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{Binding NewEntry, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <UserControl.Resources>
+        <MenuFlyout x:Name="DeleteAttachmentFlyout">
+            <MenuFlyoutItem Text="usuń" 
+                            Click="RemoveAttachment_Click"/>
+        </MenuFlyout>
+
+        <!--Lennys Flyout-->
+        <Flyout x:Name="LennysFlyout">
+            <controls:LennyChooser LennySelected="LennyChooser_LennySelected" />
+        </Flyout>
+
+        <Flyout x:Name="HyperlinkFlyout">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Link:"
+                               Grid.Column="0"
+                               Style="{ThemeResource TitleTextBlockStyle}"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox x:Name="LinkTextBox"
+                             Grid.Column="1"
+                             HorizontalAlignment="Stretch"
+                             InputScope="Url"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Opis:"
+                               Grid.Column="0"
+                               Style="{ThemeResource TitleTextBlockStyle}"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox x:Name="DescriptionTextBox"
+                             Grid.Column="1"/>
+                </Grid>
+                <Button Content="ok"
+                        Grid.Row="2"
+                        Click="HyperlinkFlyoutButton_Click"/>
+            </Grid>
+        </Flyout>
+
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Popup x:Name="FormattingPopup"               
+               Loaded="FormattingPopup_Loaded"
+               VerticalAlignment="Top"
+               IsOpen="False"
+               Canvas.ZIndex="1"
+               Grid.Row="0"
+               Grid.RowSpan="2">
+
+            <Grid Background="#B8B8B8"
+                  Width="500"                  
+                  Height="60">
+  
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="0"
+                              HorizontalAlignment="Center"                              
+                              IsCompact="True"
+                              Tag="bold"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/appbar.text.bold.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="1"
+                              HorizontalAlignment="Center"
+                              IsCompact="True"
+                              Tag="italic"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/appbar.text.italic.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="2"
+                              HorizontalAlignment="Center"
+                              IsCompact="True"
+                              Tag="code"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/appbar.code.xml.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="3"
+                              HorizontalAlignment="Center"
+                              IsCompact="True"
+                              Tag="spoiler"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="!"
+                                  FontWeight="Bold"
+                                  FontSize="28"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="4"
+                              HorizontalAlignment="Center"
+                              IsCompact="True"
+                              Tag="link"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/appbar.link.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <AppBarButton RequestedTheme="Light"
+                              Grid.Column="5"
+                              HorizontalAlignment="Center"
+                              IsCompact="True"
+                              Tag="quote"
+                              Click="FormattingChanged">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="/Assets/appbar.quote.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </Grid>
+        </Popup>
+        
+        <!-- Title Panel -->
+        <TextBlock Grid.Row="0"
+                   x:Name="PageTitle"
+                   Margin="10,0,0,0" 
+                   Style="{ThemeResource HeaderTextBlockStyle}"
+                   CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"
+                   FontSize="34"
+                   Foreground="Gray"
+                   Loaded="PageTitle_Loaded">
+
+            <TextBlock.Transitions>
+                <TransitionCollection>
+                    <EdgeUIThemeTransition Edge="Right" />
+                </TransitionCollection>
+            </TextBlock.Transitions>
+            
+        </TextBlock>
+
+        <!--
+        <q:InputAwarePanel Grid.Row="1"
+                           LayoutChangeCompleted="ContentRoot_LayoutChangeCompleted">           
+            
+            <FlipView x:Name="FlipView"
+                      ItemsSource="{Binding Responses}">
+
+                <FlipView.ItemTemplate>
+                    <DataTemplate>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <ScrollViewer Grid.Row="0"
+                                          MaxHeight="120"
+                                          Visibility="{Binding Preview, Converter={StaticResource NullToVisibility}}"
+                                          x:Name="EntryPreview">
+                                <StackPanel>
+                                    <TextBlock Text="Komentujesz:"
+                                               Margin="10,0,0,0"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               FontSize="17"
+                                               Foreground="Gray" />
+
+                                    <controls:Entry DataContext="{Binding Preview}"
+                                                    IsTapEnabled="False"
+                                                    EnableTextSelection="True"
+                                                    TextSelectionChanged="Preview_TextSelectionChanged"
+                                                    Margin="3,0,0,0"/>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <ScrollViewer Grid.Row="1"
+                                          Margin="0,10,0,0"
+                                          VerticalAlignment="Stretch"
+                                          VerticalScrollBarVisibility="Hidden">
+                                <StackPanel VerticalAlignment="Stretch">
+
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EdgeUIThemeTransition Edge="Left" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+
+                                    <controls:AutoCompletingTextBox x:Name="Editor"
+                                                                    Margin="6,0,6,0"
+                                                                    Header="Treść:"
+                                                                    InputScope="Chat"
+                                                                    AcceptsReturn="True"
+                                                                    TextWrapping="Wrap"
+                                                                    MinHeight="200"
+                                                                    Background="{ThemeResource NewContentBackground}"
+                                                                    Foreground="{ThemeResource NewContentForeground}"
+                                                                    Text="{Binding Text, Mode=TwoWay}"
+                                                                    Loaded="Editor_Loaded"
+                                                                    TextChanged="Editor_TextChanged"
+                                                                    BorderThickness="0"
+                                                                    Style="{StaticResource TextBoxStyle1}" />
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock x:Name="AttachmentSymbol"
+                                                   Grid.Column="0"
+                                                   Margin="-2,0,0,0"
+                                                   FontSize="14"
+                                                   IsColorFontEnabled="False"
+                                                   Foreground="Gray"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Holding="AttachmentSymbol_Holding"
+                                                   Visibility="{Binding NewEntry.NewEntry.AttachmentName, Mode=OneWay, Source={StaticResource Locator},
+                                                                Converter={StaticResource NullToVisibility}}">
+                                            
+                                            <Run Text="&#128206;" />
+                                            <Run Text="{Binding NewEntry.NewEntry.AttachmentName, Mode=OneWay, Source={StaticResource Locator}}" 
+                                                 Foreground="{ThemeResource AttachmentNameForeground}"/>
+                                            
+                                        </TextBlock>
+
+                                        <Polygon x:Name="LittleArrow"
+                                                 Grid.Column="1"
+                                                 Points="0,0 24,14 48,0"
+                                                 Margin="0,0,14,24"
+                                                 Stroke="{ThemeResource NewContentBackground}" 
+                                                 Fill="{ThemeResource NewContentBackground}"
+                                                 StrokeThickness="0"
+                                                 HorizontalAlignment="Right"/>
+                                    </Grid>
+
+                                    <Rectangle Height="100"
+                                               Fill="Transparent"
+                                               x:Name="Footer"/>
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+
+                    </DataTemplate>
+                </FlipView.ItemTemplate>
+                
+            </FlipView>
+        </q:InputAwarePanel>
+        -->
+    </Grid>
+</UserControl>
