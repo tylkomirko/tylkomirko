@@ -82,49 +82,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)HostPage.xaml.cs">
       <DependentUpon>HostPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\AtNotificationsPage.xaml.cs">
-      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\AttachmentPage.xaml.cs">
-      <DependentUpon>AttachmentPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\BlacklistPage.xaml.cs">
-      <DependentUpon>BlacklistPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\ConversationsPage.xaml.cs">
-      <DependentUpon>ConversationsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\DebugPage.xaml.cs">
-      <DependentUpon>DebugPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\DonationPage.xaml.cs">
-      <DependentUpon>DonationPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\EmbedPage.xaml.cs">
-      <DependentUpon>EmbedPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\HashtagEntriesPage.xaml.cs">
-      <DependentUpon>HashtagEntriesPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\HashtagFlipPage.xaml.cs">
-      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\HashtagSelectionPage.xaml.cs">
-      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\IHaveAppBar.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\PivotPage.xaml.cs">
-      <DependentUpon>PivotPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\ProfilePage.xaml.cs">
-      <DependentUpon>ProfilePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
@@ -230,62 +187,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)HostPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\AtNotificationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\AttachmentPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\BlacklistPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\ConversationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\DebugPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\DonationPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\EmbedPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\HashtagEntriesPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\HashtagFlipPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\HashtagSelectionPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\LoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\PivotPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\ProfilePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

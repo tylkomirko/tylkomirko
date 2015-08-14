@@ -12,9 +12,9 @@ namespace Mirko.Converters
             var leftover = number % 1000;
 
             if (thousands >= 1)
-                return thousands + " " + leftover;
+                return string.Format("{0} {1}", thousands, leftover);
             else
-                return number;
+                return number.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

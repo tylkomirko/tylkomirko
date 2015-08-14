@@ -9,6 +9,7 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:controls="using:Mirko.Controls"
     xmlns:utils="using:Mirko.Utils"
+    xmlns:models="using:Mirko.ViewModel"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -24,7 +25,8 @@
             <controls:LennyChooser LennySelected="LennyChooser_LennySelected" />
         </Flyout>
 
-        <DataTemplate x:Key="ReceivedMessage">
+        <DataTemplate x:Key="ReceivedMessage"
+                      x:DataType="models:PMViewModel">
             <StackPanel Margin="0,0,35,7">
 
                 <Polygon x:Name="LittleArrowReceived"
@@ -32,8 +34,7 @@
                          Margin="14,-11,0,0" 
                          StrokeThickness="0"                       
                          Fill="{ThemeResource ReceivedMessageBackground}"
-                         Visibility="{Binding ShowArrow, 
-                            Converter={StaticResource BoolToVisibility}}"
+                         Visibility="{x:Bind ShowArrow, Mode=OneWay, Converter={StaticResource BoolToVisibility}}"
                          HorizontalAlignment="Left" 
                          RenderTransformOrigin="0.5,0.5">
                     <Polygon.RenderTransform>
@@ -44,7 +45,7 @@
                 <Border BorderThickness="0"
                         Background="{ThemeResource ReceivedMessageBackground}">
                     <StackPanel>
-                        <RichTextBlock utils:Injectors.HTML="{Binding Data.Text}"
+                        <RichTextBlock utils:Injectors.HTML="{x:Bind Data.Text}"
                                        FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                        Margin="12,7,12,7"
                                        Foreground="{ThemeResource ReceivedMessageForeground}"/>
@@ -52,19 +53,19 @@
                         <Grid Margin="0,0,0,0"
                               HorizontalAlignment="Stretch"
                               Background="Transparent"
-                              Visibility="{Binding Path=EmbedVM, Converter={StaticResource NullToVisibility}}">
+                              Visibility="{x:Bind EmbedVM, Converter={StaticResource NullToVisibility}}">
                             <controls:EntryEmbed MaxHeight="300"
                                                  MaxWidth="300"
                                                  Margin="5,0,5,5"
                                                  HorizontalAlignment="Left"
-                                                 DataContext="{Binding EmbedVM}"/>
+                                                 DataContext="{x:Bind EmbedVM}"/>
                         </Grid>
 
                         <TextBlock FontSize="{Binding Fonts.PMDateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                    Foreground="{ThemeResource MessageReceivedTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">
-                            <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+                            <Run Text="{x:Bind Data.Date, Converter={StaticResource DateConverter}}" />
                             <Run Text="temu"/>
                         </TextBlock>
                     </StackPanel>
@@ -72,13 +73,14 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="SentMessage">
+        <DataTemplate x:Key="SentMessage"
+                      x:DataType="models:PMViewModel">
             <StackPanel Margin="35,0,0,7">
 
                 <Border BorderThickness="0"
                         Background="{ThemeResource SentMessageBackground}">
                     <StackPanel>
-                        <RichTextBlock utils:Injectors.HTML="{Binding Data.Text}"
+                        <RichTextBlock utils:Injectors.HTML="{x:Bind Data.Text}"
                                        FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                        Margin="12,7,12,7"
                                        Foreground="{ThemeResource SentMessageForeground}"/>
@@ -86,12 +88,12 @@
                         <Grid Margin="0,0,0,0"
                               HorizontalAlignment="Stretch"
                               Background="Transparent"
-                              Visibility="{Binding Path=EmbedVM, Converter={StaticResource NullToVisibility}}">
+                              Visibility="{x:Bind EmbedVM, Converter={StaticResource NullToVisibility}}">
                             <controls:EntryEmbed MaxHeight="300"
                                                  MaxWidth="300"
                                                  Margin="5,0,5,5"
                                                  HorizontalAlignment="Left"
-                                                 DataContext="{Binding EmbedVM}"/>
+                                                 DataContext="{x:Bind EmbedVM}"/>
 
                         </Grid>
 
@@ -99,7 +101,7 @@
                                    Foreground="{ThemeResource MessageSentTimeForeground}"
                                    Margin="0,0,6,6"
                                    TextAlignment="Right">
-                            <Run Text="{Binding Data.Date, Converter={StaticResource DateConverter}}" />
+                            <Run Text="{x:Bind Data.Date, Converter={StaticResource DateConverter}}" />
                             <Run Text="temu"/>
                         </TextBlock>
                     </StackPanel>
@@ -110,8 +112,7 @@
                          Margin="0,0,14,-11" 
                          StrokeThickness="0"                       
                          Fill="{ThemeResource SentMessageBackground}"
-                         Visibility="{Binding ShowArrow, 
-                            Converter={StaticResource BoolToVisibility}}"
+                         Visibility="{x:Bind ShowArrow, Mode=OneWay, Converter={StaticResource BoolToVisibility}}"
                          HorizontalAlignment="Right" >
                 </Polygon>
             </StackPanel>
@@ -123,7 +124,7 @@
     </UserControl.Resources>    
     
     <Grid x:Name="LayoutRoot"
-          DataContext="{Binding CurrentConversation}">
+          DataContext="{x:Bind VM.CurrentConversation}">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -137,14 +138,14 @@
             <Border Background="{ThemeResource PivotHeaderBackground}"
                     Opacity="{StaticResource AppHeaderOpacity}"
                     VerticalAlignment="Center"
-                    Height="49">
+                    Height="{StaticResource HashtagNotificationHeaderHeight}">
 
                 <Grid x:Name="Header">
                     
                     <i:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="Tapped">
-                            <core:InvokeCommandAction Command="{Binding GoToProfilePage}"
-                                                      CommandParameter="{Binding Data.AuthorName}"/>
+                            <core:InvokeCommandAction Command="{x:Bind VM.CurrentConversation.GoToProfilePage}"
+                                                      CommandParameter="{x:Bind VM.CurrentConversation.Data.AuthorName, Mode=OneWay}"/>
                         </core:EventTriggerBehavior>
                     </i:Interaction.Behaviors>
 
@@ -158,14 +159,14 @@
                                FontSize="38"
                                VerticalAlignment="Center"
                                Text="&#x2022;"
-                               Foreground="{Binding Data.AuthorSex, Converter={StaticResource SexToColor}}"/>
+                               Foreground="{x:Bind VM.CurrentConversation.Data.AuthorSex, Converter={StaticResource SexToColor}, Mode=OneWay}"/>
 
                     <TextBlock Grid.Column="1"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
+                               Foreground="{x:Bind VM.CurrentConversation.Data.AuthorGroup, Converter={StaticResource GroupToColor}, Mode=OneWay}"
                                Style="{StaticResource TagHeaderStyle}">
-                        <Run Text="@"/><Run Text="{Binding Data.AuthorName}"/>
+                        <Run Text="@"/><Run Text="{x:Bind VM.CurrentConversation.Data.AuthorName, Mode=OneWay}"/>
                     </TextBlock>
 
                     <TextBlock Grid.Column="2"
@@ -174,7 +175,7 @@
                                VerticalAlignment="Center"
                                Text="(online)"
                                Foreground="Gray"
-                               Visibility="{Binding IsOnline, Converter={StaticResource BoolToVisibility}}"/>
+                               Visibility="Collapsed"/>
 
                 </Grid>
 
@@ -182,96 +183,87 @@
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
-        <!--
-        <q:InputAwarePanel Grid.Row="1"
-                           VerticalAlignment="Bottom"
-                           x:Name="ContentRoot" 
-                           LayoutChangeCompleted="IAP_LayoutChangeCompleted"
-                           Loaded="ContentRoot_Loaded">
 
-            <controls:ListViewEx x:Name="ListView"
-                                 ItemsSource="{Binding Messages}"
+        <controls:ListViewEx x:Name="ListView"
+                                 Grid.Row="1"
+                                 ItemsSource="{x:Bind VM.CurrentConversation.Messages, Mode=OneWay}"
                                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                  ItemTemplateSelector="{StaticResource PMTemplateSelector}"
                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                                  IncrementalLoadingThreshold="6"
                                  DataFetchSize="7">
 
-                <ListView.Header>
-                    <Rectangle Fill="Transparent"/>
-                </ListView.Header>
+            <ListView.Header>
+                <Rectangle Fill="Transparent"/>
+            </ListView.Header>
 
-                <ListView.Transitions>
-                    <TransitionCollection>
-                        <EdgeUIThemeTransition Edge="Bottom" />
-                    </TransitionCollection>
-                </ListView.Transitions>
+            <ListView.Transitions>
+                <TransitionCollection>
+                    <EdgeUIThemeTransition Edge="Bottom" />
+                </TransitionCollection>
+            </ListView.Transitions>
 
-                <ListView.ItemContainerTransitions>
-                    <TransitionCollection>
-                        <AddDeleteThemeTransition />
-                    </TransitionCollection>
-                </ListView.ItemContainerTransitions>
+            <ListView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <AddDeleteThemeTransition />
+                </TransitionCollection>
+            </ListView.ItemContainerTransitions>
 
-                <ListView.Footer>
-                    <StackPanel Margin="35,0,0,5">
-                        <Border BorderThickness="0"
-                                Background="{ThemeResource SentMessageBackground}">
-                            <controls:AutoCompletingTextBox x:Name="TextBox"
-                                                            PlaceholderText="Twoja wiadomość..."
-                                                            InputScope="Chat"
-                                                            AcceptsReturn="True"
-                                                            FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
-                                                            Margin="12,7,12,7"
-                                                            GotFocus="TextBox_GotFocus"
-                                                            LostFocus="TextBox_LostFocus"
-                                                            Text="{Binding NewEntry.Text, Mode=TwoWay}"
-                                                            Style="{StaticResource TextBoxStyle2}" />
-                        </Border>
+            <ListView.Footer>
+                <StackPanel Margin="35,0,0,30">
+                    <Border BorderThickness="0"
+                            Background="{ThemeResource SentMessageBackground}">
+                        <controls:AutoCompletingTextBox x:Name="TextBox"
+                                                        PlaceholderText="Twoja wiadomość..."
+                                                        InputScope="Chat"
+                                                        AcceptsReturn="True"
+                                                        FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
+                                                        Margin="12,7,12,7"
+                                                        GotFocus="TextBox_GotFocus"
+                                                        LostFocus="TextBox_LostFocus"
+                                                        Text="{x:Bind VM.CurrentConversation.NewEntry.Text, Mode=TwoWay}"
+                                                        Style="{StaticResource TextBoxStyle2}" />
+                    </Border>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <TextBlock x:Name="AttachmentSymbol"
-                                       Grid.Column="0"
-                                       Margin="-2,2,0,0"
-                                       FontSize="14"
-                                       IsColorFontEnabled="False"
-                                       Foreground="Gray"
-                                       TextTrimming="CharacterEllipsis"
-                                       Holding="AttachmentSymbol_Holding"
-                                       Visibility="{Binding NewEntry.AttachmentName, 
-                                            Converter={StaticResource NullToVisibility}}">
-                                <Run Text="&#128206;" />
+                        <TextBlock x:Name="AttachmentSymbol"
+                                   Grid.Column="0"
+                                   Margin="-2,2,0,0"
+                                   FontSize="11.2"
+                                   IsColorFontEnabled="False"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Holding="AttachmentSymbol_Holding"
+                                   Visibility="{x:Bind VM.CurrentConversation.NewEntry.AttachmentName, Mode=OneWay, Converter={StaticResource NullToVisibility}}">
+                            <Run Text="&#128206;" />
                             
-                                <Run Text="{Binding NewEntry.AttachmentName}" 
-                                     Foreground="{ThemeResource AttachmentNameForeground}"/>
-                            </TextBlock>
+                            <Run Text="{x:Bind VM.CurrentConversation.NewEntry.AttachmentName, Mode=OneWay}" 
+                                 Foreground="{ThemeResource AttachmentNameForeground}"/>
+                        </TextBlock>
 
-                            <Polygon x:Name="LittleArrowSent"
-                                     Grid.Column="1"
-                                     Points="0,0 0,11 14,0"
-                                     Margin="0,0,14,0" 
-                                     StrokeThickness="0"                       
-                                     Fill="{ThemeResource SentMessageBackground}"
-                                     HorizontalAlignment="Right">
-                            </Polygon>
+                        <Polygon x:Name="LittleArrowSent"
+                                 Grid.Column="1"
+                                 Points="0,0 0,11 14,0"
+                                 Margin="0,0,14,0" 
+                                 StrokeThickness="0"
+                                 Fill="{ThemeResource SentMessageBackground}"
+                                 HorizontalAlignment="Right" />
 
-                        </Grid>
+                    </Grid>
 
-                        <Rectangle Height="66"
-                                   Fill="Transparent"
-                                   Visibility="{Binding ElementName=TextBox, Path=AreSuggestionsOpen, 
-                                                Converter={StaticResource BoolToVisibility}}"
-                                   x:Name="FooterSpacer" />
-                    </StackPanel>
-                </ListView.Footer>
+                    <Rectangle Height="66"
+                               Fill="Transparent"
+                               Visibility="{Binding ElementName=TextBox, Path=AreSuggestionsOpen, 
+                                            Converter={StaticResource BoolToVisibility}}"
+                               x:Name="FooterSpacer" />
+                </StackPanel>
+            </ListView.Footer>
 
-            </controls:ListViewEx>
-        </q:InputAwarePanel>
-        -->
+        </controls:ListViewEx>
     </Grid>
 </UserControl>

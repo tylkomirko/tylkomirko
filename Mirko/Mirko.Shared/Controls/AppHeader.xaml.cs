@@ -20,6 +20,9 @@ namespace Mirko.Controls
 
         private DispatcherTimer Timer = null;
 
+        private NotificationsViewModel ViewModel { get { return DataContext as NotificationsViewModel; } }
+        private MainViewModel MainViewModel { get { return SimpleIoc.Default.GetInstance<MainViewModel>(); } }
+
         #region Colour props
         public SolidColorBrush LogoFill
         {
@@ -224,11 +227,6 @@ namespace Mirko.Controls
             NotificationsAnimation.Begin();
         }
 
-        private void StreamsPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ShowStreams();
-        }
-
         public void ShowStreams()
         {
             if (Timer.IsEnabled) return;
@@ -237,6 +235,7 @@ namespace Mirko.Controls
 
             StreamsPanel.IsHitTestVisible = true;
             NotificationsPanel.IsHitTestVisible = false;
+
             EnterStreams.Begin();
             LeaveNotifications.Begin();
 

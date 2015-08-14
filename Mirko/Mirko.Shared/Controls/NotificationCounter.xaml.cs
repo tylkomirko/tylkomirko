@@ -101,7 +101,7 @@ namespace Mirko.Controls
 
         // Using a DependencyProperty as the backing store for Count.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CountProperty =
-            DependencyProperty.Register("Count", typeof(uint), typeof(NotificationCounter), new PropertyMetadata(0, CountChanged));
+            DependencyProperty.Register("Count", typeof(uint), typeof(NotificationCounter), new PropertyMetadata(-1, CountChanged));
 
         private static void CountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

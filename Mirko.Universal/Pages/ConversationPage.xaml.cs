@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using Mirko.Controls;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
@@ -33,17 +34,21 @@ namespace Mirko.Pages
 
     public sealed partial class ConversationPage : UserControl, IHaveAppBar
     {
+        private MessagesViewModel VM
+        {
+            get { return DataContext as MessagesViewModel; }
+        }
+
         public ConversationPage()
         {
             this.InitializeComponent();
-        }/*
 
             this.ListView.Loaded += (s, args) =>
             {
                 var items = ListView.ItemsSource as ObservableCollectionEx<PMViewModel>;
-                if(items != null)
+                if (items != null)
                 {
-                    if(items.Count > 0)
+                    if (items.Count > 0)
                         ListView.ScrollIntoView(items.Last(), ScrollIntoViewAlignment.Leading);
                     else // happens sometimes with push notifications
                         items.CollectionChanged += Messages_CollectionChanged;
@@ -58,7 +63,7 @@ namespace Mirko.Pages
 
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 var col = sender as ObservableCollectionEx<PMViewModel>;
                 ListView.ScrollIntoView(col.Last(), ScrollIntoViewAlignment.Leading);
@@ -68,11 +73,11 @@ namespace Mirko.Pages
 
         private void ReadMessage(NotificationMessage obj)
         {
-            if(obj.Notification == "PM-Success")
+            if (obj.Notification == "PM-Success")
             {
                 TextBox.Text = "";
             }
-            else if(obj.Notification == "PM-Fail")
+            else if (obj.Notification == "PM-Fail")
             {
                 SendButton.IsEnabled = true;
             }
@@ -118,7 +123,7 @@ namespace Mirko.Pages
             SendButton = new AppBarButton()
             {
                 Label = "wyślij",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
+                Icon = new SymbolIcon(Symbol.Send),
                 IsEnabled = false,
             };
 
@@ -136,7 +141,7 @@ namespace Mirko.Pages
             var refresh = new AppBarButton()
             {
                 Label = "odśwież",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+                Icon = new SymbolIcon(Symbol.Refresh),
             };
             refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
             {
@@ -176,7 +181,7 @@ namespace Mirko.Pages
         }
         #endregion
 
-        private void IAP_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
+        private void IAP_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
             if (ListView != null && !e.IsDefaultLayout)
                 JumpToBottom();
@@ -197,7 +202,7 @@ namespace Mirko.Pages
         private void ContentRoot_Loaded(object sender, RoutedEventArgs e)
         {
             var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 49; // adjust for header
-            ContentRoot.Margin = new Thickness(10, -height, 10, 0);
+            //ContentRoot.Margin = new Thickness(10, -height, 10, 0);
 
             var header = ListView.Header as FrameworkElement;
             header.Height = height;
@@ -226,10 +231,6 @@ namespace Mirko.Pages
                 this.SendButton.IsEnabled = true;
             else
                 this.SendButton.IsEnabled = false;
-        }*/
-        public CommandBar CreateCommandBar()
-        {
-            throw new NotImplementedException();
         }
     }
 }

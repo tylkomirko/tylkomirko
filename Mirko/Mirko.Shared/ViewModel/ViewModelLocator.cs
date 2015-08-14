@@ -62,11 +62,9 @@ namespace Mirko.ViewModel
             NavService.RegisterPage("DebugPage", typeof(DebugPage));
             NavService.RegisterPage("ProfilePage", typeof(ProfilePage));
             NavService.RegisterPage("AttachmentPage", typeof(AttachmentPage));
-#if WINDOWS_PHONE_APP
             NavService.RegisterPage("ConversationPage", typeof(ConversationPage));
             NavService.RegisterPage("HashtagNotificationsPage", typeof(HashtagNotificationsPage));
             NavService.RegisterPage("NewEntryPage", typeof(NewEntryPage));
-#endif
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
             NavService.RegisterPage("DonationPage", typeof(DonationPage));
             NavService.RegisterPage("BlacklistPage", typeof(BlacklistPage));

@@ -47,6 +47,7 @@ namespace Mirko.ViewModel
         private const double AttachmentBasicFontSize = 13.0 * SystemScaling;
         private const double PMBasicFontSize = 15.0 * SystemScaling;
         private const double PMDateBasicFontSize = 12.5 * SystemScaling;
+        private const double SpoilerBasicFontSize = 13.0 * SystemScaling;
 
         public double EntryFontSize
         {
@@ -96,6 +97,11 @@ namespace Mirko.ViewModel
         public double PMDateFontSize
         {
             get { return PMDateBasicFontSize * SettingsVM.FontScaleFactor; }
+        }
+
+        public double SpoilerFontSize
+        {
+            get { return SpoilerBasicFontSize * SettingsVM.FontScaleFactor; }
         }
     }
 }

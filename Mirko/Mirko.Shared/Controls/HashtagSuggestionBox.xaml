@@ -18,8 +18,8 @@
                  Margin="5,5,5,0"
                  Text="#"
                  SelectionStart="1"
-                 Style="{StaticResource TextBoxStyle1}"
                  InputScope="Search"
+                 Style="{StaticResource TextBoxStyle1}"
                  TextChanged="HashtagBox_TextChanged"
                  KeyDown="HashtagBox_KeyDown" />
 
@@ -32,7 +32,7 @@
                 <DataTemplate>
                     <TextBlock Text="{Binding}"
                                Margin="5,0,0,5"
-                               FontSize="24"
+                               FontSize="{StaticResource HashtagSuggestionBoxFontSize}"
                                Foreground="Gray" />
                 </DataTemplate>
             </ListView.ItemTemplate>

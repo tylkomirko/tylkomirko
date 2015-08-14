@@ -36,7 +36,7 @@
                Canvas.ZIndex="1"
                IsOpen="False"
                VerticalAlignment="Top"
-               Height="66">
+               Height="{StaticResource SuggestionsPopupContentHeight}">
             <controls:SuggestionsPopupContent />
         </Popup>
         

@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class NewEntryPage : UserControl /*, IHaveAppBar*/
+    public sealed partial class NewEntryPage : UserControl, IHaveAppBar
     {
         private bool IsLoaded = false;
         private BindingExpression EntryPreviewBinding = null;
@@ -32,7 +32,7 @@ namespace Mirko.Pages
             };
         }
 
-        /*
+        
         private TextBox CurrentEditor()
         {
             var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
@@ -61,6 +61,7 @@ namespace Mirko.Pages
             return grid.FindName("Footer") as Rectangle;
         }
 
+        /*
         private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
         {
             if (!IsLoaded || FlipView.SelectedIndex == -1)
@@ -84,7 +85,7 @@ namespace Mirko.Pages
                     EntryPreviewBinding = CurrentEntryPreview().GetBindingExpression(ScrollViewer.VisibilityProperty);
                 CurrentEntryPreview().Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
-        }*
+        }*/
 
         private void PageTitle_Loaded(object sender, RoutedEventArgs e)
         {
@@ -423,6 +424,6 @@ namespace Mirko.Pages
             var VM = this.DataContext as NewEntryViewModel;
             var currentVM = VM.Responses[FlipView.SelectedIndex];
             currentVM.SelectedText = e.String;
-        }*/
+        }
     }
 }

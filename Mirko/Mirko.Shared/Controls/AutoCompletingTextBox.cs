@@ -104,23 +104,28 @@ namespace Mirko.Controls
 
                 Cache.GenerateSuggestions(currentWord, HashtagDetected);
 
-                this.IsTextPredictionEnabled = false;
                 SuggestionsPopup.IsOpen = true;
                 AreSuggestionsOpen = true;
 
-                this.IsEnabled = false;
+                this.IsEnabled = false;                
+                Debug.WriteLine(Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide());
+                System.Threading.Tasks.Task.Delay(2000).Wait();
+                this.IsTextPredictionEnabled = false;               
                 this.IsEnabled = true;
                 this.Focus(FocusState.Programmatic);
             }
             else if(currentWord.StartsWith("") && (HashtagDetected || AtDetected))
             {
-                this.IsTextPredictionEnabled = true;
                 SuggestionsPopup.IsOpen = false;
                 AreSuggestionsOpen = false;
                 HashtagDetected = false;
                 AtDetected = false;
 
-                this.IsEnabled = false;
+                this.IsEnabled = false;                
+                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide();
+                System.Threading.Tasks.Task.Delay(1000).Wait();
+                this.IsTextPredictionEnabled = true;
+                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryShow();
                 this.IsEnabled = true;
                 this.Focus(FocusState.Programmatic);
             }

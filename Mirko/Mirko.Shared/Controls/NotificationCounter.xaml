@@ -63,7 +63,7 @@
 
         <TextBlock x:Name="PrefixTB"
                    Style="{StaticResource BodyTextBlockStyle}"
-                   FontSize="28"
+                   FontSize="{StaticResource NotificationCounterFontSize}"
                    Padding="0,0,10,0"
                    FontWeight="SemiBold"
                    IsColorFontEnabled="False"
@@ -71,7 +71,7 @@
 
         <TextBlock x:Name="NumberTB"
                    Style="{StaticResource BodyTextBlockStyle}"
-                   FontSize="28">
+                   FontSize="{StaticResource NotificationCounterFontSize}">
 
             <TextBlock.Projection>
                 <PlaneProjection CenterOfRotationX="0.5" RotationX="0" />

@@ -85,7 +85,7 @@
                 </Grid>
             </Grid>
 
-            <ListBox x:Name="StreamsPanel"
+        <ListBox x:Name="StreamsPanel"
                      Grid.Column="1"
                      Background="Transparent"
                      HorizontalAlignment="Right"
@@ -93,9 +93,10 @@
                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
                      Style="{StaticResource ListBoxNoBorder}"
                      ItemContainerStyle="{StaticResource ListBoxItemStyle}"
-                     SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}, Path=CurrentPivotItem, Mode=TwoWay}">
+                     SelectedIndex="{Binding Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}},
+                                     Path=CurrentPivotItem, Mode=TwoWay}">
 
-                <ListBox.RenderTransform>
+            <ListBox.RenderTransform>
                     <TranslateTransform X="0" Y="0" />
                 </ListBox.RenderTransform>
 
@@ -224,7 +225,7 @@
                     </Storyboard>
                 </StackPanel.Resources>
 
-                <Grid Margin="18,5,0,5"
+            <Grid Margin="{StaticResource AppHeaderNotificationsMargin1}"
                       Background="Transparent">
                     
                     <i:Interaction.Behaviors>
@@ -239,8 +240,8 @@
                                                   NotificationsBrush="{ThemeResource NotificationsForeground}"
                                                   Count="{Binding HashtagNotificationsCount}" />
                 </Grid>
-                
-                <Grid Margin="35,5,0,5"
+
+            <Grid Margin="{StaticResource AppHeaderNotificationsMargin2}"
                       Background="Transparent">
                     
                     <i:Interaction.Behaviors>
@@ -256,7 +257,7 @@
                                                   Count="{Binding AtNotificationsCount}" />
                 </Grid>
 
-                <Grid Margin="35,5,35,5"
+            <Grid Margin="{StaticResource AppHeaderNotificationsMargin3}"
                       Background="Transparent">
                     
                     <i:Interaction.Behaviors>

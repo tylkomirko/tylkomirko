@@ -97,18 +97,62 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\EdgeTappedListView.cs" />
-    <None Include="Pages\ConversationPage.xaml.cs">
+    <Compile Include="Pages\ConversationPage.xaml.cs">
       <DependentUpon>ConversationPage.xaml</DependentUpon>
-    </None>
+    </Compile>
+    <Compile Include="Controls\InputAwarePanel.cs" />
+    <Compile Include="Pages\AtNotificationsPage.xaml.cs">
+      <DependentUpon>AtNotificationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AttachmentPage.xaml.cs">
+      <DependentUpon>AttachmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\BlacklistPage.xaml.cs">
+      <DependentUpon>BlacklistPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ConversationsPage.xaml.cs">
+      <DependentUpon>ConversationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DebugPage.xaml.cs">
+      <DependentUpon>DebugPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DonationPage.xaml.cs">
+      <DependentUpon>DonationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EmbedPage.xaml.cs">
+      <DependentUpon>EmbedPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
-    <None Include="Pages\HashtagNotificationsPage.xaml.cs">
+    <Compile Include="Pages\HashtagNotificationsPage.xaml.cs">
       <DependentUpon>HashtagNotificationsPage.xaml</DependentUpon>
-    </None>
-    <None Include="Pages\NewEntryPage.xaml.cs">
+    </Compile>
+    <Compile Include="Pages\NewEntryPage.xaml.cs">
       <DependentUpon>NewEntryPage.xaml</DependentUpon>
-    </None>
+    </Compile>
+    <Compile Include="Pages\HashtagEntriesPage.xaml.cs">
+      <DependentUpon>HashtagEntriesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HashtagFlipPage.xaml.cs">
+      <DependentUpon>HashtagFlipPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HashtagSelectionPage.xaml.cs">
+      <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\IHaveAppBar.cs" />
+    <Compile Include="Pages\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PivotPage.xaml.cs">
+      <DependentUpon>PivotPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +162,8 @@
     <None Include="Mirko.Universal_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\appbar.eye.png" />
+    <Content Include="Assets\czacha.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -128,23 +174,79 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Pages\ConversationPage.xaml">
+    <Page Include="Pages\ConversationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </None>
+    </Page>
+    <Page Include="Pages\AtNotificationsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AttachmentPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\BlacklistPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ConversationsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\DebugPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\DonationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\EmbedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\EntryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <None Include="Pages\HashtagNotificationsPage.xaml">
+    <Page Include="Pages\HashtagNotificationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Pages\NewEntryPage.xaml">
+    </Page>
+    <Page Include="Pages\NewEntryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </None>
-    <Page Include="Resources\Fonts.xaml">
+    </Page>
+    <Page Include="Pages\HashtagEntriesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\HashtagFlipPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\HashtagSelectionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\PivotPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ProfilePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Platform.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

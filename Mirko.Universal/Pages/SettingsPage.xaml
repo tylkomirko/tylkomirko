@@ -1,0 +1,209 @@
+﻿<UserControl
+    x:Class="Mirko.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    mc:Ignorable="d"
+    d:DesignHeight="1000"
+    DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}">
+    
+    <UserControl.Resources>
+        <DataTemplate x:Key="ToggleSwitchTemplate"
+                      x:DataType="x:String">
+            <TextBlock Text="{x:Bind}"
+                       FontSize="16"
+                       TextWrapping="Wrap"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <Grid HorizontalAlignment="Stretch"
+              Grid.Row="0"
+              Margin="15.2,9.6,0,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       FontSize="25.6"
+                       FontWeight="Light"
+                       HorizontalAlignment="Left"
+                       Foreground="{ThemeResource SettingsPageNameForeground}"
+                       Style="{StaticResource HeaderTextBlockStyle}"
+                       Text="ustawienia" />
+        </Grid>
+
+
+        <!--TODO: Content should be placed within the following grid-->
+        <ScrollViewer Grid.Row="1"
+                      Margin="15.2,-32,0,0">
+
+            <StackPanel>
+                <Image Stretch="Uniform"
+                       Height="192"
+                       Margin="0,0,-19,0"
+                       Source="/Assets/ust_l.png" 
+                       HorizontalAlignment="Right"/>
+
+                <RadioButton x:Name="DayMode"
+                             Margin="0,-160,0,0"
+                             Content="#tylkodzienny"
+                             FontSize="16"
+                             Foreground="{ThemeResource RadioButtonForeground}"
+                             Style="{StaticResource RadioButtonStyle1}"/>
+
+                <RadioButton x:Name="NightMode"
+                             Margin="0,-90,0,0"
+                             Content="#tylkonocny"
+                             FontSize="16"
+                             Foreground="{ThemeResource RadioButtonForeground}"
+                             Style="{StaticResource RadioButtonStyle1}" />
+
+                <StackPanel Margin="0,9.6,15.9,57.6">
+                    <Slider x:Name="ScaleSlider"
+                            Header="Rozmiar tekstu wpisów"
+                            Value="{x:Bind VM.FontScaleFactor, Mode=TwoWay}"
+                            Minimum="1.0"
+                            SnapsTo="StepValues"
+                            StepFrequency="0.125"
+                            Maximum="2.0"
+                            TickPlacement="Inline"
+                            TickFrequency="0.25">
+                        
+                        <Slider.HeaderTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock Text="{x:Bind}"
+                                           Foreground="{ThemeResource SettingsSliderHeaderForeground}"
+                                           FontSize="16"/>
+                            </DataTemplate>
+                        </Slider.HeaderTemplate>
+                    </Slider>
+
+                    <!--
+                    <ToggleSwitch x:Name="ShowAvatarsToggle"
+                          IsOn="False"
+                          IsEnabled="False"
+                          OffContent="Pokazuj avatary"
+                          OnContent="Pokazuj avatary" 
+                          OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                          OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
+                    -->
+
+                    <ToggleSwitch x:Name="EnablePush"
+                                  IsOn="{x:Bind VM.PseudoPush, Mode=TwoWay}"
+                                  OffContent="Pseudo-push"
+                                  OnContent="Pseudo-push"
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}">
+
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Toggled">
+                                <core:InvokeCommandAction Command="{Binding PseudoPushToggled}"
+                                                          CommandParameter="{Binding ElementName=EnablePush, Path=IsOn}"/>
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                    </ToggleSwitch>
+
+                    <ToggleSwitch x:Name="OnlyWIFI"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.OnlyWIFIDownload, Mode=TwoWay}"
+                                  OffContent="Pobieraj obrazy tylko przez Wi-Fi"
+                                  OnContent="Pobieraj obrazy tylko przez Wi-Fi"
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
+
+                    <ToggleSwitch x:Name="ShowPlus18"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.ShowPlus18, Mode=TwoWay}"
+                                  OffContent="Pokazuj treści 18+"
+                                  OnContent="Pokazuj treści 18+" 
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}"/>
+
+                    <ToggleSwitch x:Name="LiveTile"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.LiveTile, Mode=TwoWay}"
+                                  OffContent="Livetile"
+                                  OnContent="Livetile" 
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}"/>
+
+                    <Grid Margin="0,20,0,0"
+                          HorizontalAlignment="Stretch">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Text="Aplikacja YouTube"
+                                   Margin="0,0,25,0"
+                                   FontSize="16"
+                                   TextWrapping="Wrap"/>
+
+                        <ComboBox x:Name="YoutubeApp"
+                                  Grid.Column="1"
+                                  Grid.Row="0"
+                                  Margin="0,-9.6,0,0"
+                                  ItemsSource="{x:Bind VM.YouTubeApps}"
+                                  SelectedItem="{x:Bind VM.SelectedYouTubeApp, Mode=OneWay, Converter={StaticResource YouTubeApp}}">
+
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="SelectionChanged">
+                                    <core:InvokeCommandAction Command="{Binding YouTubeAppChanged}"
+                                                              CommandParameter="{Binding ElementName=YoutubeApp, Path=SelectedIndex}"/>
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+
+                        </ComboBox>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Text="Strona startowa"
+                                   Margin="0,20,25,0"
+                                   FontSize="16"
+                                   TextWrapping="Wrap"/>
+
+                        <ComboBox x:Name="StartPage"
+                                  Grid.Column="1"
+                                  Grid.Row="1"
+                                  Margin="0,12,0,0"
+                                  ItemsSource="{x:Bind VM.StartPages}"
+                                  SelectedItem="{x:Bind VM.SelectedStartPage, Mode=OneWay, Converter={StaticResource StartPage}}">
+
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="SelectionChanged">
+                                    <core:InvokeCommandAction Command="{Binding StartPageChanged}"
+                                                              CommandParameter="{Binding ElementName=StartPage, Path=SelectedIndex}"/>
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+
+                        </ComboBox>
+                    </Grid>
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

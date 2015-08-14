@@ -17,6 +17,11 @@ namespace Mirko.Pages
 {
     public sealed partial class EntryPage : UserControl, IHaveAppBar
     {
+        private MainViewModel VM
+        {
+            get { return DataContext as MainViewModel; }
+        }
+
         public EntryPage()
         {
             this.InitializeComponent();
@@ -31,9 +36,7 @@ namespace Mirko.Pages
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
-            var mainVM = this.DataContext as MainViewModel;
-
-            var height = mainVM.ListViewHeaderHeight;
+            var height = VM.ListViewHeaderHeight;
             var header = ListView.Header as FrameworkElement;
             var rect = header.GetDescendant<Rectangle>();
             rect.Height = height;
@@ -42,8 +45,8 @@ namespace Mirko.Pages
              * It must be because of QKit */
             this.Margin = new Thickness(0, -height, 0, 0);
 
-            if (mainVM.CommentToScrollInto != null)
-                ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
+            if (VM.CommentToScrollInto != null)
+                ListView.ScrollIntoView(VM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }
 
         #region AppBar
@@ -80,7 +83,7 @@ namespace Mirko.Pages
             // regular buttons
             var refresh = new AppBarButton()
             {
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
+                Icon = new SymbolIcon(Symbol.Refresh),
                 Label = "odśwież",
                 Tag = "refresh"
             };
@@ -134,7 +137,7 @@ namespace Mirko.Pages
 
         private void CommentButton_Click(object sender, RoutedEventArgs e)
         {
-            var root = this.ListView.DataContext as EntryViewModel;
+            var root = VM.SelectedEntry;
             var vm = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
             var selectedItems = SelectedItems();
 
@@ -154,14 +157,14 @@ namespace Mirko.Pages
 
         private void ShareButton_Click(object sender, RoutedEventArgs e)
         {
-            var entryVM = this.ListView.DataContext as EntryViewModel;
+            var entryVM = VM.SelectedEntry;
             if (entryVM != null)
                 entryVM.ShareCommand.Execute(null);
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            var entryVM = this.ListView.DataContext as EntryViewModel;
+            var entryVM = VM.SelectedEntry;
             if(entryVM != null)
                 entryVM.RefreshCommand.Execute(null);
         }
@@ -185,7 +188,7 @@ namespace Mirko.Pages
             var selectedItems = ListView.SelectedItems.Cast<EntryBaseViewModel>().ToList();
             if (HeaderCheckBox.IsChecked.Value)
             {
-                var entryvm = this.ListView.DataContext as EntryViewModel;
+                var entryvm = VM.SelectedEntry;
                 selectedItems.Insert(0, entryvm);
             }
 

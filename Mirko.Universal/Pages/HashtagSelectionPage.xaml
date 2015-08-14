@@ -1,0 +1,155 @@
+﻿<UserControl
+    x:Class="Mirko.Pages.HashtagSelectionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mirko.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Mirko.Controls"
+    xmlns:utils="using:Mirko.Utils"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:models="using:Mirko.ViewModel"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <UserControl.Resources>
+        <Flyout x:Key="HashtagFlyout"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden">
+
+            <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected"
+                                           Height="300"
+                                           Margin="0,20,0,0"/>
+        </Flyout>
+
+        <local:HashtagSelectionPageTemplateSelector x:Key="TemplateSelector">
+
+            <local:HashtagSelectionPageTemplateSelector.ItemTemplate>
+                <DataTemplate x:DataType="models:HashtagInfoContainer">
+                    <Grid Margin="-7,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Holding">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="usuń powiadomienia"
+                                                Visibility="{x:Bind Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"
+                                                Command="{Binding DeleteHashtagNotifications, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{x:Bind Name, Mode=OneWay}"/>
+                                
+                                <MenuFlyoutItem Text="przestań obserwować"
+                                                Command="{Binding UnobserveHashtag, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{x:Bind Name, Mode=OneWay}"/>
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
+
+                        <TextBlock Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   FontSize="20.8"
+                                   FontWeight="Bold"
+                                   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                                   Text="{x:Bind Count, Mode=OneWay}"
+                                   Visibility="{x:Bind Count, Converter={StaticResource CountToVisibility}, Mode=OneWay}"/>
+
+                        <TextBlock Grid.Column="1"
+                                   HorizontalAlignment="Left"
+                                   FontSize="20.8"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{x:Bind Name, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </local:HashtagSelectionPageTemplateSelector.ItemTemplate>
+
+            <local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
+                <DataTemplate x:DataType="models:HashtagInfoContainer">
+                    <Grid Margin="-7,0,0,12">
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Holding">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="przestań obserwować"
+                                                Command="{Binding UnobserveHashtag, 
+                                                Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                                                CommandParameter="{Binding Name}"/>
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
+
+                        <TextBlock HorizontalAlignment="Left"
+                                   FontSize="20.8"
+                                   Foreground="Gray"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{x:Bind Name, Mode=OneWay}" />
+                    </Grid>
+                </DataTemplate>
+            </local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
+
+        </local:HashtagSelectionPageTemplateSelector>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Rectangle Height="1"
+                   Grid.Row="0"
+                   Canvas.ZIndex="1"
+                   Opacity="{StaticResource AppBarOpacity}"
+                   Fill="{ThemeResource TinySeparator}"/>
+
+        <Grid x:Name="ContentRoot" 
+              Grid.Row="1">
+
+            <controls:ListViewEx x:Name="ListView"
+                                 SelectionMode="None"
+                                 IsItemClickEnabled="True"
+                                 ItemClick="ListView_ItemClick"
+                                 ScrollingDown="ListView_ScrollingDown"
+                                 ScrollingUp="ListView_ScrollingUp"
+                                 Loaded="ListView_Loaded"
+                                 ItemTemplateSelector="{StaticResource TemplateSelector}"
+                                 ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
+                                 ItemsSource="{x:Bind VM.HashtagsCollection, Mode=OneWay}"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+
+                <ListView.Transitions>
+                    <TransitionCollection>
+                        <EdgeUIThemeTransition Edge="Right" />
+                    </TransitionCollection>
+                </ListView.Transitions>
+
+                <ListView.Header>
+                    <StackPanel>
+                        <Rectangle Fill="Transparent"/>
+                        
+                        <TextBlock Text="Nie obserwujesz żadnych tagów."
+                                   Style="{StaticResource TextBlockNoItems}"
+                                   Visibility="{x:Bind VM.HashtagsCollection.Count, Converter={StaticResource CountToVisibilityInv}, Mode=OneWay}"/>
+                        
+                    </StackPanel>
+                </ListView.Header>
+
+            </controls:ListViewEx>
+        </Grid>
+    </Grid>
+</UserControl>

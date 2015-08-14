@@ -10,11 +10,7 @@
     d:DesignWidth="400"
     
     IsTapEnabled="True"
-    Tapped="UserControl_Tapped">
-    
-    <UserControl.Resources>
-        <x:Double x:Key="SpoilerFontSize">13.0</x:Double>
-    </UserControl.Resources>
+    Tapped="UserControl_Tapped">   
 
     <Border x:Name="HiddenTextBorder"
             Background="{ThemeResource SpoilerBackground}"
@@ -28,18 +24,14 @@
                        Margin="8,4,8,4"
                        FontFamily="Monospace"
                        TextWrapping="Wrap"
-                       FontSize="{Binding Source={StaticResource SpoilerFontSize},
-                                          Converter={StaticResource FontSizeScaler},
-                                          Mode=OneWay}"/>
+                       FontSize="{Binding Fonts.SpoilerFontSize, Mode=OneWay, Source={StaticResource Locator}}"/>
 
             <RichTextBlock x:Name="HiddenRTB"
                            TextWrapping="Wrap"
                            Visibility="Collapsed"
                            Foreground="Gray"
                            Margin="0,0,0,0"
-                           FontSize="{Binding Source={StaticResource SpoilerFontSize},
-                                              Converter={StaticResource FontSizeScaler},
-                                              Mode=OneWay}">
+                           FontSize="{Binding Fonts.EntryFontSize, Mode=OneWay, Source={StaticResource Locator}}">
             </RichTextBlock>
 
         </StackPanel>

@@ -6,14 +6,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko.Controls"
+    xmlns:models="using:Mirko.ViewModel"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
     <controls:EdgeTappedListView x:Name="ListView"
-                                 DataContext="{Binding SelectedEntry}"
-                                 ItemsSource="{Binding Comments}"
+                                 Margin="-18,0,-18,0"
+                                 ItemsSource="{x:Bind VM.SelectedEntry.Comments}"
+                                 LeftEdgeBrush="Red"
+                                 SelectionMode="None"
                                  IsItemClickEnabled="False"
                                  Loaded="ListView_Loaded"
                                  ItemLeftEdgeTapped="ListView_ItemLeftEdgeTapped"
@@ -56,22 +59,22 @@
 
                 <controls:Entry Grid.Column="2"
                                 Grid.Row="1"
-                                DataContext="{Binding}"
+                                DataContext="{x:Bind VM.SelectedEntry}"
                                 LargeEmbed="True"
-                                IsHot="{Binding Main.SelectedEntryIsHot, Mode=OneWay, Source={StaticResource Locator}}"/>
+                                IsHot="{x:Bind VM.SelectedEntryIsHot, Mode=OneWay}"/>
             </Grid>
         </ListView.Header>
 
         <ListView.ItemTemplate>
-            <DataTemplate>
-                <controls:Entry DataContext="{Binding}"
+            <DataTemplate x:DataType="models:CommentViewModel">
+                <controls:Entry DataContext="{x:Bind}"
                                 IsTapEnabled="False"
                                 Margin="25,0,0,0"/>
             </DataTemplate>
         </ListView.ItemTemplate>
         
         <ListView.Footer>
-            <Rectangle Height="10"
+            <Rectangle Height="20"
                        Fill="Transparent" />
         </ListView.Footer>
 

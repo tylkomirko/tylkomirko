@@ -14,7 +14,7 @@ namespace WykopSDK.WWW
 {
     public class WykopWWW : IDisposable
     {
-        private const string baseURL = "https://wykop.pl/";
+        private const string baseURL = "http://wykop.pl/";
 
         private RetryHandler _retryHandler = null;
         private RetryHandler retryHandler
@@ -60,8 +60,8 @@ namespace WykopSDK.WWW
             string lastURL = null;
             List<string> permissionNames = null;
 
-            string startURL = "https://a.wykop.pl/user/connect/appkey," + appKey;
-            string redirectURL = "https://www.wykop.pl/user/ConnectSuccess";
+            string startURL = "http://a.wykop.pl/user/connect/appkey," + appKey;
+            string redirectURL = "http://www.wykop.pl/user/ConnectSuccess";
 
             var encodedRedirectURL = WebUtility.UrlEncode(Cryptography.EncodeBase64(redirectURL));
             startURL += ",redirect," + encodedRedirectURL + ",secure," + Cryptography.EncodeMD5(secretKey + redirectURL);

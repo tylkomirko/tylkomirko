@@ -180,57 +180,54 @@
                     <EdgeUIThemeTransition Edge="Right" />
                 </TransitionCollection>
             </TextBlock.Transitions>
-            
+
         </TextBlock>
 
-        <!--
-        <q:InputAwarePanel Grid.Row="1"
-                           LayoutChangeCompleted="ContentRoot_LayoutChangeCompleted">           
-            
-            <FlipView x:Name="FlipView"
-                      ItemsSource="{Binding Responses}">
+        <FlipView x:Name="FlipView"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Responses}">
 
-                <FlipView.ItemTemplate>
-                    <DataTemplate>
+            <FlipView.ItemTemplate>
+                <DataTemplate>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                            <ScrollViewer Grid.Row="0"
+                        <ScrollViewer Grid.Row="0"
                                           MaxHeight="120"
                                           Visibility="{Binding Preview, Converter={StaticResource NullToVisibility}}"
                                           x:Name="EntryPreview">
-                                <StackPanel>
-                                    <TextBlock Text="Komentujesz:"
+                            <StackPanel>
+                                <TextBlock Text="Komentujesz:"
                                                Margin="10,0,0,0"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                FontSize="17"
                                                Foreground="Gray" />
 
-                                    <controls:Entry DataContext="{Binding Preview}"
+                                <controls:Entry DataContext="{Binding Preview}"
                                                     IsTapEnabled="False"
                                                     EnableTextSelection="True"
                                                     TextSelectionChanged="Preview_TextSelectionChanged"
                                                     Margin="3,0,0,0"/>
-                                </StackPanel>
-                            </ScrollViewer>
+                            </StackPanel>
+                        </ScrollViewer>
 
-                            <ScrollViewer Grid.Row="1"
+                        <ScrollViewer Grid.Row="1"
                                           Margin="0,10,0,0"
                                           VerticalAlignment="Stretch"
                                           VerticalScrollBarVisibility="Hidden">
-                                <StackPanel VerticalAlignment="Stretch">
+                            <StackPanel VerticalAlignment="Stretch">
 
-                                    <StackPanel.ChildrenTransitions>
-                                        <TransitionCollection>
-                                            <EdgeUIThemeTransition Edge="Left" />
-                                        </TransitionCollection>
-                                    </StackPanel.ChildrenTransitions>
+                                <StackPanel.ChildrenTransitions>
+                                    <TransitionCollection>
+                                        <EdgeUIThemeTransition Edge="Left" />
+                                    </TransitionCollection>
+                                </StackPanel.ChildrenTransitions>
 
-                                    <controls:AutoCompletingTextBox x:Name="Editor"
+                                <controls:AutoCompletingTextBox x:Name="Editor"
                                                                     Margin="6,0,6,0"
                                                                     Header="Treść:"
                                                                     InputScope="Chat"
@@ -245,13 +242,13 @@
                                                                     BorderThickness="0"
                                                                     Style="{StaticResource TextBoxStyle1}" />
 
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                        <TextBlock x:Name="AttachmentSymbol"
+                                    <TextBlock x:Name="AttachmentSymbol"
                                                    Grid.Column="0"
                                                    Margin="-2,0,0,0"
                                                    FontSize="14"
@@ -265,10 +262,10 @@
                                             <Run Text="&#128206;" />
                                             <Run Text="{Binding NewEntry.NewEntry.AttachmentName, Mode=OneWay, Source={StaticResource Locator}}" 
                                                  Foreground="{ThemeResource AttachmentNameForeground}"/>
-                                            
-                                        </TextBlock>
 
-                                        <Polygon x:Name="LittleArrow"
+                                    </TextBlock>
+
+                                    <Polygon x:Name="LittleArrow"
                                                  Grid.Column="1"
                                                  Points="0,0 24,14 48,0"
                                                  Margin="0,0,14,24"
@@ -276,21 +273,19 @@
                                                  Fill="{ThemeResource NewContentBackground}"
                                                  StrokeThickness="0"
                                                  HorizontalAlignment="Right"/>
-                                    </Grid>
+                                </Grid>
 
-                                    <Rectangle Height="100"
+                                <Rectangle Height="100"
                                                Fill="Transparent"
                                                x:Name="Footer"/>
 
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
 
-                    </DataTemplate>
-                </FlipView.ItemTemplate>
-                
-            </FlipView>
-        </q:InputAwarePanel>
-        -->
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+
+        </FlipView>
     </Grid>
 </UserControl>

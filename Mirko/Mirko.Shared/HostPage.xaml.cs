@@ -50,10 +50,6 @@ namespace Mirko
             var appBarHeight = screen.Bottom - appView.Bottom;
 
             MainGrid.Margin = new Thickness(0, appView.Top, 0, appBarHeight);
-
-#if WINDOWS_UWP
-            MainFrame.Margin = new Thickness(-18, 0, -18, 0);
-#endif
         }
 
         private void HostPage_ThemeChanged(object sender, ThemeChangedEventArgs e)

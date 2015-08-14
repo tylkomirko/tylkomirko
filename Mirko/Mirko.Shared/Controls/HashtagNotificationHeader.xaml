@@ -30,7 +30,7 @@
     
     <Border x:Name="LayoutRoot"
             BorderThickness="0"
-            Height="49"
+            Height="{StaticResource HashtagNotificationHeaderHeight}"
             Opacity="{StaticResource AppBarOpacity}"
             Background="{ThemeResource PivotHeaderBackground}">
 
