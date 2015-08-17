@@ -44,7 +44,6 @@ namespace Mirko.ViewModel
             DataBase = d;
             if(d.Embed != null)
                 EmbedVM = new EmbedViewModel(DataBase.Embed);
-            DataBase.Embed = null;
         }
 
         private RelayCommand _voteCommand = null;

@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WykopSDK.API.Models;
@@ -51,11 +52,7 @@ namespace Mirko.ViewModel
             if (newEntries.Count == 0 && mainVM.TaggedEntries.Count == 0)
                 await DispatcherHelper.RunAsync(() => mainVM.TaggedEntries.HasNoItems = true);
 
-            var VMs = new List<EntryViewModel>(newEntries.Count);
-            foreach (var entry in newEntries)
-                VMs.Add(new EntryViewModel(entry));
-
-            return VMs;
+            return newEntries.Select(x => new EntryViewModel(x));
         }
     }
 }

@@ -49,9 +49,9 @@ namespace Mirko.ViewModel
             if(obj.Notification == "Remove")
             {
                 var username = obj.Content;
-                var conv = ConversationsList.SingleOrDefault(x => x.Data.AuthorName == username);
-                if (conv != null)
-                    ConversationsList.Remove(conv);
+                var conversation = ConversationsList.FirstOrDefault(x => x.Data.AuthorName == username);
+                if (conversation != null)
+                    ConversationsList.Remove(conversation);
 
                 SaveCommand.Execute(null);
             } 
@@ -66,7 +66,7 @@ namespace Mirko.ViewModel
                         ConversationsList.Add(new ConversationViewModel(item));
                 }
 
-                var conversation = ConversationsList.SingleOrDefault(x => x.Data.AuthorName == obj.Content);
+                var conversation = ConversationsList.FirstOrDefault(x => x.Data.AuthorName == obj.Content);
                 if (conversation != null)
                 {
                     CurrentConversation = conversation;

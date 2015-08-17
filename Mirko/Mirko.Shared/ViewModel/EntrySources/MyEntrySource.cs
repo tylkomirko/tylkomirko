@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopSDK.API.Models;
 
 namespace Mirko.ViewModel
 {
@@ -45,21 +44,22 @@ namespace Mirko.ViewModel
 
             ct.ThrowIfCancellationRequested();
 
-            IEnumerable<Entry> newEntries = null;
             if (App.ApiService.IsNetworkAvailable)
             {
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
-
-                newEntries = await App.ApiService.GetMyEntries(pageIndex++, ct, getTags: enumToBool(mainVM.MyEntriesType));
+                var newEntries = await App.ApiService.GetMyEntries(pageIndex++, ct, getTags: enumToBool(mainVM.MyEntriesType));
+                await StatusBarManager.HideProgressAsync();
 
                 if (newEntries == null || newEntries.Count() == 0)
                 {
                     await DispatcherHelper.RunAsync(() => mainVM.MyEntries.HasMoreItems = false);
                     if (mainVM.MyEntries.Count == 0 && pageIndex == 2)
                         await DispatcherHelper.RunAsync(() => mainVM.MyEntries.HasNoItems = true);
+
+                    return null;
                 }
 
-                await StatusBarManager.HideProgressAsync();
+                return newEntries.Select(x => new EntryViewModel(x));
             }
             else if (mainVM.MyEntries.Count == 0)
             {
@@ -71,12 +71,7 @@ namespace Mirko.ViewModel
                 return savedEntries;
             }
 
-            var VMs = new List<EntryViewModel>(newEntries.Count());
-            foreach (var entry in newEntries)
-                VMs.Add(new EntryViewModel(entry));
-
-            return VMs;
-        }
+            return null;
+        }        
     }
 }
-

@@ -1,13 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WykopSDK.API.Models;
-using GalaSoft.MvvmLight.Threading;
 
 namespace Mirko.ViewModel
 {
@@ -40,11 +37,7 @@ namespace Mirko.ViewModel
                             DispatcherHelper.CheckBeginInvokeOnUI(() => profileVM.Entries.HasNoItems = true);
                     }
 
-                    var VMs = new List<EntryViewModel>(newEntries.Count());
-                    foreach (var entry in newEntries)
-                        VMs.Add(new EntryViewModel(entry));
-
-                    return VMs;
+                    return newEntries.Select(x => new EntryViewModel(x));
                 }
             }
             else
