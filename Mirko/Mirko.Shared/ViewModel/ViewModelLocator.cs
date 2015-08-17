@@ -50,6 +50,9 @@ namespace Mirko.ViewModel
 
             _navService = new Mirko.ViewModel.NavigationService();
             NavService.RegisterPage("MainPage", typeof(HostPage));
+#if WINDOWS_UWP
+            NavService.RegisterPage("DualMainPage", typeof(DualHostPage));
+#endif
             NavService.RegisterPage("LoginPage", typeof(LoginPage));
             NavService.RegisterPage("EntryPage", typeof(EntryPage));
             NavService.RegisterPage("EmbedPage", typeof(EmbedPage));
@@ -68,6 +71,9 @@ namespace Mirko.ViewModel
             NavService.RegisterPage("PivotPage", typeof(PivotPage));
             NavService.RegisterPage("DonationPage", typeof(DonationPage));
             NavService.RegisterPage("BlacklistPage", typeof(BlacklistPage));
+#if WINDOWS_UWP
+            NavService.RegisterPage("EmptyPage", typeof(EmptyPage));
+#endif
             SimpleIoc.Default.Register<NavigationService>(() => NavService);
 
             SimpleIoc.Default.Register<MainViewModel>(() => { return new MainViewModel(NavService); });

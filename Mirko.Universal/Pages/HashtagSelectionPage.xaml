@@ -16,15 +16,6 @@
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
     <UserControl.Resources>
-        <Flyout x:Key="HashtagFlyout"
-                ScrollViewer.HorizontalScrollMode="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Hidden">
-
-            <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected"
-                                           Height="300"
-                                           Margin="0,20,0,0"/>
-        </Flyout>
-
         <local:HashtagSelectionPageTemplateSelector x:Key="TemplateSelector">
 
             <local:HashtagSelectionPageTemplateSelector.ItemTemplate>
@@ -106,9 +97,37 @@
 
     <Grid x:Name="LayoutRoot">
 
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HashtagSuggestionBox.Height"
+                                Value="280" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="HashtagSuggestionBox.Height"
+                                Value="150" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Rectangle Height="1"
@@ -151,5 +170,30 @@
 
             </controls:ListViewEx>
         </Grid>
+
+        <CommandBar Grid.Row="2"
+                    x:Name="AppBar">
+
+            <AppBarButton Label="szukaj"
+                          Icon="Find">
+
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="HashtagSuggestionsFlyout">
+                        <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected"
+                                                       x:Name="HashtagSuggestionBox"
+                                                       Width="300"/>
+                    </Flyout>
+                </AppBarButton.Flyout>
+                
+            </AppBarButton>
+
+            <CommandBar.SecondaryCommands>
+
+                <AppBarButton Label="usuń wszystkie powiadomienia"
+                              Command="{x:Bind VM.DeleteAllHashtagNotifications}" />
+                
+            </CommandBar.SecondaryCommands>
+            
+        </CommandBar>
     </Grid>
 </UserControl>

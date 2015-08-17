@@ -19,7 +19,7 @@ namespace Mirko.Controls
     }
     public class EdgeTappedListView : ListView
     {
-        private const double HIT_TARGET = 32;
+        private const double HIT_TARGET = 40; // 32
         private const double VISUAL_INDICATOR_WIDTH = 12;
         private const string VISUAL_INDICATOR_NAME = "VisualIndicator";
         private ListViewItem listViewItemHighlighted;

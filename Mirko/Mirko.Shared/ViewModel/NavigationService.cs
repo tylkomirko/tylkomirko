@@ -6,6 +6,7 @@ using Mirko.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,6 +27,7 @@ namespace Mirko.ViewModel
         private Frame rootPageFrame = null;
         private AppHeader rootPageHeader = null;
         private Popup rootPagePopup = null;
+        private bool navigatedToPivotPage = false;
 
         private readonly StackList<Type> backStack = new StackList<Type>();
         private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
@@ -49,24 +51,21 @@ namespace Mirko.ViewModel
         {
             var handled = e.Handled;
             e.Handled = true;
-            BackPressed(ref handled);
+            BackPressed();
         }
 
-        public void BackPressed(ref bool handled)
+        public void BackPressed()
         {
-            handled = true;
-
             if (CanGoBack())
             {
                 if (CurrentPageKey == "HashtagFlipPage")
                 {
                     var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
                     if (VM.CurrentHashtagNotifications.Count == 0)
-                    {
-                        /*
+                    {                        
                         var entry = backStack.First(typeof(HashtagNotificationsPage));
                         if (entry != null)
-                            backStack.Remove(entry);*/
+                            backStack.Remove(entry);
                     }
                 }
 
@@ -136,8 +135,19 @@ namespace Mirko.ViewModel
 
             if(!navigatedToRootPage)
             {
-                currentFrame.Navigate(typeof(HostPage));
-                rootPage = currentFrame.Content as HostPage;
+                if (App.IsMobile)
+                {
+                    currentFrame.Navigate(typeof(HostPage));
+                    rootPage = currentFrame.Content as HostPage;
+                }
+#if WINDOWS_UWP
+                else
+                {
+                    currentFrame.Navigate(typeof(DualHostPage));
+                    rootPage = currentFrame.Content as DualHostPage;
+                }
+#endif
+
                 rootPageFrame = rootPage.FindName("MainFrame") as Frame;
                 rootPageHeader = rootPage.FindName("AppHeader") as AppHeader;
                 rootPagePopup = rootPage.FindName("SuggestionsPopup") as Popup;
@@ -148,18 +158,41 @@ namespace Mirko.ViewModel
             var type = pagesNames[key];
             var page = GetCachedPage(type);
 
-            rootPageFrame.Content = page.Page;
-            rootPage.BottomAppBar = page.AppBar;          
+            if (!App.IsMobile && !navigatedToPivotPage)
+            {
+                var frame = rootPage.FindName("FirstFrame") as Frame;
+                var pivotPage = GetCachedPage(pagesNames["PivotPage"]);
+                frame.Content = pivotPage.Page;
+                rootPageFrame.Content = GetCachedPage(pagesNames["EmptyPage"]).Page;
+                backStack.Push(pagesNames["EmptyPage"]);
 
-            if (framesWithoutHeader.Contains(key))
+                navigatedToPivotPage = true;
+            }
+            else if (!App.IsMobile && key == "EmbedPage")
+            {
+                currentFrame.Content = page.Page;
+                backStack.Push(type);
+            }
+            else
+            {
+                rootPageFrame.Content = page.Page;
+                rootPage.BottomAppBar = page.AppBar;
+
+                if (key != "LoginPage")
+                    backStack.Push(type);
+            }
+
+            if (App.IsMobile && framesWithoutHeader.Contains(key))
                 rootPageHeader.Visibility = Visibility.Collapsed;
             else
                 rootPageHeader.Visibility = Visibility.Visible;
 
-            if(key != "LoginPage")
-                backStack.Push(type);
-
             CurrentPageKey = key;
+
+#if WINDOWS_UWP
+            if(backStack.Count() > 1)
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+#endif
 
             if (Navigating != null)
                 Navigating(this, new StringEventArgs(key));
@@ -195,19 +228,49 @@ namespace Mirko.ViewModel
 
         public void GoBack()
         {
-            backStack.Pop();
+            Type poppedType = null;
+
+            if(App.IsMobile)
+            {
+                poppedType = backStack.Pop();
+            }
+            else
+            {
+                if (backStack.Count() > 1)
+                    poppedType = backStack.Pop();
+            }
+
             var type = backStack.Peek();
             var page = GetCachedPage(type);
+
+            string previousKey = null;
+            if(poppedType != null)
+                previousKey = pagesNames.Single(x => x.Value == poppedType).Key;
+
+            CurrentPageKey = pagesNames.Single(x => x.Value == type).Key;
+
+#if WINDOWS_UWP
+            if(!App.IsMobile && !string.IsNullOrEmpty(previousKey) && previousKey == "EmbedPage")
+            {
+                var currentFrame = Window.Current.Content as Frame;
+                currentFrame.Navigate(typeof(DualHostPage));
+            }
+#endif
 
             rootPageFrame.Content = page.Page;
             rootPage.BottomAppBar = page.AppBar;
 
-            CurrentPageKey = pagesNames.Single(x => x.Value == type).Key;
-
-            if (framesWithoutHeader.Contains(CurrentPageKey))
+            if (App.IsMobile && framesWithoutHeader.Contains(CurrentPageKey))
                 rootPageHeader.Visibility = Visibility.Collapsed;
             else
                 rootPageHeader.Visibility = Visibility.Visible;
+
+#if WINDOWS_UWP
+            if (backStack.Count() > 1)
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            else
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+#endif
 
             if (Navigating != null)
                 Navigating(this, new StringEventArgs(CurrentPageKey));
@@ -255,5 +318,21 @@ namespace Mirko.ViewModel
         {
             return rootPagePopup;
         }
+
+#if WINDOWS_UWP
+        public ProgressBar GetProgressBar()
+        {
+            var currentFrame = Window.Current.Content as Frame;
+            var currentPage = currentFrame.Content as DualHostPage;
+            return currentPage.GetDescendant<ProgressBar>("ProgressBar");
+        }
+
+        public TextBlock GetProgressTextBlock()
+        {
+            var currentFrame = Window.Current.Content as Frame;
+            var currentPage = currentFrame.Content as DualHostPage;
+            return currentPage.GetDescendant<TextBlock>("ProgressText");
+        }
+#endif
     }
 }

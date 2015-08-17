@@ -307,16 +307,19 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="15.2,7.6,15.2,0">
+    <Grid>
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBox x:Name="UsernameBox"
                  Header="login"
                  MinHeight="52.8"
+                 Margin="15.2,7.6,15.2,0"
                  Grid.Row="0"
                  Text="{x:Bind VM.Username, Mode=TwoWay}"
                  Loaded="UsernameBox_Loaded"
@@ -333,7 +336,7 @@
         </TextBox>
 
         <PasswordBox x:Name="PasswordBox"
-                     Margin="0, 10, 0, 0"
+                     Margin="15.2,10,15.2,0"
                      MinHeight="52.8"
                      Grid.Row="1"
                      Header="hasło"
@@ -350,6 +353,17 @@
                 </DataTemplate>
             </PasswordBox.HeaderTemplate>
         </PasswordBox>
+
+        <CommandBar Grid.Row="3"
+                    IsSticky="True">
+
+            <AppBarButton Label="zaloguj"
+                          Icon="Accept"
+                          IsEnabled="False"
+                          Click="LoginButton_Click"
+                          x:Name="LoginButton"/>
+            
+        </CommandBar>
 
     </Grid>
 </UserControl>

@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class EntryPage : UserControl, IHaveAppBar
+    public sealed partial class EntryPage : UserControl
     {
         private MainViewModel VM
         {
@@ -40,101 +40,13 @@ namespace Mirko.Pages
             var header = ListView.Header as FrameworkElement;
             var rect = header.GetDescendant<Rectangle>();
             rect.Height = height;
-            /* It would make much more sense to set ListView.Margin, but that causes a bug.
-             * When user navigates for the first time, margin seems to be not set.
-             * It must be because of QKit */
-            this.Margin = new Thickness(0, -height, 0, 0);
+            ListView.Margin = new Thickness(0, -height, 0, 0);
 
             if (VM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(VM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
         }
 
-        #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-
-            // buttons only visible in comment selection mode
-            var comment = new AppBarButton()
-            {
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
-                Label = "odpowiedz",
-                Tag = "reply",
-            };
-            comment.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-            comment.Click += CommentButton_Click;
-
-            var delete = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Delete),
-                Label = "usuń",
-                Tag = "delete",
-                Visibility = Visibility.Collapsed,
-            };
-
-            // regular buttons
-            var refresh = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Refresh),
-                Label = "odśwież",
-                Tag = "refresh"
-            };
-            refresh.Click += RefreshButton_Click;
-
-            var up = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Up),
-                Label = "w górę",
-                Tag = "up"
-            };
-            up.Click += ScrollUpButton_Click;
-
-            var voteMultiple = new AppBarButton()
-            {
-                Label = "daj plusa",
-                Tag = "voteMulti",
-                Icon = new SymbolIcon(Symbol.Add),
-                Visibility = Visibility.Collapsed,
-            };
-            voteMultiple.Click += (s, e) =>
-            {
-                var selectedItems = SelectedItems();
-                var vm = selectedItems.First();
-                vm.VoteMultiple.Execute(selectedItems);
-
-                ListView.SelectionMode = ListViewSelectionMode.None;
-                HeaderCheckBox.IsChecked = false;
-                HeaderCheckBox.Visibility = Visibility.Collapsed;
-                HeaderEdgeButton.IsHitTestVisible = true;
-            };
-
-            c.PrimaryCommands.Add(comment);
-            c.PrimaryCommands.Add(delete);
-            c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(voteMultiple);
-            c.PrimaryCommands.Add(up);
-
-            var share = new AppBarButton()
-            {
-                Label = "udostępnij"
-            };
-            share.Click += ShareButton_Click;
-
-            c.SecondaryCommands.Add(share);
-
-            AppBar = c;
-
-            return c;
-        }
-
+        #region AppBar        
         private void CommentButton_Click(object sender, RoutedEventArgs e)
         {
             var root = VM.SelectedEntry;
@@ -175,6 +87,18 @@ namespace Mirko.Pages
             if (sv != null)
                 sv.ChangeView(null, 0.0, null, false);
         }
+
+        private void VoteMultiple_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = SelectedItems();
+            var vm = selectedItems.First();
+            vm.VoteMultiple.Execute(selectedItems);
+
+            ListView.SelectionMode = ListViewSelectionMode.None;
+            HeaderCheckBox.IsChecked = false;
+            HeaderCheckBox.Visibility = Visibility.Collapsed;
+            HeaderEdgeButton.IsHitTestVisible = true;
+        }
         #endregion
 
         #region Multiselect
@@ -200,7 +124,7 @@ namespace Mirko.Pages
             ListView.SelectionMode = ListViewSelectionMode.Multiple;
             ListView.IsItemLeftEdgeTapEnabled = false;
 
-            HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            HeaderCheckBox.Visibility = Visibility.Visible;
             HeaderEdgeButton.IsHitTestVisible = false;
 
             AppBar.MakeButtonInvisible("refresh");
@@ -212,9 +136,12 @@ namespace Mirko.Pages
         {
             if(!AnyItemsChecked())
             {
-                HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                HeaderCheckBox.Visibility = Visibility.Collapsed;
                 HeaderCheckBox.IsChecked = false;
                 HeaderEdgeButton.IsHitTestVisible = true;
+
+                ListView.IsItemLeftEdgeTapEnabled = true;
+                ListView.SelectionMode = ListViewSelectionMode.None;
 
                 AppBar.MakeButtonVisible("refresh");
                 AppBar.MakeButtonInvisible("voteMulti");
@@ -223,8 +150,8 @@ namespace Mirko.Pages
 
         private void EdgeSelectButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            HeaderCheckBox.Visibility = Visibility.Visible;
             HeaderCheckBox.IsChecked = true;
-            HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
             ListView.SelectionMode = ListViewSelectionMode.Multiple;
             HeaderEdgeButton.IsHitTestVisible = false;
@@ -239,9 +166,10 @@ namespace Mirko.Pages
             if (AnyItemsChecked())
                 return;
 
-            HeaderCheckBox.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            HeaderCheckBox.Visibility = Visibility.Collapsed;
             HeaderEdgeButton.IsHitTestVisible = true;
             ListView.SelectionMode = ListViewSelectionMode.None;
+            ListView.IsItemLeftEdgeTapEnabled = true;
 
             AppBar.MakeButtonVisible("refresh");
             AppBar.MakeButtonInvisible("voteMulti");

@@ -1,14 +1,11 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Mirko.Utils;
+﻿using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Shapes;
 
@@ -16,22 +13,20 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class NewEntryPage : UserControl, IHaveAppBar
+    public sealed partial class NewEntryPage : UserControl
     {
-        private bool IsLoaded = false;
-        private BindingExpression EntryPreviewBinding = null;
+        private NewEntryBaseViewModel VM
+        {
+            get { return DataContext as NewEntryBaseViewModel; }
+        }
 
         public NewEntryPage()
         {
             this.InitializeComponent();
 
-            this.LayoutRoot.Loaded += (s, e) =>
-            {
-                FormattingPopup.IsOpen = true;
-                IsLoaded = true;
-            };
+            if (!App.IsMobile)
+                FormattingAppBar.SecondaryCommands.Clear();
         }
-
         
         private TextBox CurrentEditor()
         {
@@ -60,32 +55,6 @@ namespace Mirko.Pages
             var grid = item.ContentTemplateRoot as Grid;
             return grid.FindName("Footer") as Rectangle;
         }
-
-        /*
-        private void ContentRoot_LayoutChangeCompleted(object sender, LayoutChangeEventArgs e)
-        {
-            if (!IsLoaded || FlipView.SelectedIndex == -1)
-                return;
-
-            if (e.IsDefaultLayout)
-            {
-                PageTitle.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                CurrentFooter().Height = 100;
-
-                if (EntryPreviewBinding != null)
-                    CurrentEntryPreview().SetBinding(ScrollViewer.VisibilityProperty, EntryPreviewBinding.ParentBinding);
-                
-            }
-            else
-            {
-                PageTitle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                CurrentFooter().Height = 50;
-
-                if(EntryPreviewBinding == null)
-                    EntryPreviewBinding = CurrentEntryPreview().GetBindingExpression(ScrollViewer.VisibilityProperty);
-                CurrentEntryPreview().Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            }
-        }*/
 
         private void PageTitle_Loaded(object sender, RoutedEventArgs e)
         {
@@ -118,10 +87,13 @@ namespace Mirko.Pages
                 this.SendButton.IsEnabled = false;
         }
 
-        private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
+        private void AttachmentSymbol_OpenFlyout(object sender, RoutedEventArgs e)
         {
-            var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
-            mf.ShowAt(CurrentAttachmentSymbol());
+            if (e is HoldingRoutedEventArgs || e is RightTappedRoutedEventArgs)
+            {
+                var attachmentTB = CurrentAttachmentSymbol();
+                FlyoutBase.ShowAttachedFlyout(attachmentTB);
+            }
         }
 
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)
@@ -130,76 +102,6 @@ namespace Mirko.Pages
             vm.NewEntry.RemoveAttachment();
             HandleSendButton();
         }
-
-        #region AppBar
-        private CommandBar AppBar = null;
-        private AppBarButton SendButton = null;
-        private AppBarToggleButton FormattingButton = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            SendButton = new AppBarButton()
-            {
-                Label = "wyślij",
-                Icon = new SymbolIcon(Symbol.Send),
-                IsEnabled = false,
-            };
-            SendButton.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as NewEntryViewModel,
-                Path = new PropertyPath("SendMessageCommand"),
-            });
-
-            var lenny = new AppBarButton()
-            {
-                Label = "lenny",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/appbar.smiley.glasses.png") },
-            };
-            lenny.Click += async (s, e) =>
-            {
-                var editor = CurrentEditor();
-                if (editor.FocusState == FocusState.Pointer || editor.FocusState == FocusState.Programmatic)
-                    editor.Focus(FocusState.Unfocused);
-
-                var f = this.Resources["LennysFlyout"] as Flyout;
-
-                await Task.Delay(200);
-
-                f.ShowAt(this);
-            };
-
-            var attachment = new AppBarButton()
-            {
-                Label = "załącznik",
-                Icon = new SymbolIcon(Symbol.Attach),
-            };
-            attachment.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as NewEntryBaseViewModel,
-                Path = new PropertyPath("AddAttachment"),
-            });
-            attachment.SetBinding(AppBarButton.IsEnabledProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<NewEntryViewModel>(),
-                Path = new PropertyPath("NewEntry.IsEditing"),
-                Converter = App.Current.Resources["InvertBool"] as IValueConverter,
-            });
-
-            FormattingButton = new AppBarToggleButton()
-            {
-                Visibility = Windows.UI.Xaml.Visibility.Collapsed,
-            };
-            FormattingButton.Click += FormattingButton_Click;
-
-            AppBar = new CommandBar();
-            AppBar.PrimaryCommands.Add(SendButton);
-            AppBar.PrimaryCommands.Add(lenny);
-            AppBar.PrimaryCommands.Add(attachment);
-            AppBar.PrimaryCommands.Add(FormattingButton);
-
-            return AppBar;
-        }
-        #endregion
 
         #region Formatting
         internal enum FormattingEnum
@@ -231,14 +133,19 @@ namespace Mirko.Pages
             CurrentEditor().Text = newText;
             CurrentEditor().SelectionStart = start + newText.Length;
 
-            var f = this.Resources[flyoutName] as FlyoutBase;
-            f.Hide();
+            if (Resources.ContainsKey(flyoutName))
+            {
+                var f = this.Resources[flyoutName] as FlyoutBase;
+                if(f != null)
+                    f.Hide();
+            }
         }
 
         private void HyperlinkFlyoutButton_Click(object sender, RoutedEventArgs e)
         {
             string txt = "[" + this.DescriptionTextBox.Text + "](" + this.LinkTextBox.Text + ")";
             InsertTextAndHideFlyout(txt, "HyperlinkFlyout");
+            HyperlinkFlyout.Hide();
 
             this.DescriptionTextBox.Text = "";
             this.LinkTextBox.Text = "";
@@ -248,19 +155,7 @@ namespace Mirko.Pages
         {
             var txt = e.String + " ";
             InsertTextAndHideFlyout(txt, "LennysFlyout");
-        }
-
-        private void FormattingPopup_Loaded(object sender, RoutedEventArgs e)
-        {
-            var popup = sender as Popup;
-            if (popup.VerticalOffset == 0)
-            {
-                var stackPanel = popup.Child as Grid;
-                stackPanel.Width = Window.Current.Bounds.Width;
-                popup.Width = Window.Current.Bounds.Width;
-
-                popup.VerticalOffset = this.ActualHeight - stackPanel.Height;
-            }
+            LennyFlyout.Hide();
         }
 
         private void SetFormattingButton()
@@ -270,12 +165,12 @@ namespace Mirko.Pages
             if (SelectedFormatting == FormattingEnum.BOLD)
             {
                 label = "pogrubienie";
-                icon = "appbar.text.bold.png";
+                FormattingButton.Icon = new SymbolIcon(Symbol.Bold);
             }
             else if (SelectedFormatting == FormattingEnum.ITALIC)
             {
                 label = "pochylenie";
-                icon = "appbar.text.italic.png";
+                FormattingButton.Icon = new SymbolIcon(Symbol.Italic);
             }
             else if (SelectedFormatting == FormattingEnum.CODE)
             {                
@@ -285,6 +180,7 @@ namespace Mirko.Pages
             else if(SelectedFormatting == FormattingEnum.SPOILER)
             {
                 label = "spoiler";
+                FormattingButton.Icon = new SymbolIcon(Symbol.Important);
             }
             else if (SelectedFormatting == FormattingEnum.QUOTE)
             {
@@ -295,15 +191,13 @@ namespace Mirko.Pages
             FormattingButton.Label = label;
             if (!string.IsNullOrEmpty(icon))
                 FormattingButton.Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/" + icon) };
-            else
-                FormattingButton.Icon = new FontIcon() { Glyph = "!", FontSize = 28, FontWeight = FontWeights.Bold };
             FormattingButton.IsChecked = true;
-            FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            FormattingButton.Visibility = Visibility.Visible;
         }
 
         private void FormattingChanged(object sender, RoutedEventArgs e)
         {
-            var button = sender as AppBarButton;
+            var button = sender as FrameworkElement;
             var tag = button.Tag as string;
 
             if (tag == "bold")
@@ -323,11 +217,10 @@ namespace Mirko.Pages
 
             if(SelectedFormatting == FormattingEnum.LINK)
             {
-                var f = Resources["HyperlinkFlyout"] as Flyout;
-                f.ShowAt(this);
+                FlyoutBase.ShowAttachedFlyout(button);
                 return;
-            } 
-            else if(SelectedFormatting == FormattingEnum.QUOTE)
+            }
+            else if (SelectedFormatting == FormattingEnum.QUOTE)
             {
                 var VM = this.DataContext as NewEntryViewModel;
                 var currentVM = VM.Responses[FlipView.SelectedIndex];
@@ -424,6 +317,21 @@ namespace Mirko.Pages
             var VM = this.DataContext as NewEntryViewModel;
             var currentVM = VM.Responses[FlipView.SelectedIndex];
             currentVM.SelectedText = e.String;
+        }
+
+        private void Editor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CurrentEntryPreview().Visibility = Visibility.Collapsed;
+        }
+
+        private void Editor_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var VM = this.DataContext as NewEntryViewModel;
+            if (VM == null) return;
+
+            var currentVM = VM.Responses[FlipView.SelectedIndex];
+            if (currentVM.Preview != null)
+                CurrentEntryPreview().Visibility = Visibility.Visible;
         }
     }
 }

@@ -15,6 +15,7 @@
     
     IsTapEnabled="True"
     IsDoubleTapEnabled="True"
+    IsHoldingEnabled="True"
     Tapped="UserControl_Tapped"
     DoubleTapped="UserControl_DoubleTapped"
     x:Name="Root">

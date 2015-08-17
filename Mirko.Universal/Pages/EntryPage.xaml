@@ -12,20 +12,26 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <controls:EdgeTappedListView x:Name="ListView"
-                                 Margin="-18,0,-18,0"
-                                 ItemsSource="{x:Bind VM.SelectedEntry.Comments}"
-                                 LeftEdgeBrush="Red"
-                                 SelectionMode="None"
-                                 IsItemClickEnabled="False"
-                                 Loaded="ListView_Loaded"
-                                 ItemLeftEdgeTapped="ListView_ItemLeftEdgeTapped"
-                                 SelectionChanged="ListView_SelectionChanged"
-                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                 IncrementalLoadingThreshold="6"
-                                 DataFetchSize="7">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <ListView.Header>
+        <controls:EdgeTappedListView x:Name="ListView"
+                                     Grid.Row="0"
+                                     ItemsSource="{x:Bind VM.SelectedEntry.Comments, Mode=OneWay}"
+                                     ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                     IsItemLeftEdgeTapEnabled="True"
+                                     SelectionMode="None"
+                                     IsItemClickEnabled="False"
+                                     Loaded="ListView_Loaded"
+                                     ItemLeftEdgeTapped="ListView_ItemLeftEdgeTapped"
+                                     SelectionChanged="ListView_SelectionChanged"
+                                     IncrementalLoadingThreshold="6"
+                                     DataFetchSize="7">
+
+            <ListView.Header>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -47,36 +53,70 @@
                            Grid.Row="1"
                            x:Name="HeaderEdgeButton"
                            Width="25"
+                           Margin="-14,0,0,0"
+                           Fill="Transparent"
                            Tapped="EdgeSelectButton_Tapped" />
 
                 <CheckBox Grid.Column="1"
                           Grid.Row="1"
+                          IsChecked="False"
                           x:Name="HeaderCheckBox"
-                          MinWidth="20"
                           Visibility="Collapsed"
                           Unchecked="CheckBox_Unchecked" 
-                          Style="{StaticResource CheckBoxNoTilt}" />
+                          Style="{StaticResource CheckBoxStyle}" />
 
                 <controls:Entry Grid.Column="2"
                                 Grid.Row="1"
-                                DataContext="{x:Bind VM.SelectedEntry}"
+                                DataContext="{x:Bind VM.SelectedEntry, Mode=OneWay}"
                                 LargeEmbed="True"
                                 IsHot="{x:Bind VM.SelectedEntryIsHot, Mode=OneWay}"/>
             </Grid>
         </ListView.Header>
-
-        <ListView.ItemTemplate>
+            
+            <ListView.ItemTemplate>
             <DataTemplate x:DataType="models:CommentViewModel">
                 <controls:Entry DataContext="{x:Bind}"
                                 IsTapEnabled="False"
                                 Margin="25,0,0,0"/>
             </DataTemplate>
         </ListView.ItemTemplate>
-        
-        <ListView.Footer>
-            <Rectangle Height="20"
-                       Fill="Transparent" />
-        </ListView.Footer>
 
-    </controls:EdgeTappedListView>
+            <ListView.Footer>
+                <Rectangle Height="20"
+                       Fill="Transparent" />
+            </ListView.Footer>
+        </controls:EdgeTappedListView>
+
+        <CommandBar Grid.Row="1"
+                    x:Name="AppBar">
+            <AppBarButton Label="odpowiedz"
+                          Tag="reply"
+                          Icon="Comment"
+                          Click="CommentButton_Click"
+                          Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
+                                       Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
+            
+            <AppBarButton Label="odśwież"
+                          Tag="refresh"
+                          Icon="Refresh"
+                          Click="RefreshButton_Click" />
+            
+            <AppBarButton Label="daj plusa"
+                          Tag="voteMulti"
+                          Icon="Add"
+                          Visibility="Collapsed"
+                          Click="VoteMultiple_Click"/>
+            
+            <AppBarButton Label="w górę"
+                          Tag="up"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="udostępnij"
+                              Click="ShareButton_Click" />
+            </CommandBar.SecondaryCommands>
+                          
+        </CommandBar>
+    </Grid>
 </UserControl>

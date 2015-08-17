@@ -1,57 +1,27 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko.ViewModel;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using System.Linq;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagNotificationsPage : UserControl, IHaveAppBar
+    public sealed partial class HashtagNotificationsPage : UserControl
     {
+        private NotificationsViewModel VM
+        {
+            get { return DataContext as NotificationsViewModel; }
+        }
+
         public HashtagNotificationsPage()
         {
             this.InitializeComponent();
         }
 
-        private CommandBar AppBar = null;
-        private AppBarButton DeleteSelectedButton = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            AppBar = new CommandBar();
-            var VM = this.DataContext as NotificationsViewModel;
-            AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-
-            DeleteSelectedButton = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Delete),
-                IsEnabled = false,
-                Label = "usuń",
-            };
-            DeleteSelectedButton.Click += DeleteSelectedButton_Click;
-
-            var deleteAll = new AppBarButton()
-            {
-                Label = "usuń wszystkie"
-            };
-            deleteAll.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = VM,
-                Path = new PropertyPath("DeleteCurrentHashtagNotifications"),
-            });
-
-            AppBar.PrimaryCommands.Add(DeleteSelectedButton);
-            AppBar.SecondaryCommands.Add(deleteAll);
-
-            return AppBar;
-        }
-
         private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
         {
-            var VM = this.DataContext as NotificationsViewModel;
             var selectedItems = ListView.SelectedItems.Cast<NotificationViewModel>().Select(x => x.Data.ID);
 
             foreach (var item in selectedItems)
@@ -89,7 +59,6 @@ namespace Mirko.Pages
 
             var grid = sender as Grid;
             var item = grid.DataContext as NotificationViewModel;
-            var VM = this.DataContext as NotificationsViewModel;
 
             VM.SelectedHashtagNotification = item;
             VM.GoToFlipPage.Execute(null);
@@ -97,7 +66,7 @@ namespace Mirko.Pages
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
-            var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 49; // adjust for header
+            var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 39.2; // adjust for header
             ListView.Margin = new Thickness(0, -height, 0, 0);
 
             (ListView.Header as FrameworkElement).Height = height;

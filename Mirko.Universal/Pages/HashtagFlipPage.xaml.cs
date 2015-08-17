@@ -13,6 +13,11 @@ namespace Mirko.Pages
     {
         private double HeaderHeight;
 
+        private NotificationsViewModel VM
+        {
+            get { return DataContext as NotificationsViewModel; }
+        }
+
         public HashtagFlipPage()
         {
             this.InitializeComponent();

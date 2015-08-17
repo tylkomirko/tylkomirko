@@ -10,9 +10,14 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Profiles, Mode=OneWay, Source={StaticResource Locator}}">
-    
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto "/>
+        </Grid.RowDefinitions>
+        
     <controls:ListViewEx Margin="10,0,10,0"
-                         Loaded="ListViewEx_Loaded"
                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                          ItemsSource="{x:Bind VM.CurrentProfile.Entries, Mode=OneWay}"
                          VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -143,4 +148,37 @@
         </ListView.Footer>
 
     </controls:ListViewEx>
+
+        <CommandBar Grid.Row="1"
+                    Visibility="{x:Bind VM.CurrentProfile.Data.Login, Mode=OneWay, Converter={StaticResource ProfileAppBar}}">
+
+            <AppBarToggleButton Label="{x:Bind VM.CurrentProfile.Data.Observed, Mode=OneWay, Converter={StaticResource ObservedToText}}"
+                                IsChecked="{x:Bind VM.CurrentProfile.Data.Observed, Mode=TwoWay}"                                
+                                Command="{x:Bind VM.CurrentProfile.Observe, Mode=OneWay}">
+
+                <AppBarToggleButton.Icon>
+                    <BitmapIcon UriSource="/Assets/appbar.eye.png" />
+                </AppBarToggleButton.Icon>
+                
+            </AppBarToggleButton>
+
+            <AppBarToggleButton Label="{x:Bind VM.CurrentProfile.Data.Blacklisted, Mode=OneWay, Converter={StaticResource BlacklistToText}}"
+                                IsChecked="{x:Bind VM.CurrentProfile.Data.Blacklisted, Mode=TwoWay}"
+                                Command="{x:Bind VM.CurrentProfile.Blacklist, Mode=OneWay}">
+
+                <AppBarToggleButton.Icon>
+                    <BitmapIcon UriSource="/Assets/czacha.png" />
+                </AppBarToggleButton.Icon>
+                
+            </AppBarToggleButton>
+
+            <AppBarButton Label="wiadomość"
+                          Icon="Message"
+                          Command="{x:Bind VM.CurrentProfile.PM, Mode=OneWay}" />
+            
+        </CommandBar>
+        
+    </Grid>
+   
+    
 </UserControl>

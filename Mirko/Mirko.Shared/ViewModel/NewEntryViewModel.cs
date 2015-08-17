@@ -172,14 +172,7 @@ namespace Mirko.ViewModel
             Responses.Add(new NewEntryContainer());
         }
 
-        private RelayCommand _sendMessageCommand = null;
-        [JsonIgnore]
-        public RelayCommand SendMessageCommand
-        {
-            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
-        }
-
-        private async void ExecuteSendMessageCommand()
+        public override async void ExecuteSendMessageCommand()
         {
             var txt = string.Join("\n", Responses.Select(x => x.Text));
             if (string.IsNullOrEmpty(txt))

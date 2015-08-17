@@ -13,7 +13,7 @@ using WykopSDK.API.Models;
 
 namespace Mirko.ViewModel
 {
-    public class NewEntryBaseViewModel : ViewModelBase
+    public abstract class NewEntryBaseViewModel : ViewModelBase
 #if WINDOWS_PHONE_APP
         , IFileOpenPickerContinuable
 #endif
@@ -78,16 +78,19 @@ namespace Mirko.ViewModel
             else
                 openPicker.PickSingleFileAndContinue();
 #else
+            var files = new List<StorageFile>();
+
             if (NewEntry.EntryID == 0)
-                await openPicker.PickMultipleFilesAsync();
+                files.AddRange(await openPicker.PickMultipleFilesAsync());
             else
-                await openPicker.PickSingleFileAsync();
+                files.Add(await openPicker.PickSingleFileAsync());
+
+            ProcessFiles(files);
 #endif
         }
 
-        public void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs args)
+        private void ProcessFiles(IList<StorageFile> files)
         {
-            var files = args.Files;
             if (files.Count == 0)
                 return;
 
@@ -100,5 +103,22 @@ namespace Mirko.ViewModel
 
             SimpleIoc.Default.GetInstance<NavigationService>().GoBack();
         }
+
+#if WINDOWS_PHONE_APP
+        public void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs args)
+        {
+            if(args.Files != null)
+                ProcessFiles(args.Files.ToList());
+        }
+#endif
+
+        private RelayCommand _sendMessageCommand = null;
+        [JsonIgnore]
+        public RelayCommand SendMessageCommand
+        {
+            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
+        }
+
+        public abstract void ExecuteSendMessageCommand();
     }
 }

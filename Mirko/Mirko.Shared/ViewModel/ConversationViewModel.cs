@@ -65,14 +65,7 @@ namespace Mirko.ViewModel
             profilesVM.GoToProfile.Execute(username);
         }
 
-        private RelayCommand _sendMessageCommand = null;
-        [JsonIgnore]
-        public RelayCommand SendMessageCommand
-        {
-            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
-        }
-
-        private async void ExecuteSendMessageCommand()
+        public override async void ExecuteSendMessageCommand()
         {
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
 

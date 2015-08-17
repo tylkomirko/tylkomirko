@@ -15,17 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\AppHeader.xaml.cs">
-      <DependentUpon>AppHeader.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\AutoCompletingTextBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml.cs">
       <DependentUpon>CachedImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\Entry.xaml.cs">
-      <DependentUpon>Entry.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\EntryEmbed.xaml.cs">
       <DependentUpon>EntryEmbed.xaml</DependentUpon>
     </Compile>
@@ -71,6 +64,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NSFWToString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NumberSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ObjectToEntryVM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ObservedToText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ConversationStatusToBrush.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\ProfileAppBar.cs" />
@@ -91,13 +85,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FlyoutHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Gfycat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\IncrementalLoadingCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\InputPaneExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MenuFlyoutUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenEntryMenuFlyout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenMenuFlyout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockInjectors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StackList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusBarManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StoryboardExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringValueAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SuspensionManager.cs" />
@@ -138,15 +132,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Controls\AppHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Controls\Entry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

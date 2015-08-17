@@ -11,11 +11,16 @@
     d:DesignWidth="400"
     DataContext="{Binding Cache, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <StackPanel HorizontalAlignment="Stretch"
-                Background="{ThemeResource HashtagSuggestionBoxBackground}">
+    <Grid HorizontalAlignment="Stretch"
+          Background="{ThemeResource HashtagSuggestionBoxBackground}">
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
         <TextBox x:Name="HashtagBox"
-                 Margin="5,5,5,0"
+                 Grid.Row="0"
                  Text="#"
                  SelectionStart="1"
                  InputScope="Search"
@@ -23,7 +28,8 @@
                  TextChanged="HashtagBox_TextChanged"
                  KeyDown="HashtagBox_KeyDown" />
 
-        <ListView Height="140"
+        <ListView MinHeight="140"
+                  Grid.Row="1"
                   IsItemClickEnabled="True"
                   ItemClick="SuggestionsListView_ItemClick"
                   ItemsSource="{Binding HashtagSuggestions}">
@@ -31,7 +37,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}"
-                               Margin="5,0,0,5"
+                               Margin="0,0,0,5"
                                FontSize="{StaticResource HashtagSuggestionBoxFontSize}"
                                Foreground="Gray" />
                 </DataTemplate>
@@ -39,5 +45,5 @@
 
         </ListView>
 
-    </StackPanel>
+    </Grid>
 </UserControl>

@@ -107,9 +107,7 @@ namespace Mirko.Controls
                 SuggestionsPopup.IsOpen = true;
                 AreSuggestionsOpen = true;
 
-                this.IsEnabled = false;                
-                Debug.WriteLine(Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide());
-                System.Threading.Tasks.Task.Delay(2000).Wait();
+                this.IsEnabled = false;
                 this.IsTextPredictionEnabled = false;               
                 this.IsEnabled = true;
                 this.Focus(FocusState.Programmatic);
@@ -121,11 +119,8 @@ namespace Mirko.Controls
                 HashtagDetected = false;
                 AtDetected = false;
 
-                this.IsEnabled = false;                
-                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide();
-                System.Threading.Tasks.Task.Delay(1000).Wait();
+                this.IsEnabled = false;
                 this.IsTextPredictionEnabled = true;
-                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryShow();
                 this.IsEnabled = true;
                 this.Focus(FocusState.Programmatic);
             }

@@ -17,7 +17,7 @@
     <UserControl.Resources>        
         <DataTemplate x:Name="EntryTemplate"
                       x:DataType="models:EntryBaseViewModel">
-            <controls:FullEntry Margin="-18,0,-18,0"/>
+            <controls:FullEntry Margin="-12,0,0,0"/>
         </DataTemplate>
 
         <Popup x:Key="NewMirkoEntriesPopup"
@@ -68,14 +68,14 @@
 
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="Tapped">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.AddNewMirkoEntries}" />
+                        <core:InvokeCommandAction Command="{x:Bind VM.AddNewMirkoEntries}" />
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
 
                 <Ellipse Fill="#67a7d2"
                          Height="44"
                          Width="44"/>
-                <TextBlock Text="{x:Bind ViewModel.MirkoNewEntries.Count, Mode=OneWay}"
+                <TextBlock Text="{x:Bind VM.MirkoNewEntries.Count, Mode=OneWay}"
                            FontWeight="SemiBold"
                            FontSize="15.2"                           
                            Style="{StaticResource BaseTextBlockStyle}"
@@ -87,6 +87,11 @@
     
     <Grid x:Name="PivotPageGrid"
           Loaded="PivotPageGrid_Loaded">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
         <Popup x:Name="TimeSpanIndicatorPopup"
                VerticalOffset="-22">
@@ -116,7 +121,7 @@
                            Margin="75,0,0,0"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="14.4">
-                    <Run Text="{x:Bind ViewModel.HotTimeSpan, Mode=OneWay, Converter={StaticResource HotTimeSpanStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
+                    <Run Text="{x:Bind VM.HotTimeSpan, Mode=OneWay, Converter={StaticResource HotTimeSpanStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
                 </TextBlock>
             </Grid>
         </Popup>
@@ -132,10 +137,11 @@
                       Opacity="0.85"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      SelectionMode="Single"
-                      SelectionChanged="TimeSpanSelectionListBox_SelectionChanged"
+                      SelectionMode="None"
+                      IsItemClickEnabled="True"
+                      ItemClick="TimeSpanSelectionListBox_ItemClick"
                       Loaded="TimeSpanSelectionListBox_Loaded"
-                      SelectedIndex="{x:Bind ViewModel.HotTimeSpan, Converter={StaticResource HotTimeSpanIndexConverter}, Mode=TwoWay}"
+                      SelectedIndex="{x:Bind VM.HotTimeSpan, Converter={StaticResource HotTimeSpanIndexConverter}, Mode=TwoWay}"
                       ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled">
 
@@ -168,11 +174,12 @@
         </Popup>
 
         <Pivot x:Name="MainPivot"
+               Grid.Row="0"
                Loaded="MainPivot_Loaded"
                HorizontalAlignment="Stretch"
-               SelectedIndex="{x:Bind ViewModel.CurrentPivotItem, Mode=TwoWay}"
-               SelectionChanged="MainPivot_SelectionChanged"
-			   Style="{StaticResource CustomPivotStyle}">
+               SelectedIndex="{x:Bind VM.CurrentPivotItem, Mode=TwoWay}"
+               SelectionChanged="MainPivot_SelectionChanged" 
+               Style="{StaticResource CustomPivotStyle}" >
 
             <!--Pivot item one-->
             <PivotItem Margin="0,0,0,0">
@@ -181,7 +188,7 @@
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
                                      Foreground="{ThemeResource EntryBodyForeground}"
-                                     ItemsSource="{x:Bind ViewModel.MirkoEntries}"
+                                     ItemsSource="{x:Bind VM.MirkoEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      IsItemClickEnabled="False"
@@ -193,7 +200,7 @@
                     <ListView.Header>
                         <StackPanel>
                             <Rectangle Fill="Transparent"
-                                       Height="{x:Bind ViewModel.ListViewHeaderHeight, Mode=OneWay}"/>
+                                       Height="{x:Bind VM.ListViewHeaderHeight, Mode=OneWay}"/>
                         </StackPanel>
                     </ListView.Header>
 
@@ -206,7 +213,7 @@
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
-                                     ItemsSource="{x:Bind ViewModel.HotEntries}"
+                                     ItemsSource="{x:Bind VM.HotEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
                                      IncrementalLoadingThreshold="6"
@@ -224,13 +231,13 @@
                     <ListView.Header>
                         <StackPanel>
                             <Rectangle Fill="Transparent"
-                                       Height="{x:Bind ViewModel.ListViewHeaderHeight, Mode=OneWay}"/>
+                                       Height="{x:Bind VM.ListViewHeaderHeight, Mode=OneWay}"/>
 
                             <TextBlock x:Name="NoItemsTB"
                                        Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
                                        Text="Brak wpisów."
-                                       Visibility="{x:Bind ViewModel.HotEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                                       Visibility="{x:Bind VM.HotEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
 
                         </StackPanel>
                     </ListView.Header>
@@ -250,7 +257,7 @@
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
-                                     ItemsSource="{x:Bind ViewModel.FavEntries}"
+                                     ItemsSource="{x:Bind VM.FavEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -262,12 +269,12 @@
                     <ListView.Header>
                         <StackPanel>
                             <Rectangle Fill="Transparent"
-                                       Height="{x:Bind ViewModel.ListViewHeaderHeight, Mode=OneWay}"/>
+                                       Height="{x:Bind VM.ListViewHeaderHeight, Mode=OneWay}"/>
 
                             <TextBlock Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
                                        Text="Brak wpisów."
-                                       Visibility="{x:Bind ViewModel.FavEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                                       Visibility="{x:Bind VM.FavEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
                         </StackPanel>
                     </ListView.Header>
 
@@ -281,7 +288,7 @@
                                      ScrollingDown="ListView_ScrollingDown"
                                      ScrollingUp="ListView_ScrollingUp"
                                      Loaded="ListView_Loaded"
-                                     ItemsSource="{x:Bind ViewModel.MyEntries}"
+                                     ItemsSource="{x:Bind VM.MyEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -293,18 +300,63 @@
                     <ListView.Header>
                         <StackPanel>
                             <Rectangle Fill="Transparent"
-                                       Height="{x:Bind ViewModel.ListViewHeaderHeight, Mode=OneWay}"/>
+                                       Height="{x:Bind VM.ListViewHeaderHeight, Mode=OneWay}"/>
 
                             <TextBlock Style="{StaticResource TextBlockNoItems}"
                                        Margin="0,8,0,0"
                                        Text="Brak wpisów."
-                                       Visibility="{x:Bind ViewModel.MyEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                                       Visibility="{x:Bind VM.MyEntries.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
                         </StackPanel>
                     </ListView.Header>
 
                 </controls:ListViewEx>
             </PivotItem>
         </Pivot>
+
+        <CommandBar Grid.Row="1"
+                    x:Name="AppBar">
+            <AppBarButton Label="nowy"
+                          Icon="Add"
+                          Command="{x:Bind VM.AddNewEntryCommand}"
+                          Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
+                                       Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
+            
+            <AppBarButton Label="odśwież"
+                          Icon="Refresh"
+                          Command="{x:Bind VM.RefreshMirkoEntries}" />
+
+            <AppBarButton Label="w górę"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="mój profil"
+                              Command="{x:Bind VM.GoToYourProfile}"
+                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
+                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}" />
+                
+                <AppBarButton Label="ustawienia"
+                              Command="{x:Bind VM.SettingsCommand}" />
+
+                <AppBarButton Label="czarnolisto"
+                              Command="{x:Bind VM.GoToBlacklistPage}"
+                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
+                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}" />
+                
+                <AppBarButton Label="podziękuj"
+                              Command="{x:Bind VM.GoToDonationPage}" />
+                
+                <AppBarButton Label="zaloguj"
+                              Command="{x:Bind VM.LogInOutCommand}"
+                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"/>
+
+                <AppBarButton Label="wyloguj"
+                              x:Name="LogoutButton"
+                              Command="{x:Bind VM.LogInOutCommand}"
+                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
+                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 
 </UserControl>

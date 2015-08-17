@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagEntriesPage : UserControl, IHaveAppBar, IDisposable
+    public sealed partial class HashtagEntriesPage : UserControl, IDisposable
     {
         private Popup NewEntriesPopup;
         private Storyboard PopupFadeIn;
@@ -31,6 +31,7 @@ namespace Mirko.Pages
         public HashtagEntriesPage()
         {
             this.InitializeComponent();
+            ObserveButton.Loaded += ObserveButton_Loaded;
 
             NewEntriesPopup = this.Resources["NewEntriesPopup"] as Popup;
             PopupFadeIn = NewEntriesPopup.Resources["PopupFadeIn"] as Storyboard;
@@ -103,60 +104,20 @@ namespace Mirko.Pages
         }
 
         #region AppBar
-        private CommandBar AppBar = null;
-        private AppBarToggleButton ObserveButton = null;
-
-        public CommandBar CreateCommandBar()
+        private void ObserveButton_Loaded(object sender, RoutedEventArgs e)
         {
-            AppBar = new CommandBar();
-
-            var observe = new AppBarToggleButton()
+            var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
+            if (VM.SelectedHashtag != null && !string.IsNullOrEmpty(VM.SelectedHashtag.Hashtag) &&
+                cacheVM.ObservedHashtags.Contains(VM.SelectedHashtag.Hashtag))
             {
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/appbar.eye.png") },
-                Label = "obserwuj",
-            };
-            observe.Click += Observe_Click;
-
-            var refresh = new AppBarButton()
+                ObserveButton.IsChecked = true;
+                ObserveButton.Label = "nie obserwuj";
+            }
+            else
             {
-                Label = "odśwież",
-                Icon = new SymbolIcon(Symbol.Refresh),
-            };
-            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = VM,
-                Path = new PropertyPath("RefreshTaggedEntries")
-            });
-
-            var up = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Up),
-                Label = "w górę",
-            };
-            up.Click += ScrollUp_Click;
-
-            AppBar.PrimaryCommands.Add(observe);
-            AppBar.PrimaryCommands.Add(refresh);
-            AppBar.PrimaryCommands.Add(up);
-
-            ObserveButton = observe;
-            ObserveButton.Loaded += (s, e) =>
-            {
-                var cacheVM = SimpleIoc.Default.GetInstance<CacheViewModel>();
-                if (VM.SelectedHashtag != null && !string.IsNullOrEmpty(VM.SelectedHashtag.Hashtag) &&
-                    cacheVM.ObservedHashtags.Contains(VM.SelectedHashtag.Hashtag))
-                {
-                    ObserveButton.IsChecked = true;
-                    ObserveButton.Label = "nie obserwuj";
-                }
-                else
-                {
-                    ObserveButton.IsChecked = false;
-                    ObserveButton.Label = "obserwuj";
-                }
-            };
-
-            return AppBar;
+                ObserveButton.IsChecked = false;
+                ObserveButton.Label = "obserwuj";
+            }
         }
 
         private void Observe_Click(object sender, RoutedEventArgs e)

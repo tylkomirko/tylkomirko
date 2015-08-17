@@ -129,6 +129,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Title Panel -->
@@ -265,5 +266,29 @@
             </ListView.Footer>
 
         </controls:ListViewEx>
+
+        <CommandBar Grid.Row="2"
+                    x:Name="AppBar">
+            
+            <AppBarButton x:Name="SendButton"
+                          Label="wyślij"
+                          Icon="Send"
+                          IsEnabled="False"
+                          Command="{x:Bind VM.CurrentConversation.SendMessageCommand, Mode=OneWay}" />
+            
+            <AppBarButton Label="odśwież"
+                          Icon="Refresh"
+                          Command="{x:Bind VM.CurrentConversation.UpdateMessagesCommand, Mode=OneWay}" />
+            
+            <AppBarButton Label="lenny"
+                          Icon="Emoji"
+                          Click="Lenny_Click" />
+            
+            <AppBarButton Label="załącznik"
+                          Icon="Attach"
+                          Command="{x:Bind VM.CurrentConversation.AddAttachment, Mode=OneWay}" />
+            
+        </CommandBar>
+        
     </Grid>
 </UserControl>

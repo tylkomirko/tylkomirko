@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -14,6 +15,11 @@ namespace Mirko.Controls
     public sealed partial class Entry : UserControl
     {
         private bool singleTap;
+
+        private EntryBaseViewModel VM
+        {
+            get { return DataContext as EntryBaseViewModel; }
+        }
 
         #region Registered properties
         public bool IsHot
@@ -67,19 +73,27 @@ namespace Mirko.Controls
         public Entry()
         {
             this.InitializeComponent();
-            this.Holding += Entry_Holding;     
+            this.Holding += Entry_OpenFlyout;
+            this.RightTapped += Entry_OpenFlyout;  
         }
 
-        private void Entry_Holding(object sender, HoldingRoutedEventArgs e)
+        private void Entry_OpenFlyout(object sender, RoutedEventArgs e)
         {
-            if (e.HoldingState == Windows.UI.Input.HoldingState.Completed 
-                || e.HoldingState == Windows.UI.Input.HoldingState.Canceled) return;
+            var holding = e as HoldingRoutedEventArgs;
+            var rightTap = e as RightTappedRoutedEventArgs;
 
-            var pos = e.GetPosition(EmbedPreviewGrid);
+            if (holding == null && rightTap == null) return;
+
+            if (holding != null &&
+                (holding.HoldingState == Windows.UI.Input.HoldingState.Completed ||
+                 holding.HoldingState == Windows.UI.Input.HoldingState.Canceled)) return;
+
+            var pos = holding != null ? holding.GetPosition(EmbedPreviewGrid) : rightTap.GetPosition(EmbedPreviewGrid);
+
             System.Diagnostics.Debug.WriteLine("pos: " + pos);
 
             var VM = this.DataContext as EntryBaseViewModel;
-            if(VM.EmbedVM != null && pos.Y > 0)
+            if (VM.EmbedVM != null && pos.Y > 0)
             {
                 var mf = FlyoutBase.GetAttachedFlyout(EmbedPreview);
                 mf.ShowAt(EmbedPreviewGrid);
@@ -90,7 +104,10 @@ namespace Mirko.Controls
                 helper.Execute(this, null);
             }
 
-            e.Handled = true;
+            if (holding != null)
+                holding.Handled = true;
+            else
+                rightTap.Handled = true;
         }
 
         private async void UserControl_Tapped(object sender, TappedRoutedEventArgs e)
@@ -175,7 +192,7 @@ namespace Mirko.Controls
                 VM.RefreshCommand.Execute(null);
 
             VM.ShowVoters = true;
-            VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            VotersRTB.Visibility = Visibility.Visible;
         }
 
         public delegate void TextSelectionChangedEventHandler(object sender, StringEventArgs e);

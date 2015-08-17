@@ -55,7 +55,10 @@ namespace Mirko.ViewModel
                     SimpleIoc.Default.GetInstance<SettingsViewModel>().UserInfo = userInfo;
 
                     // navigate off to somewhere
-                    SimpleIoc.Default.GetInstance<NavigationService>().NavigateTo("PivotPage");
+                    if (App.IsMobile)
+                        SimpleIoc.Default.GetInstance<NavigationService>().NavigateTo("PivotPage");
+                    else
+                        SimpleIoc.Default.GetInstance<NavigationService>().GoBack();
                     Messenger.Default.Send(new NotificationMessage("Login"));
 
                     StatusBarManager.HideProgress();

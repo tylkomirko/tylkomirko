@@ -4,6 +4,7 @@ using Mirko.Controls;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
+using System.Linq;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +18,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Mirko.Pages
 {
-    public sealed partial class PivotPage : UserControl, IHaveAppBar, IDisposable
+    public sealed partial class PivotPage : UserControl, IDisposable
     {
         private AppHeader AppHeader;
 
@@ -33,7 +34,7 @@ namespace Mirko.Pages
         private double PreviousPivotOffset;
         private const double PivotOffsetThreshold = 10;
 
-        private MainViewModel ViewModel { get { return DataContext as MainViewModel; } }
+        private MainViewModel VM { get { return DataContext as MainViewModel; } }
 
         public PivotPage()
         {
@@ -46,7 +47,6 @@ namespace Mirko.Pages
             this.Resources.Remove("NewMirkoEntriesPopup");
             PivotPageGrid.Children.Add(NewMirkoEntriesPopup);
 
-            var VM = this.DataContext as MainViewModel;
             VM.MirkoNewEntries.CollectionChanged -= MirkoNewEntries_CollectionChanged;
             VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
 
@@ -85,23 +85,26 @@ namespace Mirko.Pages
         {
             if (MainPivot.Margin.Top == 0)
             {
+                var navService = SimpleIoc.Default.GetInstance<NavigationService>();
+
                 var appHeaderHeight = AppHeader.ActualHeight;
-                var statusBarHeight = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height;
+                double statusBarHeight;
+
+                if (App.IsMobile)
+                    statusBarHeight = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height;
+                else
+                    statusBarHeight = navService.GetProgressBar().ActualHeight + navService.GetProgressTextBlock().ActualHeight;
+
                 var margin = appHeaderHeight + 2.5 * statusBarHeight;
 
                 MainPivot.Margin = new Thickness(10, -margin, 0, 0);
-#if WINDOWS_PHONE_APP
-                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
-#else
-                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = (AppHeader.ActualHeight + statusBarHeight)*1.4;
-#endif
+                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = (AppHeader.ActualHeight + statusBarHeight);
             }
 
             var scroll = MainPivot.GetDescendant<ScrollViewer>();
             scroll.ViewChanged -= ScrollViewer_ViewChanged;
             scroll.ViewChanged += ScrollViewer_ViewChanged;
 
-            var VM = this.DataContext as MainViewModel;
             if (VM.MirkoNewEntries.Count > 0 && MainPivot.SelectedIndex == 0)
                 CanShowNewEntriesPopup = true;
           
@@ -116,13 +119,6 @@ namespace Mirko.Pages
 
             if (!HasEntryAnimationPlayed)
                 ItemsPresenter.Opacity = 0;
-
-            /*
-            if (pivot.SelectedIndex == 0)
-                App.MainViewModel.ApiAddNewEntries();
-            else if (pivot.SelectedIndex == 1 && PivotHeader.Opacity != 0)
-                ShowHotPopup();
-             * */
         }
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -137,7 +133,7 @@ namespace Mirko.Pages
 
         private void PivotPageGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!HasEntryAnimationPlayed)
+            if (!HasEntryAnimationPlayed && ShowPivotContent != null)
             {
                 ShowPivotContent.Begin();
                 HasEntryAnimationPlayed = true;
@@ -145,6 +141,10 @@ namespace Mirko.Pages
 
             var popupGrid = NewMirkoEntriesPopup.Child as Grid;
             var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
+
+            if (!App.IsMobile)
+                horizontal = horizontal / 2.0 - 30.0;
+
             NewMirkoEntriesPopup.HorizontalOffset = horizontal;
             NewMirkoEntriesPopup.IsOpen = true;
         }
@@ -284,13 +284,19 @@ namespace Mirko.Pages
 
         private void TimeSpanSelectionPopup_Loaded(object sender, RoutedEventArgs e)
         {
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+            if (App.IsMobile)
+            {
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+            }
         }
 
         private void TimeSpanSelectionPopup_Unloaded(object sender, RoutedEventArgs e)
         {
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+            if (App.IsMobile)
+            {
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+            }
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
@@ -319,29 +325,45 @@ namespace Mirko.Pages
             }
         }
 
-        private async void TimeSpanSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void TimeSpanSelectionListBox_ItemClick(object sender, ItemClickEventArgs e)
         {
-            HideTimeSpanSelectionPopup();
+            HideTimeSpanSelectionPopup();          
 
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.HotEntries.ClearAll();
+            var selectedItem = e.ClickedItem as string;
+            int selectedIndex = 3;
 
-            if(HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
-                await HotListView.LoadMoreItemsAsync();
+            var items = TimeSpanSelectionListBox.Items.Cast<string>();
+            for (int i = 0; i < items.Count(); i++)
+                if (items.ElementAt(i) == selectedItem)
+                    selectedIndex = i;
+
+            var converter = Application.Current.Resources["HotTimeSpanIndexConverter"] as IValueConverter;
+            var newTimeSpan = (int)converter.ConvertBack(selectedIndex, typeof(int), null, null);
+
+            if (VM.HotTimeSpan != newTimeSpan)
+            {
+                VM.HotTimeSpan = newTimeSpan;
+                VM.HotEntries.ClearAll();
+                if (HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
+                    await HotListView.LoadMoreItemsAsync();
+            }
         }
 
         private void ShowTimeSpanSelectionPopup()
         {
-            AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            AppBar.Visibility = Visibility.Collapsed;
 
-            this.TimeSpanSelectionListBox.Width = Window.Current.Bounds.Width;
-            this.TimeSpanSelectionListBox.Height = 5000;//Window.Current.Bounds.Height;
+            if (App.IsMobile)
+                TimeSpanSelectionListBox.Width = Window.Current.Bounds.Width;
+            else
+                TimeSpanSelectionListBox.Width = Window.Current.Bounds.Width / 2.0;
 
-            this.TimeSpanSelectionPopup.IsOpen = true;
+            TimeSpanSelectionListBox.Height = 5000;//Window.Current.Bounds.Height;
+
+            TimeSpanSelectionPopup.IsOpen = true;
             //this.TimeSpanSelectionFadeIn.Begin();
 
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.CanGoBack = false;
+            VM.CanGoBack = false;
         }
 
         private void HideTimeSpanSelectionPopup()
@@ -351,159 +373,11 @@ namespace Mirko.Pages
             this.TimeSpanSelectionPopup.IsOpen = false;
             //this.TimeSpanSelectionFadeIn.Begin();
 
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.CanGoBack = true;
+            VM.CanGoBack = true;
         }
 #endregion
 
 #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-            var up = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Up),
-                Label = "w górę",
-            };
-            up.Click += ScrollUpButton_Click;
-
-            var add = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Add),
-                Label = "nowy",
-            };
-            add.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("AddNewEntryCommand"),
-            });
-            add.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var refresh = new AppBarButton()
-            {
-                Label = "odśwież",
-                Tag = "refresh",
-#if WINDOWS_PHONE_APP
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
-#else
-                Icon = new SymbolIcon(Symbol.Refresh),
-#endif
-            };
-            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("RefreshMirkoEntries"),
-            });
-
-            var profile = new AppBarButton()
-            {
-                Label = "mój profil",
-            };
-            profile.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-            profile.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToYourProfile"),
-            });
-
-            var settings = new AppBarButton()
-            {
-                Label = "ustawienia",
-            };
-            settings.SetBinding(AppBarButton.CommandProperty, new Binding() 
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("SettingsCommand"),
-            });
-
-            var logout = new AppBarButton()
-            {
-                Label = "wyloguj",
-            };
-            logout.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("LogInOutCommand"),
-            });
-            logout.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var login = new AppBarButton()
-            {
-                Label = "zaloguj",
-            };
-            login.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("LogInOutCommand"),
-            });
-            login.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = logout,
-                Path = new PropertyPath("Visibility"),
-                Converter = App.Current.Resources["InvertVisibility"] as IValueConverter,
-            });
-
-            var blacklist = new AppBarButton()
-            {
-                Label = "czarnolisto",
-            };
-            blacklist.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToBlacklistPage"),
-            });
-            blacklist.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var donation = new AppBarButton()
-            {
-                Label = "podziękuj",
-            };
-            donation.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToDonationPage"),
-            });
-
-            c.PrimaryCommands.Add(add);
-            c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(up);
-            c.SecondaryCommands.Add(profile);
-            c.SecondaryCommands.Add(settings);
-            c.SecondaryCommands.Add(blacklist);
-            c.SecondaryCommands.Add(donation);
-            c.SecondaryCommands.Add(login);
-            c.SecondaryCommands.Add(logout);
-            AppBar = c;
-
-            return c;
-        }
-
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
             ScrollViewer sv = null;
@@ -517,6 +391,6 @@ namespace Mirko.Pages
             if(sv != null)
                 sv.ChangeView(null, 0.0, null);
         }
-#endregion
+        #endregion
     }
 }

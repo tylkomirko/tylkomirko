@@ -29,7 +29,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class HashtagSelectionPage : UserControl, IHaveAppBar
+    public sealed partial class HashtagSelectionPage : UserControl
     {
         private NotificationsViewModel VM
         {
@@ -54,8 +54,7 @@ namespace Mirko.Pages
         private void HashtagSuggestionBox_HashtagSelected(object sender, StringEventArgs e)
         {
             var tag = e.String;
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.Hide();
+            HashtagSuggestionsFlyout.Hide();
 
             SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(tag);
         }
@@ -78,48 +77,5 @@ namespace Mirko.Pages
             var rect = sp.GetDescendant<Rectangle>();
             rect.Height = height;
         }
-
-        #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-
-            var find = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Find),
-                Label = "szukaj",
-            };
-            find.Click += FindHashtag_Click;
-
-            var removeAll = new AppBarButton()
-            {
-                Label = "usuń wszystkie powiadomienia"
-            };
-            removeAll.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = VM,
-                Path = new PropertyPath("DeleteAllHashtagNotifications"),
-            });
-
-            c.PrimaryCommands.Add(find);
-            c.SecondaryCommands.Add(removeAll);
-            AppBar = c;
-
-            return c;
-        }
-
-        private void FindHashtag_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = Resources["HashtagFlyout"] as Flyout;
-            var box = flyout.Content as HashtagSuggestionBox;
-
-            var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
-            box.Width = bounds.Right;
-
-            flyout.ShowAt(this);
-        }
-        #endregion
     }
 }

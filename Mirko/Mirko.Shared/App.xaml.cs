@@ -76,6 +76,7 @@ namespace Mirko
             get { return _telemetryClient ?? (_telemetryClient = new TelemetryClient()); }
         }
 
+        public static bool IsMobile { get; set; }
         public static bool IsWIFIAvailable { get; set; }
         public static bool IsNetworkAvailable { get; set; }
         public static bool ShareTargetActivated { get; set; }
@@ -128,6 +129,12 @@ namespace Mirko
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
             GlobalCrashHandler.Configure();
+
+#if WINDOWS_UWP
+            IsMobile = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile";
+#else
+            IsMobile = true;
+#endif
 
             var configuration = new LoggingConfiguration();
 #if DEBUG
@@ -185,7 +192,7 @@ namespace Mirko
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
@@ -196,12 +203,10 @@ namespace Mirko
             var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
             applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
 
-            StatusBarManager.Init();
-
-            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
-
             var locator = this.Resources["Locator"] as ViewModelLocator;
             NavService = locator.NavService;
+
+            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -251,9 +256,13 @@ namespace Mirko
                 WykopSDK.WykopSDK.LocalStorage.InitAction();
 
                 if (!string.IsNullOrEmpty(e.Arguments))
+                {
                     ProcessLaunchArguments(e.Arguments);
+                }
                 else
+                {
                     NavService.NavigateTo("PivotPage");
+                }
             }
             else
             {
@@ -263,7 +272,16 @@ namespace Mirko
             // Ensure the current window is active
             Window.Current.Activate();
 
-            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Init"));
+#if WINDOWS_UWP
+            if (IsMobile)
+                StatusBarManager.Init();
+            else
+                StatusBarManager.Init(NavService.GetProgressBar(), NavService.GetProgressTextBlock());
+#else
+            StatusBarManager.Init();
+#endif
+
+            Messenger.Default.Send(new NotificationMessage("Init"));
         }
 
         private void ProcessLaunchArguments(string args)

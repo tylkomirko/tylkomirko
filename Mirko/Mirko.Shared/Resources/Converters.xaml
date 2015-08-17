@@ -32,5 +32,6 @@
     <converters:InvertBool x:Key="InvertBool" />
     <converters:AuthorIndicator x:Key="AuthorIndicator" />
     <converters:ProfileAppBar x:Key="ProfileAppBar" />
+    <converters:ObjectToEntryVM x:Key="ObjectToEntryVM" />
 
 </ResourceDictionary>

@@ -5,6 +5,7 @@ using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -317,15 +318,30 @@ namespace Mirko.Pages
             }
         }
 
-        private async void TimeSpanSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void TimeSpanSelectionListBox_ItemClick(object sender, ItemClickEventArgs e)
         {
             HideTimeSpanSelectionPopup();
 
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.HotEntries.ClearAll();
+            var selectedItem = e.ClickedItem as string;
+            int selectedIndex = 3;
 
-            if(HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
-                await HotListView.LoadMoreItemsAsync();
+            var items = TimeSpanSelectionListBox.Items.Cast<string>();
+            for (int i = 0; i < items.Count(); i++)
+                if (items.ElementAt(i) == selectedItem)
+                    selectedIndex = i;
+
+            var converter = Application.Current.Resources["HotTimeSpanIndexConverter"] as IValueConverter;
+            var newTimeSpan = (int)converter.ConvertBack(selectedIndex, typeof(int), null, null);
+
+            var VM = DataContext as MainViewModel;
+
+            if (VM.HotTimeSpan != newTimeSpan)
+            {
+                VM.HotTimeSpan = newTimeSpan;
+                VM.HotEntries.ClearAll();
+                if (HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
+                    await HotListView.LoadMoreItemsAsync();
+            }
         }
 
         private void ShowTimeSpanSelectionPopup()

@@ -9,6 +9,7 @@
     xmlns:controls="using:Mirko.Controls"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:models="using:Mirko.ViewModel"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -27,20 +28,21 @@
 
         <FlipView x:Name="FlipView"
                   Grid.Row="1"
-                  ItemsSource="{Binding HashtagFlipEntries}"
-                  SelectedItem="{Binding HashtagFlipCurrentEntry, Mode=TwoWay}">
+                  Background="Transparent"
+                  ItemsSource="{x:Bind VM.HashtagFlipEntries, Mode=OneWay}"
+                  SelectedItem="{x:Bind VM.HashtagFlipCurrentEntry, Converter={StaticResource ObjectToEntryVM}, Mode=TwoWay}">
 
             <i:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="SelectionChanged">
-                    <core:InvokeCommandAction Command="{Binding HashtagFlipSelectionChanged}"
+                    <core:InvokeCommandAction Command="{x:Bind VM.HashtagFlipSelectionChanged}"
                                               CommandParameter="{Binding ElementName=FlipView, Path=SelectedIndex}"/>
                 </core:EventTriggerBehavior>
             </i:Interaction.Behaviors>
 
             <FlipView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:EntryViewModel">
                     <controls:ListViewEx HorizontalAlignment="Stretch"
-                                         ItemsSource="{Binding Comments}"
+                                         ItemsSource="{x:Bind Comments, Mode=OneWay}"
                                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                          IsItemClickEnabled="False"
                                          VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -51,15 +53,15 @@
                         <ListView.Header>
                             <StackPanel>
                                 <Rectangle Fill="Transparent" />
-                                <controls:Entry DataContext="{Binding}"
+                                <controls:Entry DataContext="{x:Bind}"
                                                 LargeEmbed="True"
                                                 IsTapEnabled="False"/>
                             </StackPanel>
                         </ListView.Header>
 
                         <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <controls:Entry DataContext="{Binding}"
+                            <DataTemplate x:DataType="models:CommentViewModel">
+                                <controls:Entry DataContext="{x:Bind}"
                                                 IsTapEnabled="False"
                                                 Margin="25,0,0,0"/>
                             </DataTemplate>

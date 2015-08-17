@@ -25,6 +25,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Title Panel -->
@@ -205,5 +206,15 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
+
+        <CommandBar Grid.Row="2"
+                    ClosedDisplayMode="Minimal">
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="debug"
+                              Command="{x:Bind MainVM.GoToDebugPage}" />
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
     </Grid>
 </UserControl>
