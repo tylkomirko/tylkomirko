@@ -242,6 +242,23 @@ namespace Mirko.ViewModel
             get { return _myEntries ?? (_myEntries = new IncrementalLoadingCollection<MyEntrySource, EntryViewModel>()); }
         }
 
+        public MyEntriesTypeEnum MyEntriesType
+        {
+            get
+            {
+                if (Windows.Storage.ApplicationData.Current.RoamingSettings.Values.ContainsKey("MyEntriesType"))
+                    return (MyEntriesTypeEnum)Enum.Parse(typeof(MyEntriesTypeEnum), (string)Windows.Storage.ApplicationData.Current.RoamingSettings.Values["MyEntriesType"]);
+                else
+                    return MyEntriesTypeEnum.ALL;
+            }
+
+            set
+            {
+                Windows.Storage.ApplicationData.Current.RoamingSettings.Values["MyEntriesType"] = value.ToString();
+                RaisePropertyChanged("MyEntriesType");
+            }
+        }
+
         private Meta _selectedHashtag = null;
         public Meta SelectedHashtag
         {

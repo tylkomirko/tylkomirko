@@ -25,8 +25,8 @@ namespace WykopSDK.API
         {
             get { return _userInfo; }
 
-            set 
-            { 
+            set
+            {
                 _userInfo = value;
                 RaisePropertyChanged();
             }
@@ -68,9 +68,24 @@ namespace WykopSDK.API
         {
             get
             {
-                if(_limitTimer == null)
+                if (_limitTimer == null)
                     _limitTimer = new Timer(limitTimer_Callback, null, Timeout.Infinite, TimeSpan.FromMinutes(10).Milliseconds);
                 return _limitTimer;
+            }
+        }
+
+        private JsonSerializer _jsonSerializer = null;
+        private JsonSerializer jsonSerializer
+        {
+            get
+            {
+                if (_jsonSerializer == null)
+                {
+                    _jsonSerializer = new JsonSerializer();
+                    _jsonSerializer.Error += (s, e) => _log.Error("Deserialization error: " + e.ErrorContext.Error);
+                }
+
+                return _jsonSerializer;
             }
         }
 
@@ -89,7 +104,7 @@ namespace WykopSDK.API
 
             _log = LogManagerFactory.DefaultLogManager.GetLogger<WykopAPI>();
             NetworkInformation.NetworkStatusChanged += (s) => CheckConnection();
-            
+
             LoadUserInfo();
 
             CheckConnection();
@@ -109,12 +124,6 @@ namespace WykopSDK.API
                 else
                 {
                     IsNetworkAvailable = true;
-                    /*
-                    MainViewModel.ActionOnCurrentCollection(col =>
-                    {
-                        col._hasMoreItems = true;
-                    });
-                     * */
 
                     if (internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 71) // wifi
                         IsWIFIAvailable = true;
@@ -203,7 +212,13 @@ namespace WykopSDK.API
         }
 
         #region HelperFunctions
-        private async Task<T> deserialize<T>(string URL, SortedDictionary<string, string> post = null, Stream fileStream = null, string fileName = null, CancellationToken ct = default(CancellationToken))
+        private async Task<T> deserialize<T>(
+            string URL,
+            SortedDictionary<string, string> post = null,
+            Stream fileStream = null,
+            string fileName = null,
+            CancellationToken ct = default(CancellationToken),
+            Func<JsonReader, JsonSerializer, T> deserializationFunction = null)
             where T : class
         {
             T result = null;
@@ -229,7 +244,7 @@ namespace WykopSDK.API
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    if (stream.Length < 100)
+                    if (stream.Length < 150)
                     {
                         var str = sr.ReadToEnd();
                         if (str.StartsWith(@"{""error"""))
@@ -254,7 +269,7 @@ namespace WykopSDK.API
                                 await Login(force: true);
                                 var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
                                 _log.Warn("updated URL: " + updatedURL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,"));
-                                return await deserialize<T>(updatedURL, post, fileStream, fileName, ct);
+                                return await deserialize<T>(updatedURL, post, fileStream, fileName, ct, deserializationFunction);
                             }
                             return null;
                         }
@@ -266,7 +281,8 @@ namespace WykopSDK.API
 
                     JsonSerializer serializer = new JsonSerializer();
                     serializer.Error += serializer_Error;
-                    result = serializer.Deserialize<T>(reader);
+
+                    result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
                 }
 
                 return result;
@@ -276,85 +292,6 @@ namespace WykopSDK.API
         private void serializer_Error(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
         {
             _log.Error("Deserialization error: " + e.ErrorContext.Error);
-        }
-
-        private async Task<List<T>> deserializeList<T>(string URL, SortedDictionary<string, string> post = null, CancellationToken ct = default(CancellationToken))
-            where T : class
-        {
-            List<T> list = new List<T>(50);
-            JsonSerializer serializer = new JsonSerializer();
-
-            var newURL = URL.Replace("appkey,Q9vny6I5JQ", "appkey,XX,");
-            var userkeyIndex = newURL.IndexOf("userkey,");
-            if (userkeyIndex != -1)
-            {
-                userkeyIndex += 8;
-                var commaIndex = newURL.IndexOf(',', userkeyIndex);
-                var userkey = newURL.Substring(userkeyIndex, commaIndex - userkeyIndex);
-                if (!string.IsNullOrEmpty(userkey))
-                    newURL = newURL.Replace(userkey, "XXX");
-            }
-
-            _log.Trace(newURL);
-
-            using (var stream = await getAsync(URL, post, ct: ct))
-            {
-                if (stream == null || stream.Length == 0 || stream.Length == 2) // length 2 equals []. essentialy an empty response.
-                    return null;
-
-                using (StreamReader sr = new StreamReader(stream))
-                using (JsonReader reader = new JsonTextReader(sr))
-                {
-                    if (stream.Length < 100)
-                    {
-                        var str = sr.ReadToEnd();
-                        if (str.StartsWith(@"{""error"""))
-                        {
-                            Error err = JsonConvert.DeserializeObject<Error>(str);
-                            var errorCode = err.error.code;
-                            var message = err.error.message;
-                            _log.Warn("API ERROR " + errorCode + ", " + message);
-
-                            if (errorCode != 999 && MessageReceiver != null)
-                                MessageReceiver(this, new MessageEventArgs(message, errorCode));
-
-                            if (errorCode == 5) // limit exceeded
-                            {
-                                this.limitTimer.Change(0, (int)TimeSpan.FromMinutes(10).TotalMilliseconds);
-                                limitExceeded = true;
-                            }
-                            else if (errorCode == 11 || errorCode == 12) // wrong user key
-                            {
-                                var oldUserKey = UserInfo.UserKey;
-                                await Login(force: true);
-                                var updatedURL = URL.Replace(oldUserKey, UserInfo.UserKey);
-                                return await deserializeList<T>(updatedURL, post, ct);
-                            }
-                            return null;
-                        }
-                    }
-                    
-                    JArray array = JArray.Load(reader);
-                    foreach (var item in array)
-                    {
-                        var r = item.CreateReader();
-                        var title = item["title"];
-                        if(title != null)
-                        {
-                            // filter out front page entries.
-                            r.Skip();
-                        }
-                        else
-                        {
-                            var i = serializer.Deserialize<T>(r);
-                            list.Add(i);
-                        }
-                    }
-                }
-
-                return list;
-            }
-
         }
 
         private StreamContent CreateFileContent(Stream stream, string fileName, string contentType)
@@ -401,8 +338,8 @@ namespace WykopSDK.API
                 try
                 {
                     response = await HttpClient.PostAsync(url, content, ct);
-                } 
-                catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     _log.Error("Something when wrong in getAsync: ", e);
                     return null;
@@ -492,8 +429,8 @@ namespace WykopSDK.API
                 URL = "stream/index";
             else
                 URL = "stream/index/firstid/" + firstID;
-                
-            if(UserInfo != null)
+
+            if (UserInfo != null)
                 URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
             else
                 URL += "/appkey," + APPKEY + ",page," + pageIndex;
@@ -524,14 +461,47 @@ namespace WykopSDK.API
             return result != null ? result.Where(x => !x.Blacklisted) : null;
         }
 
-        public async Task<List<Entry>> GetMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken))
+        private List<Entry> DeserializeMyEntries(JsonReader reader, JsonSerializer serializer)
+        {
+            var list = new List<Entry>();
+            JArray array = JArray.Load(reader);
+
+            foreach (var item in array)
+            {
+                var r = item.CreateReader();
+                var title = item["title"];
+                if (title != null)
+                {
+                    // filter out front page entries.
+                    r.Skip();
+                }
+                else
+                {
+                    var i = serializer.Deserialize<Entry>(r);
+                    list.Add(i);
+                }
+            }
+
+            return list;
+        }
+
+        public async Task<List<Entry>> GetMyEntries(int pageIndex, CancellationToken ct = default(CancellationToken), bool? getTags = null)
         {
             if (limitExceeded || UserInfo == null || pageIndex < 0)
                 return null;
 
-            var URL = "mywykop/index/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
+            string URL = "mywykop";
 
-            return await deserializeList<Entry>(URL, ct: ct);
+            if (getTags == null)
+                URL += "/index/";
+            else if (getTags.Value == true)
+                URL += "/tags/";
+            else
+                URL += "/users/";
+
+            URL += "userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
+
+            return await deserialize<List<Entry>>(URL, ct: ct, deserializationFunction: DeserializeMyEntries);
         }
 
         #endregion
@@ -543,7 +513,7 @@ namespace WykopSDK.API
                 return null;
 
             string URL;
-            if(UserInfo != null)
+            if (UserInfo != null)
                 URL = "entries/index/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             else
                 URL = "entries/index/" + id + "/appkey," + APPKEY;
@@ -698,7 +668,7 @@ namespace WykopSDK.API
                 return null;
 
             string URL = "profile/index/" + user;
-            if(UserInfo != null)
+            if (UserInfo != null)
                 URL += "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             else
                 URL += "/appkey," + APPKEY;
@@ -782,6 +752,29 @@ namespace WykopSDK.API
             return await deserialize<NotificationsCount>(URL);
         }
 
+        public async Task<bool> ReadNotification(uint id)
+        {
+            if (limitExceeded || UserInfo == null || id == 0)
+                return false;
+
+            string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
+
+            using (var stream = await getAsync(URL))
+            {
+                if (stream == null)
+                    return false;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    var str = sr.ReadToEnd();
+                    if (str == "true")
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
         public async Task<bool> ReadNotifications()
         {
             if (limitExceeded || UserInfo == null)
@@ -803,25 +796,6 @@ namespace WykopSDK.API
             await deserialize<List<object>>(URL);
             return true;
         }
-
-        public async Task<bool> MarkAsReadNotification(uint id)
-        {
-            if (limitExceeded || UserInfo == null || id == 0)
-                return false;
-
-            string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-
-            using (var stream = await getAsync(URL))
-            using (var sr = new StreamReader(stream))
-            {
-                var str = sr.ReadToEnd();
-                if (str == "true")
-                    return true;
-                else
-                    return false;
-            }
-        }
-
         #endregion
 
         #region PM
@@ -955,6 +929,6 @@ namespace WykopSDK.API
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(caller));
         }
-
     }
 }
+

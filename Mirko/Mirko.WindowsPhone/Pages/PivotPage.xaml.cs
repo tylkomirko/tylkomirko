@@ -34,6 +34,8 @@ namespace Mirko.Pages
         private double PreviousPivotOffset;
         private const double PivotOffsetThreshold = 10;
 
+        private MainViewModel VM { get { return DataContext as MainViewModel; } }
+
         public PivotPage()
         {
             this.InitializeComponent();
@@ -89,11 +91,7 @@ namespace Mirko.Pages
                 var margin = appHeaderHeight + 2.5 * statusBarHeight;
 
                 MainPivot.Margin = new Thickness(10, -margin, 0, 0);
-#if WINDOWS_PHONE_APP
                 SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = AppHeader.ActualHeight + statusBarHeight;
-#else
-                SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight = (AppHeader.ActualHeight + statusBarHeight)*1.4;
-#endif
             }
 
             var scroll = MainPivot.GetDescendant<ScrollViewer>();
@@ -115,13 +113,6 @@ namespace Mirko.Pages
 
             if (!HasEntryAnimationPlayed)
                 ItemsPresenter.Opacity = 0;
-
-            /*
-            if (pivot.SelectedIndex == 0)
-                App.MainViewModel.ApiAddNewEntries();
-            else if (pivot.SelectedIndex == 1 && PivotHeader.Opacity != 0)
-                ShowHotPopup();
-             * */
         }
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -155,6 +146,8 @@ namespace Mirko.Pages
                 HideNewEntriesPopup();
             else if (currentPage == 1)
                 HideTimeSpanIndicatorPopup();
+            else if (currentPage == 3)
+                HideMyEntriesIndicatorPopup();
         }
 
         private void ListView_ScrollingUp(object sender, EventArgs e)
@@ -164,6 +157,8 @@ namespace Mirko.Pages
                 ShowNewEntriesPopup();
             else if (currentPage == 1)
                 ShowTimeSpanIndicatorPopup();
+            else if (currentPage == 3)
+                ShowMyEntriesIndicatorPopup();
         }
 
         private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -174,8 +169,9 @@ namespace Mirko.Pages
                 App.TelemetryClient.TrackPageView("PivotPage-Mirko");
 
                 AppBar.MakeButtonVisible("refresh");
-                if (TimeSpanIndicatorPopup.IsOpen)
-                    HideTimeSpanIndicatorPopup();
+                AppBar.MakeButtonVisible("add");
+                HideTimeSpanIndicatorPopup();
+                HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.Start();
                 SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
@@ -188,7 +184,9 @@ namespace Mirko.Pages
 
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
+                AppBar.MakeButtonInvisible("add");
                 ShowTimeSpanIndicatorPopup();
+                HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
                 SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.Start();
@@ -201,8 +199,9 @@ namespace Mirko.Pages
 
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
-                if (TimeSpanIndicatorPopup.IsOpen)
-                    HideTimeSpanIndicatorPopup();
+                AppBar.MakeButtonInvisible("add");
+                HideTimeSpanIndicatorPopup();
+                HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
                 SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
@@ -215,8 +214,9 @@ namespace Mirko.Pages
 
                 HideNewEntriesPopup();
                 AppBar.MakeButtonInvisible("refresh");
-                if (TimeSpanIndicatorPopup.IsOpen)
-                    HideTimeSpanIndicatorPopup();
+                AppBar.MakeButtonInvisible("add");
+                HideTimeSpanIndicatorPopup();
+                ShowMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
                 SimpleIoc.Default.GetInstance<MainViewModel>().HotEntries.ForceStop();
@@ -251,17 +251,18 @@ namespace Mirko.Pages
             }
         }
 
-#region Popups
-        private void ShowNewEntriesPopup()
+        private void SelectionPopup_Loaded(object sender, RoutedEventArgs e)
         {
-            PopupFadeIn.Begin();
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
 
-        private void HideNewEntriesPopup()
+        private void SelectionPopup_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.PopupFadeOut.Begin();
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
         }
 
+        #region Hot time span popups
         private void ShowTimeSpanIndicatorPopup()
         {
             this.TimeSpanIndicatorGrid.Width = Window.Current.Bounds.Width;
@@ -281,59 +282,37 @@ namespace Mirko.Pages
             ShowTimeSpanSelectionPopup();
         }
 
-        private void TimeSpanSelectionPopup_Loaded(object sender, RoutedEventArgs e)
+        private void TimeSpanSelectionListView_Loaded(object sender, RoutedEventArgs e)
         {
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-        }
-
-        private void TimeSpanSelectionPopup_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
-        }
-
-        private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
-        {
-            if(TimeSpanSelectionPopup.IsOpen)
-            {
-                e.Handled = true;
-                HideTimeSpanSelectionPopup();
-            }
-        }
-
-        private void TimeSpanSelectionListBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var selectedIndex = TimeSpanSelectionListBox.SelectedIndex;
-            var panel = TimeSpanSelectionListBox.ItemsPanelRoot;
+            var selectedIndex = TimeSpanSelectionListView.SelectedIndex;
+            var panel = TimeSpanSelectionListView.ItemsPanelRoot;
 
             for (int i = 0; i < panel.Children.Count; i++)
             {
                 var lvItem = panel.Children[i] as ListViewItem;
                 var tb = lvItem.GetDescendant<TextBlock>();
 
-                if(i == selectedIndex)
+                if (i == selectedIndex)
                     tb.Foreground = App.Current.Resources["HashtagForeground"] as SolidColorBrush;
                 else
                     tb.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
             }
         }
 
-        private async void TimeSpanSelectionListBox_ItemClick(object sender, ItemClickEventArgs e)
+        private async void TimeSpanSelectionListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             HideTimeSpanSelectionPopup();
 
             var selectedItem = e.ClickedItem as string;
             int selectedIndex = 3;
 
-            var items = TimeSpanSelectionListBox.Items.Cast<string>();
+            var items = TimeSpanSelectionListView.Items.Cast<string>();
             for (int i = 0; i < items.Count(); i++)
                 if (items.ElementAt(i) == selectedItem)
                     selectedIndex = i;
 
             var converter = Application.Current.Resources["HotTimeSpanIndexConverter"] as IValueConverter;
             var newTimeSpan = (int)converter.ConvertBack(selectedIndex, typeof(int), null, null);
-
-            var VM = DataContext as MainViewModel;
 
             if (VM.HotTimeSpan != newTimeSpan)
             {
@@ -348,8 +327,8 @@ namespace Mirko.Pages
         {
             AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-            this.TimeSpanSelectionListBox.Width = Window.Current.Bounds.Width;
-            this.TimeSpanSelectionListBox.Height = 5000;//Window.Current.Bounds.Height;
+            this.TimeSpanSelectionListView.Width = Window.Current.Bounds.Width;
+            this.TimeSpanSelectionListView.Height = 5000;//Window.Current.Bounds.Height;
 
             this.TimeSpanSelectionPopup.IsOpen = true;
             //this.TimeSpanSelectionFadeIn.Begin();
@@ -368,9 +347,128 @@ namespace Mirko.Pages
             var mainVM = this.DataContext as MainViewModel;
             mainVM.CanGoBack = true;
         }
-#endregion
+        #endregion
 
-#region AppBar
+        #region My entries type popups
+        private void ShowMyEntriesIndicatorPopup()
+        {
+            this.MyEntriesIndicatorGrid.Width = Window.Current.Bounds.Width;
+
+            this.MyEntriesIndicatorPopup.IsOpen = true;
+            this.MyEntriesIndicatorFadeIn.Begin();
+        }
+
+        private void HideMyEntriesIndicatorPopup()
+        {
+            this.MyEntriesIndicatorPopup.IsOpen = false;
+            this.MyEntriesIndicatorFadeOut.Begin();
+        }
+
+        private void MyEntriesIndicatorGrid_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ShowMyEntriesSelectionPopup();
+        }
+
+        private void MyEntriesSelectionListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var selectedIndex = MyEntriesSelectionListView.SelectedIndex;
+            var panel = MyEntriesSelectionListView.ItemsPanelRoot;
+
+            for (int i = 0; i < panel.Children.Count; i++)
+            {
+                var lvItem = panel.Children[i] as ListViewItem;
+                var tb = lvItem.GetDescendant<TextBlock>();
+
+                if (i == selectedIndex)
+                    tb.Foreground = App.Current.Resources["HashtagForeground"] as SolidColorBrush;
+                else
+                    tb.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+            }
+        }
+
+        private async void MyEntriesSelectionListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            HideMyEntriesSelectionPopup();
+
+            var selectedItem = e.ClickedItem as string;
+            int selectedIndex = 0;
+
+            var items = MyEntriesSelectionListView.Items.Cast<string>();
+            for (int i = 0; i < items.Count(); i++)
+                if (items.ElementAt(i) == selectedItem)
+                    selectedIndex = i;
+
+            var converter = Application.Current.Resources["MyEntriesTypeIndexConverter"] as IValueConverter;
+            var newEntriesType = (MyEntriesTypeEnum)converter.ConvertBack(selectedIndex, typeof(MyEntriesTypeEnum), null, null);
+
+            if (VM.MyEntriesType != newEntriesType)
+            {
+                VM.MyEntriesType = newEntriesType;
+                VM.MyEntries.ClearAll();
+                if (MyListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
+                    await MyListView.LoadMoreItemsAsync();
+            }
+        }
+
+        private async void MyEntriesSelectionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            HideMyEntriesSelectionPopup();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.MyEntries.ClearAll();
+
+            if (MyListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
+                await MyListView.LoadMoreItemsAsync();
+        }
+
+        private void ShowMyEntriesSelectionPopup()
+        {
+            AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+            this.MyEntriesSelectionListView.Width = Window.Current.Bounds.Width;
+            this.MyEntriesSelectionListView.Height = 5000;//Window.Current.Bounds.Height;
+
+            this.MyEntriesSelectionPopup.IsOpen = true;
+            //this.MyEntriesSelectionFadeIn.Begin();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.CanGoBack = false;
+        }
+
+        private void HideMyEntriesSelectionPopup()
+        {
+            AppBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            this.MyEntriesSelectionPopup.IsOpen = false;
+            //this.MyEntriesSelectionFadeIn.Begin();
+
+            var mainVM = this.DataContext as MainViewModel;
+            mainVM.CanGoBack = true;
+        }
+        #endregion
+
+        #region Popups
+        private void ShowNewEntriesPopup()
+        {
+            PopupFadeIn.Begin();
+        }
+
+        private void HideNewEntriesPopup()
+        {
+            this.PopupFadeOut.Begin();
+        }
+
+        private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        {
+            if (TimeSpanSelectionPopup.IsOpen)
+            {
+                e.Handled = true;
+                HideTimeSpanSelectionPopup();
+            }
+        }
+        #endregion
+
+        #region AppBar
         private CommandBar AppBar = null;
 
         public CommandBar CreateCommandBar()
@@ -386,6 +484,7 @@ namespace Mirko.Pages
             var add = new AppBarButton()
             {
                 Icon = new SymbolIcon(Symbol.Add),
+                Tag = "add",
                 Label = "nowy",
             };
             add.SetBinding(AppBarButton.CommandProperty, new Binding()

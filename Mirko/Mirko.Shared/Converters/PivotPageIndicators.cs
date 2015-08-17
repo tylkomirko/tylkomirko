@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Mirko.Utils;
+using Mirko.ViewModel;
+using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml.Data;
 
 namespace Mirko.Converters
@@ -57,4 +60,46 @@ namespace Mirko.Converters
                 return 12;
         }
     }
+
+    public class MyEntriesTypeStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var type = (MyEntriesTypeEnum)value;
+            return type.GetStringValue();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyEntriesTypeIndexConverter : IValueConverter
+    {
+        private static Dictionary<MyEntriesTypeEnum, int> lookupDictionary = new Dictionary<MyEntriesTypeEnum, int>()
+        {
+            { MyEntriesTypeEnum.ALL, 0 },
+            { MyEntriesTypeEnum.TAGS, 1 },
+            { MyEntriesTypeEnum.PEOPLE, 2 },
+        };
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var type = (MyEntriesTypeEnum)value;
+            return lookupDictionary[type];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            var index = (int)value;
+
+            foreach (var item in lookupDictionary)
+                if (item.Value == index)
+                    return item.Key;
+
+            return MyEntriesTypeEnum.ALL;
+        }
+    }
+
 }
