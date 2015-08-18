@@ -886,7 +886,7 @@ namespace WykopSDK.API
 
             string URL = "profile/block/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
 
         public async Task<bool> UnblockUser(string username)
@@ -896,7 +896,7 @@ namespace WykopSDK.API
 
             string URL = "profile/unblock/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
             var result = await deserialize<List<bool>>(URL);
-            return result[0];
+            return (result != null) ? result[0] : false;
         }
         #endregion
 
