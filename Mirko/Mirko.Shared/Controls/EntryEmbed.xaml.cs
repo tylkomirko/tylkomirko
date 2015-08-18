@@ -90,23 +90,26 @@ namespace Mirko.Controls
             StatusBarManager.HideProgress();
         }
 
-        private async void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             var me = sender as MediaElement;
 
-            var msg = new MessageDialog("Niestety, coś poszło nie tak. Czy chciałbyś otworzyć ten gif w przeglądarce?", "Przykra sprawa");
-            msg.Commands.Add(new UICommand("Tak", new UICommandInvokedHandler(async (cmd) =>
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
             {
-                await Launcher.LaunchUriAsync(me.Source);
-            })));
-            msg.Commands.Add(new UICommand("Nie", new UICommandInvokedHandler(cmd =>
-            {
-                // do... nothing?
-            })));
+                var msg = new MessageDialog("Niestety, coś poszło nie tak. Czy chciałbyś otworzyć ten gif w przeglądarce?", "Przykra sprawa");
+                msg.Commands.Add(new UICommand("Tak", new UICommandInvokedHandler(async (cmd) =>
+                {
+                    await Launcher.LaunchUriAsync(me.Source);
+                })));
+                msg.Commands.Add(new UICommand("Nie", new UICommandInvokedHandler(cmd =>
+                {
+                    // do... nothing?
+                })));
 
-            await msg.ShowAsync();
+                await msg.ShowAsync();
+            });
 
-            me.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            me.Visibility = Visibility.Collapsed;
         }
 
         private void MediaElement_Tapped(object sender, TappedRoutedEventArgs e)
