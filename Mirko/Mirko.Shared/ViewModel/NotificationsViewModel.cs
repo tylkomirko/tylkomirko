@@ -823,7 +823,7 @@ namespace Mirko.ViewModel
                     }
                 }
 
-                if (notification.Type == NotificationType.CommentDirected)
+                if (entryVM != null && notification.Type == NotificationType.CommentDirected)
                     mainVM.CommentToScrollInto = entryVM.Comments.SingleOrDefault(x => x.Data.ID == notification.Comment.CommentID);
 
                 NavService.NavigateTo("EntryPage");
