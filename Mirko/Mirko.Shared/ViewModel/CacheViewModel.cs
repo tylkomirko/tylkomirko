@@ -429,28 +429,28 @@ namespace Mirko.ViewModel
         }
         #endregion
 
-        #region Hashtag suggestions
-        private ObservableCollectionEx<string> _hashtagSuggestions = null;
-        public ObservableCollectionEx<string> HashtagSuggestions
+        #region Suggestions
+        private ObservableCollectionEx<string> _suggestions = null;
+        public ObservableCollectionEx<string> Suggestions
         {
-            get { return _hashtagSuggestions ?? (_hashtagSuggestions = new ObservableCollectionEx<string>()); }
+            get { return _suggestions ?? (_suggestions = new ObservableCollectionEx<string>()); }
         }
 
         public void GenerateSuggestions(string input, bool hashtag)
         {
-            HashtagSuggestions.Clear();
+            Suggestions.Clear();
 
             if (hashtag)
             {
                 var sugs = ObservedHashtags.Where(x => x.StartsWith(input)).
                     Concat(PopularHashtags.Where(x => x.StartsWith(input)));
-                HashtagSuggestions.AddRange(sugs.Distinct());
+                Suggestions.AddRange(sugs.Distinct());
             }
             else
             {
                 var sugs = TempUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).
                     Concat(ObservedUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)));
-                HashtagSuggestions.AddRange(sugs.Distinct());
+                Suggestions.AddRange(sugs.Distinct());
             }
         }
         #endregion

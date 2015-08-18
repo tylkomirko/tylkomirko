@@ -82,7 +82,7 @@ namespace Mirko.Controls
                 lv.SetBinding(ListView.ItemsSourceProperty, new Binding()
                 {
                     Source = Cache,
-                    Path = new PropertyPath("HashtagSuggestions"),
+                    Path = new PropertyPath("Suggestions"),
                 });
             };
 

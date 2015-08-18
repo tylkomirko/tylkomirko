@@ -95,7 +95,7 @@ namespace Mirko.Controls
             var pop = new PopupMenu();
 
             var suggestionsCount = App.IsMobile ? 4 : 6;
-            var sugs = Cache.HashtagSuggestions.Take(suggestionsCount);
+            var sugs = Cache.Suggestions.Take(suggestionsCount);
             foreach (var sug in sugs)
                 pop.Commands.Add(new UICommand(sug, (c) => ReplaceWordAtPointer(c.Label + " ")));
 

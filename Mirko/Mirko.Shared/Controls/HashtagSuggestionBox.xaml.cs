@@ -71,7 +71,7 @@ namespace Mirko.Controls
             this.HashtagBox.Text = "#";
             this.HashtagBox.SelectionStart = 1;
 
-            Cache.HashtagSuggestions.Clear();
+            Cache.Suggestions.Clear();
         }
     }
 }
