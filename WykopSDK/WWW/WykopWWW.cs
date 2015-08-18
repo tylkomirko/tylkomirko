@@ -190,6 +190,9 @@ namespace WykopSDK.WWW
                 var doc = parser.Parse(stream);
                 if (doc == null) return false;
 
+                var mojWykop = doc.QuerySelector("div#userPanel") as IHtmlDivElement;
+                if(mojWykop != null) return true;
+
                 var form = doc.QuerySelector("form.bspace-big.login-form") as IHtmlFormElement;
                 if (form == null) return false;
                 loginURL = form.Action;
