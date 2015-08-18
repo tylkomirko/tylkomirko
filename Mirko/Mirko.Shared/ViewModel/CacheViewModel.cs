@@ -442,17 +442,15 @@ namespace Mirko.ViewModel
 
             if (hashtag)
             {
-                var sugs = ObservedHashtags.Where(x => x.StartsWith(input));
-                HashtagSuggestions.AddRange(sugs);
-                sugs = PopularHashtags.Where(x => x.StartsWith(input));
-                HashtagSuggestions.AddRange(sugs);
+                var sugs = ObservedHashtags.Where(x => x.StartsWith(input)).
+                    Concat(PopularHashtags.Where(x => x.StartsWith(input)));
+                HashtagSuggestions.AddRange(sugs.Distinct());
             }
             else
             {
-                var sugs = TempUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase));
-                HashtagSuggestions.AddRange(sugs);
-                sugs = ObservedUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase));
-                HashtagSuggestions.AddRange(sugs);
+                var sugs = TempUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)).
+                    Concat(ObservedUsers.Where(x => x.StartsWith(input, StringComparison.CurrentCultureIgnoreCase)));
+                HashtagSuggestions.AddRange(sugs.Distinct());
             }
         }
         #endregion
