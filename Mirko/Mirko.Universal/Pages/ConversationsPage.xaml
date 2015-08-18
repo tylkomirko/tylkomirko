@@ -76,6 +76,10 @@
                                 <core:EventTriggerBehavior EventName="Holding">
                                     <utils:OpenMenuFlyout />
                                 </core:EventTriggerBehavior>
+
+                                <core:EventTriggerBehavior EventName="RightTapped">
+                                    <utils:OpenMenuFlyout />
+                                </core:EventTriggerBehavior>
                             </i:Interaction.Behaviors>
 
                             <FlyoutBase.AttachedFlyout>
@@ -87,7 +91,7 @@
 
                             <TextBlock Grid.Column="0"
                                        Grid.Row="0"
-                                       FontSize="21.6"
+                                       FontSize="26"
                                        Text="{x:Bind Data.AuthorName}"
                                        Foreground="{x:Bind Data.AuthorGroup, Converter={StaticResource GroupToColor}}" />
 
@@ -97,7 +101,7 @@
                                        VerticalAlignment="Bottom"
                                        Margin="5,0,0,3.5"
                                        TextTrimming="CharacterEllipsis"
-                                       FontSize="12"
+                                       FontSize="14"
                                        Foreground="#404040">
                                 <Run Text="{x:Bind Data.LastUpdate, Converter={StaticResource DateConverter}, Mode=OneWay}"/>
                                 <Run Text="temu"/>
@@ -106,7 +110,7 @@
                             <TextBlock Grid.ColumnSpan="2"
                                        Grid.Row="1"
                                        TextWrapping="Wrap"
-                                       FontSize="11.2"
+                                       FontSize="13"
                                        Tag="{x:Bind Data.AuthorName}"
                                        Text="{x:Bind Data.LastMessage, Mode=OneWay}"
                                        Foreground="{x:Bind Data.Status, Converter={StaticResource ConversationStatusToBrush}, Mode=OneWay}">

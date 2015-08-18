@@ -58,7 +58,7 @@
                     <DataTemplate x:DataType="models:NotificationViewModel">
                         <RichTextBlock x:Name="BodyRTB"
                                        Margin="0,0,0,7.2"
-                                       FontSize="11.2"
+                                       FontSize="14"
                                        IsTextSelectionEnabled="False"
                                        utils:Injectors.Notification="{x:Bind Data, Mode=OneWay}"/>
                     </DataTemplate>
