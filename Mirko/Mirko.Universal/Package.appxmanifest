@@ -5,7 +5,7 @@
   <Properties>
     <DisplayName>Mirko.Universal</DisplayName>
     <PublisherDisplayName>Sebas</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <Logo>Assets\mirko_store_50x50.png</Logo>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
@@ -15,10 +15,21 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Mirko.Universal.App">
-      <uap:VisualElements DisplayName="Mirko.Universal" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Mirko.Universal" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
+      <uap:VisualElements DisplayName="Tylko Mirko" Square150x150Logo="Assets\mirko_icon_150x150.png" Square44x44Logo="Assets\mirko_square_44x44.png" Description="Klient Mirkobloga" BackgroundColor="transparent">
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\mirko_badge_24x24.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\mirko_icon_310x150.png" Square71x71Logo="Assets\mirko_icon_71x71.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\mirko_splash_620x300.png" BackgroundColor="black" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+          <uap:Rotation Preference="landscape" />
+          <uap:Rotation Preference="portraitFlipped" />
+          <uap:Rotation Preference="landscapeFlipped" />
+        </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="BackgroundTasks.Cleaner">
@@ -36,5 +47,6 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="picturesLibrary" />
   </Capabilities>
 </Package>

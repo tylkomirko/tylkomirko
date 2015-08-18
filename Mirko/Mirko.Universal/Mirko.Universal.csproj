@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Mirko.Universal</RootNamespace>
     <AssemblyName>Mirko.Universal</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <DefaultLanguage>pl-pl</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
@@ -183,6 +183,26 @@
     <Content Include="Assets\appbar.text.bold.png" />
     <Content Include="Assets\appbar.text.italic.png" />
     <Content Include="Assets\czacha.png" />
+    <Content Include="Assets\mirko_badge_24x24.scale-100.png" />
+    <Content Include="Assets\mirko_badge_24x24.scale-200.png" />
+    <Content Include="Assets\mirko_badge_24x24.scale-400.png" />
+    <Content Include="Assets\mirko_icon_150x150.scale-100.png" />
+    <Content Include="Assets\mirko_icon_150x150.scale-200.png" />
+    <Content Include="Assets\mirko_icon_150x150.scale-400.png" />
+    <Content Include="Assets\mirko_icon_310x150.scale-100.png" />
+    <Content Include="Assets\mirko_icon_310x150.scale-200.png" />
+    <Content Include="Assets\mirko_icon_310x150.scale-400.png" />
+    <Content Include="Assets\mirko_icon_71x71.scale-100.png" />
+    <Content Include="Assets\mirko_icon_71x71.scale-200.png" />
+    <Content Include="Assets\mirko_icon_71x71.scale-400.png" />
+    <Content Include="Assets\mirko_splash_620x300.scale-200.png" />
+    <Content Include="Assets\mirko_square_44x44.scale-100.png" />
+    <Content Include="Assets\mirko_square_44x44.scale-200.png" />
+    <Content Include="Assets\mirko_square_44x44.scale-400.png" />
+    <Content Include="Assets\mirko_store_50x50.scale-100.png" />
+    <Content Include="Assets\mirko_store_50x50.scale-200.png" />
+    <Content Include="Assets\mirko_store_50x50.scale-400.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
