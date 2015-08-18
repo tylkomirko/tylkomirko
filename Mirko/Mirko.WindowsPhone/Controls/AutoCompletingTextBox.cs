@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko.Utils;
 using Mirko.ViewModel;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -171,8 +172,15 @@ namespace Mirko.Controls
 
             newText = newText.Insert(idx, replacementWord);
 
-            this.Text = newText;
-            this.SelectionStart = idx + before.Length + replacementWord.Length - after.Length;
+            try
+            {
+                this.Text = newText;
+                this.SelectionStart = idx + before.Length + replacementWord.Length - after.Length;
+            }
+            catch (Exception e)
+            {
+                App.TelemetryClient.TrackException(e);
+            }
         }
     }
 }

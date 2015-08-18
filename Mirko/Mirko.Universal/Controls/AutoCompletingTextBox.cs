@@ -147,8 +147,15 @@ namespace Mirko.Controls
 
             newText = newText.Insert(idx, replacementWord);
 
-            this.Text = newText;
-            this.SelectionStart = idx + before.Length + replacementWord.Length - after.Length;
+            try
+            {
+                this.Text = newText;
+                this.SelectionStart = idx + before.Length + replacementWord.Length - after.Length;
+            }
+            catch (Exception e)
+            {
+                App.TelemetryClient.TrackException(e);
+            }
         }
     }
 }
