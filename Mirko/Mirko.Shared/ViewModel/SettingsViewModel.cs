@@ -222,7 +222,7 @@ namespace Mirko.ViewModel
             {
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
                     "Cleaner",
-                    new MaintenanceTrigger(60 * 12, false),
+                    new MaintenanceTrigger(60 * 6, false),
                     new SystemCondition(SystemConditionType.UserNotPresent));
 
                 PseudoPushToggled.Execute(null);

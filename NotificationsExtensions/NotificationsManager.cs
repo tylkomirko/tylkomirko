@@ -25,6 +25,7 @@ namespace NotificationsExtensions
 
         public static void SetLiveTile()
         {
+#if WINDOWS_PHONE_APP
             /* change tiles to badged ones */
             var smallTile = TileContentFactory.CreateTileSquare71x71IconWithBadge();
             smallTile.Branding = TileBranding.None;
@@ -42,6 +43,7 @@ namespace NotificationsExtensions
             TileUpdateManager.CreateTileUpdaterForApplication().Update(smallTile.CreateNotification());
             TileUpdateManager.CreateTileUpdaterForApplication().Update(mediumTile.CreateNotification());
             TileUpdateManager.CreateTileUpdaterForApplication().Update(wideTile.CreateNotification());
+#endif
         }
 
         public static void ClearLiveTile()
