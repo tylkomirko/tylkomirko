@@ -30,6 +30,10 @@
                             <core:EventTriggerBehavior EventName="Holding">
                                 <utils:OpenMenuFlyout />
                             </core:EventTriggerBehavior>
+
+                            <core:EventTriggerBehavior EventName="RightTapped">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
                         </i:Interaction.Behaviors>
 
                         <FlyoutBase.AttachedFlyout>
@@ -70,6 +74,10 @@
                     <Grid Margin="-7,0,0,12">
                         <i:Interaction.Behaviors>
                             <core:EventTriggerBehavior EventName="Holding">
+                                <utils:OpenMenuFlyout />
+                            </core:EventTriggerBehavior>
+
+                            <core:EventTriggerBehavior EventName="RightTapped">
                                 <utils:OpenMenuFlyout />
                             </core:EventTriggerBehavior>
                         </i:Interaction.Behaviors>
@@ -147,7 +155,7 @@
                                  ScrollingUp="ListView_ScrollingUp"
                                  Loaded="ListView_Loaded"
                                  ItemTemplateSelector="{StaticResource TemplateSelector}"
-                                 ItemContainerStyle="{StaticResource StretchedOutListViewItem}"
+                                 ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                  ItemsSource="{x:Bind VM.HashtagsCollection, Mode=OneWay}"
                                  VirtualizingStackPanel.VirtualizationMode="Recycling">
 
