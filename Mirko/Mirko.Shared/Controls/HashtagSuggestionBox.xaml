@@ -24,6 +24,7 @@
                  Text="#"
                  SelectionStart="1"
                  InputScope="Search"
+                 FontSize="{StaticResource HashtagSuggestionBoxFontSize}"
                  Style="{StaticResource TextBoxStyle1}"
                  TextChanged="HashtagBox_TextChanged"
                  KeyDown="HashtagBox_KeyDown" />

@@ -6,6 +6,10 @@
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="HashtagSuggestionBoxBackground" Color="#1B1B1B" />
         </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="HashtagSuggestionBoxBackground" Color="White" />
+        </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
     <x:Double x:Key="AppHeaderFontSize">18</x:Double>
