@@ -149,7 +149,14 @@ namespace Mirko.ViewModel
         private RelayCommand _logoTappedCommand = null;
         public RelayCommand LogoTappedCommand
         {
-            get { return _logoTappedCommand ?? (_logoTappedCommand = new RelayCommand(() => NavService.NavigateTo("PivotPage"))); }
+            get
+            {
+                return _logoTappedCommand ?? (_logoTappedCommand = new RelayCommand(() =>
+                {
+                    if (App.IsMobile)
+                        NavService.NavigateTo("PivotPage");
+                }));
+            }       
         }
 
         private RelayCommand _hashtagTappedCommand = null;
