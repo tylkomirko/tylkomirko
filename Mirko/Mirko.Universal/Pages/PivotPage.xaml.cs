@@ -35,6 +35,7 @@ namespace Mirko.Pages
         private const double PivotOffsetThreshold = 10;
 
         private MainViewModel VM { get { return DataContext as MainViewModel; } }
+        private SettingsViewModel SettingsVM { get { return SimpleIoc.Default.GetInstance<SettingsViewModel>(); } }
 
         public PivotPage()
         {
@@ -179,7 +180,8 @@ namespace Mirko.Pages
                 App.TelemetryClient.TrackPageView("PivotPage-Mirko");
 
                 AppBar.MakeButtonVisible("refresh");
-                AppBar.MakeButtonVisible("add");
+                if(SettingsVM.UserInfo != null)
+                    AppBar.MakeButtonVisible("add");
                 HideTimeSpanIndicatorPopup();
                 HideMyEntriesIndicatorPopup();
 

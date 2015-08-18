@@ -399,8 +399,7 @@
                           Icon="Add"
                           Tag="add"
                           Command="{x:Bind VM.AddNewEntryCommand}"
-                          Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
-                                       Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
+                          Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}"/>
             
             <AppBarButton Label="odśwież"
                           Icon="Refresh"
@@ -413,16 +412,14 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="mój profil"
                               Command="{x:Bind VM.GoToYourProfile}"
-                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
-                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}" />
+                              Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}" />
                 
                 <AppBarButton Label="ustawienia"
                               Command="{x:Bind VM.SettingsCommand}" />
 
                 <AppBarButton Label="czarnolisto"
                               Command="{x:Bind VM.GoToBlacklistPage}"
-                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
-                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}" />
+                              Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}" />
                 
                 <AppBarButton Label="podziękuj"
                               Command="{x:Bind VM.GoToDonationPage}" />
@@ -434,8 +431,7 @@
                 <AppBarButton Label="wyloguj"
                               x:Name="LogoutButton"
                               Command="{x:Bind VM.LogInOutCommand}"
-                              Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
-                                           Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
+                              Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Grid>
