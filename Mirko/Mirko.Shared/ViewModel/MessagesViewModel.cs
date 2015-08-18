@@ -131,24 +131,32 @@ namespace Mirko.ViewModel
         private async Task ExecuteSaveCommand()
         {
             var list = new List<Conversation>(ConversationsList.Count);
-            foreach(var conv in ConversationsList)
+
+            try
             {
-                Conversation tmp = conv.Data;
-                if (conv.Messages != null)
+                foreach (var conv in ConversationsList)
                 {
-                    var newMsgs = new List<PM>();
-                    foreach(var msg in conv.Messages)
+                    Conversation tmp = conv.Data;
+                    if (conv.Messages != null)
                     {
-                        var tmpMsg = msg.Data;
-                        if(msg.EmbedVM != null)
-                            tmpMsg.Embed = msg.EmbedVM.EmbedData;
+                        var newMsgs = new List<PM>();
+                        foreach (var msg in conv.Messages)
+                        {
+                            var tmpMsg = msg.Data;
+                            if (msg.EmbedVM != null)
+                                tmpMsg.Embed = msg.EmbedVM.EmbedData;
 
-                        newMsgs.Add(tmpMsg);
+                            newMsgs.Add(tmpMsg);
+                        }
+
+                        await DispatcherHelper.RunAsync(() => tmp.Messages = newMsgs);
                     }
-
-                    await DispatcherHelper.RunAsync(() => tmp.Messages = newMsgs);
+                    list.Add(tmp);
                 }
-                list.Add(tmp);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("ExecuteSaveCommand", e);
             }
 
             await WykopSDK.WykopSDK.LocalStorage.SaveConversations(list);
