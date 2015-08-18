@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="40167Eggplant.TylkoMirkoBeta" Publisher="CN=1BBF47AD-E998-47CF-BD00-0EBB4B231B55" Version="1.1.0.0" />
+  <Identity Name="40167Eggplant.TylkoMirkoBeta" Publisher="CN=1BBF47AD-E998-47CF-BD00-0EBB4B231B55" Version="1.4.1.0" />
   <mp:PhoneIdentity PhoneProductId="f11d6fe7-0de9-4749-86a8-49e45c7b14e2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Tylko Mirko</DisplayName>
