@@ -255,14 +255,10 @@ namespace Mirko
 
                 WykopSDK.WykopSDK.LocalStorage.InitAction();
 
-                if (!string.IsNullOrEmpty(e.Arguments))
-                {
-                    ProcessLaunchArguments(e.Arguments);
-                }
-                else
-                {
+                if(string.IsNullOrEmpty(e.Arguments))
                     NavService.NavigateTo("PivotPage");
-                }
+                else
+                    ProcessLaunchArguments(e.Arguments);
             }
             else
             {
@@ -288,19 +284,21 @@ namespace Mirko
         {
             if (string.IsNullOrEmpty(args)) return;
 
-            NavService.InsertMainPage();
+            if (IsMobile)
+                NavService.InsertMainPage();
+            else
+                NavService.NavigateTo("PivotPage");
 
             var notification = JsonConvert.DeserializeObject<Notification>(args);
             if(notification.Type == NotificationType.EntryDirected || notification.Type == NotificationType.CommentDirected)
             {
                 var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>(); // make sure it exists
-                Messenger.Default.Send<NotificationMessage<Notification>>
-                    (new NotificationMessage<Notification>(notification, "Go to"));
+                Messenger.Default.Send(new NotificationMessage<Notification>(notification, "Go to"));
             }
             else if(notification.Type == NotificationType.PM)
             {
                 var VM = SimpleIoc.Default.GetInstance<MessagesViewModel>(); // make sure it exists
-                Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(notification.AuthorName, "Go to"));
+                Messenger.Default.Send(new NotificationMessage<string>(notification.AuthorName, "Go to"));
             }
             else
             {
