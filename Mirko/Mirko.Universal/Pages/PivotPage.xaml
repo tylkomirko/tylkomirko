@@ -403,6 +403,7 @@
             
             <AppBarButton Label="odśwież"
                           Icon="Refresh"
+                          Tag="refresh"
                           Command="{x:Bind VM.RefreshMirkoEntries}" />
 
             <AppBarButton Label="w górę"

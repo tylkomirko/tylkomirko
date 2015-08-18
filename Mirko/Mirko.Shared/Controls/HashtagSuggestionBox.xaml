@@ -33,7 +33,7 @@
                   Grid.Row="1"
                   IsItemClickEnabled="True"
                   ItemClick="SuggestionsListView_ItemClick"
-                  ItemsSource="{Binding HashtagSuggestions}">
+                  ItemsSource="{Binding Suggestions}">
 
             <ListView.ItemTemplate>
                 <DataTemplate>
