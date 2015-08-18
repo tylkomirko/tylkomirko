@@ -13,24 +13,28 @@
     d:DesignWidth="400"
     DataContext="{Binding Main.SelectedEmbed, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
-        <MenuFlyout x:Key="SaveFlyout">
-            <MenuFlyoutItem Text="zapisz" 
-                            Command="{Binding SaveImageCommand}"/>
-        </MenuFlyout>
-    </UserControl.Resources>
-
     <ScrollViewer x:Name="ImageScrollViewer"
                   VerticalScrollBarVisibility="Hidden" 
                   HorizontalScrollBarVisibility="Hidden" 
                   IsDoubleTapEnabled="True"
                   ZoomMode="Enabled">
-              
+
         <Image x:Name="Image"
                Source="{Binding EmbedData.URL}"
-               Holding="Image_Holding"
+               Holding="Image_OpenFlyout"
+               RightTapped="Image_OpenFlyout"
                IsHoldingEnabled="True"
                IsDoubleTapEnabled="True"
-               Stretch="Uniform" />
+               Stretch="Uniform">
+
+            <FlyoutBase.AttachedFlyout>
+                <MenuFlyout x:Key="SaveFlyout">
+                    <MenuFlyoutItem Text="zapisz" 
+                                    Command="{Binding SaveImageCommand}"/>
+                    
+                </MenuFlyout>
+            </FlyoutBase.AttachedFlyout>
+            
+        </Image>
     </ScrollViewer>
 </UserControl>

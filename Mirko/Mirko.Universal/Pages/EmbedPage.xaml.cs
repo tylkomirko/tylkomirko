@@ -1,11 +1,10 @@
 ﻿using Mirko.Utils;
-using Mirko.ViewModel;
 using System;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -93,10 +92,25 @@ namespace Mirko.Pages
             }, TimeSpan.FromMilliseconds(10));
         }
 
-        private void Image_Holding(object sender, HoldingRoutedEventArgs e)
+        private void Image_OpenFlyout(object sender, RoutedEventArgs e)
         {
-            var mf = this.Resources["SaveFlyout"] as MenuFlyout;
+            var holding = e as HoldingRoutedEventArgs;
+            var rightTap = e as RightTappedRoutedEventArgs;
+
+            if (holding == null && rightTap == null) return;
+
+            if (holding != null &&
+                (holding.HoldingState == Windows.UI.Input.HoldingState.Completed ||
+                 holding.HoldingState == Windows.UI.Input.HoldingState.Canceled))
+                return;
+
+            var mf = FlyoutBase.GetAttachedFlyout(Image);
             mf.ShowAt(Image);
+
+            if (holding != null)
+                holding.Handled = true;
+            else
+                rightTap.Handled = true;
         }
     }
 }
