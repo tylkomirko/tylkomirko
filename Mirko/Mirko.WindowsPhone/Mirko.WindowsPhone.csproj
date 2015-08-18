@@ -343,7 +343,7 @@
       <Project>{c5721b58-be5e-4725-843c-6773d9688c31}</Project>
       <Name>NotificationsExtensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WykopSDK\WykopSDK.csproj">
+    <ProjectReference Include="..\..\WykopSDK\WykopSDK.csproj">
       <Project>{93a3f254-c9b1-4bec-8001-7a8abf648e27}</Project>
       <Name>WykopSDK</Name>
     </ProjectReference>

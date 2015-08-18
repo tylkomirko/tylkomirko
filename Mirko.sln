@@ -9,13 +9,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mirko.Shared", "Mirko\Mirko
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirko.WindowsPhone", "Mirko\Mirko.WindowsPhone\Mirko.WindowsPhone.csproj", "{9520CC96-0693-4653-9005-17DD645134D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WykopSDK", "Mirko\WykopSDK\WykopSDK.csproj", "{93A3F254-C9B1-4BEC-8001-7A8ABF648E27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WykopSDK", "WykopSDK\WykopSDK.csproj", "{93A3F254-C9B1-4BEC-8001-7A8ABF648E27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationsExtensions", "NotificationsExtensions\NotificationsExtensions.csproj", "{C5721B58-BE5E-4725-843C-6773D9688C31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundTasks", "BackgroundTasks\BackgroundTasks.csproj", "{C7F467F4-8AF6-44F2-B10E-4B671FFACFA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirko.Universal", "Mirko.Universal\Mirko.Universal.csproj", "{9B63542F-9FC3-4021-AB84-6FD3E3352EB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirko.Universal", "Mirko\Mirko.Universal\Mirko.Universal.csproj", "{9B63542F-9FC3-4021-AB84-6FD3E3352EB6}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
