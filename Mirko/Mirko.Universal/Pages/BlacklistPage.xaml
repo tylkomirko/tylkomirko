@@ -8,7 +8,6 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:utils="using:Mirko.Utils"
-    xmlns:q="using:QKit"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -28,28 +27,32 @@
                    Text="CZARNOLISTO"/>
         
         <Pivot Grid.Row="1"
-               Margin="-5,-27,0,0">
+               Margin="-5,-15,0,0">
             
             <Pivot.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
+                <DataTemplate x:DataType="x:String">
+                    <TextBlock Text="{x:Bind}"
                                FontSize="20"/>
                 </DataTemplate>
             </Pivot.HeaderTemplate>
 
-            <PivotItem Header="tagi">
-                <ListView ItemsSource="{Binding Tags}"
-                          Margin="0,-25,0,0"
+            <PivotItem Header="tagi"
+                       Margin="10,0,0,0">
+                <ListView ItemsSource="{x:Bind VM.Tags, Mode=OneWay}"
                           ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="x:String">
                             <TextBlock Style="{StaticResource BodyTextBlockStyle}"
-                                       Text="{Binding}"
-                                       Margin="0,5,0,0">
+                                       Text="{x:Bind}"
+                                       Margin="-12,5,0,0">
                                 
                                     <i:Interaction.Behaviors>
                                         <core:EventTriggerBehavior EventName="Holding">
+                                            <utils:OpenMenuFlyout />
+                                        </core:EventTriggerBehavior>
+                                        
+                                        <core:EventTriggerBehavior EventName="RightTapped">
                                             <utils:OpenMenuFlyout />
                                         </core:EventTriggerBehavior>
                                     </i:Interaction.Behaviors>
@@ -58,7 +61,7 @@
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="usuń"
                                                         Command="{Binding ElementName=MainGrid, Path=DataContext.UnblacklistTag}"
-                                                        CommandParameter="{Binding}"/>
+                                                        CommandParameter="{x:Bind}"/>
                                     </MenuFlyout>
                                 </FlyoutBase.AttachedFlyout>
                                 
@@ -69,28 +72,32 @@
                 </ListView>
             </PivotItem>
 
-            <PivotItem Header="ludzie">
-                <ListView ItemsSource="{Binding People}"
-                          Margin="0,-25,0,0"
+            <PivotItem Header="ludzie"
+                       Margin="10,0,0,0">
+                <ListView ItemsSource="{x:Bind VM.People, Mode=OneWay}"
                           ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="x:String">
                             <TextBlock Style="{StaticResource BodyTextBlockStyle}"
-                                       Text="{Binding}"
-                                       Margin="0,5,0,0">
+                                       Text="{x:Bind}"
+                                       Margin="-12,5,0,0">
                                 
                                     <i:Interaction.Behaviors>
                                         <core:EventTriggerBehavior EventName="Holding">
                                             <utils:OpenMenuFlyout />
                                         </core:EventTriggerBehavior>
-                                    </i:Interaction.Behaviors>
+                                        
+                                        <core:EventTriggerBehavior EventName="RightTapped">
+                                            <utils:OpenMenuFlyout />
+                                        </core:EventTriggerBehavior>
+                                    </i:Interaction.Behaviors>                               
                                 
                                 <FlyoutBase.AttachedFlyout>
                                     <MenuFlyout>
                                         <MenuFlyoutItem Text="usuń"
                                                         Command="{Binding ElementName=MainGrid, Path=DataContext.UnblockPerson}"
-                                                        CommandParameter="{Binding}"/>
+                                                        CommandParameter="{x:Bind}"/>
                                     </MenuFlyout>
                                 </FlyoutBase.AttachedFlyout>
 
