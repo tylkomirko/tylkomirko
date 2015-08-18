@@ -412,17 +412,6 @@ namespace Mirko.Pages
             }
         }
 
-        private async void MyEntriesSelectionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            HideMyEntriesSelectionPopup();
-
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.MyEntries.ClearAll();
-
-            if (MyListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
-                await MyListView.LoadMoreItemsAsync();
-        }
-
         private void ShowMyEntriesSelectionPopup()
         {
             AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;

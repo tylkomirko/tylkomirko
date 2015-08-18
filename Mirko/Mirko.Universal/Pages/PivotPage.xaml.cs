@@ -53,6 +53,8 @@ namespace Mirko.Pages
 
             var navService = SimpleIoc.Default.GetInstance<NavigationService>();
             AppHeader = navService.GetAppHeader();
+
+            Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += (s, e) => CalculateNewMirkoEntriesPopupOffset();
         }
 
         public void Dispose()
@@ -140,14 +142,7 @@ namespace Mirko.Pages
                 HasEntryAnimationPlayed = true;
             }
 
-            var popupGrid = NewMirkoEntriesPopup.Child as Grid;
-            var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
-
-            if (!App.IsMobile)
-                horizontal = horizontal / 2.0 - 30.0;
-
-            NewMirkoEntriesPopup.HorizontalOffset = horizontal;
-            NewMirkoEntriesPopup.IsOpen = true;
+            CalculateNewMirkoEntriesPopupOffset();
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
@@ -426,17 +421,6 @@ namespace Mirko.Pages
             }
         }
 
-        private async void MyEntriesSelectionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            HideMyEntriesSelectionPopup();
-
-            var mainVM = this.DataContext as MainViewModel;
-            mainVM.MyEntries.ClearAll();
-
-            if (MyListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
-                await MyListView.LoadMoreItemsAsync();
-        }
-
         private void ShowMyEntriesSelectionPopup()
         {
             AppBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
@@ -464,6 +448,20 @@ namespace Mirko.Pages
         #endregion
 
         #region Popups
+        private void CalculateNewMirkoEntriesPopupOffset()
+        {
+            var popupGrid = NewMirkoEntriesPopup.Child as Grid;
+            double offset;
+
+            if (App.IsMobile)
+                offset = Window.Current.Bounds.Right - popupGrid.Width - 22;
+            else
+                offset = (Window.Current.Bounds.Width / 2.0) - popupGrid.Width - 30.0;
+
+            NewMirkoEntriesPopup.HorizontalOffset = offset;
+            NewMirkoEntriesPopup.IsOpen = true;
+        }
+
         private void ShowNewEntriesPopup()
         {
             PopupFadeIn.Begin();
