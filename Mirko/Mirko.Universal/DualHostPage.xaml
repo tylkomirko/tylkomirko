@@ -30,7 +30,7 @@
                      Canvas.ZIndex="1"
                      Opacity="{StaticResource AppHeaderOpacity}"
                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                     x:Name="ProgressBar"/>
+                     x:Name="ProgressBar" />
 
         <Grid Grid.Row="1"
               Grid.ColumnSpan="3"

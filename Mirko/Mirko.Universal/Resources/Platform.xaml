@@ -963,7 +963,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="CustomPivotStyle" TargetType="Pivot">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
@@ -1144,7 +1144,7 @@
                                         <Button x:Name="NextButton" Background="Transparent" Grid.Column="1" HorizontalAlignment="Right" Height="36" IsTabStop="False" IsEnabled="False" Margin="{ThemeResource PivotNavButtonMargin}" Opacity="0" Template="{StaticResource NextTemplate}" UseSystemFocusVisuals="False" VerticalAlignment="Top" Width="20"/>
                                         <ContentPresenter x:Name="RightHeaderPresenter" ContentTemplate="{TemplateBinding RightHeaderTemplate}" Content="{TemplateBinding RightHeader}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                         <ItemsPresenter x:Name="PivotItemPresenter" Grid.ColumnSpan="3" Grid.Row="1">
-                                            
+
                                             <ItemsPresenter.RenderTransform>
                                                 <TransformGroup>
                                                     <TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>

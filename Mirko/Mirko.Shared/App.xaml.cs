@@ -203,6 +203,9 @@ namespace Mirko
             var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
             applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
 
+            if (IsMobile)
+                StatusBarManager.Init();
+
             var locator = this.Resources["Locator"] as ViewModelLocator;
             NavService = locator.NavService;
 
@@ -269,12 +272,8 @@ namespace Mirko
             Window.Current.Activate();
 
 #if WINDOWS_UWP
-            if (IsMobile)
-                StatusBarManager.Init();
-            else
+            if (!IsMobile)
                 StatusBarManager.Init(NavService.GetProgressBar(), NavService.GetProgressTextBlock());
-#else
-            StatusBarManager.Init();
 #endif
 
             Messenger.Default.Send(new NotificationMessage("Init"));
