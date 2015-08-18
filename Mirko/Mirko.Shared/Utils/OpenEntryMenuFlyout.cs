@@ -73,6 +73,7 @@ namespace Mirko.Utils
 
             if (entryData.AuthorName == myUserName)
             {
+                makeFlyoutItemVisible("separator");
                 makeFlyoutItemVisible("delete");
                 makeFlyoutItemVisible("edit");
             }

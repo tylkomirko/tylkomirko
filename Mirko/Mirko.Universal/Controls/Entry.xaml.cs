@@ -92,7 +92,6 @@ namespace Mirko.Controls
 
             System.Diagnostics.Debug.WriteLine("pos: " + pos);
 
-            var VM = this.DataContext as EntryBaseViewModel;
             if (VM.EmbedVM != null && pos.Y > 0)
             {
                 var mf = FlyoutBase.GetAttachedFlyout(EmbedPreview);

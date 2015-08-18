@@ -70,10 +70,10 @@
             <MenuFlyout>
                 <MenuFlyoutItem Text="daj plusa"
                                 Tag="plus"
-                                Command="{x:Bind VM.VoteCommand}" />                
+                                Command="{Binding VoteCommand}" />                
                 <MenuFlyoutItem Text="cofnij plusa"
                                 Tag="unplus"
-                                Command="{x:Bind VM.VoteCommand}"
+                                Command="{Binding VoteCommand}"
                                 Visibility="Collapsed"/>
 
                 <MenuFlyoutItem Text="pokaż plusujących"
@@ -82,7 +82,7 @@
 
                 <MenuFlyoutItem Text="odpowiedz"
                                 Tag="reply"
-                                Command="{x:Bind VM.ReplyCommand}"/>
+                                Command="{Binding ReplyCommand}"/>
                 
                 <MenuFlyoutItem Text="dodaj do ulubionych"
                                 Tag="favourite"
@@ -92,15 +92,16 @@
                                 Command="{Binding FavouriteCommand}"
                                 Visibility="Collapsed"/>
 
-                <MenuFlyoutSeparator />
+                <MenuFlyoutSeparator Visibility="Collapsed"
+                                     Tag="separator"/>
 
                 <MenuFlyoutItem Text="edytuj"
                                 Tag="edit"
-                                Command="{x:Bind VM.EditCommand}"
+                                Command="{Binding EditCommand}"
                                 Visibility="Collapsed"/>
                 <MenuFlyoutItem Text="usuń"
                                 Tag="delete"
-                                Command="{x:Bind VM.DeleteCommand}"
+                                Command="{Binding DeleteCommand}"
                                 Visibility="Collapsed"/>
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
