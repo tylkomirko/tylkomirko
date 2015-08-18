@@ -455,7 +455,8 @@ namespace Mirko
 
             localSettings.Remove("VM");
 
-            if (currentFrame.DataContext != null &&
+            if (currentFrame != null &&
+                currentFrame.DataContext != null &&
                 currentFrame.DataContext is IResumable)
             {
                 try
