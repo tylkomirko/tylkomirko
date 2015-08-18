@@ -268,6 +268,11 @@ namespace Mirko
                 ProcessLaunchArguments(e.Arguments);
             }
 
+#if WINDOWS_UWP
+            if (!IsMobile)
+                Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(500, 500));
+#endif
+
             // Ensure the current window is active
             Window.Current.Activate();
 

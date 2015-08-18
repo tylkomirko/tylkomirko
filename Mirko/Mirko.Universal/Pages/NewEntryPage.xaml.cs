@@ -24,8 +24,15 @@ namespace Mirko.Pages
         {
             this.InitializeComponent();
 
-            if (!App.IsMobile)
+            if (App.IsMobile)
+            {
+                FormattingAppBar.MakeButtonInvisible("code");
+                FormattingAppBar.MakeButtonInvisible("quote");
+            }
+            else
+            {
                 FormattingAppBar.SecondaryCommands.Clear();
+            }
         }
         
         private TextBox CurrentEditor()
