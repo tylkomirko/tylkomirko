@@ -489,7 +489,8 @@ namespace Mirko
 
             if(!settings.ContainsKey("VM"))
             {
-                NavService.InsertMainPage();
+                if(App.IsMobile)
+                    NavService.InsertMainPage();
                 NavService.NavigateTo(pageKey);
                 return;
             }
@@ -518,7 +519,8 @@ namespace Mirko
 
             if(resumed)
             {
-                NavService.InsertMainPage();
+                if(App.IsMobile)
+                    NavService.InsertMainPage();
                 NavService.NavigateTo(pageKey);
             }
             else

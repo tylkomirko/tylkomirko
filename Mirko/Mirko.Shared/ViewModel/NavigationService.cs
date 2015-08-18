@@ -161,10 +161,16 @@ namespace Mirko.ViewModel
             if (!App.IsMobile && !navigatedToPivotPage)
             {
                 var frame = rootPage.FindName("FirstFrame") as Frame;
-                var pivotPage = GetCachedPage(pagesNames["PivotPage"]);
-                frame.Content = pivotPage.Page;
-                rootPageFrame.Content = GetCachedPage(pagesNames["EmptyPage"]).Page;
-                backStack.Push(pagesNames["EmptyPage"]);
+                frame.Content = GetCachedPage(pagesNames["PivotPage"]).Page;
+
+                string secondPageName = (key == "PivotPage") ? "EmptyPage" : key;
+                var secondPageType = pagesNames[secondPageName];
+                rootPageFrame.Content = GetCachedPage(secondPageType).Page;
+
+                if (secondPageName != "EmptyPage")
+                    backStack.Push(pagesNames["EmptyPage"]);
+
+                backStack.Push(secondPageType);
 
                 navigatedToPivotPage = true;
             }
