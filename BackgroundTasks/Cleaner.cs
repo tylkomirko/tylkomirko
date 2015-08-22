@@ -1,7 +1,10 @@
 ﻿using MetroLog;
 using MetroLog.Targets;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
@@ -11,7 +14,7 @@ namespace BackgroundTasks
     public sealed class Cleaner : IBackgroundTask
     {
         private readonly ILogger Logger = null;
-        private const ulong ThresholdSize = 5 * 1024 * 1024;
+        private const ulong ThresholdSize = 5 * 1024 * 1024; // 5 MB
 
         public Cleaner()
         {
@@ -30,50 +33,72 @@ namespace BackgroundTasks
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
+            var cts = new CancellationTokenSource();
 
-            Logger.Trace("Image cache cleaner started.");
+            taskInstance.Canceled += (s, e) =>
+            {
+                cts.Cancel();
+                cts.Dispose();
+            };
 
-            await CleanImageCache();
-
-            Windows.Storage.ApplicationData.Current.LocalSettings.Values["CleanerLastTime"] = DateTime.Now.ToBinary();
-
-            deferral.Complete();
+            try
+            {
+                Logger.Trace("Image cache cleaner started.");
+                await CleanImageCache(cts.Token);
+                ApplicationData.Current.LocalSettings.Values["CleanerLastTime"] = DateTime.Now.ToBinary();
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Cleaner failed: ", e);
+            }
+            finally
+            {            
+                deferral.Complete();
+            }
         }
 
-        private async Task CleanImageCache()
+        private async Task CleanImageCache(CancellationToken ct)
         {
             var localFolder = ApplicationData.Current.TemporaryFolder;
             StorageFolder folder = await localFolder.GetFolderAsync("ImageCache");
 
-            folder = await localFolder.GetFolderAsync("ImageCache");
+            if (folder == null)
+                return;
 
-            if (folder != null)
+            var files = await folder.GetFilesAsync();
+            var sortedFiles = files.OrderBy(x => x.DateCreated);
+            var dic = new Dictionary<StorageFile, ulong>();
+
+            foreach (var file in sortedFiles)
             {
-                var files = await folder.GetFilesAsync();
-                var fileSizeTasks = files.Select(async x => (await x.GetBasicPropertiesAsync()).Size);
-                var sizes = await Task.WhenAll(fileSizeTasks);
-                ulong size = (ulong)sizes.Sum(l => (long)l);
+                ct.ThrowIfCancellationRequested();
 
-                var sortedFiles = files.OrderBy(x => x.DateCreated);
-
-                int i = 0;
-                while (size >= ThresholdSize)
-                {
-                    var file = sortedFiles.ElementAt(i);
-                    var fileProps = await file.GetBasicPropertiesAsync();
-
-                    try
-                    {
-                        await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
-                        size -= fileProps.Size;
-                    }
-                    catch (Exception) { }
-
-                    i++;
-                }
-
-                Logger.Trace("Removed " + i + " images.");
+                var fileProps = await file.GetBasicPropertiesAsync();                
+                dic.Add(file, fileProps.Size);
             }
+            
+            var totalSize = (ulong)dic.Values.Sum(l => (long)l);            
+
+            int i = 0;
+            while (totalSize >= ThresholdSize)
+            {
+                var file = sortedFiles.ElementAt(i);
+
+                try
+                {
+                    ct.ThrowIfCancellationRequested();
+
+                    await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    totalSize -= dic[file];
+                }
+                catch (UnauthorizedAccessException) { }
+                catch (FileNotFoundException) { }
+                catch (Exception ex) { throw ex; }
+
+                i++;
+            }
+
+            Logger.Trace("Removed " + i + " images."); 
         }
     }
 }
