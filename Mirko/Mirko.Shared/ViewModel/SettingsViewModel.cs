@@ -274,7 +274,11 @@ namespace Mirko.ViewModel
             {
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.PseudoPush).FullName,
                                         "PseudoPush",
+#if WINDOWS_PHONE_APP
                                         new TimeTrigger(30, false),
+#else
+                                        new TimeTrigger(15, false),
+#endif
                                         new SystemCondition(SystemConditionType.InternetAvailable));
             }
             else

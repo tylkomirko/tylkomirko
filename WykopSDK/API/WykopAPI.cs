@@ -712,14 +712,14 @@ namespace WykopSDK.API
         #endregion
 
         #region Notifications
-        public async Task<List<Notification>> GetNotifications(uint page)
+        public async Task<List<Notification>> GetNotifications(uint page, CancellationToken ct = default(CancellationToken))
         {
             if (limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/notifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + page;
 
-            return await deserialize<List<Notification>>(URL);
+            return await deserialize<List<Notification>>(URL, ct: ct);
         }
 
         public async Task<NotificationsCount> GetNotificationsCount()
@@ -742,14 +742,14 @@ namespace WykopSDK.API
             return await deserialize<List<Notification>>(URL);
         }
 
-        public async Task<NotificationsCount> GetHashtagNotificationsCount()
+        public async Task<NotificationsCount> GetHashtagNotificationsCount(CancellationToken ct = default(CancellationToken))
         {
             if (limitExceeded || UserInfo == null)
                 return null;
 
             string URL = "mywykop/hashtagsnotificationscount/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<NotificationsCount>(URL);
+            return await deserialize<NotificationsCount>(URL, ct: ct);
         }
 
         public async Task<bool> ReadNotification(uint id)

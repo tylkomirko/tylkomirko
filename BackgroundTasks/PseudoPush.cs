@@ -5,6 +5,7 @@ using NotificationsExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
@@ -39,7 +40,7 @@ namespace BackgroundTasks
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            var deferral = taskInstance.GetDeferral();
+            var deferral = taskInstance.GetDeferral();            
 
             Logger.Trace("PseudoPush started.");
             
@@ -59,33 +60,50 @@ namespace BackgroundTasks
             {
                 Logger.Trace("Terminating.");
 
+                ApiService.Dispose();
                 deferral.Complete();
                 return;
             }
 
             // everything is fine, let's log in and check notifications
-            var hashtagCount = await ApiService.GetHashtagNotificationsCount();
-            var notifications = await GetNotifications();
-
-            Logger.Trace(hashtagCount.Count + " hashtag notifications");
-            Logger.Trace(notifications.Count + " new notifications");
-
-            if (notifications.Count > 0)
+            var cts = new CancellationTokenSource();
+            taskInstance.Canceled += (s, e) =>
             {
-                SendToasts(notifications);
-                ApiService.UserInfo.LastToastDate = notifications.First().Date;
+                cts.Cancel();
+                cts.Dispose();
+            };
+
+            try
+            {
+                var hashtagCount = await ApiService.GetHashtagNotificationsCount(cts.Token);
+                var notifications = await GetNotifications(cts.Token);
+
+                Logger.Trace(hashtagCount.Count + " hashtag notifications");
+                Logger.Trace(notifications.Count + " new notifications");
+
+                if (notifications.Count > 0)
+                {
+                    SendToasts(notifications);
+                    ApiService.UserInfo.LastToastDate = notifications.First().Date;
+                    ApiService.SaveUserInfo();
+                }
+
+                NotificationsManager.SetBadge((uint)(hashtagCount.Count + notifications.Count));
+
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values["PseudoPushLastTime"] = DateTime.Now.ToBinary();
+            } 
+            catch(Exception ex)
+            {
+                Logger.Error("PseudoPush failed: ", ex);
             }
-
-            NotificationsManager.SetBadge((uint)(hashtagCount.Count + notifications.Count));
-            ApiService.SaveUserInfo();
-            ApiService.Dispose();
-
-            Windows.Storage.ApplicationData.Current.LocalSettings.Values["PseudoPushLastTime"] = DateTime.Now.ToBinary();
-
-            deferral.Complete();
+            finally
+            {
+                ApiService.Dispose();
+                deferral.Complete();
+            }
         }
 
-        private async Task<List<Notification>> GetNotifications()
+        private async Task<List<Notification>> GetNotifications(CancellationToken ct)
         {
             var lastToast = ApiService.UserInfo.LastToastDate;
             List<Notification> temp = null;
@@ -101,12 +119,12 @@ namespace BackgroundTasks
 
             do
             {
-                temp = await ApiService.GetNotifications(pageIndex++);
+                temp = await ApiService.GetNotifications(pageIndex++, ct);
                 if (temp == null) 
                     break;
                 
-                var newNotifications = temp.Where(x => x.IsNew).Where(x => supportedTypes.Contains(x.Type)).Where(x => x.Date > lastToast);
-                //var newNotifications = temp.Where(x => x.Type == NotificationType.EntryDirected).Take(1);
+                //var newNotifications = temp.Where(x => x.IsNew).Where(x => supportedTypes.Contains(x.Type)).Where(x => x.Date > lastToast);
+                var newNotifications = temp.Where(x => x.Type == NotificationType.EntryDirected).Take(1);
                 if (newNotifications.Count() == 0)
                     break;
                 else
