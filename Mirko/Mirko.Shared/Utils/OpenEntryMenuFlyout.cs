@@ -8,14 +8,50 @@ using WykopSDK.API.Models;
 
 namespace Mirko.Utils
 {
+    public static class MenuFlyoutEx
+    {
+        public static void MakeItemVisible(this MenuFlyout mf, string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            foreach (var i in mf.Items)
+            {
+                if (i.Tag.ToString() == tag)
+                {
+                    i.Visibility = Visibility.Visible;
+                    break;
+                }
+            }
+        }
+
+        public static void MakeItemInvisible(this MenuFlyout mf, string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            foreach (var i in mf.Items)
+            {
+                if (i.Tag.ToString() == tag)
+                {
+                    i.Visibility = Visibility.Collapsed;
+                    break;
+                }
+            }
+        }
+    }
+
     public class OpenEntryMenuFlyout : DependencyObject, IAction
     {
+        public static TimeSpan EditTime = new TimeSpan(0, 15, 0);
+
         public object Execute(object sender, object parameter)
         {
             var src = sender as Controls.Entry;
-            FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(src.GetDescendant<Grid>("EntryGrid"));
+            var entryGrid = src.GetDescendant<Grid>("EntryGrid");
+            var rtb = src.GetDescendant<RichTextBlock>();
 
+            var menuFlyout = FlyoutBase.GetAttachedFlyout(entryGrid) as MenuFlyout;
             var entry = src.DataContext as EntryBaseViewModel;
+            var comment = src.DataContext as CommentViewModel;
             var entryData = entry.DataBase;
 
             var userInfo = App.ApiService.UserInfo;
@@ -24,66 +60,41 @@ namespace Mirko.Utils
 
             var myUserName = userInfo.UserName;
 
-            Action<string> makeFlyoutItemVisible = (name) =>
-            {
-                var items = (flyoutBase as MenuFlyout).Items;
-                foreach (var i in items)
-                {
-                    if (i.Tag != null && i.Tag.ToString() == name)
-                    {
-                        i.Visibility = Visibility.Visible;
-                        break;
-                    }
-                }
-            };
-
-            Action<string> makeFlyoutItemInvisible = (name) =>
-            {
-                var items = (flyoutBase as MenuFlyout).Items;
-                foreach (var i in items)
-                {
-                    if (i.Tag != null && i.Tag.ToString() == name)
-                    {
-                        i.Visibility = Visibility.Collapsed;
-                        break;
-                    }
-                }
-            };
-
             if(entryData.Voted)
             {
-                makeFlyoutItemInvisible("plus");
-                makeFlyoutItemVisible("unplus");
+                menuFlyout.MakeItemInvisible("plus");
+                menuFlyout.MakeItemVisible("unplus");
             }
 
-            if (entryData is EntryComment)
+            if (comment != null)
             {
-                makeFlyoutItemInvisible("favourite");
+                menuFlyout.MakeItemInvisible("favourite");
+                if (comment.RootEntryAuthor == myUserName)
+                {
+                    menuFlyout.MakeItemVisible("separator");
+                    menuFlyout.MakeItemVisible("delete");
+                }
             }
-            else if (entryData is Entry && (entryData as Entry).Favourite)
+            else if ((entryData as Entry).Favourite)
             {
-                makeFlyoutItemInvisible("favourite");
-                makeFlyoutItemVisible("unfavourite");
-            }
-
-            if(entryData.AuthorName != myUserName)
-            {
-                makeFlyoutItemInvisible("separator"); // FIXME
+                menuFlyout.MakeItemInvisible("favourite");
+                menuFlyout.MakeItemVisible("unfavourite");
             }
 
             if (entryData.AuthorName == myUserName)
             {
-                makeFlyoutItemVisible("separator");
-                makeFlyoutItemVisible("delete");
-                makeFlyoutItemVisible("edit");
+                menuFlyout.MakeItemVisible("separator");
+                menuFlyout.MakeItemVisible("delete");
+                if(DateTime.UtcNow - entryData.Date.Subtract(App.OffsetUTCInPoland) < EditTime)
+                    menuFlyout.MakeItemVisible("edit");
             }
 
             if (entryData.VoteCount == 0 || entry.ShowVoters)
-                makeFlyoutItemInvisible("voters");
+                menuFlyout.MakeItemInvisible("voters");
             else
-                makeFlyoutItemVisible("voters");
+                menuFlyout.MakeItemVisible("voters");
 
-            flyoutBase.ShowAt(src.GetDescendant<RichTextBlock>());
+            menuFlyout.ShowAt(rtb);
 
             return null;
         }
