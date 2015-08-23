@@ -13,15 +13,17 @@
     DataContext="{Binding Debug, Mode=OneWay, Source={StaticResource Locator}}">
     
     <UserControl.Resources>
-        <DataTemplate x:Key="ListViewHeader">
-            <TextBlock Text="{Binding}"
+        <DataTemplate x:Key="ListViewHeader"
+                      x:DataType="x:String">
+            <TextBlock Text="{x:Bind}"
                        Style="{StaticResource HeaderTextBlockStyle}"
                        Foreground="Gray"
                        FontSize="20" />
         </DataTemplate>
         
-        <DataTemplate x:Key="ListViewItem">
-            <TextBlock Text="{Binding}"
+        <DataTemplate x:Key="ListViewItem"
+                      x:DataType="x:String">
+            <TextBlock Text="{x:Bind}"
                        TextWrapping="Wrap"
                        Style="{StaticResource BodyTextBlockStyle}"
                        FontSize="16" />
@@ -30,72 +32,62 @@
 
     <i:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
-            <core:InvokeCommandAction Command="{Binding UpdateCommand}" />
+            <core:InvokeCommandAction Command="{x:Bind VM.UpdateCommand}" />
         </core:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-    <ScrollViewer>
-        <Grid Margin="10,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0"
-                  HeaderTemplate="{StaticResource ListViewHeader}"
-                  Header="Zarejestrowane zadania w tle:"
-                  ItemTemplate="{StaticResource ListViewItem}"
-                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                  ItemsSource="{Binding RegisteredBackgroundTasks}" />
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Margin="10,0,0,0">
+                
+                <ListView HeaderTemplate="{StaticResource ListViewHeader}"
+                          Header="Zarejestrowane zadania w tle:"
+                          ItemTemplate="{StaticResource ListViewItem}"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                          ItemsSource="{x:Bind VM.RegisteredBackgroundTasks, Mode=OneWay}" />
 
-            <StackPanel Grid.Row="1">
                 <TextBlock Text="Ostatnie uruchomienie zadań w tle:"
-                       Style="{StaticResource HeaderTextBlockStyle}"
-                       Foreground="Gray"
-                       FontSize="20" />
-
+                           Style="{StaticResource HeaderTextBlockStyle}"
+                           Foreground="Gray"
+                           FontSize="20" />
+                
                 <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="PseudoPush:" />
-                <Run Text="{Binding PseudoPushLastTime}" />
+                           Style="{StaticResource BodyTextBlockStyle}">
+                    <Run Text="PseudoPush:" />
+                    <Run Text="{x:Bind VM.PseudoPushLastTime, Mode=OneWay}" />
                 </TextBlock>
 
                 <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Cleaner:" />
-                <Run Text="{Binding CleanerLastTime}" />
+                           Style="{StaticResource BodyTextBlockStyle}">
+                    <Run Text="Cleaner:" />
+                    <Run Text="{x:Bind VM.CleanerLastTime, Mode=OneWay}" />
                 </TextBlock>
-            </StackPanel>
 
-            <StackPanel Grid.Row="2">
                 <TextBlock Text="Cache obrazów:"
-                       Style="{StaticResource HeaderTextBlockStyle}"
-                       Foreground="Gray"
-                       FontSize="20" />
+                           Style="{StaticResource HeaderTextBlockStyle}"
+                           Foreground="Gray"
+                           FontSize="20" />
 
                 <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Trafień:" />
-                <Run Text="{Binding ImgCacheHits}" />
+                           Style="{StaticResource BodyTextBlockStyle}">
+                    <Run Text="Trafień:" />
+                    <Run Text="{x:Bind VM.ImgCacheHits, Mode=OneWay}" />
                 </TextBlock>
-
-                <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Zaoszczędzony transfer:" />
-                <Run Text="{Binding ImgCacheSaved}" />
-                <Run Text="KB"/>
-                </TextBlock>
+                
             </StackPanel>
+        </ScrollViewer>
 
-            <ListView Grid.Row="2"
-                      Visibility="Collapsed"
-                  HeaderTemplate="{StaticResource ListViewHeader}"
-                  Header="Zapisane logi:"
-                  ItemTemplate="{StaticResource ListViewItem}"
-                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                  ItemsSource="{Binding Logs}" />
-
-        </Grid>
-    </ScrollViewer>
+        <CommandBar Grid.Row="1">
+            <AppBarButton Icon="ReShare"
+                          Label="udostępnij logi"
+                          Command="{x:Bind VM.ShareCommand}"/>
+        </CommandBar>
+        
+    </Grid>
+   
 </UserControl>

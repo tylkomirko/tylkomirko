@@ -366,7 +366,7 @@ namespace Mirko.ViewModel
             try
             {
                 file = await ImageCacheFolder.GetFileAsync(fileName);
-                Messenger.Default.Send<NotificationMessage<ulong>>(new NotificationMessage<ulong>(0, "ImgCacheHit"));
+                Messenger.Default.Send(new NotificationMessage("ImgCacheHit"));
 
                 return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", file.Name));
             }

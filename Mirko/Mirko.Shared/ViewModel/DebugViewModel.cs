@@ -44,32 +44,16 @@ namespace Mirko.ViewModel
             set { Set(() => ImgCacheHits, ref _imgCacheHits, value); }
         }
 
-        private float _imgCacheSaved = 0;
-        public float ImgCacheSaved
-        {
-            get { return _imgCacheSaved; }
-            set { Set(() => ImgCacheSaved, ref _imgCacheSaved, value); }
-        }
-
-        private ObservableCollectionEx<string> _logs = null;
-        public ObservableCollectionEx<string> Logs
-        {
-            get { return _logs ?? (_logs = new ObservableCollectionEx<string>()); }
-        }
-
         public DebugViewModel()
         {
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<DebugViewModel>();
-            Messenger.Default.Register<NotificationMessage<ulong>>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
-        private void ReadMessage(NotificationMessage<ulong> obj)
+        private void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "ImgCacheHit")
-            {
                 ImgCacheHits++;
-                ImgCacheSaved += obj.Content / 1024;
-            }
         }
 
         private RelayCommand _updateCommand = null;
@@ -84,7 +68,7 @@ namespace Mirko.ViewModel
             foreach (var cur in BackgroundTaskRegistration.AllTasks)
                 RegisteredBackgroundTasks.Add(cur.Value.Name);
 
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+            var localSettings = ApplicationData.Current.LocalSettings.Values;
 
             if (localSettings.ContainsKey("PseudoPushLastTime"))
             {

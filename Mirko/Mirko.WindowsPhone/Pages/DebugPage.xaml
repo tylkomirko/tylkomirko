@@ -79,22 +79,7 @@
                 <Run Text="Trafień:" />
                 <Run Text="{Binding ImgCacheHits}" />
                 </TextBlock>
-
-                <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Zaoszczędzony transfer:" />
-                <Run Text="{Binding ImgCacheSaved}" />
-                <Run Text="KB"/>
-                </TextBlock>
             </StackPanel>
-
-            <ListView Grid.Row="2"
-                      Visibility="Collapsed"
-                  HeaderTemplate="{StaticResource ListViewHeader}"
-                  Header="Zapisane logi:"
-                  ItemTemplate="{StaticResource ListViewItem}"
-                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                  ItemsSource="{Binding Logs}" />
 
         </Grid>
     </ScrollViewer>
