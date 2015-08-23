@@ -455,23 +455,24 @@ namespace Mirko
 
             localSettings.Remove("VM");
 
-            if (currentFrame != null &&
-                currentFrame.DataContext != null &&
-                currentFrame.DataContext is IResumable)
+            try
             {
-                try
+                var resumableVM = currentFrame.DataContext as IResumable;
+                if (resumableVM != null)
                 {
-                    var resumableVM = currentFrame.DataContext as IResumable;
                     await resumableVM.SaveState(currentPage);
                     localSettings["VM"] = resumableVM.GetName();
-                } 
-                catch(Exception ex)
-                {
-                    Logger.Error("Error saving state: ", ex);
                 }
             }
-
-            deferral.Complete();
+            catch (Exception ex)
+            {
+                Logger.Error("Error saving state: ", ex);
+                TelemetryClient.TrackException(ex);
+            }
+            finally
+            {
+                deferral.Complete();
+            }
         }
 
         private async Task ResumeFromSuspension()
