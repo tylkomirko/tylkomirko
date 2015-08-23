@@ -14,6 +14,7 @@ namespace Mirko.ViewModel
     {
         // for some reason API starts counting pages from 1...
         private int pageIndex = 1;
+        private const int maxPageIndex = 12;
 
         public void ClearCache()
         {
@@ -40,16 +41,24 @@ namespace Mirko.ViewModel
                 }
                 else
                 {
-                    var newEntries_temp = await App.ApiService.GetHotEntries(6, pageIndex++, ct);
                     var limitingTime = DateTime.UtcNow.AddHours(-timeSpan);
-                    if(newEntries_temp != null)
-                        newEntries = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
+                    newEntries = new List<Entry>();
+
+                    while(newEntries.Count() < 10 && pageIndex <= maxPageIndex)
+                    {
+                        var newEntries_temp = await App.ApiService.GetHotEntries(6, pageIndex++, ct);
+                        if (newEntries_temp != null)
+                        {
+                            var unique = newEntries_temp.Where(x => x.Date.Subtract(App.OffsetUTCInPoland) > limitingTime);
+                            newEntries = newEntries.Concat(unique);
+                        }
+                    }
                 }
 
                 if (newEntries == null)
                     return null;
 
-                if (pageIndex >= 12 || newEntries.Count() == 0)
+                if (pageIndex >= maxPageIndex || newEntries.Count() == 0)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() => mainVM.HotEntries.HasMoreItems = false);
                     if (mainVM.HotEntries.Count == 0 && newEntries.Count() == 0)
