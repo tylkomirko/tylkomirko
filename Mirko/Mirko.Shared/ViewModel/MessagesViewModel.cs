@@ -194,27 +194,20 @@ namespace Mirko.ViewModel
                 return;
             }
 
-            try
+            var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("MessagesViewModel", CreationCollisionOption.ReplaceExisting);
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream))
+            using (var writer = new JsonTextWriter(sw))
             {
-                var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", CreationCollisionOption.OpenIfExists);
-                var file = await folder.CreateFileAsync("MessagesViewModel", CreationCollisionOption.ReplaceExisting);
+                writer.Formatting = Formatting.None;
+                JsonSerializer serializer = new JsonSerializer();
 
-                using (var stream = await file.OpenStreamForWriteAsync())
-                using (var sw = new StreamWriter(stream))
-                using (var writer = new JsonTextWriter(sw))
-                {
-                    writer.Formatting = Formatting.None;
-                    JsonSerializer serializer = new JsonSerializer();
-
-                    serializer.Serialize(writer, CurrentConversation);
-                }
-
-                await ExecuteSaveCommand();
+                serializer.Serialize(writer, CurrentConversation);
             }
-            catch (Exception e)
-            {
-                Logger.Error("Error saving to state: ", e);
-            }
+
+            await ExecuteSaveCommand();
         }
 
         public async Task<bool> LoadState(string pageName)

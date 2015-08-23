@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using WykopSDK.API.Models;
 using WykopSDK.Utils;
 
@@ -697,8 +698,8 @@ namespace Mirko.ViewModel
 
         public async Task SaveState(string pageName)
         {
-            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
-            var file = await folder.CreateFileAsync("MainViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("MainViewModel", CreationCollisionOption.ReplaceExisting);
             int firstVisibleIndex = 0;
 
             using (var stream = await file.OpenStreamForWriteAsync())
@@ -725,7 +726,7 @@ namespace Mirko.ViewModel
 
             if (pageName == "PivotPage")
             {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+                var settings = ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", ApplicationDataCreateDisposition.Always).Values;
 
                 settings["CurrentPivotItem"] = CurrentPivotItem;
                 settings["FirstIndex"] = firstVisibleIndex;
@@ -734,9 +735,9 @@ namespace Mirko.ViewModel
 
         public async Task<bool> LoadState(string pageName)
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", Windows.Storage.ApplicationDataCreateDisposition.Always).Values;
+            var settings = ApplicationData.Current.LocalSettings.CreateContainer("MainViewModel", ApplicationDataCreateDisposition.Always).Values;
 
-            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+            var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
             var file = await folder.GetFileAsync("MainViewModel");
 
             using (var stream = await file.OpenStreamForReadAsync())

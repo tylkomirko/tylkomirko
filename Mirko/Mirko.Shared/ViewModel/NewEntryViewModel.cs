@@ -350,8 +350,8 @@ namespace Mirko.ViewModel
         #region IResumable
         public async Task SaveState(string pageName)
         {
-            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", Windows.Storage.CreationCollisionOption.OpenIfExists);
-            var file = await folder.CreateFileAsync("NewEntryViewModel", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("VMs", CreationCollisionOption.OpenIfExists);
+            var file = await folder.CreateFileAsync("NewEntryViewModel", CreationCollisionOption.ReplaceExisting);
 
             using (var stream = await file.OpenStreamForWriteAsync())
             using (var sw = new StreamWriter(stream))
@@ -366,7 +366,7 @@ namespace Mirko.ViewModel
 
         public async Task<bool> LoadState(string pageName)
         {
-            var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
+            var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync("VMs");
             var file = await folder.GetFileAsync("NewEntryViewModel");
 
             using (var stream = await file.OpenStreamForReadAsync())
