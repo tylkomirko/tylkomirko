@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
@@ -22,6 +23,8 @@ namespace Mirko.Pages
             get { return DataContext as MainViewModel; }
         }
 
+        private double PreRefreshOffset = 0;
+
         public EntryPage()
         {
             this.InitializeComponent();
@@ -31,7 +34,16 @@ namespace Mirko.Pages
                 HeaderCheckBox.IsChecked = false;
                 HeaderCheckBox.Visibility = Visibility.Collapsed;
                 ListView.SelectionMode = ListViewSelectionMode.None;
+
+                PreRefreshOffset = ListView.GetDescendant<ScrollViewer>().VerticalOffset;
             };
+
+            Messenger.Default.Register<EntryViewModel>(this, "Updated", (e) =>
+            {
+                var scrollViewer = ListView.GetDescendant<ScrollViewer>();
+                scrollViewer.ChangeView(null, PreRefreshOffset, null, false);
+                PreRefreshOffset = 0;
+            });
         }
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
@@ -77,8 +89,11 @@ namespace Mirko.Pages
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             var entryVM = VM.SelectedEntry;
-            if(entryVM != null)
+            if (entryVM != null)
+            {
+                PreRefreshOffset = ListView.GetDescendant<ScrollViewer>().VerticalOffset;
                 entryVM.RefreshCommand.Execute(null);
+            }
         }
 
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)

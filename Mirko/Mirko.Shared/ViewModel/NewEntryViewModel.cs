@@ -243,8 +243,9 @@ namespace Mirko.ViewModel
                 if (!App.ShareTargetActivated)
                 {
                     var entry = await App.ApiService.GetEntry(mainEntryID);
-                    var idx = mainVM.MirkoEntries.GetIndex(entryVM);
-                    mainVM.MirkoEntries.Replace(idx, new EntryViewModel(entry));
+                    Messenger.Default.Send(new EntryViewModel(entry), "Update");
+                    /*var idx = mainVM.MirkoEntries.GetIndex(entryVM);
+                    mainVM.MirkoEntries.Replace(idx, new EntryViewModel(entry));*/
                 }
                 else
                 {

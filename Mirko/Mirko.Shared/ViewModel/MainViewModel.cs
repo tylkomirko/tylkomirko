@@ -104,6 +104,8 @@ namespace Mirko.ViewModel
                     oldEntry.Data.VoteCount = e.Data.VoteCount;
                     oldEntry.Data.Voters = e.Data.Voters;
                 }
+
+                Messenger.Default.Send(e, "Updated");
             });
 
             Messenger.Default.Register<uint>(this, "Remove entry", id =>
@@ -129,6 +131,8 @@ namespace Mirko.ViewModel
                 var entry = col.SingleOrDefault(x => x.Data.ID == rootID);
                 if(entry == null)
                     entry = OtherEntries.SingleOrDefault(x => x.Data.ID == rootID);
+                if (entry == null && SelectedEntry != null && SelectedEntry.Data.ID == rootID)
+                    entry = SelectedEntry;
 
                 if(entry != null)
                 {

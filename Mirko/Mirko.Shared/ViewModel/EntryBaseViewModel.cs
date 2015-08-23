@@ -135,7 +135,7 @@ namespace Mirko.ViewModel
                 if(result == d.ID)
                 {
                     StatusBarManager.ShowText("Komentarz został usunięty.");
-                    Messenger.Default.Send<Tuple<uint, uint>>(new Tuple<uint, uint>(d.EntryID, d.ID), "Remove comment");
+                    Messenger.Default.Send(new Tuple<uint, uint>(d.EntryID, d.ID), "Remove comment");
                 }
             }
             else
@@ -195,7 +195,7 @@ namespace Mirko.ViewModel
             else
             {
                 var newVM = new EntryViewModel(newEntry);
-                Messenger.Default.Send<EntryViewModel>(newVM, "Update");
+                Messenger.Default.Send(newVM, "Update");
 
                 await StatusBarManager.HideProgressAsync();
             }
