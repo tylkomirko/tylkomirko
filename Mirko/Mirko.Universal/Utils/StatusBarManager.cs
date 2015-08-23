@@ -130,6 +130,7 @@ namespace Mirko.Utils
                 }
                 else
                 {
+                    ProgressBar.IsIndeterminate = false;
                     ProgressBar.Value = 0.0;
                     ProgressText.Text = txt;
                 }
@@ -238,6 +239,20 @@ namespace Mirko.Utils
                     var statusBar = StatusBar.GetForCurrentView();
                     statusBar.ProgressIndicator.Text = " ";
                     statusBar.ProgressIndicator.ProgressValue = prog;
+                }
+                else
+                {
+                    ProgressText.Text = "";
+                    if (prog != null)
+                    {
+                        ProgressBar.IsIndeterminate = false;
+                        ProgressBar.Value = prog.Value;
+                    }
+                    else
+                    {
+                        ProgressBar.IsIndeterminate = true;
+                        ProgressBar.Value = 0.0;
+                    }
                 }
             });
         }
