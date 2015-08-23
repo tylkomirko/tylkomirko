@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Mirko.Gfycat
@@ -85,20 +86,22 @@ namespace Mirko.Gfycat
         {
             string URL = "http://upload.gfycat.com/transcode?fetchUrl=" + gifURL;
 
-            using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
+            try
             {
-                if (result.IsSuccessStatusCode)
+                using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
+                using (var stream = await result.Content.ReadAsStreamAsync())
+                using (StreamReader sr = new StreamReader(stream))
+                using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    var resultString = await result.Content.ReadAsStringAsync();
-                    if (string.IsNullOrEmpty(resultString)) return null;
-
-                    var reply = JsonConvert.DeserializeObject<ReplyJSON>(resultString);
+                    JsonSerializer serializer = new JsonSerializer();
+                    var reply = serializer.Deserialize<ReplyJSON>(reader);
                     return reply.mp4Url;
                 }
-                else
-                {
-                    return null;
-                }
+            }
+            catch (Exception e)
+            {
+                App.TelemetryClient.TrackException(e);
+                return null;
             }
         }
 
@@ -107,20 +110,22 @@ namespace Mirko.Gfycat
             var name = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2];
             string URL = "http://gfycat.com/cajax/get/" + name;
 
-            using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
+            try
             {
-                if (result.IsSuccessStatusCode)
+                using (var result = await App.ApiService.HttpClient.PostAsync(URL, null))
+                using (var stream = await result.Content.ReadAsStreamAsync())
+                using (StreamReader sr = new StreamReader(stream))
+                using (JsonReader reader = new JsonTextReader(sr))
                 {
-                    var resultString = await result.Content.ReadAsStringAsync();
-                    if (string.IsNullOrEmpty(resultString)) return null;
-
-                    var reply = JsonConvert.DeserializeObject<GFYReply>(resultString);
+                    JsonSerializer serializer = new JsonSerializer();
+                    var reply = serializer.Deserialize<GFYReply>(reader);
                     return reply.gfyItem.mp4Url;
                 }
-                else
-                {
-                    return null;
-                }
+            }
+            catch (Exception e)
+            {
+                App.TelemetryClient.TrackException(e);
+                return null;
             }
         }
     }
