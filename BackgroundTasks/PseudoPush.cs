@@ -123,8 +123,8 @@ namespace BackgroundTasks
                 if (temp == null) 
                     break;
                 
-                //var newNotifications = temp.Where(x => x.IsNew).Where(x => supportedTypes.Contains(x.Type)).Where(x => x.Date > lastToast);
-                var newNotifications = temp.Where(x => x.Type == NotificationType.EntryDirected).Take(1);
+                var newNotifications = temp.Where(x => x.IsNew).Where(x => supportedTypes.Contains(x.Type)).Where(x => x.Date > lastToast);
+                //var newNotifications = temp.Where(x => x.Type == NotificationType.EntryDirected).Take(1);
                 if (newNotifications.Count() == 0)
                     break;
                 else
