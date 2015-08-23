@@ -30,6 +30,16 @@
         <Setter Property="LineHeight" Value="26.8" />
     </Style>
 
+    <Style TargetType="ListView">
+        <Style.Setters>
+            <Setter Property="ItemContainerTransitions">
+                <Setter.Value>
+                    <TransitionCollection />
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+    
     <Style TargetType="ListViewItem" x:Key="ListViewItemStretchNoTilt">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
