@@ -897,9 +897,9 @@ namespace Mirko.ViewModel
         {
             try
             {
-                var notification = PMNotifications.Single(x => x.ID == ID);
+                var notifications = PMNotifications.Where(x => x.ID == ID && x.IsNew);
 
-                if (notification != null && notification.IsNew)
+                foreach (var notification in notifications)
                 {
                     await App.ApiService.ReadNotification(ID);
 
@@ -910,14 +910,16 @@ namespace Mirko.ViewModel
                         PMNotifications.Remove(notification);
                         if (conversation != null)
                             conversation.Data.Status = ConversationStatus.Read;
-                    });
-
-                    UpdateBadge();
+                    });                    
                 }
             }
             catch (Exception e)
             {
                 Logger.Error("Error deleting PM notification ID " + ID, e);
+            }
+            finally
+            {
+                UpdateBadge();
             }
         }
 
