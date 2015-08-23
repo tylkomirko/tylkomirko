@@ -21,8 +21,9 @@ namespace Mirko.Pages
 
         private void HandleOKButtonVisibility()
         {
-            var data = VM.NewEntry;
+            if (VM == null) return;
 
+            var data = VM.NewEntry;
             if (URLTextBox.Text.Length > 0 && data.Files != null)
                 OKButton.IsEnabled = true;
             else
