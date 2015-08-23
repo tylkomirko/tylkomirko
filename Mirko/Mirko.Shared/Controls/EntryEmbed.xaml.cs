@@ -80,21 +80,27 @@ namespace Mirko.Controls
 
         private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
         {
-            Image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            Image.Visibility = Visibility.Collapsed;
 
             var aspectRatio = MediaElement.AspectRatioHeight / (double)MediaElement.AspectRatioWidth;
             MediaElement.Height = MaxHeight * aspectRatio;
 
-            MediaElement.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            MediaElement.Visibility = Visibility.Visible;
 
             StatusBarManager.HideProgress();
         }
 
-        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private async void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             var me = sender as MediaElement;
+            var error = e as MediaFailedRoutedEventArgs;
 
-            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry();
+            telemetry.Properties.Add("Message", error.ErrorMessage);
+            telemetry.Properties.Add("Trace", error.ErrorTrace);
+            App.TelemetryClient.TrackException(telemetry);
+
+            try
             {
                 var msg = new MessageDialog("Niestety, coś poszło nie tak. Czy chciałbyś otworzyć ten gif w przeglądarce?", "Przykra sprawa");
                 msg.Commands.Add(new UICommand("Tak", new UICommandInvokedHandler(async (cmd) =>
@@ -107,9 +113,15 @@ namespace Mirko.Controls
                 })));
 
                 await msg.ShowAsync();
-            });
-
-            me.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                App.TelemetryClient.TrackException(ex);
+            }
+            finally
+            {
+                me.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void MediaElement_Tapped(object sender, TappedRoutedEventArgs e)
