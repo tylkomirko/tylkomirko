@@ -41,7 +41,7 @@ namespace Mirko.Utils
 
     public class OpenEntryMenuFlyout : DependencyObject, IAction
     {
-        public static TimeSpan EditTime = new TimeSpan(0, 15, 0);
+        public static TimeSpan EditTime = new TimeSpan(0, 10, 0);
 
         public object Execute(object sender, object parameter)
         {
