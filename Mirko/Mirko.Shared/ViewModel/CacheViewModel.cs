@@ -379,13 +379,14 @@ namespace Mirko.ViewModel
                 Logger.Error("Error reading file. ", e);
             }
 
+            InMemoryRandomAccessStream stream = null;
             try
             {
                 using (var response = await App.ApiService.HttpClient.GetAsync(previewURL))
                 {
                     var pixels = await response.Content.ReadAsByteArrayAsync();
-                    InMemoryRandomAccessStream stream = null;
-                    if(fullURL == null)
+                    
+                    if(string.IsNullOrEmpty(fullURL))
                         stream = await ReadImage(pixels.AsBuffer());
                     else if (fullURL.EndsWith(".gif") || fullURL.Contains("gfycat"))
                         stream = await DrawGIFOverlay(pixels.AsBuffer());
@@ -393,8 +394,22 @@ namespace Mirko.ViewModel
                         stream = await DrawVideoOverlay(pixels.AsBuffer());
                     else
                         stream = await ReadImage(pixels.AsBuffer());
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Error downloading image.", e);
+                return null;
+            }
 
-                    // and now save
+            /* And now save.
+               System sometimes throws System.UnauthorizedAccessException: Access is denied, 
+               and there's isn't a clear reason for that.
+               So let's just try to work around that. */
+            for (int i = 0; i < 3; i++)
+            {
+                try
+                {
                     file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                     using (var fileStream = await file.OpenStreamForWriteAsync())
                     using (var saveStream = stream.AsStream())
@@ -405,12 +420,12 @@ namespace Mirko.ViewModel
 
                     return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
                 }
+                catch (Exception)
+                {
+                }
             }
-            catch (Exception e)
-            {
-                Logger.Error("Error downloading image.", e);
-                return null;
-            }
+
+            return null;
         }
 
         public async Task RemoveCachedImage(string previewURL)
