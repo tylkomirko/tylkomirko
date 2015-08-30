@@ -406,26 +406,27 @@ namespace Mirko.ViewModel
                System sometimes throws System.UnauthorizedAccessException: Access is denied, 
                and there's isn't a clear reason for that.
                So let's just try to work around that. */
+            Uri fileUri = null;
             for (int i = 0; i < 3; i++)
             {
                 try
                 {
                     file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                     using (var fileStream = await file.OpenStreamForWriteAsync())
-                    using (var saveStream = stream.AsStream())
                     {
+                        var saveStream = stream.AsStream();
                         saveStream.Position = 0;
                         await saveStream.CopyToAsync(fileStream);
                     }
 
-                    return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
+                    fileUri = new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
+                    break;
                 }
-                catch (Exception)
-                {
-                }
+                catch (Exception) { }
             }
 
-            return null;
+            stream.Dispose();
+            return fileUri;
         }
 
         public async Task RemoveCachedImage(string previewURL)
