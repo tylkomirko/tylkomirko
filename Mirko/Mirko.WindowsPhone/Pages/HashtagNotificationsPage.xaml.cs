@@ -91,9 +91,9 @@ namespace Mirko.Pages
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 49; // adjust for header
-            ListView.Margin = new Thickness(0, -height, 0, 0);
-
-            (ListView.Header as FrameworkElement).Height = height;
+            // QKit bug strikes again
+            this.Margin = new Thickness(0, -height, 0, 0);
+            Header.Margin = new Thickness(0, height, 0, 0);
         }
     }
 }

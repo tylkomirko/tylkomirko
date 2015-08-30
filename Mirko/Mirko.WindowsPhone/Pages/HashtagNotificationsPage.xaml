@@ -25,68 +25,67 @@
                                             Grid.Row="0"
                                             Canvas.ZIndex="1"/>
 
-        <Grid x:Name="ContentRoot" 
-              Grid.Row="1">
-            <q:MultiSelectListView x:Name="ListView"
-                                   IsItemClickEnabled="False"
-                                   SelectionModeChanged="ListView_SelectionModeChanged"
-                                   Loaded="ListView_Loaded"
-                                   ItemsSource="{Binding CurrentHashtagNotifications}">                
+        <q:MultiSelectListView x:Name="ListView"
+                               Grid.Row="1"
+                               IsItemClickEnabled="False"
+                               SelectionModeChanged="ListView_SelectionModeChanged"
+                               Loaded="ListView_Loaded"
+                               ItemsSource="{Binding CurrentHashtagNotifications}">
 
-                <ListView.Header>
-                    <Rectangle Fill="Transparent" />
-                </ListView.Header>
+            <ListView.Header>
+                <Rectangle Fill="Transparent"
+                           Height="0"/>
+            </ListView.Header>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="-10,0,0,0"
-                              Background="Transparent"
-                              Tapped="Grid_Tapped">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="-10,0,0,0"
+                          Background="Transparent"
+                          Tapped="Grid_Tapped">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Column="0"
-                                       Grid.Row="0"
-                                       Margin="10,0,0,0"
-                                       FontWeight="SemiBold"
-                                       FontSize="15"                                      
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Margin="10,0,0,0"
+                                   FontWeight="SemiBold"
+                                   FontSize="15"                                      
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
+                                   Text="{Binding Data.AuthorName}" />
+
+                        <TextBlock Grid.Column="1"
+                                   Grid.Row="0"
+                                   Margin="10,0,0,0"
+                                   Foreground="Gray"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{Binding Data.Date, Converter={StaticResource LongDateConverter}}"/>
+
+                        <RichTextBlock Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Grid.Row="1"
+                                       Margin="10,0,10,16"
+                                       FontSize="14"
+                                       IsTextSelectionEnabled="False"
+                                       MaxLines="1"
                                        TextTrimming="CharacterEllipsis"
-                                       Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
-                                       Text="{Binding Data.AuthorName}" />
+                                       utils:Injectors.HTML="{Binding Data.Entry.Text}"/>
+                        
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
-                            <TextBlock Grid.Column="1"
-                                       Grid.Row="0"
-                                       Margin="10,0,0,0"
-                                       Foreground="Gray"
-                                       FontSize="12"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Text="{Binding Data.Date, Converter={StaticResource LongDateConverter}}"/>
-
-                            <RichTextBlock Grid.Column="0"
-                                           Grid.ColumnSpan="2"
-                                           Grid.Row="1"
-                                           Margin="10,0,10,16"
-                                           FontSize="14"
-                                           IsTextSelectionEnabled="False"
-                                           MaxLines="1"
-                                           TextTrimming="CharacterEllipsis"
-                                           utils:Injectors.HTML="{Binding Data.Entry.Text}"/>
-
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-            </q:MultiSelectListView>
-        </Grid>
+        </q:MultiSelectListView>
     </Grid>
 </UserControl>
