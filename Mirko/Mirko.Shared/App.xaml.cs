@@ -124,7 +124,10 @@ namespace Mirko
         /// </summary>
         public App()
         {
+#if DEBUG
+#else
             WindowsAppInitializer.InitializeAsync();
+#endif
 
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
