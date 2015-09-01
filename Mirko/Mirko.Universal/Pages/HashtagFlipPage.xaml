@@ -20,6 +20,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <controls:HashtagNotificationHeader x:Name="Header"
@@ -41,22 +42,59 @@
 
             <FlipView.ItemTemplate>
                 <DataTemplate x:DataType="models:EntryViewModel">
-                    <controls:ListViewEx HorizontalAlignment="Stretch"
-                                         ItemsSource="{x:Bind Comments, Mode=OneWay}"
-                                         ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                         IsItemClickEnabled="False"
-                                         VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                         IncrementalLoadingThreshold="6"
-                                         DataFetchSize="7"
-                                         Loaded="ListViewEx_Loaded">
+                    <controls:EdgeTappedListView HorizontalAlignment="Stretch"
+                                                 ItemsSource="{x:Bind Comments, Mode=OneWay}"
+                                                 ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                                                 IsItemClickEnabled="False"
+                                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                                 IncrementalLoadingThreshold="6"
+                                                 DataFetchSize="7"
+                                                 IsItemLeftEdgeTapEnabled="True"
+                                                 SelectionMode="None"
+                                                 Loaded="ListView_Loaded"
+                                                 ItemLeftEdgeTapped="ListView_ItemLeftEdgeTapped"
+                                                 SelectionChanged="ListView_SelectionChanged">
 
                         <ListView.Header>
-                            <StackPanel>
-                                <Rectangle Fill="Transparent" />
-                                <controls:Entry DataContext="{x:Bind}"
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Rectangle Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="3"
+                                           Fill="Transparent" />
+                                
+                                <Rectangle Grid.Column="0"
+                                           Grid.Row="1"
+                                           x:Name="HeaderEdgeButton"
+                                           Width="25"
+                                           Margin="-14,0,0,0"
+                                           Fill="Transparent"
+                                           Tapped="EdgeSelectButton_Tapped" />
+
+                                <CheckBox Grid.Column="1"
+                                          Grid.Row="1"
+                                          IsChecked="False"
+                                          x:Name="HeaderCheckBox"
+                                          Visibility="Collapsed"
+                                          Unchecked="CheckBox_Unchecked" 
+                                          Style="{StaticResource CheckBoxStyle}" />
+
+                                <controls:Entry Grid.Column="2"
+                                                Grid.Row="1"
+                                                DataContext="{x:Bind Mode=OneWay}"
                                                 LargeEmbed="True"
                                                 IsTapEnabled="False"/>
-                            </StackPanel>
+                            </Grid>
                         </ListView.Header>
 
                         <ListView.ItemTemplate>
@@ -67,10 +105,46 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
 
-                    </controls:ListViewEx>
+                        <ListView.Footer>
+                            <Rectangle Height="20"
+                                       Fill="Transparent" />
+                        </ListView.Footer>
+
+                    </controls:EdgeTappedListView>
                 </DataTemplate>
             </FlipView.ItemTemplate>
         </FlipView>
 
+        <CommandBar x:Name="AppBar"
+                    Grid.Row="2">
+
+            <AppBarButton Label="odpowiedz"
+                          Tag="reply"
+                          Icon="Comment"
+                          Click="CommentButton_Click"/>
+            
+            <AppBarButton Label="odśwież"
+                          Tag="refresh"
+                          Icon="Refresh"
+                          Click="RefreshButton_Click" />
+            
+            <AppBarButton Label="w górę"
+                          Tag="up"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+            
+            <AppBarButton Label="daj plusa"
+                          Tag="voteMulti"
+                          Icon="Add"
+                          Click="VoteMultiple_Click"
+                          Visibility="Collapsed"/>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="udostępnij"
+                              Click="ShareButton_Click" />
+            </CommandBar.SecondaryCommands>
+            
+        </CommandBar>
+        
     </Grid>
 </UserControl>
