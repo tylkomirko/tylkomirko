@@ -191,7 +191,7 @@ namespace WykopSDK.WWW
                 if (doc == null) return false;
 
                 var mojWykop = doc.QuerySelector("div#userPanel") as IHtmlDivElement;
-                if(mojWykop != null) return true;
+                if (mojWykop != null) return true;
 
                 var form = doc.QuerySelector("form.bspace-big.login-form") as IHtmlFormElement;
                 if (form == null) return false;
@@ -228,7 +228,7 @@ namespace WykopSDK.WWW
             List<string> tags = await WykopSDK.LocalStorage.ReadBlacklistedTags();
             List<string> users = await WykopSDK.LocalStorage.ReadBlacklistedUsers();
 
-            if(tags == null || users == null)
+            if (tags == null || users == null)
             {
                 if (!loggedIn)
                 {
@@ -252,22 +252,26 @@ namespace WykopSDK.WWW
         {
             var users = new List<string>();
 
-            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            try
             {
-                var doc = parser.Parse(stream);
-                if (doc == null) return null;
-
-                var divs = doc.QuerySelector(@"div[data-type=""users""]").QuerySelectorAll("div");
-                foreach (var item in divs)
+                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
+                using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    var ahref = item.Children[1] as IHtmlAnchorElement;
-                    var url = ahref.Href;
+                    var doc = parser.Parse(stream);
+                    if (doc == null) return null;
 
-                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    users.Add(splitUrl.Last());
+                    var divs = doc.QuerySelector(@"div[data-type=""users""]").QuerySelectorAll("div");
+                    foreach (var item in divs)
+                    {
+                        var ahref = item.Children[1] as IHtmlAnchorElement;
+                        var url = ahref.Href;
+
+                        var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        users.Add(splitUrl.Last());
+                    }
                 }
             }
+            catch (Exception) { return null; }
 
             users.Sort();
             return users;
@@ -277,22 +281,26 @@ namespace WykopSDK.WWW
         {
             var tags = new List<string>();
 
-            using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            try
             {
-                var doc = parser.Parse(stream);
-                if (doc == null) return null;
-
-                var spans = doc.QuerySelector(@"div[data-type=""hashtags""]").QuerySelectorAll("span");
-                foreach (var item in spans)
+                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
+                using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    var ahref = item.Children[0] as IHtmlAnchorElement;
-                    var url = ahref.Href;
+                    var doc = parser.Parse(stream);
+                    if (doc == null) return null;
 
-                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    tags.Add(splitUrl.Last());
+                    var spans = doc.QuerySelector(@"div[data-type=""hashtags""]").QuerySelectorAll("span");
+                    foreach (var item in spans)
+                    {
+                        var ahref = item.Children[0] as IHtmlAnchorElement;
+                        var url = ahref.Href;
+
+                        var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        tags.Add(splitUrl.Last());
+                    }
                 }
             }
+            catch (Exception) { return null; }
 
             tags.Sort();
             return tags;
@@ -309,32 +317,36 @@ namespace WykopSDK.WWW
                 if (!loggedIn) return null;
             }
 
-            if(users != null)
+            if (users != null)
                 return users;
 
-            using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            try
             {
-                var doc = parser.Parse(stream);
-                if (doc == null) return null;
-
-                users = new List<string>();
-
-                var divs = doc.QuerySelector("#observedUsers").QuerySelectorAll("div");
-                foreach (var item in divs)
+                using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/"))
+                using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    var ahref = item.Children[0] as IHtmlAnchorElement;
-                    var url = ahref.Href;
+                    var doc = parser.Parse(stream);
+                    if (doc == null) return null;
 
-                    var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    users.Add(splitUrl.Last());
+                    users = new List<string>();
+
+                    var divs = doc.QuerySelector("#observedUsers").QuerySelectorAll("div");
+                    foreach (var item in divs)
+                    {
+                        var ahref = item.Children[0] as IHtmlAnchorElement;
+                        var url = ahref.Href;
+
+                        var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                        users.Add(splitUrl.Last());
+                    }
                 }
             }
+            catch (Exception) { return null; }
 
             await WykopSDK.LocalStorage.SaveObservedUsers(users);
 
             return users;
-        }        
+        }
 
         public async Task GetUserNotes()
         {
@@ -398,7 +410,7 @@ namespace WykopSDK.WWW
                     var str = await response.Content.ReadAsStringAsync();
                 }
             }
-        }        
+        }
 
         public async Task ForgotPassword(string email)
         {

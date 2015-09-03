@@ -513,13 +513,23 @@ namespace Mirko
 
             localSettings.Remove("VM");
 
+            if(string.IsNullOrEmpty(currentPage) || currentFrame == null)
+            {
+                deferral.Complete();
+                return;
+            }
+
             try
             {
-                var resumableVM = currentFrame.DataContext as IResumable;
-                if (resumableVM != null)
+                var dataContext = currentFrame.DataContext;
+                if (dataContext != null)
                 {
-                    await resumableVM.SaveState(currentPage);
-                    localSettings["VM"] = resumableVM.GetName();
+                    var resumableVM = dataContext as IResumable;
+                    if (resumableVM != null)
+                    {
+                        await resumableVM.SaveState(currentPage);
+                        localSettings["VM"] = resumableVM.GetName();
+                    }
                 }
             }
             catch (Exception ex)
