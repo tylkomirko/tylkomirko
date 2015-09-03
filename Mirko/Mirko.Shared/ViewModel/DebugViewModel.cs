@@ -133,5 +133,17 @@ namespace Mirko.ViewModel
 
             return null;
         }
+
+        private RelayCommand _clearCache = null;
+        public RelayCommand ClearCache
+        {
+            get { return _clearCache ?? (_clearCache = new RelayCommand(ClearCacheExecute)); }
+        }
+
+        private void ClearCacheExecute()
+        {
+            var cleaner = new BackgroundTasks.Cleaner();
+            cleaner.Run(null);
+        }
     }
 }

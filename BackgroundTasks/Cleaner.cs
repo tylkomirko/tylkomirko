@@ -25,21 +25,28 @@ namespace BackgroundTasks
             configuration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget() { RetainDays = 7 });
             configuration.IsEnabled = true;
 
-            LogManagerFactory.DefaultConfiguration = configuration;
+            try
+            {
+                LogManagerFactory.DefaultConfiguration = configuration;
+            }
+            catch (Exception) { }
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<Cleaner>();
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            var deferral = taskInstance.GetDeferral();
+            BackgroundTaskDeferral deferral = taskInstance != null ? taskInstance.GetDeferral() : null;
             var cts = new CancellationTokenSource();
 
-            taskInstance.Canceled += (s, e) =>
+            if (taskInstance != null)
             {
-                cts.Cancel();
-                cts.Dispose();
-            };
+                taskInstance.Canceled += (s, e) =>
+                {
+                    cts.Cancel();
+                    cts.Dispose();
+                };
+            }
 
             try
             {
@@ -52,8 +59,9 @@ namespace BackgroundTasks
                 Logger.Error("Cleaner failed: ", e);
             }
             finally
-            {            
-                deferral.Complete();
+            {
+                if(deferral != null)
+                    deferral.Complete();
             }
         }
 

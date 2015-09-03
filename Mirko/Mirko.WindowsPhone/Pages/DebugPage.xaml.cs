@@ -29,7 +29,19 @@ namespace Mirko.Pages
                 Path = new PropertyPath("ShareCommand"),
             });
 
+            var clear = new AppBarButton()
+            {
+                Label = "wyczyść cache",
+                Icon = new SymbolIcon(Symbol.Clear),
+            };
+            clear.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = this.DataContext as DebugViewModel,
+                Path = new PropertyPath("ClearCache"),
+            });
+
             c.PrimaryCommands.Add(share);
+            c.PrimaryCommands.Add(clear);
 
             return c;
         }

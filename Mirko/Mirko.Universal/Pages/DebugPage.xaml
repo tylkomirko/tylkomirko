@@ -86,6 +86,10 @@
             <AppBarButton Icon="ReShare"
                           Label="udostępnij logi"
                           Command="{x:Bind VM.ShareCommand}"/>
+            
+            <AppBarButton Icon="Clear"
+                          Label="wyczyść cache"
+                          Command="{x:Bind VM.ClearCache}" />
         </CommandBar>
         
     </Grid>
