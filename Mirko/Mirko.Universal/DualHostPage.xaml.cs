@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -40,6 +43,8 @@ namespace Mirko.Pages
             NavService = SimpleIoc.Default.GetInstance<NavigationService>();
             NavService.Navigating += NavService_Navigating;
             SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += HostPage_ThemeChanged;
+
+            Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
         }
 
         private void DualHostPage_BackRequested(object sender, BackRequestedEventArgs e)
@@ -79,6 +84,40 @@ namespace Mirko.Pages
                 brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
 
             MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+        }
+
+        private void MediaElementDoubleTapped(NotificationMessage<bool> message)
+        {
+            bool isFullScreen = message.Content;
+            SimpleIoc.Default.GetInstance<MainViewModel>().CanGoBack = !isFullScreen;
+
+            var currentPage = NavService.CurrentFrame();
+            CommandBar appBar = currentPage.GetDescendant<CommandBar>();
+
+            if (isFullScreen)
+            {
+                StatusBarManager.HideStatusBar();
+
+                if (appBar != null)
+                    appBar.MakeInvisible();
+
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape |
+                    DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait |
+                    DisplayOrientations.PortraitFlipped;
+            }
+            else
+            {
+                StatusBarManager.ShowStatusBar();
+
+                if (appBar != null)
+                    appBar.MakeVisible();
+
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
+            }
         }
     }
 }

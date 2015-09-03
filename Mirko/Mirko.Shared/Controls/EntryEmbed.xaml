@@ -39,9 +39,11 @@
                       IsLooping="True"
                       AreTransportControlsEnabled="False"
                       Stretch="Uniform"
+                      IsFullWindow="False"
                       MediaOpened="MediaElement_MediaOpened"
                       MediaFailed="MediaElement_MediaFailed"
                       Tapped="MediaElement_Tapped"
+                      DoubleTapped="MediaElement_DoubleTapped"
                       Visibility="Collapsed" />
 
         <TextBlock x:Name="AttachmentTB"

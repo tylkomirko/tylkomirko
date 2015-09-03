@@ -1,10 +1,16 @@
-﻿using GalaSoft.MvvmLight.Ioc;
+﻿using System;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko.ViewModel;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Mirko.Pages;
+using Mirko.Utils;
+using Windows.Graphics.Display;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,6 +34,8 @@ namespace Mirko
             ApplicationView.GetForCurrentView().VisibleBoundsChanged += HostPage_VisibleBoundsChanged;
 
             SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += HostPage_ThemeChanged;
+
+            Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
         }
 
 #if WINDOWS_UWP
@@ -68,6 +76,41 @@ namespace Mirko
                 brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
 
             MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+        }
+
+        private void MediaElementDoubleTapped(NotificationMessage<bool> message)
+        {
+            bool isFullScreen = message.Content;
+            SimpleIoc.Default.GetInstance<MainViewModel>().CanGoBack = !isFullScreen;
+            CommandBar appBar = null;
+
+#if WINDOWS_PHONE_APP
+            appBar = BottomAppBar as CommandBar;
+#else
+            var currentPage = NavService.CurrentFrame();
+            appBar = currentPage.GetDescendant<CommandBar>();
+#endif
+
+            if(isFullScreen)
+            {
+                StatusBarManager.HideStatusBar();
+
+                if(appBar != null)
+                    appBar.MakeInvisible();
+
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape |
+                    DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait |
+                    DisplayOrientations.PortraitFlipped;
+            }
+            else
+            {
+                StatusBarManager.ShowStatusBar();
+
+                if(appBar != null)
+                    appBar.MakeVisible();
+
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
+            }
         }
     }
 }

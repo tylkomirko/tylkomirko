@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using Mirko.ViewModel;
@@ -8,6 +9,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -125,13 +127,22 @@ namespace Mirko.Controls
         private void MediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
-
             var me = sender as MediaElement;
 
-            if (me.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Playing)
+            if (me.CurrentState == MediaElementState.Playing)
                 me.Pause();
-            else if (me.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Paused)
+            else if (me.CurrentState == MediaElementState.Paused)
                 me.Play();
+        }
+
+        private void MediaElement_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            var me = sender as MediaElement;
+
+            me.Play();
+            me.IsFullWindow = !me.IsFullWindow;
+            Messenger.Default.Send(new NotificationMessage<bool>(me.IsFullWindow, "MediaElement DoubleTapped"));
         }
 
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)

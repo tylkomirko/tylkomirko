@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Utils
@@ -34,6 +31,16 @@ namespace Mirko.Utils
                         button.Visibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        public static void MakeInvisible(this CommandBar c)
+        {
+            c.Visibility = Visibility.Collapsed;
+        }
+
+        public static void MakeVisible(this CommandBar c)
+        {
+            c.Visibility = Visibility.Visible;
         }
     }
 }
