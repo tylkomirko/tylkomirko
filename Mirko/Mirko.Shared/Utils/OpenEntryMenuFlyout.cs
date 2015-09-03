@@ -75,10 +75,14 @@ namespace Mirko.Utils
                     menuFlyout.MakeItemVisible("delete");
                 }
             }
-            else if ((entryData as Entry).Favourite)
+            else
             {
-                menuFlyout.MakeItemInvisible("favourite");
-                menuFlyout.MakeItemVisible("unfavourite");
+                var realEntry = entryData as Entry;
+                if (realEntry != null && realEntry.Favourite)
+                {
+                    menuFlyout.MakeItemInvisible("favourite");
+                    menuFlyout.MakeItemVisible("unfavourite");
+                }
             }
 
             if (entryData.AuthorName == myUserName)

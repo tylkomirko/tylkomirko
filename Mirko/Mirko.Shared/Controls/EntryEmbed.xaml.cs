@@ -93,11 +93,9 @@ namespace Mirko.Controls
         private async void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             var me = sender as MediaElement;
-            var error = e as MediaFailedRoutedEventArgs;
 
             var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry();
-            telemetry.Properties.Add("Message", error.ErrorMessage);
-            telemetry.Properties.Add("Trace", error.ErrorTrace);
+            telemetry.Properties.Add("Message", e.ErrorMessage);
             App.TelemetryClient.TrackException(telemetry);
 
             try
