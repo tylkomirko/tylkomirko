@@ -1,9 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using Mirko.ViewModel;
-using System;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -49,7 +46,18 @@ namespace Mirko.Pages
                 Path = new PropertyPath("GoToDebugPage"),
             });
 
+            var openURI = new AppBarButton()
+            {
+                Label = "jak otwierać linki?",
+            };
+            openURI.SetBinding(AppBarButton.CommandProperty, new Binding()
+            {
+                Source = SimpleIoc.Default.GetInstance<MainViewModel>(),
+                Path = new PropertyPath("HowToOpenUris"),
+            });
+
             c.SecondaryCommands.Add(debug);
+            c.SecondaryCommands.Add(openURI);
 
             return c;
         }

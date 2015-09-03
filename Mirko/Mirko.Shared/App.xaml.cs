@@ -408,6 +408,7 @@ namespace Mirko
             rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection();// { new NavigationThemeTransition() };
             rootFrame.Navigated -= this.RootFrame_FirstNavigated;
         }
+#endif
 
         /// <summary> 
         /// Handle OnActivated event to deal with File Open/Save continuation activation kinds 
@@ -417,31 +418,85 @@ namespace Mirko
         {
             base.OnActivated(e);
 
+#if WINDOWS_PHONE_APP
             continuationManager = new ContinuationManager();
+#endif
 
             Frame rootFrame = CreateRootFrame();
+            DispatcherHelper.Initialize();
 
             if (rootFrame.Content == null)
                 rootFrame.Navigate(typeof(HostPage));
 
+            // expand window size 
+            var applicationView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            applicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
+
+            if (IsMobile)
+                StatusBarManager.Init();
+
+            var locator = this.Resources["Locator"] as ViewModelLocator;
+            NavService = locator.NavService;
+
+            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
+
+#if WINDOWS_PHONE_APP
             var continuationEventArgs = e as IContinuationActivatedEventArgs;
             if (continuationEventArgs != null)
             {
                 // Call ContinuationManager to handle continuation activation 
                 continuationManager.Continue(continuationEventArgs);
             }
-
-            Window.Current.Activate();
-        } 
 #endif
 
-        /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
-        /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
+            WykopSDK.WykopSDK.LocalStorage.InitAction();
+            NavService.InsertMainPage();
+            bool success = false;
+
+            if (e.Kind == ActivationKind.Protocol)
+            {
+                var args = e as ProtocolActivatedEventArgs;
+                success = ProcessProtocolActivation(args.Uri.OriginalString);
+            }
+
+            if (!success)
+                NavService.NavigateTo("PivotPage");
+
+            Window.Current.Content = rootFrame;
+            Window.Current.Activate();
+
+            Messenger.Default.Send(new NotificationMessage("Init"));
+        }
+
+        private bool ProcessProtocolActivation(string uri)
+        {
+            if (uri.StartsWith("mirko:link="))
+            {
+                uri = uri.Replace("wykop.pl/i", "wykop.pl");
+                var segments = uri.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                if (segments.Count() < 3)
+                    return false;
+
+                var destination = segments[2];
+
+                if(destination == "wpis")
+                {
+                    var id = Convert.ToUInt32(segments[3]);
+                    SimpleIoc.Default.GetInstance<MainViewModel>().GoToEntryPage.Execute(id);
+                    return true;
+                }
+                else if(destination == "ludzie")
+                {
+                    var username = segments[3];
+                    SimpleIoc.Default.GetInstance<ProfilesViewModel>().GoToProfile.Execute(username);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #region Suspension
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
@@ -532,5 +587,6 @@ namespace Mirko
                 NavService.NavigateTo("PivotPage");
             }
         }
+        #endregion
     }
 }

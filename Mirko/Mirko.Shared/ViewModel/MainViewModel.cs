@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 using WykopSDK.API.Models;
 using WykopSDK.Utils;
 
@@ -510,6 +511,12 @@ namespace Mirko.ViewModel
         public RelayCommand GoToDebugPage
         {
             get { return _goToDebugPage ?? (_goToDebugPage = new RelayCommand(() => NavService.NavigateTo("DebugPage"))); }
+        }
+
+        private RelayCommand _howToOpenUris;
+        public RelayCommand HowToOpenUris
+        {
+            get { return _howToOpenUris ?? (_howToOpenUris = new RelayCommand(async () => await Launcher.LaunchUriAsync(new Uri("http://tylkomirko.azurewebsites.net/")))); }
         }
 
         private RelayCommand _goToDonationPage;

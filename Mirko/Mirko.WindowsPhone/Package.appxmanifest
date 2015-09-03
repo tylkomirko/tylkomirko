@@ -53,6 +53,11 @@
             <DataFormat>StorageItems</DataFormat>
           </ShareTarget>
         </Extension>
+        <Extension Category="windows.protocol">
+          <Protocol Name="mirko">
+            <DisplayName>Tylko Mirko</DisplayName>
+          </Protocol>
+        </Extension>
       </Extensions>
     </Application>
   </Applications>

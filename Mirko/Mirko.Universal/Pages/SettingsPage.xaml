@@ -213,6 +213,9 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="debug"
                               Command="{x:Bind MainVM.GoToDebugPage}" />
+
+                <AppBarButton Label="jak otwierać linki?"
+                              Command="{x:Bind MainVM.HowToOpenUris}" />
             </CommandBar.SecondaryCommands>
 
         </CommandBar>
