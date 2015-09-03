@@ -68,7 +68,7 @@ namespace Mirko.Pages
 
             if (e.IsDefaultLayout)
             {
-                PageTitle.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                PageTitle.Visibility = Visibility.Visible;
                 CurrentFooter().Height = 100;
 
                 if (EntryPreviewBinding != null)
@@ -77,12 +77,12 @@ namespace Mirko.Pages
             }
             else
             {
-                PageTitle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                PageTitle.Visibility = Visibility.Collapsed;
                 CurrentFooter().Height = 50;
 
                 if(EntryPreviewBinding == null)
                     EntryPreviewBinding = CurrentEntryPreview().GetBindingExpression(ScrollViewer.VisibilityProperty);
-                CurrentEntryPreview().Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                CurrentEntryPreview().Visibility = Visibility.Collapsed;
             }
         }
 
@@ -252,14 +252,11 @@ namespace Mirko.Pages
         private void FormattingPopup_Loaded(object sender, RoutedEventArgs e)
         {
             var popup = sender as Popup;
-            if (popup.VerticalOffset == 0)
-            {
-                var stackPanel = popup.Child as Grid;
-                stackPanel.Width = Window.Current.Bounds.Width;
-                popup.Width = Window.Current.Bounds.Width;
+            var stackPanel = popup.Child as Grid;
+            stackPanel.Width = Window.Current.Bounds.Width;
+            popup.Width = Window.Current.Bounds.Width;
 
-                popup.VerticalOffset = this.ActualHeight - stackPanel.Height;
-            }
+            popup.VerticalOffset = this.ActualHeight - stackPanel.Height;
         }
 
         private void SetFormattingButton()
@@ -297,7 +294,7 @@ namespace Mirko.Pages
             else
                 FormattingButton.Icon = new FontIcon() { Glyph = "!", FontSize = 28, FontWeight = FontWeights.Bold };
             FormattingButton.IsChecked = true;
-            FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            FormattingButton.Visibility = Visibility.Visible;
         }
 
         private void FormattingChanged(object sender, RoutedEventArgs e)
@@ -401,7 +398,7 @@ namespace Mirko.Pages
             }
 
             SelectedFormatting = FormattingEnum.NONE;
-            FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            FormattingButton.Visibility = Visibility.Collapsed;
 
             editor.Focus(FocusState.Programmatic);
         }
