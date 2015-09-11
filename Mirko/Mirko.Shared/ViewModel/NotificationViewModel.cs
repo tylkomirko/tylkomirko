@@ -1,8 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WykopSDK.API.Models;
 
 namespace Mirko.ViewModel
@@ -14,7 +12,6 @@ namespace Mirko.ViewModel
         public NotificationViewModel(Notification n)
         {
             Data = n;
-            n = null;
         }
 
         private RelayCommand _markAsReadCommand = null;

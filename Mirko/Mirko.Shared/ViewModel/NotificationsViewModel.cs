@@ -258,7 +258,7 @@ namespace Mirko.ViewModel
 
         private void ExecuteAtTappedCommand()
         {
-            if(AtNotificationsCount == 1)
+            if (AtNotificationsCount == 1)
             {
                 var notificationVM = AtNotifications.First();
 
@@ -881,11 +881,28 @@ namespace Mirko.ViewModel
 
         private async void ExecuteDeleteAllAtNotifications()
         {
+            if(!AtNotifications.Any(x => x.Data.IsNew))
+            {
+                StatusBarManager.ShowText("Brak nowych powiadomień.");
+                return;
+            }
+
             var success = await App.ApiService.ReadNotifications();
             if (!success) return;
 
-            foreach (var notificationVM in AtNotifications)
-                notificationVM.Data.IsNew = false;
+            var newNotificationsVM = AtNotifications.Where(x => x.Data.IsNew).ToList();
+            foreach (var VM in newNotificationsVM)
+            {
+                var newVM = new NotificationViewModel(VM.Data);
+                newVM.Data.IsNew = false;
+
+                var index = AtNotifications.GetIndex(VM);
+                AtNotifications.Replace(index, newVM);
+            }
+
+            AtNotificationsCount = 0;
+
+            await StatusBarManager.ShowTextAsync("Powiadomienia zostały usunięte.");
         }
         #endregion
 

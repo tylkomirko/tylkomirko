@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Title Panel -->
@@ -26,45 +27,52 @@
                    Fill="{ThemeResource TinySeparator}"
                    Opacity="{StaticResource AppBarOpacity}" />
 
-        <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" 
-              x:Name="ContentRoot">           
+        <ListView x:Name="ListView"
+                  Grid.Row="1"
+                  IsItemClickEnabled="True"
+                  ItemClick="ListView_ItemClick"
+                  Loaded="ListView_Loaded"
+                  ItemsSource="{x:Bind VM.AtNotifications, Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling">
 
-            <ListView x:Name="ListView"
-                      IsItemClickEnabled="True"
-                      ItemClick="ListView_ItemClick"
-                      Loaded="ListView_Loaded"
-                      ItemsSource="{x:Bind VM.AtNotifications, Mode=OneWay}"
-                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                      VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Transitions>
+                <TransitionCollection>
+                    <EdgeUIThemeTransition Edge="Right" />
+                </TransitionCollection>
+            </ListView.Transitions>
 
-                <ListView.Transitions>
-                    <TransitionCollection>
-                        <EdgeUIThemeTransition Edge="Right" />
-                    </TransitionCollection>
-                </ListView.Transitions>
+            <ListView.Header>
+                <StackPanel>
+                    <Rectangle Fill="Transparent" />
 
-                <ListView.Header>
-                    <StackPanel>
-                        <Rectangle Fill="Transparent" />
+                    <TextBlock Text="Nie masz żadnych powiadomień."
+                               Style="{StaticResource TextBlockNoItems}"
+                               Visibility="{x:Bind VM.AtNotifications.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                </StackPanel>
+            </ListView.Header>
 
-                        <TextBlock Text="Nie masz żadnych powiadomień."
-                                   Style="{StaticResource TextBlockNoItems}"
-                                   Visibility="{x:Bind VM.AtNotifications.HasNoItems, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
-                    </StackPanel>
-                </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:NotificationViewModel">
+                    <RichTextBlock x:Name="BodyRTB"
+                                   Margin="0,0,0,7.2"
+                                   FontSize="14"
+                                   IsTextSelectionEnabled="False"
+                                   utils:Injectors.Notification="{x:Bind Data, Mode=OneWay}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:NotificationViewModel">
-                        <RichTextBlock x:Name="BodyRTB"
-                                       Margin="0,0,0,7.2"
-                                       FontSize="14"
-                                       IsTextSelectionEnabled="False"
-                                       utils:Injectors.Notification="{x:Bind Data, Mode=OneWay}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+        </ListView>
 
-            </ListView>
-        </Grid>
+        <CommandBar Grid.Row="2"
+                    ClosedDisplayMode="Minimal">
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="usuń wszystkie powiadomienia"
+                              Command="{x:Bind VM.DeleteAllAtNotifications}" />
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
+        
     </Grid>
 </UserControl>
