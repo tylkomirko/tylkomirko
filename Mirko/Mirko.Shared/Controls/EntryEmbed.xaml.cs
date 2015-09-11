@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
+using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -17,6 +18,7 @@ namespace Mirko.Controls
 {
     public sealed partial class EntryEmbed : UserControl
     {
+        private bool singleTap;
         private static SettingsViewModel Settings = null;
 
         public EntryEmbed()
@@ -124,15 +126,21 @@ namespace Mirko.Controls
             }
         }
 
-        private void MediaElement_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void MediaElement_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
             var me = sender as MediaElement;
 
-            if (me.CurrentState == MediaElementState.Playing)
-                me.Pause();
-            else if (me.CurrentState == MediaElementState.Paused)
-                me.Play();
+            singleTap = true;
+            await Task.Delay(100); // ugly trick, I know
+
+            if (singleTap)
+            {
+                if (me.CurrentState == MediaElementState.Playing)
+                    me.Pause();
+                else if (me.CurrentState == MediaElementState.Paused)
+                    me.Play();
+            }
         }
 
         private void MediaElement_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
@@ -140,7 +148,8 @@ namespace Mirko.Controls
             e.Handled = true;
             var me = sender as MediaElement;
 
-            me.Play();
+            singleTap = false;
+
             me.IsFullWindow = !me.IsFullWindow;
             Messenger.Default.Send(new NotificationMessage<bool>(me.IsFullWindow, "MediaElement DoubleTapped"));
         }
