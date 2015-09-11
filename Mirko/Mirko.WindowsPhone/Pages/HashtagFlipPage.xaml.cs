@@ -33,9 +33,13 @@ namespace Mirko.Pages
 
             Messenger.Default.Register<EntryViewModel>(this, "HashtagFlipEntries Updated", (e) =>
             {
-                var scrollViewer = CurrentListView().GetDescendant<ScrollViewer>();
-                scrollViewer.ChangeView(null, PreRefreshOffset, null, false);
-                PreRefreshOffset = 0;
+                var lv = CurrentListView();
+                if (lv != null)
+                {
+                    var scrollViewer = lv.GetDescendant<ScrollViewer>();
+                    scrollViewer.ChangeView(null, PreRefreshOffset, null, false);
+                    PreRefreshOffset = 0;
+                }
             });
         }
 
@@ -50,7 +54,7 @@ namespace Mirko.Pages
         private ListView CurrentListView()
         {
             var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
-            return item.ContentTemplateRoot as ListView;
+            return item != null ? item.ContentTemplateRoot as ListView : null;
         }
 
         private EdgeSelectButton CurrentHeaderEdgeButton()
