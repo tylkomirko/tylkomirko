@@ -459,8 +459,13 @@ namespace Mirko
                 success = ProcessProtocolActivation(args.Uri.OriginalString);
             }
 
+#if WINDOWS_PHONE_APP
+            if (!success && continuationEventArgs == null)
+                NavService.NavigateTo("PivotPage");
+#else
             if (!success)
                 NavService.NavigateTo("PivotPage");
+#endif
 
             Window.Current.Content = rootFrame;
             Window.Current.Activate();
@@ -496,7 +501,7 @@ namespace Mirko
             return false;
         }
 
-        #region Suspension
+#region Suspension
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
@@ -597,6 +602,6 @@ namespace Mirko
                 NavService.NavigateTo("PivotPage");
             }
         }
-        #endregion
+#endregion
     }
 }

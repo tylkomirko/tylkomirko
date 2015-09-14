@@ -24,7 +24,7 @@ namespace Mirko.Pages
             if (VM == null) return;
 
             var data = VM.NewEntry;
-            if (URLTextBox.Text.Length > 0 && data.Files != null)
+            if (URLTextBox.Text.Length > 0 || data.Files != null)
                 OKButton.IsEnabled = true;
             else
                 OKButton.IsEnabled = false;
