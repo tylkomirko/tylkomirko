@@ -49,7 +49,7 @@
                                                  NullTemplate="{StaticResource Block_Null}" />
     </UserControl.Resources>
     
-    <Grid>
+    <Grid Margin="0,0,0,8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -69,7 +69,7 @@
                 Visibility="{Binding Data.CommentCount, Converter={StaticResource CountToVisibility}}">           
             
             <TextBlock Foreground="{ThemeResource CommentsBarForeground}"
-                       Margin="12,4,0,4"
+                       Margin="12,6,0,6"
                        FontSize="{Binding Fonts.CommentsBarFontSize, Mode=OneWay, Source={StaticResource Locator}}">
                 <Run Text="POKAŻ KOMENTARZE (" /><Run Text="{Binding Data.CommentCount}" Foreground="{ThemeResource CommentsBarCountForeground}"/><Run Text=")" />
             </TextBlock>

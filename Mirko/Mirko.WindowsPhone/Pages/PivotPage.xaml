@@ -112,7 +112,7 @@
                   Height="49"
                   Tapped="TimeSpanIndicatorGrid_Tapped">
                 <TextBlock Foreground="{ThemeResource HashtagForeground}"
-                           Margin="75,0,0,0"
+                           Margin="70,0,0,0"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="18">
                     <Run Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
@@ -193,7 +193,7 @@
                   Height="49"
                   Tapped="MyEntriesIndicatorGrid_Tapped">
                 <TextBlock Foreground="{ThemeResource HashtagForeground}"
-                           Margin="75,0,0,0"
+                           Margin="70,0,0,0"
                            Style="{StaticResource BodyTextBlockStyle}"
                            FontSize="18">
                     <Run Text="{Binding MyEntriesType, Converter={StaticResource MyEntriesTypeStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
