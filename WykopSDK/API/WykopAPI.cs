@@ -282,7 +282,15 @@ namespace WykopSDK.API
                     JsonSerializer serializer = new JsonSerializer();
                     serializer.Error += serializer_Error;
 
-                    result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
+                    try
+                    {
+                        result = deserializationFunction == null ? serializer.Deserialize<T>(reader) : deserializationFunction(reader, serializer);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error("Deserialization error: " + ex);
+                        return null;
+                    }
                 }
 
                 return result;

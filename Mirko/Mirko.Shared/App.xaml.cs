@@ -506,26 +506,23 @@ namespace Mirko
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            var currentPage = NavService.CurrentPageKey;
-            var currentFrame = NavService.CurrentFrame();
-
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-
-            if (currentPage != "DonationPage")
-                localSettings["PageKey"] = currentPage;
-            else
-                localSettings.Remove("PageKey");
-
-            localSettings.Remove("VM");
-
-            if(string.IsNullOrEmpty(currentPage) || currentFrame == null)
-            {
-                deferral.Complete();
-                return;
-            }
-
             try
             {
+                var currentPage = NavService.CurrentPageKey;
+                var currentFrame = NavService.CurrentFrame();
+
+                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+
+                if (currentPage != "DonationPage")
+                    localSettings["PageKey"] = currentPage;
+                else
+                    localSettings.Remove("PageKey");
+
+                localSettings.Remove("VM");
+
+                if (string.IsNullOrEmpty(currentPage) || currentFrame == null)
+                    return;
+
                 var dataContext = currentFrame.DataContext;
                 if (dataContext != null)
                 {
@@ -552,49 +549,51 @@ namespace Mirko
         {
             Logger.Trace("Resuming from suspension.");
 
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
-            if (!settings.ContainsKey("PageKey"))
-            {
-                NavService.NavigateTo("PivotPage");
-                return;
-            }
-
-            var pageKey = (string)settings["PageKey"];
-
-            if(!settings.ContainsKey("VM"))
-            {
-                if(IsMobile)
-                    NavService.InsertMainPage();
-                NavService.NavigateTo(pageKey);
-                return;
-            }
-
-            var viewModelName = (string)settings["VM"];
-
+            string pageKey = null;
             bool resumed = false;
-            IResumable viewModel = null;
-            if (viewModelName == "MainViewModel")
-                viewModel = SimpleIoc.Default.GetInstance<MainViewModel>();
-            else if (viewModelName == "ProfilesViewModel")
-                viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
-            else if (viewModelName == "NewEntryViewModel")
-                viewModel = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
-            else if(viewModelName == "MessagesViewModel")
-                viewModel = SimpleIoc.Default.GetInstance<MessagesViewModel>();
-
             try
             {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+                if (!settings.ContainsKey("PageKey"))
+                {
+                    NavService.NavigateTo("PivotPage");
+                    return;
+                }
+
+                pageKey = (string)settings["PageKey"];
+
+                if (!settings.ContainsKey("VM"))
+                {
+                    if (IsMobile)
+                        NavService.InsertMainPage();
+                    NavService.NavigateTo(pageKey);
+                    return;
+                }
+
+                var viewModelName = (string)settings["VM"];
+               
+                IResumable viewModel = null;
+                if (viewModelName == "MainViewModel")
+                    viewModel = SimpleIoc.Default.GetInstance<MainViewModel>();
+                else if (viewModelName == "ProfilesViewModel")
+                    viewModel = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
+                else if (viewModelName == "NewEntryViewModel")
+                    viewModel = SimpleIoc.Default.GetInstance<NewEntryViewModel>();
+                else if (viewModelName == "MessagesViewModel")
+                    viewModel = SimpleIoc.Default.GetInstance<MessagesViewModel>();
+
+
                 resumed = await viewModel.LoadState(pageKey);
-            } 
-            catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Logger.Error("Error loading state: ", e);
                 TelemetryClient.TrackException(e);
             }
 
-            if(resumed)
+            if (resumed)
             {
-                if(IsMobile)
+                if (IsMobile)
                     NavService.InsertMainPage();
                 NavService.NavigateTo(pageKey);
             }
