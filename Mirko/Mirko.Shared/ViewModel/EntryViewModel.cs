@@ -2,12 +2,7 @@
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using WykopSDK.API.Models;
-using WykopSDK.Parsers;
 
 namespace Mirko.ViewModel
 {
@@ -59,38 +54,6 @@ namespace Mirko.ViewModel
         {
             var reply = await App.ApiService.AddToFavourites(Data.ID);
             Data.Favourite = reply.user_favorite;
-        }
-
-        private RelayCommand _shareCommand = null;
-        [JsonIgnore]
-        public RelayCommand ShareCommand
-        {
-            get { return _shareCommand ?? (_shareCommand = new RelayCommand(ExecuteShareCommand)); }
-        }
-
-        private void ExecuteShareCommand()
-        {
-            var dataTransferManager = DataTransferManager.GetForCurrentView();
-            dataTransferManager.DataRequested += new TypedEventHandler<DataTransferManager,
-                DataRequestedEventArgs>(ShareLinkHandler);
-
-            DataTransferManager.ShowShareUI();
-        }
-
-        private void ShareLinkHandler(DataTransferManager sender, DataRequestedEventArgs args)
-        {
-            var url = "http://wykop.pl/wpis/" + Data.ID;
-            var body = HtmlToText.Convert(Data.Text.Replace("\n", " "));
-            var splittedBody = new List<string>(body.Split(' '));
-            const int wordsToGet = 4;
-
-            var title = String.Join(" ", splittedBody.GetRange(0, (splittedBody.Count >= wordsToGet) ? wordsToGet : splittedBody.Count));
-            if (splittedBody.Count > wordsToGet)
-                title += "...";
-
-            DataRequest request = args.Request;
-            request.Data.Properties.Title = title;
-            request.Data.SetWebLink(new Uri(url));
         }
     }
 }

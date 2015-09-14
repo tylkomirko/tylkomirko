@@ -9,8 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using WykopSDK.API.Models;
+using WykopSDK.Parsers;
 
 namespace Mirko.ViewModel
 {
@@ -199,6 +202,49 @@ namespace Mirko.ViewModel
 
                 await StatusBarManager.HideProgressAsync();
             }
+        }
+
+        private RelayCommand _shareCommand = null;
+        [JsonIgnore]
+        public RelayCommand ShareCommand
+        {
+            get { return _shareCommand ?? (_shareCommand = new RelayCommand(ExecuteShareCommand)); }
+        }
+
+        private void ExecuteShareCommand()
+        {
+            var dataTransferManager = DataTransferManager.GetForCurrentView();
+            dataTransferManager.DataRequested += new TypedEventHandler<DataTransferManager,
+                DataRequestedEventArgs>(ShareLinkHandler);
+
+            DataTransferManager.ShowShareUI();
+        }
+
+        private void ShareLinkHandler(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            string url, body;
+
+            if(DataBase is EntryComment)
+            {
+                var d = DataBase as EntryComment;
+                url = string.Format("http://wykop.pl/wpis/{0}/#comment-{1}", d.EntryID, d.ID);
+            }
+            else
+            {
+                url = string.Format("http://wykop.pl/wpis/{0}", DataBase.ID);
+            }
+
+            body = HtmlToText.Convert(DataBase.Text.Replace("\n", " "));
+            var splittedBody = new List<string>(body.Split(' '));
+            const int wordsToGet = 4;
+
+            var title = string.Join(" ", splittedBody.GetRange(0, (splittedBody.Count >= wordsToGet) ? wordsToGet : splittedBody.Count));
+            if (splittedBody.Count > wordsToGet)
+                title += "...";
+
+            DataRequest request = args.Request;
+            request.Data.Properties.Title = title;
+            request.Data.SetWebLink(new Uri(url));
         }
 
         private RelayCommand<List<EntryBaseViewModel>> _voteMultiple = null;

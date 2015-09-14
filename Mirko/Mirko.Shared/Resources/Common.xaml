@@ -21,4 +21,6 @@
     <SolidColorBrush x:Key="AuthorCommentFillLight" Color="DarkGray" />
     <SolidColorBrush x:Key="CommentDirectedFillLight" Color="#6cb0dd" />
 
+    <SolidColorBrush x:Key="FavButtonCheckedFill" Color="#C38307" />
+
 </ResourceDictionary>

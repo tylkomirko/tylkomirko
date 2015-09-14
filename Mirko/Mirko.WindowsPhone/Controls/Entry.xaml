@@ -46,16 +46,6 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <!--
-        <MenuFlyout x:Key="UserFlyout">
-            <MenuFlyoutItem Text="odpowiedz" Click="ReplyFlyoutItem_Click" />
-            <MenuFlyoutItem Text="obserwuj" Click="ObserveUser_Click" />
-            <MenuFlyoutItem Text="napisz wiadomość" Click="SendPM_Click" />
-            <MenuFlyoutItem Text="czarnolisto" Click="BlacklistUser_Click" />
-        </MenuFlyout>
-    </UserControl.Resources>
-    -->
-
     <Grid x:Name="EntryGrid"
           VerticalAlignment="Top">
 
@@ -89,27 +79,54 @@
                 <MenuFlyoutItem Text="odpowiedz"
                                 Tag="reply"
                                 Command="{Binding ReplyCommand}"/>
-                
-                <MenuFlyoutItem Text="dodaj do ulubionych"
-                                Tag="favourite"
-                                Command="{Binding FavouriteCommand}"/>
-                <MenuFlyoutItem Text="usuń z ulubionych"
-                                Tag="unfavourite"
-                                Command="{Binding FavouriteCommand}"
-                                Visibility="Collapsed"/>
 
-                <MenuFlyoutItem Foreground="{ThemeResource MenuFlyoutSeparator}"
-                                Tag="separator"
-                                Text="separator :)"/>
+                <controls:MenuFlyoutEntryPanel>
+                    <MenuFlyoutItem.Template>
+                        <ControlTemplate TargetType="controls:MenuFlyoutEntryPanel">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                <MenuFlyoutItem Text="edytuj"
-                                Tag="edit"
-                                Command="{Binding EditCommand}"
-                                Visibility="Collapsed"/>
-                <MenuFlyoutItem Text="usuń"
-                                Tag="delete"
-                                Command="{Binding DeleteCommand}"
-                                Visibility="Collapsed"/>
+                                <AppBarToggleButton Icon="Favorite"
+                                                    Grid.Column="0"
+                                                    IsCompact="True"
+                                                    IsThreeState="False"
+                                                    x:Name="favButton"
+                                                    IsChecked="{Binding Data.Favourite}"
+                                                    Command="{Binding FavouriteCommand}"
+                                                    Style="{StaticResource FavButtonStyle}"
+                                                    Click="FavouriteButton_Click"/>
+
+                                <AppBarButton IsCompact="True"
+                                              Grid.Column="1"
+                                              Tag="share"
+                                              Command="{Binding ShareCommand}">
+                                    <AppBarButton.Icon>
+                                        <BitmapIcon UriSource="/Assets/appbar.share.png" />
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+
+                                <AppBarButton Icon="Edit"
+                                              IsCompact="True"
+                                              IsEnabled="False"
+                                              Grid.Column="2"
+                                              x:Name="editButton"
+                                              Command="{Binding EditCommand}"/>
+
+                                <AppBarButton Icon="Delete"
+                                              IsCompact="True"
+                                              IsEnabled="False"
+                                              Grid.Column="3"
+                                              x:Name="deleteButton"
+                                              Command="{Binding DeleteCommand}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </MenuFlyoutItem.Template>
+                </controls:MenuFlyoutEntryPanel>
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
 

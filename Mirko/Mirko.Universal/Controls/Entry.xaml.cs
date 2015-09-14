@@ -152,6 +152,12 @@ namespace Mirko.Controls
             }
         }
 
+        private void FavouriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mf = FlyoutBase.GetAttachedFlyout(EntryGrid) as MenuFlyout;
+            mf.Hide();
+        }
+
         private void AuthorTB_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (e != null)

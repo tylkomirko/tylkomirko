@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xaml.Interactivity;
+using Mirko.Controls;
 using Mirko.ViewModel;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using WykopSDK.API.Models;
 
 namespace Mirko.Utils
@@ -33,6 +35,48 @@ namespace Mirko.Utils
                 if (i.Tag.ToString() == tag)
                 {
                     i.Visibility = Visibility.Collapsed;
+                    break;
+                }
+            }
+        }
+
+        public static void EnableItem(this MenuFlyout mf, string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            foreach (var item in mf.Items)
+            {
+                if(item is MenuFlyoutEntryPanel)
+                {
+                    var panel = item as MenuFlyoutEntryPanel;
+                    if (tag == "edit")
+                        panel.EnableEditButton = true;
+                    else if (tag == "delete")
+                        panel.EnableDeleteButton = true;
+                    else if (tag == "favourite")
+                        panel.EnableFavButton = true;
+
+                    break;
+                }
+            }
+        }
+
+        public static void DisableItem(this MenuFlyout mf, string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            foreach (var item in mf.Items)
+            {
+                if (item is MenuFlyoutEntryPanel)
+                {
+                    var panel = item as MenuFlyoutEntryPanel;
+                    if (tag == "edit")
+                        panel.EnableEditButton = false;
+                    else if (tag == "delete")
+                        panel.EnableDeleteButton = false;
+                    else if (tag == "favourite")
+                        panel.EnableFavButton = false;
+
                     break;
                 }
             }
@@ -68,29 +112,18 @@ namespace Mirko.Utils
 
             if (comment != null)
             {
-                menuFlyout.MakeItemInvisible("favourite");
-                if (comment.RootEntryAuthor == myUserName)
-                {
-                    menuFlyout.MakeItemVisible("separator");
-                    menuFlyout.MakeItemVisible("delete");
-                }
-            }
-            else
-            {
-                var realEntry = entryData as Entry;
-                if (realEntry != null && realEntry.Favourite)
-                {
-                    menuFlyout.MakeItemInvisible("favourite");
-                    menuFlyout.MakeItemVisible("unfavourite");
-                }
+               menuFlyout.DisableItem("favourite");
+               if (comment.RootEntryAuthor == myUserName)
+                    menuFlyout.EnableItem("delete");
             }
 
             if (entryData.AuthorName == myUserName)
             {
-                menuFlyout.MakeItemVisible("separator");
-                menuFlyout.MakeItemVisible("delete");
+                menuFlyout.MakeItemInvisible("plus");
+                menuFlyout.MakeItemInvisible("unplus");
+                menuFlyout.EnableItem("delete");
                 if(DateTime.UtcNow - entryData.Date.Subtract(App.OffsetUTCInPoland) < EditTime)
-                    menuFlyout.MakeItemVisible("edit");
+                    menuFlyout.EnableItem("edit");
             }
 
             if (entryData.VoteCount == 0 || entry.ShowVoters)

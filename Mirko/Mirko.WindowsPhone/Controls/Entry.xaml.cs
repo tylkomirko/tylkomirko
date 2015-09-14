@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -148,6 +146,12 @@ namespace Mirko.Controls
             }
         }
 
+        private void FavouriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mf = FlyoutBase.GetAttachedFlyout(EntryGrid) as MenuFlyout;
+            mf.Hide();
+        }
+
         private void AuthorTB_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (e != null)
@@ -187,7 +191,7 @@ namespace Mirko.Controls
                 VM.RefreshCommand.Execute(null);
 
             VM.ShowVoters = true;
-            VotersRTB.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            VotersRTB.Visibility = Visibility.Visible;
         }
 
         public delegate void TextSelectionChangedEventHandler(object sender, StringEventArgs e);

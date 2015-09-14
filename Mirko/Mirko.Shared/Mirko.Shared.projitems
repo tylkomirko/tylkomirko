@@ -38,6 +38,7 @@
       <DependentUpon>LennyChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ListViewEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\MenuFlyoutEntryPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\NotificationCounter.xaml.cs">
       <DependentUpon>NotificationCounter.xaml</DependentUpon>
     </Compile>

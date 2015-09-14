@@ -163,6 +163,7 @@
     <Content Include="Assets\appbar.grade.c.png" />
     <Content Include="Assets\appbar.link.png" />
     <Content Include="Assets\appbar.quote.png" />
+    <Content Include="Assets\appbar.share.png" />
     <Content Include="Assets\appbar.smiley.glasses.png" />
     <Content Include="Assets\appbar.social.twitter.hashtag.png" />
     <Content Include="Assets\appbar.text.bold.png" />
