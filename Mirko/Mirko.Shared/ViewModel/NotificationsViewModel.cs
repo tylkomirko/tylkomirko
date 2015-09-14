@@ -79,6 +79,8 @@ namespace Mirko.ViewModel
             Messenger.Default.Register<NotificationMessage<Notification>>(this, ReadMessage);
             Messenger.Default.Register<EntryViewModel>(this, "Update", (e) =>
             {
+                if (e == null) return;
+
                 var oldEntries = HashtagFlipEntries.Where(x => x.Data.ID == e.Data.ID);
                 foreach (var oldEntry in oldEntries)
                 {
