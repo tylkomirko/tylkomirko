@@ -589,6 +589,7 @@ namespace Mirko
             catch(Exception e)
             {
                 Logger.Error("Error loading state: ", e);
+                TelemetryClient.TrackException(e);
             }
 
             if(resumed)
