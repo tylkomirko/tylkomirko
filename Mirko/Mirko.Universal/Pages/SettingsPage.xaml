@@ -143,6 +143,23 @@
                                   OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
                                   OffContentTemplate="{StaticResource ToggleSwitchTemplate}"/>
 
+                    <ToggleSwitch x:Name="SyncSettings"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.SyncSettings, Mode=TwoWay}"
+                                  OffContent="Synchronizuj ustawienia między urządzeniami"
+                                  OnContent="Synchronizuj ustawienia między urządzeniami"
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}">
+
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Toggled">
+                                <core:InvokeCommandAction Command="{Binding SyncSettingsToggled}"
+                                                          CommandParameter="{Binding ElementName=SyncSettings, Path=IsOn}"/>
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                    </ToggleSwitch>
+
                     <Grid Margin="0,20,0,0"
                           HorizontalAlignment="Stretch">
 

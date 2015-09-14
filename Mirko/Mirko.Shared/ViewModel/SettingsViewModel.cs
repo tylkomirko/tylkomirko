@@ -62,25 +62,30 @@ namespace Mirko.ViewModel
         public event ThemeChangedEventHandler ThemeChanged;     
 
         private readonly IPropertySet RoamingValues = Windows.Storage.ApplicationData.Current.RoamingSettings.Values;
+        private readonly IPropertySet LocalValues = Windows.Storage.ApplicationData.Current.LocalSettings.Values;
+        private IPropertySet SettingsContainer
+        {
+            get { return SyncSettings ? RoamingValues : LocalValues; }
+        }
 
         public bool PseudoPush
         {
-            get { return RoamingValues.ContainsKey("PseudoPush") ? (bool)RoamingValues["PseudoPush"] : false; }
-            set { RoamingValues["PseudoPush"] = value; }
+            get { return SettingsContainer.ContainsKey("PseudoPush") ? (bool)SettingsContainer["PseudoPush"] : false; }
+            set { SettingsContainer["PseudoPush"] = value; }
         }
 
         public bool FirstRun
         {
-            get { return RoamingValues.ContainsKey("FirstRun") ? (bool)RoamingValues["FirstRun"] : true; }
-            set { RoamingValues["FirstRun"] = value; }
+            get { return SettingsContainer.ContainsKey("FirstRun") ? (bool)SettingsContainer["FirstRun"] : true; }
+            set { SettingsContainer["FirstRun"] = value; }
         }
 
         public ElementTheme SelectedTheme
         {
-            get { return RoamingValues.ContainsKey("SelectedTheme") ? (ElementTheme)Enum.Parse(typeof(ElementTheme), (string)RoamingValues["SelectedTheme"]) : ElementTheme.Dark; }
+            get { return SettingsContainer.ContainsKey("SelectedTheme") ? (ElementTheme)Enum.Parse(typeof(ElementTheme), (string)SettingsContainer["SelectedTheme"]) : ElementTheme.Dark; }
             set 
-            { 
-                RoamingValues["SelectedTheme"] = value.ToString(); 
+            {
+                SettingsContainer["SelectedTheme"] = value.ToString(); 
                 base.RaisePropertyChanged("SelectedTheme"); 
                 if (ThemeChanged != null) 
                     ThemeChanged(this, new ThemeChangedEventArgs(value)); 
@@ -89,39 +94,39 @@ namespace Mirko.ViewModel
 
         public double FontScaleFactor
         {
-            get { return RoamingValues.ContainsKey("FontScaleFactor") ? (double)RoamingValues["FontScaleFactor"] : 1.0; }
-            set { RoamingValues["FontScaleFactor"] = value; base.RaisePropertyChanged("FontScaleFactor"); }
+            get { return SettingsContainer.ContainsKey("FontScaleFactor") ? (double)SettingsContainer["FontScaleFactor"] : 1.0; }
+            set { SettingsContainer["FontScaleFactor"] = value; base.RaisePropertyChanged("FontScaleFactor"); }
         }
 
         public bool ShowAvatars
         {
-            get { return RoamingValues.ContainsKey("ShowAvatars") ? (bool)RoamingValues["ShowAvatars"] : false; }
-            set { RoamingValues["ShowAvatars"] = value; }
+            get { return SettingsContainer.ContainsKey("ShowAvatars") ? (bool)SettingsContainer["ShowAvatars"] : false; }
+            set { SettingsContainer["ShowAvatars"] = value; }
         }
 
         public bool OnlyWIFIDownload
         {
-            get { return RoamingValues.ContainsKey("OnlyWIFIDownload") ? (bool)RoamingValues["OnlyWIFIDownload"] : false; }
+            get { return SettingsContainer.ContainsKey("OnlyWIFIDownload") ? (bool)SettingsContainer["OnlyWIFIDownload"] : false; }
             set 
-            { 
-                RoamingValues["OnlyWIFIDownload"] = value;
+            {
+                SettingsContainer["OnlyWIFIDownload"] = value;
                 base.RaisePropertyChanged("OnlyWIFIDownload");
             }
         }
 
         public bool ShowPlus18
         {
-            get { return RoamingValues.ContainsKey("ShowPlus18") ? (bool)RoamingValues["ShowPlus18"] : false; }
+            get { return SettingsContainer.ContainsKey("ShowPlus18") ? (bool)SettingsContainer["ShowPlus18"] : false; }
             set 
-            { 
-                RoamingValues["ShowPlus18"] = value;
+            {
+                SettingsContainer["ShowPlus18"] = value;
                 base.RaisePropertyChanged("ShowPlus18");
             }
         }
 
         public bool LiveTile
         {
-            get { return RoamingValues.ContainsKey("LiveTile") ? (bool)RoamingValues["LiveTile"] : true; }
+            get { return SettingsContainer.ContainsKey("LiveTile") ? (bool)SettingsContainer["LiveTile"] : true; }
             set
             {
                 if (value)
@@ -129,17 +134,15 @@ namespace Mirko.ViewModel
                 else
                     NotificationsManager.ClearLiveTile();
 
-                RoamingValues["LiveTile"] = value;
+                SettingsContainer["LiveTile"] = value;
             }
         }
 
         public int HotTimeSpan
         {
-            get { return RoamingValues.ContainsKey("HotTimeSpan") ? (int)RoamingValues["HotTimeSpan"] : 12; }
-            set { RoamingValues["HotTimeSpan"] = value; }
+            get { return SettingsContainer.ContainsKey("HotTimeSpan") ? (int)SettingsContainer["HotTimeSpan"] : 12; }
+            set { SettingsContainer["HotTimeSpan"] = value; }
         }
-
-        //public bool IsBlacklistEnabled { get; set; }
 
         private List<string> _youTubeApps;
         public List<string> YouTubeApps
@@ -151,10 +154,10 @@ namespace Mirko.ViewModel
         {
             get
             {
-                if (RoamingValues.ContainsKey("YouTubeApp"))
+                if (SettingsContainer.ContainsKey("YouTubeApp"))
                 {
                     YouTubeApp temp = YouTubeApp.IE;
-                    Enum.TryParse<YouTubeApp>((string)RoamingValues["YouTubeApp"], false, out temp);
+                    Enum.TryParse<YouTubeApp>((string)SettingsContainer["YouTubeApp"], false, out temp);
                     return temp;
                 }
                 else
@@ -165,7 +168,7 @@ namespace Mirko.ViewModel
 
             set
             {
-                RoamingValues["YouTubeApp"] = value.ToString();
+                SettingsContainer["YouTubeApp"] = value.ToString();
             }
         }
 
@@ -179,10 +182,10 @@ namespace Mirko.ViewModel
         {
             get
             {
-                if (RoamingValues.ContainsKey("StartPage"))
+                if (SettingsContainer.ContainsKey("StartPage"))
                 {
                     StartPage temp = StartPage.MIRKO;
-                    Enum.TryParse<StartPage>((string)RoamingValues["StartPage"], false, out temp);
+                    Enum.TryParse<StartPage>((string)SettingsContainer["StartPage"], false, out temp);
                     return temp;
                 }
                 else
@@ -195,6 +198,12 @@ namespace Mirko.ViewModel
             {
                 RoamingValues["StartPage"] = value.ToString();
             }
+        }
+
+        public bool SyncSettings
+        {
+            get { return LocalValues.ContainsKey("SyncSettings") ? (bool)LocalValues["SyncSettings"] : true; }
+            set { LocalValues["SyncSettings"] = value; }
         }
 
         public SettingsViewModel()
@@ -233,6 +242,7 @@ namespace Mirko.ViewModel
         {
             Windows.Storage.ApplicationData.Current.RoamingSettings.DeleteContainer("UserInfo");
             RoamingValues.Clear();
+            LocalValues.Clear();
 
             App.ApiService.UserInfo = null;
             NotificationsManager.ClearLiveTile();
@@ -285,6 +295,25 @@ namespace Mirko.ViewModel
             {
                 BackgroundTasksUtils.UnregisterTask("PseudoPush");
             }
+        }
+
+        private RelayCommand _syncSettingsToggled = null;
+        public RelayCommand SyncSettingsToggled
+        {
+            get { return _syncSettingsToggled ?? (_syncSettingsToggled = new RelayCommand(ExecuteSyncSettingsToggled)); }
+        }
+
+        private void ExecuteSyncSettingsToggled()
+        {
+            IPropertySet input = SyncSettings ? LocalValues : RoamingValues;
+            IPropertySet output = SyncSettings ? RoamingValues : LocalValues;
+
+            string[] keys = new string[] { "PseudoPush", "FirstRun", "SelectedTheme", "FontScaleFactor",
+                                           "ShowAvatars", "OnlyWIFIDownload", "ShowPlus18", "LiveTile",
+                                           "HotTimeSpan", "YouTubeApp", "StartPage" };
+
+            foreach (var key in keys)
+                output[key] = input[key];
         }
     }
 }
