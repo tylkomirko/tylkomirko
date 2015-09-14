@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using Mirko.Utils;
 using Newtonsoft.Json;
 using WykopSDK.API.Models;
 
@@ -52,8 +53,19 @@ namespace Mirko.ViewModel
 
         private async void ExecuteFavouriteCommand()
         {
+            await StatusBarManager.ShowProgressAsync();
             var reply = await App.ApiService.AddToFavourites(Data.ID);
-            Data.Favourite = reply.user_favorite;
+            if (reply != null)
+            {
+                Data.Favourite = reply.user_favorite;
+
+                string text = string.Format("{0} ulubionych.", Data.Favourite ? "Dodano do" : "Usunięto z");
+                StatusBarManager.ShowText(text);
+            }
+            else
+            {
+                StatusBarManager.ShowText("Coś poszło nie tak...");
+            }
         }
     }
 }
