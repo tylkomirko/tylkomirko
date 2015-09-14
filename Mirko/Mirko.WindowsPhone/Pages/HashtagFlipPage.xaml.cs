@@ -6,11 +6,8 @@ using QKit.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.System.Threading;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -29,18 +26,25 @@ namespace Mirko.Pages
             HeaderHeight = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight + 49;
             FlipView.Margin = new Thickness(0, -HeaderHeight, 0, 0);
 
-            this.Unloaded += (s, e) => PreRefreshOffset = CurrentListView().GetDescendant<ScrollViewer>().VerticalOffset;
-
-            Messenger.Default.Register<EntryViewModel>(this, "HashtagFlipEntries Updated", (e) =>
+            this.Unloaded += (s, e) =>
             {
                 var lv = CurrentListView();
                 if (lv != null)
-                {
-                    var scrollViewer = lv.GetDescendant<ScrollViewer>();
-                    scrollViewer.ChangeView(null, PreRefreshOffset, null, false);
-                    PreRefreshOffset = 0;
-                }
-            });
+                    PreRefreshOffset = lv.GetDescendant<ScrollViewer>().VerticalOffset;
+            };
+
+            Messenger.Default.Register<EntryViewModel>(this, "HashtagFlipEntries Updated", ReadMessage);
+        }
+
+        private void ReadMessage(EntryViewModel e)
+        {
+            var lv = CurrentListView();
+            if (lv != null)
+            {
+                var scrollViewer = lv.GetDescendant<ScrollViewer>();
+                scrollViewer.ChangeView(null, PreRefreshOffset, null, false);
+                PreRefreshOffset = 0;
+            }
         }
 
         private void ListView_Loaded(object sender, RoutedEventArgs e)
