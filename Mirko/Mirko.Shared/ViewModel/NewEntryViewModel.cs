@@ -243,7 +243,10 @@ namespace Mirko.ViewModel
                 if (!App.ShareTargetActivated)
                 {
                     var entry = await App.ApiService.GetEntry(mainEntryID);
-                    Messenger.Default.Send(new EntryViewModel(entry), "Update");
+                    if (entry != null)
+                        Messenger.Default.Send(new EntryViewModel(entry), "Update");
+                    else
+                        StatusBarManager.ShowText("Nie można pobrać wpisu.");
                     /*var idx = mainVM.MirkoEntries.GetIndex(entryVM);
                     mainVM.MirkoEntries.Replace(idx, new EntryViewModel(entry));*/
                 }
