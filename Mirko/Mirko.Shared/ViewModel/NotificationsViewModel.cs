@@ -77,6 +77,7 @@ namespace Mirko.ViewModel
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
             Messenger.Default.Register<NotificationMessage<Notification>>(this, ReadMessage);
+            Messenger.Default.Register<NotificationMessage<IEnumerable<uint>>>(this, ReadMessage);
             Messenger.Default.Register<EntryViewModel>(this, "Update", (e) =>
             {
                 if (e == null) return;
@@ -144,6 +145,15 @@ namespace Mirko.ViewModel
             {
                 this.SelectedAtNotification = new NotificationViewModel(obj.Content);
                 GoToNotification.Execute(null);
+            }
+        }
+
+        private void ReadMessage(NotificationMessage<IEnumerable<uint>> obj)
+        {
+            if (obj.Notification == "Remove notifications from entries IDs")
+            {
+                foreach (var ID in obj.Content)
+                    DeleteHashtagNotificationFromEntryID.Execute(ID);
             }
         }
 
@@ -379,7 +389,13 @@ namespace Mirko.ViewModel
             get { return _deleteHashtagNotification ?? (_deleteHashtagNotification = new RelayCommand<uint>(async (id) => await ExecuteDeleteHashtagNotification(id))); }
         }
 
-        private async Task ExecuteDeleteHashtagNotification(uint ID)
+        private RelayCommand<uint> _deleteHashtagNotificationFromEntryID = null;
+        public RelayCommand<uint> DeleteHashtagNotificationFromEntryID
+        {
+            get { return _deleteHashtagNotificationFromEntryID ?? (_deleteHashtagNotificationFromEntryID = new RelayCommand<uint>(async (id) => await ExecuteDeleteHashtagNotification(id, false))); }
+        }
+
+        private async Task ExecuteDeleteHashtagNotification(uint ID, bool notificationID = true /* else: entryID */)
         {
             try
             {
@@ -388,8 +404,13 @@ namespace Mirko.ViewModel
 
                 foreach(var col in HashtagsDictionary.Values)
                 {
-                    var tmp = col.SingleOrDefault(x => x.Data.ID == ID);
-                    if(tmp != null)
+                    NotificationViewModel tmp = null;
+                    if(notificationID)
+                        tmp = col.SingleOrDefault(x => x.Data.ID == ID);
+                    else
+                        tmp = col.SingleOrDefault(x => x.Data.Entry.ID == ID);
+
+                    if (tmp != null)
                     {
                         notification = tmp;
                         collection = col;
@@ -417,7 +438,8 @@ namespace Mirko.ViewModel
             }
             catch (Exception e) 
             {
-                Logger.Error("Couldn't delete hashtag notification with ID " + ID, e);
+                string txt = notificationID ? " ID " : " entry ID ";
+                Logger.Error("Couldn't delete hashtag notification with " + txt + ID, e);
             }
         }
 

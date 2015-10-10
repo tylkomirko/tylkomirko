@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using System;
@@ -58,6 +59,9 @@ namespace Mirko.ViewModel
 
                     return null;
                 }
+
+                var IDs = newEntries.Select(x => x.ID);
+                Messenger.Default.Send(new NotificationMessage<IEnumerable<uint>>(IDs, "Remove notifications from entries IDs"));
 
                 return newEntries.Select(x => new EntryViewModel(x));
             }
