@@ -245,7 +245,10 @@ namespace WykopSDK.WWW
 
             await WykopSDK.LocalStorage.SaveBlacklists(tags, users);
 
-            return new Tuple<List<string>, List<string>>(tags, users);
+            if (tags.Count != 0 || users.Count != 0)
+                return new Tuple<List<string>, List<string>>(tags, users);
+            else
+                return null;
         }
 
         private async Task<List<string>> GetBlacklistedUsers()
