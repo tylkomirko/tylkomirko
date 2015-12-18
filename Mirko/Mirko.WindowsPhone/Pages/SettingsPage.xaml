@@ -90,16 +90,6 @@
                         </Slider.HeaderTemplate>
                     </Slider>
 
-                    <!--
-                    <ToggleSwitch x:Name="ShowAvatarsToggle"
-                          IsOn="False"
-                          IsEnabled="False"
-                          OffContent="Pokazuj avatary"
-                          OnContent="Pokazuj avatary" 
-                          OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
-                          OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
-                    -->
-
                     <ToggleSwitch x:Name="EnablePush"
                                   IsOn="{Binding PseudoPush, Mode=TwoWay}"
                                   OffContent="Pseudo-push"
@@ -115,6 +105,14 @@
                         </i:Interaction.Behaviors>
 
                     </ToggleSwitch>
+
+                    <ToggleSwitch x:Name="ShowAvatarsToggle"
+                                  Margin="0,20,0,0"
+                                  IsOn="{Binding ShowAvatars, Mode=TwoWay}"
+                                  OffContent="Pokazuj avatary"
+                                  OnContent="Pokazuj avatary" 
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
 
                     <ToggleSwitch x:Name="OnlyWIFI"
                                   Margin="0,20,0,0"

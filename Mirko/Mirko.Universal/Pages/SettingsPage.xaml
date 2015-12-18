@@ -83,7 +83,7 @@
                             Maximum="2.0"
                             TickPlacement="Inline"
                             TickFrequency="0.25">
-                        
+
                         <Slider.HeaderTemplate>
                             <DataTemplate x:DataType="x:String">
                                 <TextBlock Text="{x:Bind}"
@@ -92,16 +92,6 @@
                             </DataTemplate>
                         </Slider.HeaderTemplate>
                     </Slider>
-
-                    <!--
-                    <ToggleSwitch x:Name="ShowAvatarsToggle"
-                          IsOn="False"
-                          IsEnabled="False"
-                          OffContent="Pokazuj avatary"
-                          OnContent="Pokazuj avatary" 
-                          OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
-                          OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
-                    -->
 
                     <ToggleSwitch x:Name="EnablePush"
                                   IsOn="{x:Bind VM.PseudoPush, Mode=TwoWay}"
@@ -116,8 +106,15 @@
                                                           CommandParameter="{Binding ElementName=EnablePush, Path=IsOn}"/>
                             </core:EventTriggerBehavior>
                         </i:Interaction.Behaviors>
-
                     </ToggleSwitch>
+
+                    <ToggleSwitch x:Name="ShowAvatarsToggle"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.ShowAvatars, Mode=TwoWay}"
+                                  OffContent="Pokazuj avatary"
+                                  OnContent="Pokazuj avatary" 
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}" />
 
                     <ToggleSwitch x:Name="OnlyWIFI"
                                   Margin="0,20,0,0"

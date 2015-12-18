@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using System;
+using GalaSoft.MvvmLight.Ioc;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -74,7 +75,23 @@ namespace Mirko.Controls
         {
             this.InitializeComponent();
             this.Holding += Entry_OpenFlyout;
-            this.RightTapped += Entry_OpenFlyout;  
+            this.RightTapped += Entry_OpenFlyout;
+
+            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            GoToVisualState(settingsVM.ShowAvatars);
+            settingsVM.PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName == "ShowAvatars")
+                    GoToVisualState(settingsVM.ShowAvatars);
+            };
+        }
+
+        private void GoToVisualState(bool showAvatars)
+        {
+            if (showAvatars)
+                VisualStateManager.GoToState(this, ShowAvatars.Name, false);
+            else
+                VisualStateManager.GoToState(this, Regular.Name, false);
         }
 
         private void Entry_OpenFlyout(object sender, RoutedEventArgs e)

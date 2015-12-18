@@ -47,9 +47,13 @@
     </UserControl.Resources>
 
     <Grid x:Name="EntryGrid"
-          VerticalAlignment="Top">
+          VerticalAlignment="Top"
+          Background="Transparent">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -58,9 +62,74 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="ShowAvatars">
+                    <Storyboard>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Avatar"
+                                                   Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <Thickness>4,-20,0,0</Thickness>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+
+                    </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="Regular">
+                    <Storyboard>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Avatar"
+                                                   Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="(Grid.Column)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="2" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="(Grid.Row)">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
+                        </ObjectAnimationUsingKeyFrames>
+
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DateTB"
+                                                   Storyboard.TargetProperty="Margin">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <Thickness>4,1,0,0</Thickness>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
         <FlyoutBase.AttachedFlyout>
             <MenuFlyout>
@@ -130,20 +199,21 @@
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
 
-        <StackPanel Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Grid.Row="0"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    Orientation="Horizontal"
-                    Background="Transparent"
-                    x:Name="FirstRowStackPanel">
-
-            <TextBlock x:Name="AuthorSexTB"
+        <controls:CachedImage x:Name="Avatar"
+                              Grid.Row="0"
+                              Grid.RowSpan="4"
+                              Grid.Column="0"
+                              Margin="6,4,2,4"
+                              URL="{Binding Data.AuthorAvatarURL}" />
+        
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1"
+                    Orientation="Horizontal">
+            <TextBlock x:Name="AuthorSexTB"                       
                        Margin="6,0,2,0"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        
                        FontSize="{Binding Fonts.AuthorSexFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Text="{Binding Data.AuthorSex, Converter={StaticResource SexToText}}"
@@ -153,28 +223,30 @@
                        Margin="0,2.5,0,0"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        TextTrimming="CharacterEllipsis"
                        
                        FontSize="{Binding Fonts.AuthorFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Text="{Binding Data.AuthorName}"
                        Foreground="{Binding Data.AuthorGroup, Converter={StaticResource GroupToColor}}"
                        Tapped="AuthorTB_Tapped"/>
+        </StackPanel>
 
-            <TextBlock x:Name="DateTB"
-                       Margin="4,4,0,0"
-                       VerticalAlignment="Center"
-                       TextTrimming="CharacterEllipsis"
-                       HorizontalAlignment="Left"
+        <TextBlock x:Name="DateTB"
+                   Grid.Row="2"
+                   Grid.Column="1"
+                   Margin="4,-20,0,0"
+                   VerticalAlignment="Center"
+                   TextTrimming="CharacterEllipsis"
+                   HorizontalAlignment="Left"
                        
                        Text="{Binding Data.Date, Converter={StaticResource LongDateConverter}}"
                        FontSize="{Binding Fonts.DateFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                        Foreground="Gray" />
-        </StackPanel>
 
         <TextBlock x:Name="VoteTB"
-                   Grid.Column="1"
-                   Grid.Row="0"
+                   Grid.Column="2"
+                   Grid.Row="1"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center"
                    FontWeight="SemiBold"
@@ -188,8 +260,8 @@
 
         <RichTextBlock x:Name="BodyRTB"
                        Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       Grid.Row="1"
+                       Grid.ColumnSpan="3"
+                       Grid.Row="4"
                        Margin="6,-2,0,0"
                        IsTextSelectionEnabled="{Binding ElementName=Root, Path=EnableTextSelection}"
                        SelectionChanged="BodyRTB_SelectionChanged"
@@ -204,8 +276,8 @@
 
         <Grid x:Name="EmbedPreviewGrid"
               Grid.Column="0"
-              Grid.ColumnSpan="2"
-              Grid.Row="2"
+              Grid.ColumnSpan="3"
+              Grid.Row="5"
               
               Margin="5,0,0,0"
               HorizontalAlignment="Stretch"
@@ -224,8 +296,8 @@
         
         <RichTextBlock x:Name="VotersRTB"
                        Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       Grid.Row="3"
+                       Grid.ColumnSpan="3"
+                       Grid.Row="6"
                        Margin="5,0,0,0"
                        IsTextSelectionEnabled="False"
                        Visibility="Collapsed"
@@ -233,8 +305,8 @@
                        utils:Injectors.ShowVoters="{Binding ShowVoters}"/>       
 
         <Grid x:Name="RightSpacer"
-              Grid.Column="2"
-              Grid.Row="0"
+              Grid.Column="3"
+              Grid.Row="4"
               Grid.RowSpan="3"
               Width="10"
               Background="Transparent">

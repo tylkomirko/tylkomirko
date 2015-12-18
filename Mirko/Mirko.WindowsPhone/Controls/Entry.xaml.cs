@@ -1,4 +1,5 @@
-﻿using Mirko.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko.Utils;
 using Mirko.ViewModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
@@ -67,7 +68,23 @@ namespace Mirko.Controls
         {
             this.InitializeComponent();
             this.Holding += Entry_OpenFlyout;
-            this.RightTapped += Entry_OpenFlyout;  
+            this.RightTapped += Entry_OpenFlyout;
+
+            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            GoToVisualState(settingsVM.ShowAvatars);
+            settingsVM.PropertyChanged += (s, args) =>
+            {
+                if (args.PropertyName == "ShowAvatars")
+                    GoToVisualState(settingsVM.ShowAvatars);
+            };
+        }
+
+        private void GoToVisualState(bool showAvatars)
+        {
+            if (showAvatars)
+                VisualStateManager.GoToState(this, ShowAvatars.Name, false);
+            else
+                VisualStateManager.GoToState(this, Regular.Name, false);
         }
 
         private void Entry_OpenFlyout(object sender, RoutedEventArgs e)

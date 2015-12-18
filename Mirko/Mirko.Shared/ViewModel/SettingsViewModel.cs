@@ -101,7 +101,7 @@ namespace Mirko.ViewModel
         public bool ShowAvatars
         {
             get { return SettingsContainer.ContainsKey("ShowAvatars") ? (bool)SettingsContainer["ShowAvatars"] : false; }
-            set { SettingsContainer["ShowAvatars"] = value; }
+            set { SettingsContainer["ShowAvatars"] = value; base.RaisePropertyChanged("ShowAvatars"); }
         }
 
         public bool OnlyWIFIDownload
