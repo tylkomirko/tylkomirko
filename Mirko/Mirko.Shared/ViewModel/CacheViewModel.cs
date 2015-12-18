@@ -407,7 +407,7 @@ namespace Mirko.ViewModel
                and there isn't a clear reason for that.
                So let's just try to work around that. */
             Uri fileUri = null;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 try
                 {
@@ -422,7 +422,7 @@ namespace Mirko.ViewModel
                     fileUri = new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
                     break;
                 }
-                catch (Exception) { await Task.Delay(50); }
+                catch (Exception) { await Task.Delay(80); }
             }
 
             stream.Dispose();
