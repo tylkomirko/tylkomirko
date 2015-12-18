@@ -14,7 +14,7 @@ namespace BackgroundTasks
     public sealed class Cleaner : IBackgroundTask
     {
         private readonly ILogger Logger = null;
-        private const ulong ThresholdSize = 5 * 1024 * 1024; // 5 MB
+        private const ulong ThresholdSize = 2 * 1024 * 1024; // 2 MB
 
         public Cleaner()
         {

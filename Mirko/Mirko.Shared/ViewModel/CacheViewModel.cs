@@ -404,10 +404,10 @@ namespace Mirko.ViewModel
 
             /* And now save.
                System sometimes throws System.UnauthorizedAccessException: Access is denied, 
-               and there's isn't a clear reason for that.
+               and there isn't a clear reason for that.
                So let's just try to work around that. */
             Uri fileUri = null;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
                 try
                 {
@@ -422,7 +422,7 @@ namespace Mirko.ViewModel
                     fileUri = new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
                     break;
                 }
-                catch (Exception) { }
+                catch (Exception) { await Task.Delay(50); }
             }
 
             stream.Dispose();
