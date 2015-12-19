@@ -10,7 +10,7 @@ namespace Mirko.Converters
         {
             var sex = (UserSex)value;
             if (sex == UserSex.None)
-                return "";
+                return " ";
             else
                 return "\u2022";
         }
