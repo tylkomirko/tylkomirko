@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -53,13 +54,17 @@ namespace Mirko.Pages
                 InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
             };
 
-            this.ListView.Loaded += (s, args) =>
+            this.ListView.Loaded += async (s, args) =>
             {
                 var items = ListView.ItemsSource as ObservableCollectionEx<PMViewModel>;
                 if (items != null)
                 {
                     if (items.Count > 0)
+                    {
                         ListView.ScrollIntoView(items.Last(), ScrollIntoViewAlignment.Leading);
+                        await Task.Delay(500);
+                        ListView.ScrollIntoView(items.Last(), ScrollIntoViewAlignment.Leading);
+                    }
                     else // happens sometimes with push notifications
                         items.CollectionChanged += Messages_CollectionChanged;
                 }
