@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagEntriesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,7 +14,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <Popup x:Key="NewEntriesPopup"
                IsOpen="True"
                VerticalOffset="15">
@@ -78,8 +78,8 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </UserControl.Resources>
-    
+    </Page.Resources>
+
     <Grid x:Name="LayoutRoot"
           Loaded="LayoutRoot_Loaded">
 
@@ -132,7 +132,7 @@
             </Border>
         </StackPanel>
 
-        <!--TODO: Content should be placed within the following grid-->        
+        <!--TODO: Content should be placed within the following grid-->
         <controls:ListViewEx x:Name="ListView"
                              Grid.Row="1"
                              ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
@@ -164,8 +164,8 @@
 
         </controls:ListViewEx>
 
-        <CommandBar Grid.Row="2"
-                    x:Name="AppBar">
+        <CommandBar x:Name="AppBar"
+                    Grid.Row="2">
 
             <AppBarToggleButton Label="obserwuj"
                                 Click="Observe_Click"
@@ -174,18 +174,17 @@
                 <AppBarToggleButton.Icon>
                     <BitmapIcon UriSource="/Assets/appbar.eye.png" />
                 </AppBarToggleButton.Icon>
-                
+
             </AppBarToggleButton>
 
             <AppBarButton Label="odśwież"
                           Icon="Refresh"
                           Command="{x:Bind VM.RefreshTaggedEntries}" />
-            
+
             <AppBarButton Label="w górę"
                           Icon="Up"
                           Click="ScrollUp_Click" />
-            
-        </CommandBar>
 
+        </CommandBar>
     </Grid>
-</UserControl>
+</Page>

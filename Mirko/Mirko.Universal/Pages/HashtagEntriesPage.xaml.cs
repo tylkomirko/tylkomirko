@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagEntriesPage : UserControl, IDisposable
+    public sealed partial class HashtagEntriesPage : Page, IDisposable
     {
         private Popup NewEntriesPopup;
         private Storyboard PopupFadeIn;

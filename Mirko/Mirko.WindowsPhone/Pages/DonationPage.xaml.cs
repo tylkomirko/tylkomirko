@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class DonationPage : UserControl
+    public sealed partial class DonationPage : Page
     {
         public DonationPage()
         {

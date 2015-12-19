@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class AtNotificationsPage : UserControl
+    public sealed partial class AtNotificationsPage : Page
     {
         private NotificationsViewModel VM
         {

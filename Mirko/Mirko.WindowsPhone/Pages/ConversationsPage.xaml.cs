@@ -9,7 +9,7 @@ using Mirko.Utils;
 
 namespace Mirko.Pages
 {
-    public sealed partial class ConversationsPage : UserControl
+    public sealed partial class ConversationsPage : Page
     {
         public ConversationsPage()
         {
@@ -26,7 +26,7 @@ namespace Mirko.Pages
             VM.GoToConversationPageCommand.Execute(null);
         }
 
-        private void ListView_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var height = SimpleIoc.Default.GetInstance<MainViewModel>().ListViewHeaderHeight;
             ListView.Margin = new Thickness(10, -height, 0, 0);

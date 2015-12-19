@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagNotificationsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -28,7 +28,7 @@
 
         <Grid x:Name="ContentRoot" 
               Grid.Row="1">
-            
+
             <controls:EdgeTappedListView x:Name="ListView"
                                          IsItemClickEnabled="False"
                                          IsItemLeftEdgeTapEnabled="True"
@@ -94,8 +94,8 @@
             </controls:EdgeTappedListView>
         </Grid>
 
-        <CommandBar Grid.Row="2"
-                    ClosedDisplayMode="Minimal"
+        <CommandBar ClosedDisplayMode="Minimal"
+                    Grid.Row="2"
                     x:Name="AppBar">
             <AppBarButton x:Name="DeleteSelectedButton"
                           Label="usuń"
@@ -108,6 +108,5 @@
                               Command="{x:Bind VM.DeleteCurrentHashtagNotifications}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
-        
     </Grid>
-</UserControl>
+</Page>

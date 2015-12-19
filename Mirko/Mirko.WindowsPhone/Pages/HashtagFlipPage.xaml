@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagFlipPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -108,4 +108,43 @@
         </FlipView>
 
     </Grid>
-</UserControl>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar">
+
+            <AppBarButton Label="odpowiedz"
+                          Tag="reply"
+                          Click="CommentButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/reply.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton Label="odśwież"
+                          Tag="refresh"
+                          Click="RefreshButton_Click" >
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/refresh.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton Label="w górę"
+                          Tag="up"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+
+            <AppBarButton Label="daj plusa"
+                          Tag="voteMulti"
+                          Icon="Add"
+                          Click="VoteMultipleButton_Click"
+                          Visibility="Collapsed"/>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="udostępnij"
+                              Click="ShareButton_Click" />
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
+    </Page.BottomAppBar>
+    
+</Page>

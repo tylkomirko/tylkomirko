@@ -2,22 +2,11 @@
 using GalaSoft.MvvmLight.Messaging;
 using Mirko.Utils;
 using Mirko.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -41,8 +30,6 @@ namespace Mirko.Pages
             SystemNavigationManager.GetForCurrentView().BackRequested += DualHostPage_BackRequested;
 
             NavService = SimpleIoc.Default.GetInstance<NavigationService>();
-            NavService.Navigating += NavService_Navigating;
-            SimpleIoc.Default.GetInstance<SettingsViewModel>().ThemeChanged += HostPage_ThemeChanged;
 
             Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
         }
@@ -62,28 +49,6 @@ namespace Mirko.Pages
 
             if(App.IsMobile)
                 MainGrid.Margin = new Thickness(0, appView.Top, 0, appBarHeight);
-        }
-
-        private void HostPage_ThemeChanged(object sender, ThemeChangedEventArgs e)
-        {
-            if (NavService.CurrentPageKey == "SettingsPage")
-            {
-                var brushKey = e.Theme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
-                MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
-            }
-        }
-
-        private void NavService_Navigating(object source, Utils.StringEventArgs newPage)
-        {
-            string brushKey;
-            if (newPage.String == "SettingsPage" || newPage.String == "DonationPage" || newPage.String == "BlacklistPage")
-                brushKey = RequestedTheme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
-            else if (newPage.String == "NewEntryPage" || newPage.String == "AttachmentPage")
-                brushKey = RequestedTheme == ElementTheme.Dark ? "NewEntryBackgroundDark" : "NewEntryBackgroundLight";
-            else
-                brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
-
-            MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
         }
 
         private void MediaElementDoubleTapped(NotificationMessage<bool> message)

@@ -61,7 +61,7 @@ namespace Mirko
             if(NavService.CurrentPageKey == "SettingsPage")
             {
                 var brushKey = e.Theme == ElementTheme.Dark ? "SettingsBackgroundDark" : "SettingsBackgroundLight";
-                MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+                this.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
             }
         }
 
@@ -75,7 +75,8 @@ namespace Mirko
             else
                 brushKey = RequestedTheme == ElementTheme.Dark ? "PageBackgroundDark" : "PageBackgroundLight";
 
-            MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+            //MainFrame.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+            this.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
         }
 
         private void MediaElementDoubleTapped(NotificationMessage<bool> message)

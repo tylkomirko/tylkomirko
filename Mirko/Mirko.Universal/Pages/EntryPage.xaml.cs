@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class EntryPage : UserControl
+    public sealed partial class EntryPage : Page
     {
         private MainViewModel VM
         {

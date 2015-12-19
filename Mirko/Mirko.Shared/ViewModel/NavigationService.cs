@@ -15,23 +15,17 @@ namespace Mirko.ViewModel
 {
     public class NavigationService : INavigationService, IDisposable
     {
-        struct CachedPage
-        {
-            public UserControl Page;
-            public CommandBar AppBar;
-        };
-
         private const int cachedPagesCount = 4;
         private bool navigatedToRootPage = false;
         private Page rootPage = null;
-        private Frame rootPageFrame = null;
+        private Page rootPageFrame = null;
         private AppHeader rootPageHeader = null;
         private Popup rootPagePopup = null;
         private bool navigatedToPivotPage = false;
 
         private readonly StackList<Type> backStack = new StackList<Type>();
         private readonly Dictionary<string, Type> pagesNames = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, CachedPage> pagesCache = new Dictionary<Type, CachedPage>();
+        private readonly Dictionary<Type, Page> pagesCache = new Dictionary<Type, Page>();
         private readonly List<string> framesWithoutHeader = new List<string>() { "EmbedPage", "SettingsPage", "NewEntryPage", "BlacklistPage" };
 
         public delegate void NavigatingEventHandler(object source, StringEventArgs newPage);
@@ -75,12 +69,9 @@ namespace Mirko.ViewModel
 
         public object CurrentData { get; set; }
 
-        private CachedPage GetCachedPage(Type type)
+        private Page GetCachedPage(Type type)
         {
-            var cachedPage = new CachedPage();
-
-            UserControl content = null;
-            CommandBar appBar = null;
+            Page cachedPage = null;
 
             if (!pagesCache.ContainsKey(type))
             {
@@ -90,24 +81,14 @@ namespace Mirko.ViewModel
                     var page = item.Value;
                     var key = item.Key;
 
-                    var dispose = page.Page as IDisposable;
+                    var dispose = page as IDisposable;
                     if (dispose != null)
                         dispose.Dispose();
-
-                    page.Page = null;
-                    page.AppBar = null;
 
                     pagesCache.Remove(key);
                 }
 
-                content = (UserControl)Activator.CreateInstance(type);
-                var hasAppBar = content as IHaveAppBar;
-                if (hasAppBar != null)
-                    appBar = hasAppBar.CreateCommandBar();
-
-                cachedPage.Page = content;
-                cachedPage.AppBar = appBar;
-
+                cachedPage = (Page)Activator.CreateInstance(type);
                 pagesCache.Add(type, cachedPage);
             }
             else
@@ -148,7 +129,7 @@ namespace Mirko.ViewModel
                 }
 #endif
 
-                rootPageFrame = rootPage.FindName("MainFrame") as Frame;
+                rootPageFrame = rootPage.FindName("MainFrame") as Page;
                 rootPageHeader = rootPage.FindName("AppHeader") as AppHeader;
                 rootPagePopup = rootPage.FindName("SuggestionsPopup") as Popup;
 
@@ -160,12 +141,12 @@ namespace Mirko.ViewModel
 
             if (!App.IsMobile && !navigatedToPivotPage)
             {
-                var frame = rootPage.FindName("FirstFrame") as Frame;
-                frame.Content = GetCachedPage(pagesNames["PivotPage"]).Page;
+                var frame = rootPage.FindName("FirstFrame") as Page;
+                frame.Content = GetCachedPage(pagesNames["PivotPage"]);
 
                 string secondPageName = (key == "PivotPage") ? "EmptyPage" : key;
                 var secondPageType = pagesNames[secondPageName];
-                rootPageFrame.Content = GetCachedPage(secondPageType).Page;
+                rootPageFrame.Content = GetCachedPage(secondPageType);
 
                 if (secondPageName != "EmptyPage")
                     backStack.Push(pagesNames["EmptyPage"]);
@@ -176,13 +157,12 @@ namespace Mirko.ViewModel
             }
             else if (!App.IsMobile && key == "EmbedPage")
             {
-                currentFrame.Content = page.Page;
+                currentFrame.Content = page;
                 backStack.Push(type);
             }
             else
             {
-                rootPageFrame.Content = page.Page;
-                rootPage.BottomAppBar = page.AppBar;
+                rootPageFrame.Content = page;
 
                 if (key != "LoginPage")
                     backStack.Push(type);
@@ -263,8 +243,7 @@ namespace Mirko.ViewModel
             }
 #endif
 
-            rootPageFrame.Content = page.Page;
-            rootPage.BottomAppBar = page.AppBar;
+            rootPageFrame.Content = page;
 
             if (App.IsMobile && framesWithoutHeader.Contains(CurrentPageKey))
                 rootPageHeader.Visibility = Visibility.Collapsed;
@@ -300,7 +279,7 @@ namespace Mirko.ViewModel
         {
             var type = pagesNames[pageKey];
             if (pagesCache.ContainsKey(type))
-                return pagesCache[type].Page;
+                return pagesCache[type];
             else
                 return null;
         }

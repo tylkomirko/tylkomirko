@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Mirko.Pages
 {
-    public sealed partial class EmbedPage : UserControl
+    public sealed partial class EmbedPage : Page
     {
         private bool ImageOpened = false;
 

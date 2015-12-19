@@ -1,19 +1,21 @@
-﻿using Mirko.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko.Pages
 {
-    public sealed partial class NewEntryPage : UserControl
+    public sealed partial class NewEntryPage : Page
     {
         private NewEntryBaseViewModel VM
         {
@@ -33,8 +35,37 @@ namespace Mirko.Pages
             {
                 FormattingAppBar.SecondaryCommands.Clear();
             }
+
+            this.Loaded += (s, args) =>
+            {
+                string brushKey = null;
+                if (SimpleIoc.Default.GetInstance<SettingsViewModel>().SelectedTheme == ElementTheme.Dark)
+                    brushKey = "NewEntryBackgroundDark";
+                else
+                    brushKey = "NewEntryBackgroundLight";
+
+                LayoutRoot.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
+
+                InputPane.GetForCurrentView().Showing += InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            };
+            this.Unloaded += (s, args) =>
+            {
+                InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            };
         }
-        
+
+        private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            CommandBarTransform.Y = -args.OccludedRect.Height;
+        }
+
+        private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            CommandBarTransform.Y = 0;
+        }
+
         private TextBox CurrentEditor()
         {
             var item = FlipView.ContainerFromIndex(FlipView.SelectedIndex) as FlipViewItem;
@@ -85,8 +116,7 @@ namespace Mirko.Pages
         private void HandleSendButton()
         {
             string txt = CurrentEditor().Text;
-            var vm = this.DataContext as NewEntryViewModel;
-            var attachmentName = vm.NewEntry.AttachmentName;
+            var attachmentName = VM.NewEntry.AttachmentName;
 
             if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
                 this.SendButton.IsEnabled = true;
@@ -105,8 +135,7 @@ namespace Mirko.Pages
 
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)
         {
-            var vm = this.DataContext as NewEntryViewModel;
-            vm.NewEntry.RemoveAttachment();
+            VM.NewEntry.RemoveAttachment();
             HandleSendButton();
         }
 
@@ -305,6 +334,7 @@ namespace Mirko.Pages
             FormattingButton.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
             editor.Focus(FocusState.Programmatic);
+            InputPane.GetForCurrentView().TryShow();
         }
 
         #endregion

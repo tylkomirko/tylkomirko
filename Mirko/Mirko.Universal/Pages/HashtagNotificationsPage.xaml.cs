@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagNotificationsPage : UserControl
+    public sealed partial class HashtagNotificationsPage : Page
     {
         private NotificationsViewModel VM
         {

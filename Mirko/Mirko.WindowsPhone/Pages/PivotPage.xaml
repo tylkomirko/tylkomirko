@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.PivotPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,7 +13,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>        
+    <Page.Resources>        
         <DataTemplate x:Name="EntryTemplate">
             <controls:FullEntry />
         </DataTemplate>
@@ -81,7 +81,7 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </UserControl.Resources>  
+    </Page.Resources>  
     
     <Grid x:Name="PivotPageGrid"
           Loaded="PivotPageGrid_Loaded">
@@ -385,4 +385,59 @@
         </Pivot>
     </Grid>
 
-</UserControl>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar">
+            <AppBarButton Label="nowy"
+                          Icon="Add"
+                          Tag="add"
+                          Command="{Binding AddNewEntryCommand}"
+                          Visibility="{Binding Settings.UserInfo, Mode=OneWay,
+                                       Source={StaticResource Locator},
+                                       Converter={StaticResource NullToVisibility}}"/>
+
+            <AppBarButton Label="odśwież"
+                          Tag="refresh"
+                          Command="{Binding RefreshMirkoEntries}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/refresh.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton Label="w górę"
+                          Icon="Up"
+                          Click="ScrollUpButton_Click" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="mój profil"
+                              Command="{Binding GoToYourProfile}"
+                              Visibility="{Binding Settings.UserInfo, Mode=OneWay,
+                                       Source={StaticResource Locator},
+                                       Converter={StaticResource NullToVisibility}}" />
+
+                <AppBarButton Label="ustawienia"
+                              Command="{Binding SettingsCommand}" />
+
+                <AppBarButton Label="czarnolisto"
+                              Command="{Binding GoToBlacklistPage}"
+                              Visibility="{Binding Settings.UserInfo, Mode=OneWay,
+                                       Source={StaticResource Locator},
+                                       Converter={StaticResource NullToVisibility}}" />
+
+                <AppBarButton Label="podziękuj"
+                              Command="{Binding GoToDonationPage}" />
+
+                <AppBarButton Label="zaloguj"
+                              Command="{Binding LogInOutCommand}"
+                              Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"/>
+
+                <AppBarButton Label="wyloguj"
+                              x:Name="LogoutButton"
+                              Command="{Binding LogInOutCommand}"
+                              Visibility="{Binding Settings.UserInfo, Mode=OneWay,
+                                       Source={StaticResource Locator},
+                                       Converter={StaticResource NullToVisibility}}"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>    
+    
+</Page>

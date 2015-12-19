@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.LoginPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding Login, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <Flyout x:Key="ErrorFlyout">
             <TextBlock TextWrapping="Wrap"
                        Margin="19.5,9.5,19,0"
@@ -305,15 +305,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </UserControl.Resources>
+    </Page.Resources>
 
     <Grid>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBox x:Name="UsernameBox"
@@ -354,16 +353,23 @@
             </PasswordBox.HeaderTemplate>
         </PasswordBox>
 
-        <CommandBar Grid.Row="3"
-                    IsSticky="True">
+        <CommandBar x:Name="CommandBar"
+                    Grid.Row="2"
+                    VerticalAlignment="Bottom"
+                    RenderTransformOrigin="0,0">
+
+            <CommandBar.RenderTransform>
+                <TranslateTransform x:Name="CommandBarTransform"
+                                    X="0"
+                                    Y="0" />
+            </CommandBar.RenderTransform>
 
             <AppBarButton Label="zaloguj"
                           Icon="Accept"
                           IsEnabled="False"
                           Click="LoginButton_Click"
                           x:Name="LoginButton"/>
-            
-        </CommandBar>
 
+        </CommandBar>
     </Grid>
-</UserControl>
+</Page>

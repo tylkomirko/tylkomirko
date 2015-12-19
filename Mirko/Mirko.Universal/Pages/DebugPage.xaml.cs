@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class DebugPage : UserControl
+    public sealed partial class DebugPage : Page
     {
         private DebugViewModel VM
         {

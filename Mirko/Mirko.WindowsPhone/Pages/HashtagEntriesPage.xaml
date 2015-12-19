@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagEntriesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,7 +13,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <Popup x:Key="NewEntriesPopup"
                IsOpen="True"
                VerticalOffset="15">
@@ -77,7 +77,7 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </UserControl.Resources>
+    </Page.Resources>
     
     <Grid x:Name="LayoutRoot"
           Loaded="LayoutRoot_Loaded">
@@ -161,7 +161,33 @@
             </ListView.Header>
 
         </controls:ListViewEx>
-
-
     </Grid>
-</UserControl>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar">
+
+            <AppBarToggleButton Label="obserwuj"
+                                Click="Observe_Click"
+                                Loaded="Observe_Loaded"
+                                x:Name="ObserveButton">
+
+                <AppBarToggleButton.Icon>
+                    <BitmapIcon UriSource="/Assets/appbar.eye.png" />
+                </AppBarToggleButton.Icon>
+
+            </AppBarToggleButton>
+
+            <AppBarButton Label="odśwież"
+                          Command="{Binding RefreshTaggedEntries}">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/refresh.png" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton Label="w górę"
+                          Icon="Up"
+                          Click="ScrollUp_Click" />
+
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -2,12 +2,9 @@
 using GalaSoft.MvvmLight.Messaging;
 using Mirko.Utils;
 using Mirko.ViewModel;
-using System;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using WykopSDK.API.Models;
 
@@ -31,7 +28,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class ConversationPage : UserControl, IHaveAppBar
+    public sealed partial class ConversationPage : Page
     {
         public ConversationPage()
         {
@@ -96,8 +93,7 @@ namespace Mirko.Pages
             this.TextBox.Text += txt;
             this.TextBox.SelectionStart = this.TextBox.Text.Length;
 
-            var flyout = this.Resources["LennysFlyout"] as FlyoutBase;
-            flyout.Hide();
+            LennyAppBar.Flyout?.Hide();
         }
 
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
@@ -105,75 +101,6 @@ namespace Mirko.Pages
             var mf = Resources["DeleteAttachmentFlyout"] as MenuFlyout;
             mf.ShowAt(AttachmentSymbol);
         }
-
-        #region AppBar
-        private CommandBar AppBar = null;
-        private AppBarButton SendButton = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar() { ClosedDisplayMode = AppBarClosedDisplayMode.Compact };
-
-            SendButton = new AppBarButton()
-            {
-                Label = "wyślij",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
-                IsEnabled = false,
-            };
-
-            SendButton.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MessagesViewModel,
-                Path = new PropertyPath("CurrentConversation.SendMessageCommand"),
-            });
-
-            SendButton.Click += (s, e) =>
-            {
-                SendButton.IsEnabled = false;
-            };
-
-            var refresh = new AppBarButton()
-            {
-                Label = "odśwież",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
-            };
-            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MessagesViewModel,
-                Path = new PropertyPath("CurrentConversation.UpdateMessagesCommand"),
-            });
-
-            var lenny = new AppBarButton()
-            {
-                Label = "lenny",
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/appbar.smiley.glasses.png") },
-            };
-            lenny.Click += (s, e) =>
-            {
-                var flyout = Resources["LennysFlyout"] as Flyout;
-                flyout.ShowAt(this);
-            };
-
-            var attachment = new AppBarButton()
-            {
-                Label = "załącznik",
-                Icon = new SymbolIcon(Symbol.Attach),
-            };
-            attachment.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MessagesViewModel,
-                Path = new PropertyPath("CurrentConversation.AddAttachment"),
-            });
-
-            c.PrimaryCommands.Add(SendButton);
-            c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(lenny);
-            c.PrimaryCommands.Add(attachment);
-
-            AppBar = c;
-            return AppBar;
-        }
-        #endregion
 
         private void IAP_LayoutChangeCompleted(object sender, QKit.LayoutChangeEventArgs e)
         {

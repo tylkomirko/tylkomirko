@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagFlipPage : UserControl
+    public sealed partial class HashtagFlipPage : Page
     {
         private double HeaderHeight;
         private double PreRefreshOffset = 0;

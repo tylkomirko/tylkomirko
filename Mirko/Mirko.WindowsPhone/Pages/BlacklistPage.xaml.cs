@@ -4,7 +4,7 @@
 
 namespace Mirko.Pages
 {
-    public sealed partial class BlacklistPage : UserControl
+    public sealed partial class BlacklistPage : Page
     {
         public BlacklistPage()
         {

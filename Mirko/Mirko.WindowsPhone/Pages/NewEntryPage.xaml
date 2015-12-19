@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.NewEntryPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,7 +12,7 @@
     d:DesignWidth="400"
     DataContext="{Binding NewEntry, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <MenuFlyout x:Name="DeleteAttachmentFlyout">
             <MenuFlyoutItem Text="usuń" 
                             Click="RemoveAttachment_Click"/>
@@ -67,7 +67,7 @@
             </Grid>
         </Flyout>
 
-    </UserControl.Resources>
+    </Page.Resources>
 
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
@@ -292,4 +292,42 @@
             </FlipView>
         </q:InputAwarePanel>
     </Grid>
-</UserControl>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar"
+                      IsSticky="True">
+
+            <AppBarButton Label="wyślij"
+                          x:Name="SendButton"
+                          Icon="Send"
+                          IsEnabled="False"
+                          Command="{Binding SendMessageCommand, Mode=OneWay}"/>
+
+            <AppBarButton Label="lenny">
+
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="/Assets/appbar.smiley.glasses.png" />
+                </AppBarButton.Icon>
+
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="LennyFlyout">
+                        <controls:LennyChooser LennySelected="LennyChooser_LennySelected"
+                                               x:Name="LennyChooser"/>
+                    </Flyout>
+                </AppBarButton.Flyout>
+
+            </AppBarButton>
+
+            <AppBarButton Label="załącznik"
+                          Icon="Attach"
+                          Command="{Binding AddAttachment, Mode=OneWay}"
+                          IsEnabled="{Binding NewEntry.IsEditing, Converter={StaticResource InvertBool}, Mode=OneWay}" />
+
+            <AppBarToggleButton x:Name="FormattingButton"
+                                Visibility="Collapsed"
+                                Click="FormattingButton_Click"/>
+
+        </CommandBar>
+    </Page.BottomAppBar>
+    
+</Page>

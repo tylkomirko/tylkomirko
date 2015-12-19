@@ -51,18 +51,19 @@
                             AppHeaderSelectionBrush="{ThemeResource AppHeaderSelectionBrush}"
                             x:Name="AppHeader"/>
 
-        <Frame Grid.Row="3"
-               Grid.Column="0"
-               x:Name="FirstFrame"/>
-        
+        <Page Grid.Row="3"
+              Grid.Column="0"
+              x:Name="FirstFrame" />
+
         <Rectangle Grid.Row="3"
                    Grid.Column="1"
                    Width="0.5"
                    Opacity="0.8"
                    Fill="DarkGray" />
 
-        <Frame Grid.Row="3"
+        <Page Grid.Row="3"
                Grid.Column="2"
+              Background="Transparent"
                x:Name="MainFrame"/>
 
     </Grid>

@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class ProfilePage : UserControl
+    public sealed partial class ProfilePage : Page
     {
         private ProfilesViewModel VM
         {

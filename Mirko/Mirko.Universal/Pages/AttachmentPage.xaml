@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.AttachmentPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,8 +12,8 @@
     d:DesignWidth="400"
     DataContext="{Binding NewEntry.AttachmentTarget, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Grid x:Name="LayoutRoot">
-
+    <Grid x:Name="LayoutRoot"
+          Background="{StaticResource NewEntryBackgroundDark}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -70,17 +70,13 @@
 
                 </TextBlock>
             </StackPanel>
-
         </Grid>
 
         <CommandBar Grid.Row="2">
-            
             <AppBarButton Label="ok"
                           Icon="Accept"
                           Command="{x:Bind VM.AcceptAttachments}"
                           x:Name="OKButton" />
-            
         </CommandBar>
-        
     </Grid>
-</UserControl>
+</Page>

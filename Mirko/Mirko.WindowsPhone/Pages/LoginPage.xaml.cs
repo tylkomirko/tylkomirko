@@ -7,10 +7,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class LoginPage : UserControl, IHaveAppBar
+    public sealed partial class LoginPage : Page
     {
-        private AppBarButton LoginButton = null;
-
         public LoginPage()
         {
             this.InitializeComponent();
@@ -72,27 +70,6 @@ namespace Mirko.Pages
 
             var VM = this.DataContext as LoginViewModel;
             VM.LoginCommand.Execute(null);
-        }
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-            c.IsSticky = true;
-
-            var login = new AppBarButton()
-            {
-                Name = "LoginButton",
-                Icon = new SymbolIcon(Symbol.Accept),
-                Label = "zaloguj",
-                IsEnabled = false,
-            };
-            login.Click += LoginButton_Click;
-
-            LoginButton = login;
-
-            c.PrimaryCommands.Add(login);
-
-            return c;
         }
     }
 }

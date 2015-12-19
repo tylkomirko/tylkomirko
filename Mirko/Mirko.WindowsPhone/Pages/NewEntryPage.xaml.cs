@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class NewEntryPage : UserControl, IHaveAppBar
+    public sealed partial class NewEntryPage : Page
     {
         private bool IsLoaded = false;
         private BindingExpression EntryPreviewBinding = null;
@@ -131,9 +131,6 @@ namespace Mirko.Pages
         }
 
         #region AppBar
-        private CommandBar AppBar = null;
-        private AppBarButton SendButton = null;
-        private AppBarToggleButton FormattingButton = null;
 
         public CommandBar CreateCommandBar()
         {
@@ -247,6 +244,7 @@ namespace Mirko.Pages
         {
             var txt = e.String + " ";
             InsertTextAndHideFlyout(txt, "LennysFlyout");
+            LennyFlyout.Hide();
         }
 
         private void FormattingPopup_Loaded(object sender, RoutedEventArgs e)

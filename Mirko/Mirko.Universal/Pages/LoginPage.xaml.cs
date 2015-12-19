@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Mirko.ViewModel;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -7,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Mirko.Pages
 {
-    public sealed partial class LoginPage : UserControl
+    public sealed partial class LoginPage : Page
     {
         private LoginViewModel VM
         {
@@ -18,7 +19,28 @@ namespace Mirko.Pages
         {
             this.InitializeComponent();
 
+            this.Loaded += (s, args) =>
+            {
+                InputPane.GetForCurrentView().Showing += InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            };
+            this.Unloaded += (s, args) =>
+            {
+                InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            };
+
             Messenger.Default.Register<NotificationMessage<string>>(this, ReadMessage);
+        }
+
+        private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            CommandBarTransform.Y = -args.OccludedRect.Height;
+        }
+
+        private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            CommandBarTransform.Y = 0;
         }
 
         private void ReadMessage(NotificationMessage<string> obj)
@@ -29,7 +51,7 @@ namespace Mirko.Pages
 
         private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.UsernameBox.Text.Length > 0 && this.PasswordBox.Password.Length > 0)
+            if (UsernameBox.Text.Length > 0 && this.PasswordBox.Password.Length > 0)
                 LoginButton.IsEnabled = true;
             else
                 LoginButton.IsEnabled = false;
@@ -37,7 +59,7 @@ namespace Mirko.Pages
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (this.UsernameBox.Text.Length > 0 && this.PasswordBox.Password.Length > 0)
+            if (UsernameBox.Text.Length > 0 && this.PasswordBox.Password.Length > 0)
                 LoginButton.IsEnabled = true;
             else
                 LoginButton.IsEnabled = false;
@@ -73,7 +95,6 @@ namespace Mirko.Pages
                 return;
             }
 
-            var VM = this.DataContext as LoginViewModel;
             VM.LoginCommand.Execute(null);
         }
     }

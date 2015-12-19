@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.PivotPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,7 +14,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>        
+    <Page.Resources>        
         <DataTemplate x:Name="EntryTemplate"
                       x:DataType="models:EntryBaseViewModel">
             <controls:FullEntry Margin="-12,0,0,0"/>
@@ -83,14 +83,14 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </UserControl.Resources>  
-    
+    </Page.Resources>
+
     <Grid x:Name="PivotPageGrid"
           Loaded="PivotPageGrid_Loaded">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Hot time span -->
@@ -126,7 +126,7 @@
                 </TextBlock>
             </Grid>
         </Popup>
-        
+
         <Popup x:Name="TimeSpanSelectionPopup"
                VerticalOffset="-220"
                Loaded="SelectionPopup_Loaded"
@@ -150,7 +150,7 @@
                     <Rectangle Height="270"
                                Fill="Transparent" />
                 </ListView.Header>
-                
+
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="x:String">
                         <TextBlock Text="{x:Bind}"
@@ -276,7 +276,7 @@
                                      IncrementalLoadingThreshold="6"
                                      DataFetchSize="7"
                                      Tag="LV0">
-                    
+
                     <ListView.Header>
                         <StackPanel>
                             <Rectangle Fill="Transparent"
@@ -321,7 +321,7 @@
 
                         </StackPanel>
                     </ListView.Header>
-                    
+
                     <ListView.Footer>
                         <Rectangle Height="10"
                                    Fill="Transparent" />
@@ -393,14 +393,14 @@
             </PivotItem>
         </Pivot>
 
-        <CommandBar Grid.Row="1"
-                    x:Name="AppBar">
+        <CommandBar x:Name="AppBar"
+                    Grid.Row="1">
             <AppBarButton Label="nowy"
                           Icon="Add"
                           Tag="add"
                           Command="{x:Bind VM.AddNewEntryCommand}"
                           Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}"/>
-            
+
             <AppBarButton Label="odśwież"
                           Icon="Refresh"
                           Tag="refresh"
@@ -414,17 +414,17 @@
                 <AppBarButton Label="mój profil"
                               Command="{x:Bind VM.GoToYourProfile}"
                               Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}" />
-                
+
                 <AppBarButton Label="ustawienia"
                               Command="{x:Bind VM.SettingsCommand}" />
 
                 <AppBarButton Label="czarnolisto"
                               Command="{x:Bind VM.GoToBlacklistPage}"
                               Visibility="{x:Bind SettingsVM.UserInfo, Mode=OneWay, Converter={StaticResource NullToVisibility}}" />
-                
+
                 <AppBarButton Label="podziękuj"
                               Command="{x:Bind VM.GoToDonationPage}" />
-                
+
                 <AppBarButton Label="zaloguj"
                               Command="{x:Bind VM.LogInOutCommand}"
                               Visibility="{Binding ElementName=LogoutButton, Path=Visibility, Converter={StaticResource InvertVisibility}}"/>
@@ -436,5 +436,4 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Grid>
-
-</UserControl>
+</Page>

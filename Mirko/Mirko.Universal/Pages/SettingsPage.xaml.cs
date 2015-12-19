@@ -3,12 +3,13 @@ using Mirko.Utils;
 using Mirko.ViewModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko.Pages
 {
-    public sealed partial class SettingsPage : UserControl
+    public sealed partial class SettingsPage : Page
     {
         private SettingsViewModel VM
         {
@@ -25,21 +26,34 @@ namespace Mirko.Pages
             this.InitializeComponent();
 
             this.Loaded += (s, e) =>
-            {
-                if(App.IsMobile)
-                    StatusBarManager.HideStatusBar();
+                {
+                    if (App.IsMobile)
+                        StatusBarManager.HideStatusBar();
 
-                if (VM.SelectedTheme == ElementTheme.Dark)
-                    NightMode.IsChecked = true;
-                else
-                    DayMode.IsChecked = true;
+                    if (VM.SelectedTheme == ElementTheme.Dark)
+                        NightMode.IsChecked = true;
+                    else
+                        DayMode.IsChecked = true;
 
-                DayMode.Checked += (se, args) => VM.SelectedTheme = ElementTheme.Light;
-                NightMode.Checked += (se, args) => VM.SelectedTheme = ElementTheme.Dark;
-            };
+                    DayMode.Checked += (se, args) => { VM.SelectedTheme = ElementTheme.Light; ApplyBackgroundBrush(); };
+                    NightMode.Checked += (se, args) => { VM.SelectedTheme = ElementTheme.Dark; ApplyBackgroundBrush(); };
 
-            if(App.IsMobile)
+                    ApplyBackgroundBrush();
+                };
+
+            if (App.IsMobile)
                 this.Unloaded += (s, e) => StatusBarManager.ShowStatusBar();
+        }
+
+        private void ApplyBackgroundBrush()
+        {
+            string brushKey = null;
+            if (NightMode.IsChecked.Value)
+                brushKey = "SettingsBackgroundDark";
+            else
+                brushKey = "SettingsBackgroundLight";
+
+            LayoutRoot.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
         }
     }
 }

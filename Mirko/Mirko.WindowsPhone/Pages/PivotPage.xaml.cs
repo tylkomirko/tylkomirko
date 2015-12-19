@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Mirko.Pages
 {
-    public sealed partial class PivotPage : UserControl, IHaveAppBar, IDisposable
+    public sealed partial class PivotPage : Page, IDisposable
     {
         private AppHeader AppHeader;
 
@@ -459,155 +459,6 @@ namespace Mirko.Pages
         }
         #endregion
 
-        #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-            var up = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Up),
-                Label = "w górę",
-            };
-            up.Click += ScrollUpButton_Click;
-
-            var add = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Add),
-                Tag = "add",
-                Label = "nowy",
-            };
-            add.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("AddNewEntryCommand"),
-            });
-            add.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var refresh = new AppBarButton()
-            {
-                Label = "odśwież",
-                Tag = "refresh",
-#if WINDOWS_PHONE_APP
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
-#else
-                Icon = new SymbolIcon(Symbol.Refresh),
-#endif
-            };
-            refresh.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("RefreshMirkoEntries"),
-            });
-
-            var profile = new AppBarButton()
-            {
-                Label = "mój profil",
-            };
-            profile.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-            profile.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToYourProfile"),
-            });
-
-            var settings = new AppBarButton()
-            {
-                Label = "ustawienia",
-            };
-            settings.SetBinding(AppBarButton.CommandProperty, new Binding() 
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("SettingsCommand"),
-            });
-
-            var logout = new AppBarButton()
-            {
-                Label = "wyloguj",
-            };
-            logout.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("LogInOutCommand"),
-            });
-            logout.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var login = new AppBarButton()
-            {
-                Label = "zaloguj",
-            };
-            login.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("LogInOutCommand"),
-            });
-            login.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = logout,
-                Path = new PropertyPath("Visibility"),
-                Converter = App.Current.Resources["InvertVisibility"] as IValueConverter,
-            });
-
-            var blacklist = new AppBarButton()
-            {
-                Label = "czarnolisto",
-            };
-            blacklist.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToBlacklistPage"),
-            });
-            blacklist.SetBinding(AppBarButton.VisibilityProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<SettingsViewModel>(),
-                Path = new PropertyPath("UserInfo"),
-                Mode = BindingMode.OneWay,
-                Converter = App.Current.Resources["NullToVisibility"] as IValueConverter,
-            });
-
-            var donation = new AppBarButton()
-            {
-                Label = "podziękuj",
-            };
-            donation.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as MainViewModel,
-                Path = new PropertyPath("GoToDonationPage"),
-            });
-
-            c.PrimaryCommands.Add(add);
-            c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(up);
-            c.SecondaryCommands.Add(profile);
-            c.SecondaryCommands.Add(settings);
-            c.SecondaryCommands.Add(blacklist);
-            c.SecondaryCommands.Add(donation);
-            c.SecondaryCommands.Add(login);
-            c.SecondaryCommands.Add(logout);
-            AppBar = c;
-
-            return c;
-        }
-
         private void ScrollUpButton_Click(object sender, RoutedEventArgs e)
         {
             ScrollViewer sv = null;
@@ -621,6 +472,5 @@ namespace Mirko.Pages
             if(sv != null)
                 sv.ChangeView(null, 0.0, null);
         }
-#endregion
     }
 }

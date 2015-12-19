@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagSelectionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,7 +14,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <Flyout x:Key="HashtagFlyout">
             <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected" />
         </Flyout>
@@ -96,7 +96,7 @@
             </local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
 
         </local:HashtagSelectionPageTemplateSelector>
-    </UserControl.Resources>
+    </Page.Resources>
 
     <Grid x:Name="LayoutRoot">
 
@@ -146,4 +146,30 @@
             </controls:ListViewEx>
         </Grid>
     </Grid>
-</UserControl>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="AppBar">
+
+            <AppBarButton Label="szukaj"
+                          Icon="Find">
+
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="HashtagSuggestionsFlyout">
+                        <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected"
+                                                       x:Name="HashtagSuggestionBox"/>
+                    </Flyout>
+                </AppBarButton.Flyout>
+
+            </AppBarButton>
+
+            <CommandBar.SecondaryCommands>
+
+                <AppBarButton Label="usuń wszystkie powiadomienia"
+                              Command="{Binding DeleteAllHashtagNotifications}" />
+
+            </CommandBar.SecondaryCommands>
+
+        </CommandBar>
+    </Page.BottomAppBar>
+    
+</Page>

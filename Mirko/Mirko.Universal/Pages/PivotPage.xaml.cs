@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Mirko.Pages
 {
-    public sealed partial class PivotPage : UserControl, IDisposable
+    public sealed partial class PivotPage : Page, IDisposable
     {
         private AppHeader AppHeader;
 

@@ -158,7 +158,6 @@
     <Compile Include="Pages\HashtagSelectionPage.xaml.cs">
       <DependentUpon>HashtagSelectionPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\IHaveAppBar.cs" />
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>

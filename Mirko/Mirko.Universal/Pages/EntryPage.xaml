@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.EntryPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,7 +19,6 @@
         </Grid.RowDefinitions>
 
         <controls:EdgeTappedListView x:Name="ListView"
-                                     Grid.Row="0"
                                      ItemsSource="{x:Bind VM.SelectedEntry.Comments, Mode=OneWay}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      IsItemLeftEdgeTapEnabled="True"
@@ -32,24 +31,24 @@
                                      DataFetchSize="7">
 
             <ListView.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Rectangle Grid.Row="0"
+                    <Rectangle Grid.Row="0"
                            Grid.Column="0"
                            Grid.ColumnSpan="3"
                            Fill="Transparent" />
 
-                <Rectangle Grid.Column="0"
+                    <Rectangle Grid.Column="0"
                            Grid.Row="1"
                            x:Name="HeaderEdgeButton"
                            Width="25"
@@ -57,7 +56,7 @@
                            Fill="Transparent"
                            Tapped="EdgeSelectButton_Tapped" />
 
-                <CheckBox Grid.Column="1"
+                    <CheckBox Grid.Column="1"
                           Grid.Row="1"
                           IsChecked="False"
                           x:Name="HeaderCheckBox"
@@ -65,21 +64,21 @@
                           Unchecked="CheckBox_Unchecked" 
                           Style="{StaticResource CheckBoxStyle}" />
 
-                <controls:Entry Grid.Column="2"
+                    <controls:Entry Grid.Column="2"
                                 Grid.Row="1"
                                 DataContext="{x:Bind VM.SelectedEntry, Mode=OneWay}"
                                 LargeEmbed="True"
                                 IsHot="{x:Bind VM.SelectedEntryIsHot, Mode=OneWay}"/>
-            </Grid>
-        </ListView.Header>
-            
+                </Grid>
+            </ListView.Header>
+
             <ListView.ItemTemplate>
-            <DataTemplate x:DataType="models:CommentViewModel">
-                <controls:Entry DataContext="{x:Bind}"
+                <DataTemplate x:DataType="models:CommentViewModel">
+                    <controls:Entry DataContext="{x:Bind}"
                                 IsTapEnabled="False"
                                 Margin="25,0,0,0"/>
-            </DataTemplate>
-        </ListView.ItemTemplate>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
             <ListView.Footer>
                 <Rectangle Height="20"
@@ -95,18 +94,18 @@
                           Click="CommentButton_Click"
                           Visibility="{Binding Source={Binding Settings, Mode=OneWay, Source={StaticResource Locator}},
                                        Path=UserInfo, Converter={StaticResource NullToVisibility}}"/>
-            
+
             <AppBarButton Label="odśwież"
                           Tag="refresh"
                           Icon="Refresh"
                           Click="RefreshButton_Click" />
-            
+
             <AppBarButton Label="daj plusa"
                           Tag="voteMulti"
                           Icon="Add"
                           Visibility="Collapsed"
                           Click="VoteMultiple_Click"/>
-            
+
             <AppBarButton Label="w górę"
                           Tag="up"
                           Icon="Up"
@@ -116,7 +115,7 @@
                 <AppBarButton Label="udostępnij"
                               Click="ShareButton_Click" />
             </CommandBar.SecondaryCommands>
-                          
+
         </CommandBar>
     </Grid>
-</UserControl>
+</Page>

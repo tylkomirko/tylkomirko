@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Page
     x:Class="Mirko.Pages.HashtagSelectionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,7 +15,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <local:HashtagSelectionPageTemplateSelector x:Key="TemplateSelector">
 
             <local:HashtagSelectionPageTemplateSelector.ItemTemplate>
@@ -101,7 +101,7 @@
             </local:HashtagSelectionPageTemplateSelector.ItemTemplateNoCount>
 
         </local:HashtagSelectionPageTemplateSelector>
-    </UserControl.Resources>
+    </Page.Resources>
 
     <Grid x:Name="LayoutRoot">
 
@@ -168,19 +168,19 @@
                 <ListView.Header>
                     <StackPanel>
                         <Rectangle Fill="Transparent"/>
-                        
+
                         <TextBlock Text="Nie obserwujesz żadnych tagów."
                                    Style="{StaticResource TextBlockNoItems}"
                                    Visibility="{x:Bind VM.HashtagsCollection.Count, Converter={StaticResource CountToVisibilityInv}, Mode=OneWay}"/>
-                        
+
                     </StackPanel>
                 </ListView.Header>
 
             </controls:ListViewEx>
         </Grid>
 
-        <CommandBar Grid.Row="2"
-                    x:Name="AppBar">
+        <CommandBar x:Name="AppBar"
+                    Grid.Row="2">
 
             <AppBarButton Label="szukaj"
                           Icon="Find">
@@ -192,16 +192,13 @@
                                                        Width="300"/>
                     </Flyout>
                 </AppBarButton.Flyout>
-                
+
             </AppBarButton>
 
             <CommandBar.SecondaryCommands>
-
                 <AppBarButton Label="usuń wszystkie powiadomienia"
                               Command="{x:Bind VM.DeleteAllHashtagNotifications}" />
-                
             </CommandBar.SecondaryCommands>
-            
         </CommandBar>
     </Grid>
-</UserControl>
+</Page>

@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagFlipPage : UserControl, IHaveAppBar
+    public sealed partial class HashtagFlipPage : Page
     {
         private double HeaderHeight;
         private double PreRefreshOffset = 0;
@@ -78,75 +78,6 @@ namespace Mirko.Pages
         }
 
         #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-
-            // buttons only visible in comment selection mode
-            var comment = new AppBarButton()
-            {
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/reply.png") },
-                Label = "odpowiedz",
-                Tag = "reply",
-            };
-            comment.Click += CommentButton_Click;
-
-            // regular buttons
-            var refresh = new AppBarButton()
-            {
-                Icon = new BitmapIcon() { UriSource = new Uri("ms-appx:///Assets/refresh.png") },
-                Label = "odśwież",
-                Tag = "refresh"
-            };
-            refresh.Click += RefreshButton_Click;
-
-            var up = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Up),
-                Label = "w górę",
-                Tag = "up"
-            };
-            up.Click += ScrollUpButton_Click;
-
-            var voteMultiple = new AppBarButton()
-            {
-                Label = "daj plusa",
-                Tag = "voteMulti",
-                Icon = new SymbolIcon(Symbol.Add),
-                Visibility = Visibility.Collapsed,
-            };
-            voteMultiple.Click += (s, e) =>
-            {
-                var selectedItems = SelectedItems();
-                var vm = selectedItems.First();
-                vm.VoteMultiple.Execute(selectedItems);
-
-                CurrentListView().SelectionMode = ListViewSelectionMode.None;
-                CurrentHeaderCheckBox().IsChecked = false;
-                CurrentHeaderCheckBox().Visibility = Visibility.Collapsed;
-                CurrentHeaderEdgeButton().IsHitTestVisible = true;
-            };
-
-            c.PrimaryCommands.Add(comment);
-            c.PrimaryCommands.Add(refresh);
-            c.PrimaryCommands.Add(voteMultiple);
-            c.PrimaryCommands.Add(up);
-
-            var share = new AppBarButton()
-            {
-                Label = "udostępnij"
-            };
-            share.Click += ShareButton_Click;
-
-            c.SecondaryCommands.Add(share);
-
-            AppBar = c;
-
-            return c;
-        }
-
         private void CommentButton_Click(object sender, RoutedEventArgs e)
         {
             var LV = CurrentListView();
@@ -190,6 +121,18 @@ namespace Mirko.Pages
             var sv = CurrentListView().GetDescendant<ScrollViewer>();
             if (sv != null)
                 sv.ChangeView(null, 0.0, null, false);
+        }
+
+        private void VoteMultipleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = SelectedItems();
+            var vm = selectedItems.First();
+            vm.VoteMultiple.Execute(selectedItems);
+
+            CurrentListView().SelectionMode = ListViewSelectionMode.None;
+            CurrentHeaderCheckBox().IsChecked = false;
+            CurrentHeaderCheckBox().Visibility = Visibility.Collapsed;
+            CurrentHeaderEdgeButton().IsHitTestVisible = true;
         }
         #endregion
 

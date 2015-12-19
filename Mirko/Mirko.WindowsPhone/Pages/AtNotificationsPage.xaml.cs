@@ -3,14 +3,13 @@ using Mirko.Utils;
 using Mirko.ViewModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko.Pages
 {
-    public sealed partial class AtNotificationsPage : UserControl, IHaveAppBar
+    public sealed partial class AtNotificationsPage : Page
     {
         public AtNotificationsPage()
         {
@@ -35,25 +34,6 @@ namespace Mirko.Pages
             var sp = ListView.Header as StackPanel;
             var rect = sp.GetDescendant<Rectangle>();
             rect.Height = height;
-        }
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar() { ClosedDisplayMode = AppBarClosedDisplayMode.Minimal };
-
-            var removeAll = new AppBarButton()
-            {
-                Label = "usuń wszystkie powiadomienia",
-            };
-            removeAll.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = SimpleIoc.Default.GetInstance<NotificationsViewModel>(),
-                Path = new PropertyPath("DeleteAllAtNotifications"),
-            });
-
-            c.SecondaryCommands.Add(removeAll);
-
-            return c;
         }
     }
 }

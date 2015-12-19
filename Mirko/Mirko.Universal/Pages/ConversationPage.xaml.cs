@@ -1,14 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Mirko.Controls;
 using Mirko.Utils;
 using Mirko.ViewModel;
-using System;
 using System.Linq;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using WykopSDK.API.Models;
 
@@ -32,7 +30,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class ConversationPage : UserControl
+    public sealed partial class ConversationPage : Page
     {
         private MessagesViewModel VM
         {
@@ -42,6 +40,18 @@ namespace Mirko.Pages
         public ConversationPage()
         {
             this.InitializeComponent();
+
+            this.Loaded += (s, args) =>
+            {
+                InputPane.GetForCurrentView().Showing += InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            };
+
+            this.Unloaded += (s, args) =>
+            {
+                InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            };
 
             this.ListView.Loaded += (s, args) =>
             {
@@ -59,6 +69,20 @@ namespace Mirko.Pages
             this.TextBox.TextChanged += (s, e) => HandleSendButton();
 
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
+        }
+
+        private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            args.EnsuredFocusedElementInView = true;
+            CommandBarTransform.Y = -args.OccludedRect.Height;
+            ListViewTransform.Y = -args.OccludedRect.Height;
+        }
+
+        private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            args.EnsuredFocusedElementInView = true;
+            CommandBarTransform.Y = 0;
+            ListViewTransform.Y = 0;
         }
 
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -83,19 +107,6 @@ namespace Mirko.Pages
             }
         }
 
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (this.TextBox.Text.Length > 0)
-                AppBar.IsSticky = true;
-            else
-                AppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-        }
-
         private void LennyChooser_LennySelected(object sender, StringEventArgs e)
         {
             var txt = e.String + " ";
@@ -117,13 +128,8 @@ namespace Mirko.Pages
         {
             SendButton.IsEnabled = false;
         }
-
-        private void Lenny_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = Resources["LennysFlyout"] as Flyout;
-            flyout.ShowAt(this);
-        }
         #endregion
+
         private void JumpToBottom()
         {
             var sv = ListView.GetDescendant<ScrollViewer>();
@@ -147,22 +153,20 @@ namespace Mirko.Pages
 
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
-            vm.NewEntry.RemoveAttachment();
+            VM.CurrentConversation?.NewEntry.RemoveAttachment();
             HandleSendButton();
         }
 
         private void HandleSendButton()
         {
-            var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
-            if (vm == null)
+            if (VM.CurrentConversation == null)
             {
                 this.SendButton.IsEnabled = true;
                 return;
             }
 
             var txt = TextBox.Text;
-            var attachmentName = vm.NewEntry.AttachmentName;
+            var attachmentName = VM.CurrentConversation.NewEntry.AttachmentName;
 
             if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
                 this.SendButton.IsEnabled = true;

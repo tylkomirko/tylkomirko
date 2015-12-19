@@ -5,8 +5,6 @@ using Mirko.ViewModel;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -29,7 +27,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class HashtagSelectionPage : UserControl, IHaveAppBar
+    public sealed partial class HashtagSelectionPage : Page
     {
         public HashtagSelectionPage()
         {
@@ -49,8 +47,7 @@ namespace Mirko.Pages
         private void HashtagSuggestionBox_HashtagSelected(object sender, StringEventArgs e)
         {
             var tag = e.String;
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.Hide();
+            HashtagSuggestionsFlyout.Hide();
 
             SimpleIoc.Default.GetInstance<MainViewModel>().GoToHashtagPage.Execute(tag);
         }
@@ -74,43 +71,5 @@ namespace Mirko.Pages
             var rect = sp.GetDescendant<Rectangle>();
             rect.Height = height;
         }
-
-        #region AppBar
-        private CommandBar AppBar = null;
-
-        public CommandBar CreateCommandBar()
-        {
-            var c = new CommandBar();
-
-            var find = new AppBarButton()
-            {
-                Icon = new SymbolIcon(Symbol.Find),
-                Label = "szukaj",
-            };
-            find.Click += FindHashtag_Click;
-
-            var removeAll = new AppBarButton()
-            {
-                Label = "usuń wszystkie powiadomienia"
-            };
-            removeAll.SetBinding(AppBarButton.CommandProperty, new Binding()
-            {
-                Source = this.DataContext as NotificationsViewModel,
-                Path = new PropertyPath("DeleteAllHashtagNotifications"),
-            });
-
-            c.PrimaryCommands.Add(find);
-            c.SecondaryCommands.Add(removeAll);
-            AppBar = c;
-
-            return c;
-        }
-
-        private void FindHashtag_Click(object sender, RoutedEventArgs e)
-        {
-            var flyout = Resources["HashtagFlyout"] as FlyoutBase;
-            flyout.ShowAt(this);
-        }
-        #endregion
     }
 }

@@ -9,7 +9,7 @@ using Mirko.Utils;
 
 namespace Mirko.Pages
 {
-    public sealed partial class ConversationsPage : UserControl
+    public sealed partial class ConversationsPage : Page
     {
         private MessagesViewModel VM
         {

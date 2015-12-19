@@ -27,8 +27,8 @@
                             AppHeaderSelectionBrush="{ThemeResource AppHeaderSelectionBrush}"
                             x:Name="AppHeader"/>
         
-        <Frame Grid.Row="1"
-               x:Name="MainFrame"/>
+        <Page Grid.Row="1"
+              x:Name="MainFrame"/>
 
         <Popup x:Name="SuggestionsPopup"
                Grid.Row="0"

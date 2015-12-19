@@ -5,8 +5,6 @@ using Mirko.ViewModel;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -29,7 +27,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class HashtagSelectionPage : UserControl
+    public sealed partial class HashtagSelectionPage : Page
     {
         private NotificationsViewModel VM
         {

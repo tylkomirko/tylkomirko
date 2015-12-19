@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Mirko.Pages
 {
-    public sealed partial class EmbedPage : UserControl
+    public sealed partial class EmbedPage : Page
     {
         private bool ImageOpened = false;
 
