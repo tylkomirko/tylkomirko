@@ -212,7 +212,7 @@
             </ListView.ItemContainerTransitions>
 
             <ListView.Footer>
-                <StackPanel Margin="35,0,0,30">
+                <StackPanel Margin="47,0,12,15">
                     <Border BorderThickness="0"
                             Background="{ThemeResource SentMessageBackground}">
                         <controls:AutoCompletingTextBox x:Name="TextBox"
