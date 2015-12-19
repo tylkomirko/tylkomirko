@@ -1,10 +1,14 @@
-﻿using Mirko.Utils;
+﻿using GalaSoft.MvvmLight.Ioc;
+using Mirko.Utils;
+using Mirko.ViewModel;
 using System;
 using Windows.Graphics.Display;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -25,6 +29,11 @@ namespace Mirko.Pages
                     DisplayOrientations.PortraitFlipped;
 
                 StatusBarManager.HideStatusBar();
+
+                if (SimpleIoc.Default.GetInstance<SettingsViewModel>().SelectedTheme == ElementTheme.Dark)
+                    ImageScrollViewer.Background = new SolidColorBrush(Colors.Black);
+                else
+                    ImageScrollViewer.Background = new SolidColorBrush(Colors.White);
             };
 
             this.Unloaded += (s, e) =>
