@@ -2,7 +2,6 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using Mirko.Common;
 using Mirko.Utils;
 using Newtonsoft.Json;
 using System;
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
 using WykopSDK.API.Models;
 using WykopSDK.Parsers;
 
@@ -275,53 +273,5 @@ namespace Mirko.ViewModel
 
             await StatusBarManager.ShowTextAsync("Plusy zostały przyznane.");
         }
-
-        #region Hashtag
-        public void PrepareHashtagFlyout(ref MenuFlyout mf, string tag)
-        {
-            TappedHashtag = tag;
-
-            if (App.ApiService.UserInfo == null)
-            {
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
-            }
-            else
-            {
-                var observedTags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
-                if (observedTags.Contains(tag))
-                {
-                    MenuFlyoutUtils.MakeItemInvisible(ref mf, "observeTag");
-                    MenuFlyoutUtils.MakeItemVisible(ref mf, "unobserveTag");
-                }
-                else
-                {
-                    MenuFlyoutUtils.MakeItemVisible(ref mf, "observeTag");
-                    MenuFlyoutUtils.MakeItemInvisible(ref mf, "unobserveTag");
-                }
-            }
-
-            var blacklistedTags = SimpleIoc.Default.GetInstance<BlacklistViewModel>().Tags;            
-            if (blacklistedTags.Contains(tag))
-            {
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "blacklistTag");
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "unblacklistTag");
-            }
-            else
-            {
-                MenuFlyoutUtils.MakeItemVisible(ref mf, "blacklistTag");
-                MenuFlyoutUtils.MakeItemInvisible(ref mf, "unblacklistTag");
-            }
-        }
-        #endregion
-
-        #region Profile
-        public void GoToProfilePage(string username)
-        {
-            var profilesVM = SimpleIoc.Default.GetInstance<ProfilesViewModel>();
-            profilesVM.GoToProfile.Execute(username);
-        }
-        #endregion
     }
 }

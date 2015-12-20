@@ -20,6 +20,24 @@
             <MenuFlyoutItem Text="usuń" Click="MenuFlyoutItem_Click" />
         </MenuFlyout>
 
+        <MenuFlyout x:Name="HashtagFlyout">
+            <MenuFlyoutItem Text="przeglądaj" 
+                            Command="{Binding GoToHashtagPage, Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{x:Bind VM.CurrentConversation.TappedHashtag, Mode=OneWay}" />
+            <MenuFlyoutItem Text="obserwuj" Tag="observeTag"
+                            Command="{Binding ObserveHashtag, Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{x:Bind VM.CurrentConversation.TappedHashtag, Mode=OneWay}" />
+            <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" 
+                            Command="{Binding UnobserveHashtag, Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{x:Bind VM.CurrentConversation.TappedHashtag, Mode=OneWay}" />
+            <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" 
+                            Command="{Binding BlacklistTag, Source={Binding Blacklist, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{x:Bind VM.CurrentConversation.TappedHashtag, Mode=OneWay}" />
+            <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed"
+                            Command="{Binding UnblacklistTag, Source={Binding Blacklist, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{x:Bind VM.CurrentConversation.TappedHashtag, Mode=OneWay}" />
+        </MenuFlyout>
+
         <DataTemplate x:Key="ReceivedMessage"
                       x:DataType="models:PMViewModel">
             <StackPanel Margin="0,0,35,7">
@@ -287,7 +305,6 @@
                     <Flyout x:Name="LennyFlyout"
                             FlyoutPresenterStyle="{StaticResource FlyoutPresenterNoPadding}">
                         <controls:LennyChooser LennySelected="LennyChooser_LennySelected"
-                                               x:Name="LennyChooser"
                                                Width="400"/>
                     </Flyout>
                 </AppBarButton.Flyout>

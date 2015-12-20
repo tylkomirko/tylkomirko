@@ -91,6 +91,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenEntryMenuFlyout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OpenMenuFlyout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PageOrientation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\InjectedRTBHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\RichTextBlockInjectors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StackList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StoryboardExtensions.cs" />

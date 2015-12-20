@@ -24,6 +24,14 @@ namespace Mirko.ViewModel
             get { return _messages ?? (_messages = new ObservableCollectionEx<PMViewModel>()); }
         }
 
+        private string _tappedHashtag = null;
+        [JsonIgnore]
+        public string TappedHashtag
+        {
+            get { return _tappedHashtag; }
+            set { Set(() => TappedHashtag, ref _tappedHashtag, value); }
+        }
+
         private bool _isOnline = false;
         public bool IsOnline
         {

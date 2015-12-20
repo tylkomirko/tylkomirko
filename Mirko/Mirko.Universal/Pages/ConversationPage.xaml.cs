@@ -31,7 +31,7 @@ namespace Mirko.Pages
         }
     }
 
-    public sealed partial class ConversationPage : Page
+    public sealed partial class ConversationPage : Page, IReceiveRTBClicks
     {
         private MessagesViewModel VM
         {
@@ -118,8 +118,7 @@ namespace Mirko.Pages
             this.TextBox.Text += txt;
             this.TextBox.SelectionStart = this.TextBox.Text.Length;
 
-            var flyout = this.Resources["LennysFlyout"] as FlyoutBase;
-            flyout.Hide();
+            LennyFlyout.Hide();
         }
 
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
@@ -177,6 +176,23 @@ namespace Mirko.Pages
                 this.SendButton.IsEnabled = true;
             else
                 this.SendButton.IsEnabled = false;
+        }
+
+        public void HashtagTapped(string tag, TextBlock tb)
+        {
+            if (string.IsNullOrEmpty(tag) || tb == null) return;
+
+            var mf = Resources["HashtagFlyout"] as MenuFlyout;
+            InjectedRTBHelper.PrepareHashtagFlyout(ref mf, tag);
+            VM.CurrentConversation.TappedHashtag = tag;
+
+            mf.ShowAt(tb);
+        }
+
+        public void ProfileTapped(string username)
+        {
+            if (string.IsNullOrEmpty(username)) return;
+            InjectedRTBHelper.GoToProfilePage(username);
         }
     }
 }

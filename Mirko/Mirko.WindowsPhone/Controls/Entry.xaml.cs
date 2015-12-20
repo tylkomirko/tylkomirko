@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Mirko.Controls
 {
-    public sealed partial class Entry : UserControl
+    public sealed partial class Entry : UserControl, IReceiveRTBClicks
     {
         private bool singleTap;
 
@@ -186,8 +186,9 @@ namespace Mirko.Controls
             if (string.IsNullOrEmpty(tag) || tb == null) return;
 
             var mf = Resources["HashtagFlyout"] as MenuFlyout;
+            InjectedRTBHelper.PrepareHashtagFlyout(ref mf, tag);
             var VM = DataContext as EntryBaseViewModel;
-            VM.PrepareHashtagFlyout(ref mf, tag);            
+            VM.TappedHashtag = tag;
 
             mf.ShowAt(tb);
         }
@@ -195,9 +196,7 @@ namespace Mirko.Controls
         public void ProfileTapped(string username)
         {
             if (string.IsNullOrEmpty(username)) return;
-
-            var VM = DataContext as EntryBaseViewModel;
-            VM.GoToProfilePage(username);
+            InjectedRTBHelper.GoToProfilePage(username);
         }
 
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)

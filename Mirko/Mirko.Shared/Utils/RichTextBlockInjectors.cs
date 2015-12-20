@@ -291,11 +291,16 @@ namespace Mirko.Utils
             e.Handled = true;
 
             var tb = sender as TextBlock;
-            var control = tb.GetAntecedent<Controls.Entry>();
-            if (control == null) return;
-
             var username = tb.Text.Remove(0, 1); // skip '@'
-            control.ProfileTapped(username);
+
+            // all this ugliness just because RichTextBlock is sealed :(
+            var control = tb.GetAntecedent<UserControl>();
+            if (control != null)
+            {
+                var casted = control as IReceiveRTBClicks;
+                if (casted != null)
+                    casted.ProfileTapped(username);
+            }
         }
 
         static void Hashtag_Tapped(object sender, TappedRoutedEventArgs e)
@@ -303,11 +308,16 @@ namespace Mirko.Utils
             e.Handled = true;
 
             var tb = sender as TextBlock;
-            var control = tb.GetAntecedent<Controls.Entry>();
-            if (control == null) return;
-
             var tag = tb.Text;
-            control.HashtagTapped(tag, tb);
+
+            // all this ugliness just because RichTextBlock is sealed :(
+            var control = tb.GetAntecedent<UserControl>();
+            if(control != null)
+            {
+                var casted = control as IReceiveRTBClicks;
+                if(casted != null)
+                    casted.HashtagTapped(tag, tb);
+            }
         }
         #endregion HTML
 

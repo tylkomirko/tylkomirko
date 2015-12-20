@@ -20,10 +20,23 @@
             <MenuFlyoutItem Text="usuń" Click="MenuFlyoutItem_Click" />
         </MenuFlyout>
 
-        <!--Lennys Flyout-->
-        <Flyout x:Name="LennysFlyout">
-            <controls:LennyChooser LennySelected="LennyChooser_LennySelected" />
-        </Flyout>
+        <MenuFlyout x:Name="HashtagFlyout">
+            <MenuFlyoutItem Text="przeglądaj" 
+                            Command="{Binding GoToHashtagPage, Source={Binding Main, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding Messages.CurrentConversation.TappedHashtag, Mode=OneWay, Source={StaticResource Locator}}" />
+            <MenuFlyoutItem Text="obserwuj" Tag="observeTag"
+                            Command="{Binding ObserveHashtag, Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding Messages.CurrentConversation.TappedHashtag, Mode=OneWay, Source={StaticResource Locator}}" />
+            <MenuFlyoutItem Text="nie obserwuj" Tag="unobserveTag" Visibility="Collapsed" 
+                            Command="{Binding UnobserveHashtag, Source={Binding Notifications, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding Messages.CurrentConversation.TappedHashtag, Mode=OneWay, Source={StaticResource Locator}}" />
+            <MenuFlyoutItem Text="czarnolisto" Tag="blacklistTag" 
+                            Command="{Binding BlacklistTag, Source={Binding Blacklist, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding Messages.CurrentConversation.TappedHashtag, Mode=OneWay, Source={StaticResource Locator}}" />
+            <MenuFlyoutItem Text="usuń z czarnolisto" Tag="unblacklistTag" Visibility="Collapsed"
+                            Command="{Binding UnblacklistTag, Source={Binding Blacklist, Mode=OneWay, Source={StaticResource Locator}}}"
+                            CommandParameter="{Binding Messages.CurrentConversation.TappedHashtag, Mode=OneWay, Source={StaticResource Locator}}" />
+        </MenuFlyout>
 
         <DataTemplate x:Key="ReceivedMessage">
             <StackPanel Margin="0,0,35,7">
