@@ -39,7 +39,7 @@ namespace WykopSDK.API.Models
 
         [JsonProperty("author")]
         public string AuthorName { get; set; }
-        [JsonProperty("author_avatar")]
+        [JsonProperty("author_avatar_big")]
         public string AuthorAvatarURL { get; set; }
         [JsonProperty("author_group")]
         [JsonConverter(typeof(GroupConverter))]
