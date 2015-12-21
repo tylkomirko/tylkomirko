@@ -125,7 +125,8 @@ namespace WykopSDK.API
                 {
                     IsNetworkAvailable = true;
 
-                    if (internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 71) // wifi
+                    if (internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 71 || // wifi
+                        internetConnectionProfile.NetworkAdapter.IanaInterfaceType == 6) // or ethernet
                         IsWIFIAvailable = true;
                     else
                         IsWIFIAvailable = false;
