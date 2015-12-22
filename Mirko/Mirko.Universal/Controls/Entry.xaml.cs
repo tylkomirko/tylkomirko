@@ -109,7 +109,7 @@ namespace Mirko.Controls
 
             System.Diagnostics.Debug.WriteLine("pos: " + pos);
 
-            if (VM.EmbedVM != null && pos.Y > 0)
+            if (VM.EmbedVM != null && pos.Y > 0 && pos.X < EmbedPreview.ActualWidth)
             {
                 var mf = FlyoutBase.GetAttachedFlyout(EmbedPreview);
                 mf.ShowAt(EmbedPreviewGrid);
