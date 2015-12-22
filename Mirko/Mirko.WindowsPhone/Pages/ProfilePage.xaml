@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko.Controls"
+    xmlns:ff="using:FFImageLoading"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -34,12 +35,14 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <controls:CachedImage Grid.Column="0"
-                                      Grid.Row="0"
-                                      Grid.RowSpan="3"
-                                      Height="120"
-                                      Width="120"
-                                      URL="{Binding Data.AvatarURL}" />
+                <ff:FFImage Grid.Column="0"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Height="120"
+                            Width="120"
+                            DownsampleToViewSize="True"
+                            CacheDuration="2"
+                            Source="{Binding Data.AvatarURL, Mode=OneWay}" />
 
                 <StackPanel Grid.Column="1"
                             Grid.Row="0"
