@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="API\Models\Converters\EmbedPreviewConverter.cs" />
     <Compile Include="Parsers\HtmlToText.cs" />
     <Compile Include="Parsers\HtmlToWykop.cs" />
     <Compile Include="Storage\LocalStorage.cs" />

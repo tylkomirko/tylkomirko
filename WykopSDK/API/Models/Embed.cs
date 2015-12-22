@@ -15,6 +15,7 @@ namespace WykopSDK.API.Models
         [JsonConverter(typeof(EmbedTypeConverter))]
         public EmbedType Type { get; set; }
         [JsonProperty("preview")]
+        [JsonConverter(typeof(EmbedPreviewConverter))]
         public string PreviewURL { get; set; }
         [JsonProperty("url")]
         public string URL { get; set; }
