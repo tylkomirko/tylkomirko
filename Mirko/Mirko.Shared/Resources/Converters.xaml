@@ -35,5 +35,6 @@
     <converters:ObjectToEntryVM x:Key="ObjectToEntryVM" />
     <converters:MyEntriesTypeIndexConverter x:Key="MyEntriesTypeIndexConverter" />
     <converters:MyEntriesTypeStringConverter x:Key="MyEntriesTypeStringConverter" />
+    <converters:EmbedTransformation x:Key="EmbedTransformation" />
 
 </ResourceDictionary>

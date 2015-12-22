@@ -38,8 +38,6 @@ namespace Mirko.Controls
                 Image.Source = new BitmapImage() { UriSource = new Uri("ms-appx:///Assets/image_error.png") };
 
             var vm = DataContext as EmbedViewModel;
-            if (vm != null)
-                vm.ErrorShown = uri == null;
 
             Grid.Visibility = Visibility.Visible;
             Ring.Visibility = Visibility.Collapsed;

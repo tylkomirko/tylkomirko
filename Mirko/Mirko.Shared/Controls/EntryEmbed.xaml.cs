@@ -24,7 +24,7 @@ namespace Mirko.Controls
         public EntryEmbed()
         {
             this.InitializeComponent();
-
+            
             if (Settings == null)
                 Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
@@ -36,28 +36,46 @@ namespace Mirko.Controls
             };
         }
 
+        private bool ShowImage(EmbedViewModel VM)
+        {
+            if (VM.ImageShown || VM.ForceShow)
+                return true;
+
+            if (!App.ApiService.IsWIFIAvailable && Settings.OnlyWIFIDownload)
+                return false;
+
+            if (!App.ApiService.IsNetworkAvailable)
+                return false;
+
+            if (VM.EmbedData.NSFW && !Settings.ShowPlus18)
+                return false;
+
+            if (App.ApiService.IsWIFIAvailable)
+                return true;
+
+            return true;
+        }
+
         private void HandleImageVisibility()
         {
+            var VM = DataContext as EmbedViewModel;
+            if (VM == null || VM.EmbedData == null) return;
+
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                var VM = DataContext as EmbedViewModel;
-                if (VM == null || VM.EmbedData == null) return;
-
-                if ((!App.ApiService.IsNetworkAvailable && !VM.ImageShown) ||
-                    (Settings.OnlyWIFIDownload && !App.ApiService.IsWIFIAvailable && !VM.ImageShown) ||
-                    (VM.EmbedData.NSFW && !Settings.ShowPlus18))
+                if (ShowImage(VM))
                 {
-                    Image.Visibility = Visibility.Collapsed;
-                    AttachmentTB.Visibility = Visibility.Visible;
-
-                    VM.ImageShown = false;
+                    Image.Source = VM.EmbedData.PreviewURL;
+                    Image.Visibility = Visibility.Visible;
+                    AttachmentTB.Visibility = Visibility.Collapsed;
+                    VM.ImageShown = true;
                 }
                 else
                 {
-                    Image.Visibility = Visibility.Visible;
-                    AttachmentTB.Visibility = Visibility.Collapsed;
-
-                    VM.ImageShown = true;
+                    Image.Source = "";
+                    Image.Visibility = Visibility.Collapsed;
+                    MediaElement.Visibility = Visibility.Collapsed;
+                    AttachmentTB.Visibility = Visibility.Visible;
                 }
             });
         }
@@ -71,9 +89,7 @@ namespace Mirko.Controls
 
             if (!VM.ImageShown)
             {
-                Image.Visibility = Visibility.Visible;
-                AttachmentTB.Visibility = Visibility.Collapsed;
-
+                VM.ForceShow = true;
                 VM.ImageShown = true;
             }
             else
@@ -157,20 +173,21 @@ namespace Mirko.Controls
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var embed = args.NewValue as EmbedViewModel;
-            if (embed == null || embed.EmbedData == null || embed.ImageShown) return;
+            if (embed == null || embed.EmbedData == null) return;
 
             HandleImageVisibility();
+            embed.PropertyChanged += (s, e) =>
+            {
+                if(e.PropertyName == "ForceShow")
+                    HandleImageVisibility();
+            };
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
-            var vm = this.DataContext as EmbedViewModel;
-            vm.SaveImageCommand.Execute(null);
-        }
-
-        private async void RefreshImage_Click(object sender, RoutedEventArgs e)
-        {
-            await Image.RefreshImage();
+            var VM = this.DataContext as EmbedViewModel;
+            if(VM != null)
+                VM.SaveImageCommand.Execute(null);
         }
     }
 }

@@ -16,13 +16,19 @@ namespace Mirko.ViewModel
     {
         public Embed EmbedData { get; set; }
         public bool ImageShown { get; set; }
-        public bool ErrorShown { get; set; }
 
         private string _mediaElementSrc = null;
         public string MediaElementSrc
         {
             get { return _mediaElementSrc; }
             set { Set(() => MediaElementSrc, ref _mediaElementSrc, value); }
+        }
+
+        private bool _forceShow = false;
+        public bool ForceShow
+        {
+            get { return _forceShow; }
+            set { Set(() => ForceShow, ref _forceShow, value); }
         }
 
         public EmbedViewModel()
@@ -79,9 +85,6 @@ namespace Mirko.ViewModel
 
         private async void ExecuteOpenEmbedCommand()
         {
-            if (ErrorShown)
-                return;
-
             var url = EmbedData.URL;
             if (url.EndsWith(".jpg") || url.EndsWith(".jpeg") || url.EndsWith(".png") || (url.Contains("imgwykop.pl") && !url.EndsWith("gif")))
             {

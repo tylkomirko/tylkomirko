@@ -11,6 +11,19 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        }
+      },
       "MetroLog/0.8.9": {
         "compile": {
           "lib/win81/MetroLog.dll": {},
@@ -54,6 +67,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -78,6 +103,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -1622,6 +1661,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-arm": {
@@ -1631,6 +1681,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -1676,6 +1739,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -1700,6 +1775,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -3334,6 +3423,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-arm-aot": {
@@ -3343,6 +3443,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -3388,6 +3501,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -3412,6 +3537,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -5018,6 +5157,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-x64": {
@@ -5027,6 +5177,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -5072,6 +5235,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -5096,6 +5271,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -6735,6 +6924,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-x64-aot": {
@@ -6744,6 +6944,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -6789,6 +7002,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -6813,6 +7038,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -8419,6 +8658,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-x86": {
@@ -8428,6 +8678,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -8473,6 +8736,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -8497,6 +8772,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -10136,6 +10425,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     },
     "UAP,Version=v10.0/win10-x86-aot": {
@@ -10145,6 +10445,19 @@
         },
         "runtime": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
+        }
+      },
+      "FFImageLoading.Windows/2.0.5": {
+        "dependencies": {
+          "Microsoft.Net.Http": "[2.2.29, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll": {},
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll": {}
         }
       },
       "MetroLog/0.8.9": {
@@ -10190,6 +10503,18 @@
           "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.10": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/_._": {}
+        },
+        "runtime": {
+          "lib/win8/_._": {}
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CSharp/4.0.0": {
         "dependencies": {
           "System.Collections": "[4.0.10, )",
@@ -10214,6 +10539,20 @@
         },
         "runtime": {
           "lib/netcore50/Microsoft.CSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.29": {
+        "dependencies": {
+          "Microsoft.Bcl": "[1.1.10, )",
+          "Microsoft.Bcl.Build": "[1.0.14, )"
+        },
+        "compile": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/win8/System.Net.Http.Extensions.dll": {},
+          "lib/win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.NETCore/5.0.0": {
@@ -11820,6 +12159,17 @@
         "runtime": {
           "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
+      },
+      "Xamarin.FFImageLoading.Transformations/2.0.0": {
+        "dependencies": {
+          "FFImageLoading.Windows": "[2.0.0, )"
+        },
+        "compile": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        },
+        "runtime": {
+          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
+        }
       }
     }
   },
@@ -11837,6 +12187,20 @@
         "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.XML",
         "package/services/metadata/core-properties/8a82b9e5a63a439481bfa8d4ec335002.psmdcp",
         "package/services/metadata/core-properties/99be0c88b2fd41c8b07c42071005ee47.psmdcp"
+      ]
+    },
+    "FFImageLoading.Windows/2.0.5": {
+      "sha512": "fkrV+AVf8Sgx3QH+lvWzrWOxqxGiKMoHpRXhiDAd/jnVMlX7cbOXyhKeBPs6q1/nBO53a0bTIjW9dKPeHLLyDg==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "FFImageLoading.Windows.nuspec",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.dll",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.xml",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.xml",
+        "package/services/metadata/core-properties/ce75a029efbd4cb7b1dc47c726709a46.psmdcp"
       ]
     },
     "MetroLog/0.8.9": {
@@ -11923,6 +12287,117 @@
         "package/services/metadata/core-properties/8265b8c93c244c80b4e8bce27f31849d.psmdcp"
       ]
     },
+    "Microsoft.Bcl/1.1.10": {
+      "sha512": "+tTqoh/M1pyL8El3qLy30EcwnAtyvFoDZJtdG9Cbg/WdFbh4N8kyrq198XHuEL7lnJbeD0DRO8jcX5IIOh05cQ==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/monoandroid/_._",
+        "lib/monotouch/_._",
+        "lib/net40/ensureRedirect.xml",
+        "lib/net40/System.IO.dll",
+        "lib/net40/System.IO.xml",
+        "lib/net40/System.Runtime.dll",
+        "lib/net40/System.Runtime.xml",
+        "lib/net40/System.Threading.Tasks.dll",
+        "lib/net40/System.Threading.Tasks.xml",
+        "lib/net45/_._",
+        "lib/portable-net40+sl4+win8/ensureRedirect.xml",
+        "lib/portable-net40+sl4+win8/System.IO.dll",
+        "lib/portable-net40+sl4+win8/System.IO.xml",
+        "lib/portable-net40+sl4+win8/System.Runtime.dll",
+        "lib/portable-net40+sl4+win8/System.Runtime.xml",
+        "lib/portable-net40+sl4+win8/System.Threading.Tasks.dll",
+        "lib/portable-net40+sl4+win8/System.Threading.Tasks.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/ensureRedirect.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.IO.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.IO.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Runtime.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Runtime.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Threading.Tasks.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Threading.Tasks.xml",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/ensureRedirect.xml",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.IO.dll",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.IO.xml",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.Runtime.dll",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.Runtime.xml",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.Threading.Tasks.dll",
+        "lib/portable-net40+sl4+win8+wp8+wpa81/System.Threading.Tasks.xml",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/ensureRedirect.xml",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.IO.dll",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.IO.xml",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.Runtime.dll",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.Runtime.xml",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.Threading.Tasks.dll",
+        "lib/portable-net40+sl5+win8+wp8+wpa81/System.Threading.Tasks.xml",
+        "lib/portable-net40+win8/ensureRedirect.xml",
+        "lib/portable-net40+win8/System.IO.dll",
+        "lib/portable-net40+win8/System.IO.xml",
+        "lib/portable-net40+win8/System.Runtime.dll",
+        "lib/portable-net40+win8/System.Runtime.xml",
+        "lib/portable-net40+win8/System.Threading.Tasks.dll",
+        "lib/portable-net40+win8/System.Threading.Tasks.xml",
+        "lib/portable-net40+win8+wp8+wpa81/ensureRedirect.xml",
+        "lib/portable-net40+win8+wp8+wpa81/System.IO.dll",
+        "lib/portable-net40+win8+wp8+wpa81/System.IO.xml",
+        "lib/portable-net40+win8+wp8+wpa81/System.Runtime.dll",
+        "lib/portable-net40+win8+wp8+wpa81/System.Runtime.xml",
+        "lib/portable-net40+win8+wp8+wpa81/System.Threading.Tasks.dll",
+        "lib/portable-net40+win8+wp8+wpa81/System.Threading.Tasks.xml",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/portable-net45+win8+wpa81/_._",
+        "lib/portable-net451+win81/_._",
+        "lib/portable-net451+win81+wpa81/_._",
+        "lib/portable-win81+wp81+wpa81/_._",
+        "lib/sl4/System.IO.dll",
+        "lib/sl4/System.IO.xml",
+        "lib/sl4/System.Runtime.dll",
+        "lib/sl4/System.Runtime.xml",
+        "lib/sl4/System.Threading.Tasks.dll",
+        "lib/sl4/System.Threading.Tasks.xml",
+        "lib/sl4-windowsphone71/ensureRedirect.xml",
+        "lib/sl4-windowsphone71/System.IO.dll",
+        "lib/sl4-windowsphone71/System.IO.xml",
+        "lib/sl4-windowsphone71/System.Runtime.dll",
+        "lib/sl4-windowsphone71/System.Runtime.xml",
+        "lib/sl4-windowsphone71/System.Threading.Tasks.dll",
+        "lib/sl4-windowsphone71/System.Threading.Tasks.xml",
+        "lib/sl5/System.IO.dll",
+        "lib/sl5/System.IO.xml",
+        "lib/sl5/System.Runtime.dll",
+        "lib/sl5/System.Runtime.xml",
+        "lib/sl5/System.Threading.Tasks.dll",
+        "lib/sl5/System.Threading.Tasks.xml",
+        "lib/win8/_._",
+        "lib/wp8/_._",
+        "lib/wpa81/_._",
+        "lib/Xamarin.iOS10/_._",
+        "License-Stable.rtf",
+        "Microsoft.Bcl.nuspec",
+        "package/services/metadata/core-properties/b43ef6ce7de9447f9f8b39e2e41a185e.psmdcp"
+      ]
+    },
+    "Microsoft.Bcl.Build/1.0.14": {
+      "sha512": "cDLKSvNvRa519hplsbSoYqO69TjdDIhfjtKUM0g20/nVROoWsGav9KCI9HtnGjLmdV1+TcUUDhbotcllibjPEA==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "content/net40/_._",
+        "content/netcore45/_._",
+        "content/portable-net40+win8+sl4+wp71+wpa81/_._",
+        "content/sl4/_._",
+        "content/sl4-windowsphone71/_._",
+        "License-Stable.rtf",
+        "Microsoft.Bcl.Build.nuspec",
+        "package/services/metadata/core-properties/ded9cfb683144eaba586f13af4ae979c.psmdcp",
+        "tools/Install.ps1",
+        "tools/Microsoft.Bcl.Build.targets",
+        "tools/Microsoft.Bcl.Build.Tasks.dll",
+        "tools/Uninstall.ps1"
+      ]
+    },
     "Microsoft.CSharp/4.0.0": {
       "sha512": "oWqeKUxHXdK6dL2CFjgMcaBISbkk+AqEg+yvJHE4DElNzS4QaTsCflgkkqZwVlWby1Dg9zo9n+iCAMFefFdJ/A==",
       "type": "Package",
@@ -11962,6 +12437,74 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._"
+      ]
+    },
+    "Microsoft.Net.Http/2.2.29": {
+      "sha512": "fc4CPEewJ30Xgal+fSq1lYIBt582A7eKlAL7O4HXiYAiTp2VTnA4osSvk7T2n8aS4xTCPVJusQk3yKLT0XSpkg==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/monoandroid/System.Net.Http.Extensions.dll",
+        "lib/monoandroid/System.Net.Http.Extensions.XML",
+        "lib/monoandroid/System.Net.Http.Primitives.dll",
+        "lib/monoandroid/System.Net.Http.Primitives.xml",
+        "lib/monotouch/System.Net.Http.Extensions.dll",
+        "lib/monotouch/System.Net.Http.Extensions.XML",
+        "lib/monotouch/System.Net.Http.Primitives.dll",
+        "lib/monotouch/System.Net.Http.Primitives.xml",
+        "lib/net40/ensureRedirect.xml",
+        "lib/net40/System.Net.Http.dll",
+        "lib/net40/System.Net.Http.Extensions.dll",
+        "lib/net40/System.Net.Http.Extensions.XML",
+        "lib/net40/System.Net.Http.Primitives.dll",
+        "lib/net40/System.Net.Http.Primitives.xml",
+        "lib/net40/System.Net.Http.WebRequest.dll",
+        "lib/net40/System.Net.Http.WebRequest.xml",
+        "lib/net40/System.Net.Http.xml",
+        "lib/net45/ensureRedirect.xml",
+        "lib/net45/System.Net.Http.Extensions.dll",
+        "lib/net45/System.Net.Http.Extensions.XML",
+        "lib/net45/System.Net.Http.Primitives.dll",
+        "lib/net45/System.Net.Http.Primitives.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/ensureRedirect.xml",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.Extensions.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.Extensions.XML",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.Primitives.dll",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.Primitives.XML",
+        "lib/portable-net40+sl4+win8+wp71+wpa81/System.Net.Http.xml",
+        "lib/portable-net45+win8/ensureRedirect.xml",
+        "lib/portable-net45+win8/System.Net.Http.Extensions.dll",
+        "lib/portable-net45+win8/System.Net.Http.Extensions.XML",
+        "lib/portable-net45+win8/System.Net.Http.Primitives.dll",
+        "lib/portable-net45+win8/System.Net.Http.Primitives.xml",
+        "lib/portable-net45+win8+wpa81/ensureRedirect.xml",
+        "lib/portable-net45+win8+wpa81/System.Net.Http.Extensions.dll",
+        "lib/portable-net45+win8+wpa81/System.Net.Http.Extensions.XML",
+        "lib/portable-net45+win8+wpa81/System.Net.Http.Primitives.dll",
+        "lib/portable-net45+win8+wpa81/System.Net.Http.Primitives.xml",
+        "lib/sl4-windowsphone71/System.Net.Http.dll",
+        "lib/sl4-windowsphone71/System.Net.Http.Extensions.dll",
+        "lib/sl4-windowsphone71/System.Net.Http.Extensions.XML",
+        "lib/sl4-windowsphone71/System.Net.Http.Primitives.dll",
+        "lib/sl4-windowsphone71/System.Net.Http.Primitives.XML",
+        "lib/sl4-windowsphone71/System.Net.Http.xml",
+        "lib/win8/System.Net.Http.Extensions.dll",
+        "lib/win8/System.Net.Http.Extensions.XML",
+        "lib/win8/System.Net.Http.Primitives.dll",
+        "lib/win8/System.Net.Http.Primitives.xml",
+        "lib/wpa81/System.Net.Http.Extensions.dll",
+        "lib/wpa81/System.Net.Http.Extensions.XML",
+        "lib/wpa81/System.Net.Http.Primitives.dll",
+        "lib/wpa81/System.Net.Http.Primitives.xml",
+        "lib/Xamarin.iOS10/System.Net.Http.Extensions.dll",
+        "lib/Xamarin.iOS10/System.Net.Http.Extensions.XML",
+        "lib/Xamarin.iOS10/System.Net.Http.Primitives.dll",
+        "lib/Xamarin.iOS10/System.Net.Http.Primitives.xml",
+        "License-Stable.rtf",
+        "Microsoft.Net.Http.nuspec",
+        "package/services/metadata/core-properties/9ad4325e7ab9496288f2be824bbc6161.psmdcp"
       ]
     },
     "Microsoft.NETCore/5.0.0": {
@@ -15474,10 +16017,29 @@
         "package/services/metadata/core-properties/23a5426dfec74835823a81716acfa9bb.psmdcp",
         "WriteableBitmapEx.nuspec"
       ]
+    },
+    "Xamarin.FFImageLoading.Transformations/2.0.0": {
+      "sha512": "214v1svEpHYz7URvF4egN/Wahg+NXjv35FDQYnm2tKCKZEiKEocmrwzlgehu6gx2HnAfhEoMrYWAD0DrOyhLWA==",
+      "type": "Package",
+      "files": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "lib/MonoAndroid10/FFImageLoading.Transformations.dll",
+        "lib/MonoAndroid10/FFImageLoading.Transformations.xml",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10/FFImageLoading.Transformations.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10/FFImageLoading.Transformations.xml",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll",
+        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.xml",
+        "lib/Xamarin.iOS10/FFImageLoading.Transformations.dll",
+        "lib/Xamarin.iOS10/FFImageLoading.Transformations.xml",
+        "package/services/metadata/core-properties/1.psmdcp",
+        "Xamarin.FFImageLoading.Transformations.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
+      "FFImageLoading.Windows >= 2.0.5",
       "MetroLog >= 0.8.9",
       "Microsoft.ApplicationInsights >= 1.2.3",
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.2.3",
@@ -15486,7 +16048,8 @@
       "MvvmLight >= 5.2.0",
       "MvvmLightLibs >= 5.2.0",
       "Newtonsoft.Json >= 7.0.1",
-      "WriteableBitmapEx >= 1.5.0"
+      "WriteableBitmapEx >= 1.5.0",
+      "Xamarin.FFImageLoading.Transformations >= 2.0.0"
     ],
     "UAP,Version=v10.0": []
   }

@@ -55,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToBool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\CountToVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\DateConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\EmbedTransformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\FontSizeScaler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\GroupToColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\PivotPageIndicators.cs" />
@@ -79,6 +80,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\BlitTransformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CloseFlyoutAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CommandBarUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomEventArgs.cs" />
@@ -196,6 +198,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\avatar_default.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\gif_icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\image_error.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ust_l.png" />

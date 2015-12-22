@@ -9,6 +9,7 @@
     xmlns:controls="using:Mirko.Controls"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:ff="using:FFImageLoading"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -199,13 +200,18 @@
             </MenuFlyout>
         </FlyoutBase.AttachedFlyout>
 
-        <controls:CachedImage x:Name="Avatar"
-                              Grid.Row="0"
-                              Grid.RowSpan="4"
-                              Grid.Column="0"
-                              Margin="6,4,2,4"
-                              URL="{Binding Data.AuthorAvatarURL}" />
-        
+        <ff:FFImage x:Name="Avatar"
+                    Grid.Row="0"
+                    Grid.RowSpan="4"
+                    Grid.Column="0"
+                    Height="60"
+                    Width="60"
+                    Margin="6,4,2,4"
+                    DownsampleToViewSize="True"
+                    CacheDuration="2"
+                    Source="{Binding Data.AuthorAvatarURL}"
+                    ErrorPlaceholder="avatar_default.png" />
+
         <StackPanel Grid.Row="1"
                     Grid.Column="1"
                     Orientation="Horizontal">
@@ -286,7 +292,7 @@
             
             <controls:EntryEmbed x:Name="EmbedPreview"
                                  Margin="0,3,0,0"
-                                 MinHeight="50"
+                                 MinHeight="0"
                                  MinWidth="50"
                                  MaxHeight="220"
                                  MaxWidth="220"

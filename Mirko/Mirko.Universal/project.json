@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "FFImageLoading.Windows": "2.0.5",
     "MetroLog": "0.8.9",
     "Microsoft.ApplicationInsights": "1.2.3",
     "Microsoft.ApplicationInsights.PersistenceChannel": "1.2.3",
@@ -8,7 +9,8 @@
     "MvvmLight": "5.2.0",
     "MvvmLightLibs": "5.2.0",
     "Newtonsoft.Json": "7.0.1",
-    "WriteableBitmapEx": "1.5.0"
+    "WriteableBitmapEx": "1.5.0",
+    "Xamarin.FFImageLoading.Transformations": "2.0.0"
   },
   "frameworks": {
     "uap10.0": {}

@@ -9,6 +9,8 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:utils="using:Mirko.Utils"
+    xmlns:ff="using:FFImageLoading"
+    xmlns:fft="using:FFImageLoading.Transformations"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -19,9 +21,6 @@
 
     <FlyoutBase.AttachedFlyout>
         <MenuFlyout>
-            <MenuFlyoutItem Text="odśwież"
-                            Click="RefreshImage_Click"/>
-            
             <MenuFlyoutItem Text="zapisz"
                             Click="SaveImage_Click"/>
         </MenuFlyout>
@@ -30,9 +29,10 @@
     <Grid x:Name="EntryEmbedGrid"
           HorizontalAlignment="Stretch">
 
-        <controls:CachedImage x:Name="Image"
-                              Embed="{Binding EmbedData}"/>
-        
+        <ff:FFImage x:Name="Image"
+                    CacheDuration="2"
+                    Transformations="{Binding Converter={StaticResource EmbedTransformation}}"/>
+
         <MediaElement x:Name="MediaElement"
                       Source="{Binding MediaElementSrc}"
                       AutoPlay="True"
@@ -47,7 +47,6 @@
                       Visibility="Collapsed" />
 
         <TextBlock x:Name="AttachmentTB"
-                   Visibility="Collapsed"
                    TextTrimming="CharacterEllipsis"
                    IsColorFontEnabled="False">
             
