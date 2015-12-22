@@ -14,7 +14,6 @@ namespace Mirko.ViewModel
         public CommentViewModel(EntryComment c) : base(c)
         {
             Data = c;
-            Data.Embed = null;
             c = null;
         }
     }
