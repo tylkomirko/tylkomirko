@@ -20,7 +20,7 @@ namespace Mirko.Converters
             var sourceURL = VM.EmbedData.Source;
             if (sourceURL.EndsWith(".gif") || sourceURL.Contains("gfycat"))
                 return new List<ITransformation>() { GIFTransformation };
-            else if (sourceURL.Contains("youtube") || sourceURL.Contains("youtu.be"))
+            else if (sourceURL.Contains("youtube") || sourceURL.Contains("youtu.be") || sourceURL.Contains("vimeo"))
                 return new List<ITransformation>() { VideoTransformation };
 
             return null;

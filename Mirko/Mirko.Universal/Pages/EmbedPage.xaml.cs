@@ -6,9 +6,9 @@ using Windows.Graphics.Display;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -33,15 +33,18 @@ namespace Mirko.Pages
                 if (SimpleIoc.Default.GetInstance<SettingsViewModel>().SelectedTheme == ElementTheme.Dark)
                     ImageScrollViewer.Background = new SolidColorBrush(Colors.Black);
                 else
-                    ImageScrollViewer.Background = new SolidColorBrush(Colors.White);
+                    ImageScrollViewer.Background = new SolidColorBrush(Colors.White);               
+
+                if ((Image.Content as Image)?.Source != null)
+                    ImageOpened = true;
+                else
+                    ImageScrollViewer.ChangeView(0.0, 0.0, 0.3f, false);
             };
 
             this.Unloaded += (s, e) =>
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
-
                 StatusBarManager.ShowStatusBar();
-
                 ImageOpened = false;
             };
 
@@ -51,29 +54,37 @@ namespace Mirko.Pages
                     CalculateZoomFactors();
             };
 
+
             this.Image.ImageOpened += (s, e) =>
             {
-                StatusBarManager.HideProgress();
-                StatusBarManager.HideStatusBar();
-
                 CalculateZoomFactors();
                 ImageOpened = true;
             };
 
-            this.Image.DoubleTapped += (s, e) => ZoomImage();
+            this.Image.DoubleTapped += (s, e) =>
+            {
+                if(ImageOpened)
+                    ZoomImage();
+            };
         }
 
         private void CalculateZoomFactors()
         {
-            var ratioX = ImageScrollViewer.ViewportWidth / Image.ActualWidth;
-            var ratioY = ImageScrollViewer.ViewportHeight / Image.ActualHeight;
+            var bmp = (Image.Content as Image)?.Source as WriteableBitmap;
+            if (bmp == null) return;
+
+            var ratioX = ImageScrollViewer.ViewportWidth / (double)bmp.PixelWidth;
+            var ratioY = ImageScrollViewer.ViewportHeight / (double)bmp.PixelHeight;
 
             var zoom = Math.Min(ratioX, ratioY);
-            var zoomMin = Math.Max(0.97 * zoom, 0.1); // it can't be smaller than 0.1. otherwise it throws.
+            var zoomMin = Math.Max(0.98 * zoom, 0.1); // it can't be smaller than 0.1. otherwise it throws.
             var zoomMax = 2.5 * Math.Max(ratioX, ratioY);
             ImageScrollViewer.MinZoomFactor = (float)zoomMin;
             ImageScrollViewer.MaxZoomFactor = (float)zoomMax;
 
+#if WINDOWS_UWP
+            ImageScrollViewer.ChangeView(0.0, 0.0, (float)zoom, false);
+#else
             // fuck you MS
             Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
             {
@@ -82,6 +93,7 @@ namespace Mirko.Pages
                     ImageScrollViewer.ChangeView(0.0, 0.0, (float)zoom, false);
                 });
             }, TimeSpan.FromMilliseconds(10));
+#endif
         }
 
         private void ZoomImage()
@@ -90,6 +102,10 @@ namespace Mirko.Pages
             if (zoom > ImageScrollViewer.MaxZoomFactor)
                 zoom = ImageScrollViewer.MaxZoomFactor;
 
+#if WINDOWS_UWP
+            ImageScrollViewer.ChangeView(null, null, zoom, false);
+            ImageScrollViewer.ChangeView(ImageScrollViewer.ScrollableWidth / 2, ImageScrollViewer.ScrollableHeight / 2, null, false);
+#else
             // fuck you MS
             Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
             {
@@ -99,6 +115,7 @@ namespace Mirko.Pages
                     ImageScrollViewer.ChangeView(ImageScrollViewer.ScrollableWidth / 2, ImageScrollViewer.ScrollableHeight / 2, null, false);
                 });
             }, TimeSpan.FromMilliseconds(10));
+#endif
         }
 
         private void Image_OpenFlyout(object sender, RoutedEventArgs e)
@@ -113,8 +130,7 @@ namespace Mirko.Pages
                  holding.HoldingState == Windows.UI.Input.HoldingState.Canceled))
                 return;
 
-            var mf = FlyoutBase.GetAttachedFlyout(Image);
-            mf.ShowAt(Image);
+            SaveFlyout.ShowAt(Image);
 
             if (holding != null)
                 holding.Handled = true;

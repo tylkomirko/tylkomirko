@@ -58,11 +58,11 @@ namespace Mirko.Controls
 
         private void HandleImageVisibility()
         {
-            var VM = DataContext as EmbedViewModel;
-            if (VM == null || VM.EmbedData == null) return;
-
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
+                var VM = DataContext as EmbedViewModel;
+                if (VM == null || VM.EmbedData == null) return;
+
                 if (ShowImage(VM))
                 {
                     Image.Source = VM.EmbedData.PreviewURL;

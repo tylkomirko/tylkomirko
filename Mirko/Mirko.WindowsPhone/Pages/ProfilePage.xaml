@@ -42,6 +42,7 @@
                             Width="120"
                             DownsampleToViewSize="True"
                             CacheDuration="2"
+                            ErrorPlaceholder="avatar_default.png"
                             Source="{Binding Data.AvatarURL, Mode=OneWay}" />
 
                 <StackPanel Grid.Column="1"

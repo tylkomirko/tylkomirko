@@ -88,7 +88,6 @@ namespace Mirko.ViewModel
             var url = EmbedData.URL;
             if (url.EndsWith(".jpg") || url.EndsWith(".jpeg") || url.EndsWith(".png") || (url.Contains("imgwykop.pl") && !url.EndsWith("gif")))
             {
-                StatusBarManager.ShowTextAndProgress("Pobieram obraz...");
                 GoToEmbedPage();
             }
             else if (url.EndsWith(".gif"))

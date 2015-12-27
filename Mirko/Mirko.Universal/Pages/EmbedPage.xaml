@@ -8,6 +8,7 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:controls="using:Mirko.Controls"
+    xmlns:ff="using:FFImageLoading"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -19,22 +20,26 @@
                   IsDoubleTapEnabled="True"
                   ZoomMode="Enabled">
 
-        <Image x:Name="Image"
-               Source="{Binding EmbedData.URL}"
-               Holding="Image_OpenFlyout"
-               RightTapped="Image_OpenFlyout"
-               IsHoldingEnabled="True"
-               IsDoubleTapEnabled="True"
-               Stretch="Uniform">
+        <ff:FFImage x:Name="Image"
+                    CacheDuration="2"
+                    ErrorPlaceholder="error_placeholder.png"
+                    LoadingPlaceholder="loading_placeholder.png"
+                    Source="{Binding EmbedData.URL}"
+                    Holding="Image_OpenFlyout"
+                    RightTapped="Image_OpenFlyout"
+                    IsHoldingEnabled="True"
+                    IsDoubleTapEnabled="True"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
 
             <FlyoutBase.AttachedFlyout>
-                <MenuFlyout x:Key="SaveFlyout">
+                <MenuFlyout x:Name="SaveFlyout">
                     <MenuFlyoutItem Text="zapisz" 
-                                    Command="{Binding SaveImageCommand}"/>
-                    
+                                    Command="{Binding SaveImageCommand}"/>                    
                 </MenuFlyout>
             </FlyoutBase.AttachedFlyout>
             
-        </Image>
+        </ff:FFImage>
     </ScrollViewer>
 </Page>

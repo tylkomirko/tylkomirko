@@ -15,9 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml.cs">
-      <DependentUpon>CachedImage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CommandBarEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\EntryEmbed.xaml.cs">
       <DependentUpon>EntryEmbed.xaml</DependentUpon>
@@ -136,10 +133,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Controls\CachedImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Controls\EntryEmbed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -199,8 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\avatar_default.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\error_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\gif_icon.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\image_error.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\loading_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ust_l.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\video_icon.png" />
   </ItemGroup>

@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:ListViewEx Margin="10,0,10,0"
+        <controls:ListViewEx Margin="10,0,0,0"
                          Grid.Row="0"
                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                          ItemsSource="{x:Bind VM.CurrentProfile.Entries, Mode=OneWay}"
@@ -48,8 +48,8 @@
                                 Width="96"
                                 DownsampleToViewSize="True"
                                 CacheDuration="2"
-                                Source="{x:Bind VM.CurrentProfile.Data.AvatarURL, Mode=OneWay}" />
-                    
+                                ErrorPlaceholder="avatar_default.png"
+                                Source="{x:Bind VM.CurrentProfile.Data.AvatarURL, Mode=OneWay}" />                    
 
                     <StackPanel Grid.Column="1"
                             Grid.Row="0"
@@ -143,7 +143,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <controls:Entry Margin="-18,0,-18,0" />
+                    <controls:Entry Margin="-18,0,0,0" />
                 </DataTemplate>
             </ListView.ItemTemplate>
 

@@ -7,30 +7,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:ff="using:FFImageLoading"
     xmlns:controls="using:Mirko.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main.SelectedEmbed, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <UserControl.Resources>
-        <MenuFlyout x:Key="SaveFlyout">
-            <MenuFlyoutItem Text="zapisz" 
-                            Command="{Binding SaveImageCommand}"/>
-        </MenuFlyout>
-    </UserControl.Resources>
-
     <ScrollViewer x:Name="ImageScrollViewer"
                   VerticalScrollBarVisibility="Hidden" 
                   HorizontalScrollBarVisibility="Hidden" 
                   IsDoubleTapEnabled="True"
                   ZoomMode="Enabled">
-              
-        <Image x:Name="Image"
-               Source="{Binding EmbedData.URL}"
-               Holding="Image_Holding"
-               IsHoldingEnabled="True"
-               IsDoubleTapEnabled="True"
-               Stretch="Uniform" />
+
+        <ff:FFImage x:Name="Image"
+                    CacheDuration="2"
+                    ErrorPlaceholder="error_placeholder.png"
+                    LoadingPlaceholder="loading_placeholder.png"
+                    Source="{Binding EmbedData.URL}"
+                    Holding="Image_Holding"
+                    IsHoldingEnabled="True"
+                    IsDoubleTapEnabled="True"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+
+            <FlyoutBase.AttachedFlyout>
+                <MenuFlyout x:Name="SaveFlyout">
+                    <MenuFlyoutItem Text="zapisz" 
+                                    Command="{Binding SaveImageCommand}"/>
+                </MenuFlyout>
+            </FlyoutBase.AttachedFlyout>
+
+        </ff:FFImage>
     </ScrollViewer>
 </Page>

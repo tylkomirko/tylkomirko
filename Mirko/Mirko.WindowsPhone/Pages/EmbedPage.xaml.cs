@@ -1,8 +1,6 @@
 ﻿using Mirko.Utils;
-using Mirko.ViewModel;
 using System;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
@@ -26,14 +24,17 @@ namespace Mirko.Pages
                     DisplayOrientations.PortraitFlipped;
 
                 StatusBarManager.HideStatusBar();
+
+                if ((Image.Content as Image)?.Source != null)
+                    ImageOpened = true;
+                else
+                    ImageScrollViewer.ChangeView(0.0, 0.0, 0.3f, false);
             };
 
             this.Unloaded += (s, e) =>
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
-
                 StatusBarManager.ShowStatusBar();
-
                 ImageOpened = false;
             };
 
@@ -45,23 +46,27 @@ namespace Mirko.Pages
 
             this.Image.ImageOpened += (s, e) =>
             {
-                StatusBarManager.HideProgress();
-                StatusBarManager.HideStatusBar();
-
                 CalculateZoomFactors();
                 ImageOpened = true;
             };
 
-            this.Image.DoubleTapped += (s, e) => ZoomImage();
+            this.Image.DoubleTapped += (s, e) =>
+            {
+                if (ImageOpened)
+                    ZoomImage();
+            };
         }
 
         private void CalculateZoomFactors()
         {
-            var ratioX = ImageScrollViewer.ViewportWidth / Image.ActualWidth;
-            var ratioY = ImageScrollViewer.ViewportHeight / Image.ActualHeight;
+            var bmp = (Image.Content as Image)?.Source as WriteableBitmap;
+            if (bmp == null) return;
+
+            var ratioX = ImageScrollViewer.ViewportWidth / (double)bmp.PixelWidth;
+            var ratioY = ImageScrollViewer.ViewportHeight / (double)bmp.PixelHeight;
 
             var zoom = Math.Min(ratioX, ratioY);
-            var zoomMin = Math.Max(0.97 * zoom, 0.1); // it can't be smaller than 0.1. otherwise it throws.
+            var zoomMin = Math.Max(0.98 * zoom, 0.1); // it can't be smaller than 0.1. otherwise it throws.
             var zoomMax = 2.5 * Math.Max(ratioX, ratioY);
             ImageScrollViewer.MinZoomFactor = (float)zoomMin;
             ImageScrollViewer.MaxZoomFactor = (float)zoomMax;
@@ -95,8 +100,7 @@ namespace Mirko.Pages
 
         private void Image_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            var mf = this.Resources["SaveFlyout"] as MenuFlyout;
-            mf.ShowAt(Image);
+            SaveFlyout.ShowAt(Image);
         }
     }
 }
