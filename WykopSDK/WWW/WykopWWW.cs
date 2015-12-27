@@ -73,8 +73,8 @@ namespace WykopSDK.WWW
             };
 
             using (var content = new FormUrlEncodedContent(post))
-            using (var response = await httpClient.PostAsync(startURL, content))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var response = await httpClient.PostAsync(startURL, content).ConfigureAwait(false))
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
                 if (!response.IsSuccessStatusCode)
                 {
@@ -127,7 +127,7 @@ namespace WykopSDK.WWW
                 post.Add(new KeyValuePair<string, string>("connect[permissions][]", name));
 
             using (var content = new FormUrlEncodedContent(post))
-            using (var response = await httpClient.PostAsync(lastURL, content))
+            using (var response = await httpClient.PostAsync(lastURL, content).ConfigureAwait(false))
             {
                 if (!response.IsSuccessStatusCode)
                 {
@@ -184,8 +184,8 @@ namespace WykopSDK.WWW
             string token = null;
             string loginURL = null;
 
-            using (var response = await httpClient.GetAsync(baseURL + "zaloguj/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var response = await httpClient.GetAsync(baseURL + "zaloguj/").ConfigureAwait(false))
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
                 var doc = parser.Parse(stream);
                 if (doc == null) return false;
@@ -211,7 +211,7 @@ namespace WykopSDK.WWW
             };
 
             using (var content = new FormUrlEncodedContent(post))
-            using (var response = await httpClient.PostAsync(loginURL, content))
+            using (var response = await httpClient.PostAsync(loginURL, content).ConfigureAwait(false))
             {
                 var finalUrl = response.RequestMessage.RequestUri.AbsoluteUri;
                 if (finalUrl.Equals("http://www.wykop.pl/") || finalUrl.Equals("https://www.wykop.pl/"))
@@ -225,25 +225,25 @@ namespace WykopSDK.WWW
         #region Blacklist
         public async Task<Tuple<List<string>, List<string>>> GetBlacklists()
         {
-            List<string> tags = await WykopSDK.LocalStorage.ReadBlacklistedTags();
-            List<string> users = await WykopSDK.LocalStorage.ReadBlacklistedUsers();
+            List<string> tags = await WykopSDK.LocalStorage.ReadBlacklistedTags().ConfigureAwait(false);
+            List<string> users = await WykopSDK.LocalStorage.ReadBlacklistedUsers().ConfigureAwait(false);
 
             if (tags == null || users == null)
             {
                 if (!loggedIn)
                 {
-                    loggedIn = await Login();
+                    loggedIn = await Login().ConfigureAwait(false);
                     if (!loggedIn) return null;
                 }
             }
 
             if (tags == null)
-                tags = await GetBlacklistedTags();
+                tags = await GetBlacklistedTags().ConfigureAwait(false);
 
             if (users == null)
-                users = await GetBlacklistedUsers();
+                users = await GetBlacklistedUsers().ConfigureAwait(false);
 
-            await WykopSDK.LocalStorage.SaveBlacklists(tags, users);
+            await WykopSDK.LocalStorage.SaveBlacklists(tags, users).ConfigureAwait(false);
 
             if (tags.Count != 0 || users.Count != 0)
                 return new Tuple<List<string>, List<string>>(tags, users);
@@ -257,8 +257,8 @@ namespace WykopSDK.WWW
 
             try
             {
-                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/").ConfigureAwait(false))
+                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     var doc = parser.Parse(stream);
                     if (doc == null) return null;
@@ -286,8 +286,8 @@ namespace WykopSDK.WWW
 
             try
             {
-                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/"))
-                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var response = await httpClient.GetAsync(baseURL + "ustawienia/czarne-listy/").ConfigureAwait(false))
+                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     var doc = parser.Parse(stream);
                     if (doc == null) return null;
@@ -312,11 +312,11 @@ namespace WykopSDK.WWW
 
         public async Task<List<string>> GetObservedUsers()
         {
-            List<string> users = await WykopSDK.LocalStorage.ReadObservedUsers();
+            List<string> users = await WykopSDK.LocalStorage.ReadObservedUsers().ConfigureAwait(false);
 
             if (users == null && !loggedIn)
             {
-                loggedIn = await Login();
+                loggedIn = await Login().ConfigureAwait(false);
                 if (!loggedIn) return null;
             }
 
@@ -325,8 +325,8 @@ namespace WykopSDK.WWW
 
             try
             {
-                using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/"))
-                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/").ConfigureAwait(false))
+                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     var doc = parser.Parse(stream);
                     if (doc == null) return null;
@@ -346,7 +346,7 @@ namespace WykopSDK.WWW
             }
             catch (Exception) { return null; }
 
-            await WykopSDK.LocalStorage.SaveObservedUsers(users);
+            await WykopSDK.LocalStorage.SaveObservedUsers(users).ConfigureAwait(false);
 
             return users;
         }
@@ -355,8 +355,8 @@ namespace WykopSDK.WWW
         {
             var notes = new Dictionary<string, string>();
 
-            using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/"))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var response = await httpClient.GetAsync(baseURL + "moj/notatki-o-uzytkownikach/").ConfigureAwait(false))
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
                 var doc = parser.Parse(stream);
                 if (doc == null) return;

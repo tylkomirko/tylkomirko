@@ -44,7 +44,7 @@ namespace WykopSDK.Storage
                     return null;
 
                 _log.Info("Reading Conversations.");
-                using (var stream = await file.OpenStreamForReadAsync())
+                using (var stream = await file.OpenStreamForReadAsync().ConfigureAwait(false))
                 using (StreamReader sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
@@ -70,7 +70,7 @@ namespace WykopSDK.Storage
             {
                 var file = await RootFolder.CreateFileAsync("Conversations", CreationCollisionOption.ReplaceExisting);
 
-                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var stream = await file.OpenStreamForWriteAsync().ConfigureAwait(false))
                 using (StreamWriter sw = new StreamWriter(stream))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {

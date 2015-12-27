@@ -39,7 +39,7 @@ namespace WykopSDK.API
 
         private bool isLoggedIn = false;
         private bool limitExceeded = false;
-        private const string baseURL = "http://a.wykop.pl/";
+        private const string baseURL = "https://a.wykop.pl/";
 
         private RetryHandler _retryHandler = null;
         private RetryHandler retryHandler
@@ -237,7 +237,7 @@ namespace WykopSDK.API
 
             _log.Trace(newURL);
 
-            using (var stream = await getAsync(URL, post, fileStream, fileName))
+            using (var stream = await getAsync(URL, post, fileStream, fileName).ConfigureAwait(false))
             {
                 if (stream == null)
                     return null;
@@ -346,7 +346,7 @@ namespace WykopSDK.API
 
                 try
                 {
-                    response = await HttpClient.PostAsync(url, content, ct);
+                    response = await HttpClient.PostAsync(url, content, ct).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -409,7 +409,7 @@ namespace WykopSDK.API
             post.Add("login", UserInfo.UserName);
             post.Add("accountkey", UserInfo.AccountKey);
 
-            var result = await deserialize<User>(URL, post);
+            var result = await deserialize<User>(URL, post).ConfigureAwait(false);
 
             if (result != null)
             {
@@ -444,7 +444,7 @@ namespace WykopSDK.API
             else
                 URL += "/appkey," + APPKEY + ",page," + pageIndex;
 
-            var result = await deserialize<List<Entry>>(URL, ct: ct);
+            var result = await deserialize<List<Entry>>(URL, ct: ct).ConfigureAwait(false);
             return result != null ? result.Where(x => !x.Blacklisted) : null;
         }
 
@@ -466,7 +466,7 @@ namespace WykopSDK.API
             else
                 URL += "/appkey," + APPKEY + ",period," + period + ",page," + pageIndex;
 
-            var result = await deserialize<List<Entry>>(URL, ct: ct);
+            var result = await deserialize<List<Entry>>(URL, ct: ct).ConfigureAwait(false);
             return result != null ? result.Where(x => !x.Blacklisted) : null;
         }
 
@@ -510,7 +510,7 @@ namespace WykopSDK.API
 
             URL += "userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + pageIndex;
 
-            return await deserialize<List<Entry>>(URL, ct: ct, deserializationFunction: DeserializeMyEntries);
+            return await deserialize<List<Entry>>(URL, ct: ct, deserializationFunction: DeserializeMyEntries).ConfigureAwait(false);
         }
 
         #endregion
@@ -527,7 +527,7 @@ namespace WykopSDK.API
             else
                 URL = "entries/index/" + id + "/appkey," + APPKEY;
 
-            return await deserialize<Entry>(URL);
+            return await deserialize<Entry>(URL).ConfigureAwait(false);
         }
 
         public async Task<uint> AddEntry(NewEntry newEntry, Stream fileStream = null, string fileName = null)
@@ -546,7 +546,7 @@ namespace WykopSDK.API
             if (!string.IsNullOrEmpty(newEntry.Embed))
                 post.Add("embed", newEntry.Embed);
 
-            var result = await deserialize<EntryIDReply>(URL, post, fileStream, fileName);
+            var result = await deserialize<EntryIDReply>(URL, post, fileStream, fileName).ConfigureAwait(false);
             return result != null ? result.ID : 0;
         }
 
@@ -564,7 +564,7 @@ namespace WykopSDK.API
             var post = new SortedDictionary<string, string>();
             post.Add("body", entry.Text);
 
-            var result = await deserialize<EntryIDReply>(URL, post);
+            var result = await deserialize<EntryIDReply>(URL, post).ConfigureAwait(false);
             return result != null ? result.ID : 0;
         }
 
@@ -579,7 +579,7 @@ namespace WykopSDK.API
 
             URL += "/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            var result = await deserialize<EntryIDReply>(URL);
+            var result = await deserialize<EntryIDReply>(URL).ConfigureAwait(false);
             return result != null ? result.ID : 0;
         }
 
@@ -606,7 +606,7 @@ namespace WykopSDK.API
 
             URL += "userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<Vote>(URL);
+            return await deserialize<Vote>(URL).ConfigureAwait(false);
         }
         #endregion
 
@@ -618,7 +618,7 @@ namespace WykopSDK.API
 
             string URL = "tags/index/appkey," + APPKEY;
 
-            return await deserialize<List<Hashtag>>(URL);
+            return await deserialize<List<Hashtag>>(URL).ConfigureAwait(false);
         }
 
         public async Task<List<string>> GetUserObservedTags()
@@ -628,7 +628,7 @@ namespace WykopSDK.API
 
             string URL = "user/tags/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<List<string>>(URL);
+            return await deserialize<List<string>>(URL).ConfigureAwait(false);
         }
 
         public async Task<TaggedEntries> GetTaggedEntries(string hashtag, int pageIndex, CancellationToken ct = default(CancellationToken), uint firstID = 0)
@@ -646,7 +646,7 @@ namespace WykopSDK.API
             else
                 URL += "/appkey," + APPKEY + ",page," + pageIndex;
 
-            return await deserialize<TaggedEntries>(URL, ct: ct);
+            return await deserialize<TaggedEntries>(URL, ct: ct).ConfigureAwait(false);
         }
 
         public async Task<bool> ObserveTag(string tag)
@@ -655,7 +655,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "tag/observe/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -665,7 +665,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "tag/unobserve/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
         #endregion
@@ -682,7 +682,7 @@ namespace WykopSDK.API
             else
                 URL += "/appkey," + APPKEY;
 
-            return await deserialize<Profile>(URL);
+            return await deserialize<Profile>(URL).ConfigureAwait(false);
         }
 
         public async Task<bool> ObserveUser(string user)
@@ -691,7 +691,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "profile/observe/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -701,7 +701,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "profile/unobserve/" + user + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -716,7 +716,7 @@ namespace WykopSDK.API
             else
                 URL += "/appkey," + APPKEY + ",page," + pageIndex;
 
-            return await deserialize<List<Entry>>(URL);
+            return await deserialize<List<Entry>>(URL).ConfigureAwait(false);
         }
         #endregion
 
@@ -728,7 +728,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/notifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + page;
 
-            return await deserialize<List<Notification>>(URL, ct: ct);
+            return await deserialize<List<Notification>>(URL, ct: ct).ConfigureAwait(false);
         }
 
         public async Task<NotificationsCount> GetNotificationsCount()
@@ -738,7 +738,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/notificationscount/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<NotificationsCount>(URL);
+            return await deserialize<NotificationsCount>(URL).ConfigureAwait(false);
         }
 
         public async Task<List<Notification>> GetHashtagNotifications(uint page)
@@ -748,7 +748,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/hashtagsnotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page," + page;
 
-            return await deserialize<List<Notification>>(URL);
+            return await deserialize<List<Notification>>(URL).ConfigureAwait(false);
         }
 
         public async Task<NotificationsCount> GetHashtagNotificationsCount(CancellationToken ct = default(CancellationToken))
@@ -758,7 +758,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/hashtagsnotificationscount/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<NotificationsCount>(URL, ct: ct);
+            return await deserialize<NotificationsCount>(URL, ct: ct).ConfigureAwait(false);
         }
 
         public async Task<bool> ReadNotification(uint id)
@@ -768,7 +768,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/markasreadnotification/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            using (var stream = await getAsync(URL))
+            using (var stream = await getAsync(URL).ConfigureAwait(false))
             {
                 if (stream == null)
                     return false;
@@ -791,7 +791,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/ReadNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            await deserialize<List<object>>(URL);
+            await deserialize<List<object>>(URL).ConfigureAwait(false);
             return true;
         }
 
@@ -802,7 +802,7 @@ namespace WykopSDK.API
 
             string URL = "mywykop/ReadHashTagsNotifications/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            await deserialize<List<object>>(URL);
+            await deserialize<List<object>>(URL).ConfigureAwait(false);
             return true;
         }
         #endregion
@@ -813,7 +813,7 @@ namespace WykopSDK.API
             if (!force)
             {
                 List<Conversation> tmp = null;
-                tmp = await WykopSDK.LocalStorage.ReadConversations();
+                tmp = await WykopSDK.LocalStorage.ReadConversations().ConfigureAwait(false);
                 if (tmp != null)
                     return tmp;
             }
@@ -822,7 +822,7 @@ namespace WykopSDK.API
                 return null;
 
             string URL = "pm/ConversationsList/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var reply = await deserialize<List<Conversation>>(URL);
+            var reply = await deserialize<List<Conversation>>(URL).ConfigureAwait(false);
 
             if (reply != null)
                 return reply.Where(x => x.AuthorGroup != UserGroup.Deleted).ToList();
@@ -837,7 +837,7 @@ namespace WykopSDK.API
 
             string URL = "pm/Conversation/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<List<PM>>(URL);
+            return await deserialize<List<PM>>(URL).ConfigureAwait(false);
         }
 
         public async Task<bool> SendPM(NewEntry newEntry, string username, Stream fileStream = null, string fileName = null)
@@ -852,7 +852,7 @@ namespace WykopSDK.API
             if (!string.IsNullOrEmpty(newEntry.Embed))
                 post.Add("embed", newEntry.Embed);
 
-            var result = await deserialize<List<bool>>(URL, post, fileStream, fileName);
+            var result = await deserialize<List<bool>>(URL, post, fileStream, fileName).ConfigureAwait(false);
             return result != null ? result[0] : false;
         }
 
@@ -862,7 +862,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "pm/DeleteConversation/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return result != null ? result[0] : false;
         }
         #endregion
@@ -874,7 +874,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "tag/block/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -884,7 +884,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "tag/unblock/" + tag.Substring(1) + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -894,7 +894,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "profile/block/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
 
@@ -904,7 +904,7 @@ namespace WykopSDK.API
                 return false;
 
             string URL = "profile/unblock/" + username + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
-            var result = await deserialize<List<bool>>(URL);
+            var result = await deserialize<List<bool>>(URL).ConfigureAwait(false);
             return (result != null) ? result[0] : false;
         }
         #endregion
@@ -917,7 +917,7 @@ namespace WykopSDK.API
 
             string URL = "favorites/entries/userkey," + UserInfo.UserKey + ",appkey," + APPKEY + ",page,0";
 
-            return await deserialize<List<Entry>>(URL, ct: ct);
+            return await deserialize<List<Entry>>(URL, ct: ct).ConfigureAwait(false);
         }
 
         public async Task<UserFavorite> AddToFavourites(uint id)
@@ -927,7 +927,7 @@ namespace WykopSDK.API
 
             string URL = "entries/favorite/" + id + "/userkey," + UserInfo.UserKey + ",appkey," + APPKEY;
 
-            return await deserialize<UserFavorite>(URL);
+            return await deserialize<UserFavorite>(URL).ConfigureAwait(false);
         }
 
         #endregion
