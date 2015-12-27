@@ -7,16 +7,59 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko.Controls"
     xmlns:models="using:Mirko.ViewModel"
+    xmlns:utils="using:Mirko.Utils"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
+    <Page.Resources>
+        <DataTemplate x:DataType="models:CommentViewModel"
+                      x:Name="ListViewDesktop">
+            <controls:Entry DataContext="{x:Bind}"
+                            IsTapEnabled="False"
+                            Margin="25,0,0,0"/>
+        </DataTemplate>
+
+        <DataTemplate x:DataType="models:CommentViewModel"
+                      x:Name="ListViewMobile">
+            <controls:Entry DataContext="{x:Bind}"
+                            IsTapEnabled="False"
+                            Margin="25,0,-11,0"/>
+        </DataTemplate>
+    </Page.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>                    
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewDesktop}" />
+                        <Setter Target="ListViewHeaderGrid.Margin" Value="0,0,11,0" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Mobile" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewMobile}" />
+                        <Setter Target="ListViewHeaderGrid.Margin" Value="0,0,0,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
         <controls:EdgeTappedListView x:Name="ListView"
                                      ItemsSource="{x:Bind VM.SelectedEntry.Comments, Mode=OneWay}"
@@ -31,7 +74,7 @@
                                      DataFetchSize="7">
 
             <ListView.Header>
-                <Grid>
+                <Grid x:Name="ListViewHeaderGrid">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -72,17 +115,9 @@
                 </Grid>
             </ListView.Header>
 
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:CommentViewModel">
-                    <controls:Entry DataContext="{x:Bind}"
-                                IsTapEnabled="False"
-                                Margin="25,0,0,0"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
             <ListView.Footer>
                 <Rectangle Height="20"
-                       Fill="Transparent" />
+                           Fill="Transparent" />
             </ListView.Footer>
         </controls:EdgeTappedListView>
 

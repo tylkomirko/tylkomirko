@@ -21,7 +21,6 @@ namespace Mirko.ViewModel
         private readonly TimeSpan FileLifeSpan = new TimeSpan(12, 0, 0);
         private readonly ILogger Logger = null;
         private readonly StorageFolder TempFolder = null;
-        private StorageFolder ImageCacheFolder = null;
 
         public Action GetPopularHashtags = null;
         public Action GetObservedUsers = null;
@@ -31,18 +30,21 @@ namespace Mirko.ViewModel
             TempFolder = ApplicationData.Current.TemporaryFolder;
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<CacheViewModel>();
 
-            GetPopularHashtags = new Action(async () => await DownloadPopularHashtags());
+            GetPopularHashtags = new Action(async () => await DownloadPopularHashtags().ConfigureAwait(false));
             GetObservedUsers = new Action(async () =>
             {
                 var users = await Task.Run<List<string>>(async () => 
                 {
-                    return await App.WWWService.GetObservedUsers();
+                    return await App.WWWService.GetObservedUsers().ConfigureAwait(false);
                 });
 
                 if (users != null)
                 {
-                    ObservedUsers.Clear();
-                    ObservedUsers.AddRange(users.Select(x => "@" + x));
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        ObservedUsers.Clear();
+                        ObservedUsers.AddRange(users.Select(x => "@" + x));
+                    });
                 }
             });
 
@@ -53,13 +55,13 @@ namespace Mirko.ViewModel
         private async void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Logout")
-                await Logout();
+                await Logout().ConfigureAwait(false);
             else if (obj.Notification == "Update ObservedHashtags")
-                await DownloadObservedHashtags();
+                await DownloadObservedHashtags().ConfigureAwait(false);
             else if (obj.Notification == "Save ObservedHashtags")
-                await SaveObservedHashtags();
+                await SaveObservedHashtags().ConfigureAwait(false);
             else if (obj.Notification == "Delete ObservedHashtags")
-                await DeleteObservedHashtags();
+                await DeleteObservedHashtags().ConfigureAwait(false);
         }
 
         private async void ReadMessage(NotificationMessage<string> obj)
@@ -87,13 +89,13 @@ namespace Mirko.ViewModel
         private async Task Logout()
         {
             await DispatcherHelper.RunAsync(() => ObservedHashtags.Clear());
-            await DeleteObservedHashtags();
+            await DeleteObservedHashtags().ConfigureAwait(false);
 
             await DispatcherHelper.RunAsync(() => ObservedUsers.Clear());
-            await WykopSDK.WykopSDK.LocalStorage.DeleteObservedUsers();
+            await WykopSDK.WykopSDK.LocalStorage.DeleteObservedUsers().ConfigureAwait(false);
 
-            await WykopSDK.WykopSDK.LocalStorage.DeleteConversations();
-            await WykopSDK.WykopSDK.LocalStorage.DeleteBlacklists();
+            await WykopSDK.WykopSDK.LocalStorage.DeleteConversations().ConfigureAwait(false);
+            await WykopSDK.WykopSDK.LocalStorage.DeleteBlacklists().ConfigureAwait(false);
         }
 
         #region ObservedHashtags
@@ -134,14 +136,17 @@ namespace Mirko.ViewModel
 
             if (needToDownload)
             {
-                var data = await App.ApiService.GetUserObservedTags();
+                var data = await App.ApiService.GetUserObservedTags().ConfigureAwait(false);
                 if (data != null)
                 {
-                    ObservedHashtags.Clear();
-                    ObservedHashtags.AddRange(data);
-                    data = null;
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        ObservedHashtags.Clear();
+                        ObservedHashtags.AddRange(data);
+                        data = null;
+                    });
 
-                    await SaveObservedHashtags();
+                    await SaveObservedHashtags().ConfigureAwait(false);
                 }
             }
         }
@@ -224,14 +229,17 @@ namespace Mirko.ViewModel
             if (needToDownload)
             {
                 Logger.Info("Downloading PopularHashtags.");
-                var data = await App.ApiService.GetPopularTags();
+                var data = await App.ApiService.GetPopularTags().ConfigureAwait(false);
                 if (data != null)
                 {
-                    PopularHashtags.Clear();
-                    PopularHashtags.AddRange(data.Select(x => x.HashtagName));
-                    data = null;
+                    await DispatcherHelper.RunAsync(() =>
+                    {
+                        PopularHashtags.Clear();
+                        PopularHashtags.AddRange(data.Select(x => x.HashtagName));
+                        data = null;
+                    });
 
-                    await SavePopularHashtags();
+                    await SavePopularHashtags().ConfigureAwait(false);
                 }
                 else
                 {
@@ -267,181 +275,6 @@ namespace Mirko.ViewModel
         public ObservableCollectionEx<string> TempUsers
         {
             get { return _tempUsers ?? (_tempUsers = new ObservableCollectionEx<string>()); }
-        }
-        #endregion
-
-        #region Image cache
-        private async Task<InMemoryRandomAccessStream> DrawGIFOverlay(IBuffer buffer)
-        {
-            var stream = new InMemoryRandomAccessStream();
-            await stream.WriteAsync(buffer);
-            stream.Seek(0);
-            var image = await new WriteableBitmap(1, 1).FromStream(stream);
-
-            var gifOverlay = await new WriteableBitmap(1, 1).FromContent(new Uri("ms-appx:///Assets/gif_icon.png"));
-
-            var startPoint = new Point()
-            {
-                X = (image.PixelWidth - gifOverlay.PixelWidth) / 2,
-                Y = (image.PixelHeight - gifOverlay.PixelHeight) / 2,
-            };
-
-            image.Blit(new Rect(startPoint.X, startPoint.Y, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
-                gifOverlay,
-                new Rect(0, 0, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
-                WriteableBitmapExtensions.BlendMode.Alpha);
-
-            await image.ToStreamAsJpeg(stream);
-            return stream;
-        }
-
-        private async Task<InMemoryRandomAccessStream> DrawVideoOverlay(IBuffer buffer)
-        {
-            var stream = new InMemoryRandomAccessStream();
-            await stream.WriteAsync(buffer);
-            stream.Seek(0);
-            var image = await new WriteableBitmap(1, 1).FromStream(stream);
-
-            var gifOverlay = await new WriteableBitmap(1, 1).FromContent(new Uri("ms-appx:///Assets/video_icon.png"));
-
-            var startPoint = new Point()
-            {
-                X = (image.PixelWidth - gifOverlay.PixelWidth) / 2,
-                Y = (image.PixelHeight - gifOverlay.PixelHeight) / 2,
-            };
-
-            image.Blit(new Rect(startPoint.X, startPoint.Y, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
-                gifOverlay,
-                new Rect(0, 0, gifOverlay.PixelWidth, gifOverlay.PixelHeight),
-                WriteableBitmapExtensions.BlendMode.Alpha);
-
-            await image.ToStreamAsJpeg(stream);
-            return stream;
-        }
-
-        private static async Task<InMemoryRandomAccessStream> ReadImage(IBuffer buffer)
-        {
-            var stream = new InMemoryRandomAccessStream();
-            await stream.WriteAsync(buffer);
-            stream.Seek(0);
-
-            return stream;
-        }
-
-        private string GetFilename(string previewURL)
-        {
-            if (previewURL == null) return null;
-
-            Uri uri = new Uri(previewURL);
-
-            string fileName = System.IO.Path.GetFileName(uri.AbsolutePath);
-            if (fileName.Length > 255) // sometimes, file names are really long
-                fileName = Cryptography.EncodeMD5(fileName);
-
-            return fileName;
-        }
-
-        public async Task<Uri> GetImageUri(string previewURL, string fullURL = null)
-        {
-            /*
-            var r = new Random();
-            if (r.Next(1, 8) % 2 == 0)
-            {
-                Debug.WriteLine("GetImageStream returns NULL");
-                return null;
-            }*/
-
-            if (previewURL == null) return null;
-
-            string fileName = GetFilename(previewURL);
-
-            previewURL = previewURL.Replace("w400gif.jpg", "w400.jpg"); // download preview image without nasty GIF logo on it.
-
-            if (ImageCacheFolder == null)
-                ImageCacheFolder = await TempFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
-
-            StorageFile file = null;
-
-            // try to read from file
-            try
-            {
-                file = await ImageCacheFolder.GetFileAsync(fileName);
-                Messenger.Default.Send(new NotificationMessage("ImgCacheHit"));
-
-                return new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", file.Name));
-            }
-            catch(FileNotFoundException)
-            {
-                // well, that's just fine. there's no need to do anything - image will be downloaded later on.
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Error reading file. ", e);
-            }
-
-            InMemoryRandomAccessStream stream = null;
-            try
-            {
-                using (var response = await App.ApiService.HttpClient.GetAsync(previewURL))
-                {
-                    var pixels = await response.Content.ReadAsByteArrayAsync();
-                    
-                    if(string.IsNullOrEmpty(fullURL))
-                        stream = await ReadImage(pixels.AsBuffer());
-                    else if (fullURL.EndsWith(".gif") || fullURL.Contains("gfycat"))
-                        stream = await DrawGIFOverlay(pixels.AsBuffer());
-                    else if (fullURL.Contains("youtube") || fullURL.Contains("youtu.be"))
-                        stream = await DrawVideoOverlay(pixels.AsBuffer());
-                    else
-                        stream = await ReadImage(pixels.AsBuffer());
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Error downloading image.", e);
-                return null;
-            }
-
-            /* And now save.
-               System sometimes throws System.UnauthorizedAccessException: Access is denied, 
-               and there isn't a clear reason for that.
-               So let's just try to work around that. */
-            Uri fileUri = null;
-            for (int i = 0; i < 20; i++)
-            {
-                try
-                {
-                    file = await ImageCacheFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-                    using (var fileStream = await file.OpenStreamForWriteAsync())
-                    {
-                        var saveStream = stream.AsStream();
-                        saveStream.Position = 0;
-                        await saveStream.CopyToAsync(fileStream);
-                    }
-
-                    fileUri = new Uri(string.Format("ms-appdata:///temp/ImageCache/{0}", fileName));
-                    break;
-                }
-                catch (Exception) { await Task.Delay(80); }
-            }
-
-            stream.Dispose();
-            return fileUri;
-        }
-
-        public async Task RemoveCachedImage(string previewURL)
-        {
-            var filename = GetFilename(previewURL);
-
-            try
-            {
-                var file = await ImageCacheFolder.GetFileAsync(filename);
-                await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
-            }
-            catch(Exception e)
-            {
-                Logger.Error("Error deleting image.", e);
-            }
         }
         #endregion
 

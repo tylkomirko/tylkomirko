@@ -109,7 +109,7 @@ namespace Mirko.ViewModel
                 App.TelemetryClient.TrackEvent("New PM");
 
                 await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");
-                await ExecuteUpdateMessagesCommand();
+                await ExecuteUpdateMessagesCommand().ConfigureAwait(false);
                 Messenger.Default.Send(new NotificationMessage("PM-Success"));
             }
             else
@@ -131,7 +131,7 @@ namespace Mirko.ViewModel
             DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "Pobieram...");
 
             await StatusBarManager.ShowProgressAsync();
-            var pms = await App.ApiService.GetPMs(Data.AuthorName);
+            var pms = await App.ApiService.GetPMs(Data.AuthorName).ConfigureAwait(false);
             if (pms == null || pms.Count == 0)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "");
@@ -214,7 +214,7 @@ namespace Mirko.ViewModel
         private async void ExecuteDeleteConversation()
         {
             await StatusBarManager.ShowProgressAsync();
-            bool success = await App.ApiService.DeleteConversation(Data.AuthorName);
+            bool success = await App.ApiService.DeleteConversation(Data.AuthorName).ConfigureAwait(false);
             if(success)
             {
                 Messenger.Default.Send<NotificationMessage<string>>(new NotificationMessage<string>(Data.AuthorName, "Remove"));

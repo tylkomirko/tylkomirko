@@ -6,11 +6,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko.Controls"
+    xmlns:models="using:Mirko.ViewModel"
+    xmlns:utils="using:Mirko.Utils"
     xmlns:ff="using:FFImageLoading"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Profiles, Mode=OneWay, Source={StaticResource Locator}}">
+
+    <Page.Resources>
+        <DataTemplate x:DataType="models:EntryViewModel"
+                      x:Name="ListViewDesktop">
+            <controls:FullEntry Margin="-18,0,0,0" />
+        </DataTemplate>
+
+        <DataTemplate x:DataType="models:EntryViewModel"
+                      x:Name="ListViewMobile">
+            <controls:FullEntry Margin="-18,0,-11,0" />
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,16 +32,43 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewDesktop}" />
+                        <Setter Target="ListViewHeaderGrid.Margin" Value="0,0,11,0" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Mobile" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewMobile}" />
+                        <Setter Target="ListViewHeaderGrid.Margin" Value="0,0,0,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
         <controls:ListViewEx Margin="10,0,0,0"
-                         Grid.Row="0"
-                         ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                         ItemsSource="{x:Bind VM.CurrentProfile.Entries, Mode=OneWay}"
-                         VirtualizingStackPanel.VirtualizationMode="Recycling"
-                         IncrementalLoadingThreshold="6"
-                         DataFetchSize="7">
+                             x:Name="ListView"
+                             Grid.Row="0"
+                             ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
+                             ItemsSource="{x:Bind VM.CurrentProfile.Entries, Mode=OneWay}"
+                             VirtualizingStackPanel.VirtualizationMode="Recycling"
+                             IncrementalLoadingThreshold="6"
+                             DataFetchSize="7">
 
             <ListView.Header>
-                <Grid>
+                <Grid x:Name="ListViewHeaderGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -49,7 +90,7 @@
                                 DownsampleToViewSize="True"
                                 CacheDuration="2"
                                 ErrorPlaceholder="avatar_default.png"
-                                Source="{x:Bind VM.CurrentProfile.Data.AvatarURL, Mode=OneWay}" />                    
+                                Source="{x:Bind VM.CurrentProfile.Data.AvatarURL, Mode=OneWay}" />
 
                     <StackPanel Grid.Column="1"
                             Grid.Row="0"
@@ -141,15 +182,9 @@
                 </Grid>
             </ListView.Header>
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <controls:Entry Margin="-18,0,0,0" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
             <ListView.Footer>
                 <Rectangle Fill="Transparent"
-                       Height="64" />
+                           Height="64" />
             </ListView.Footer>
 
         </controls:ListViewEx>

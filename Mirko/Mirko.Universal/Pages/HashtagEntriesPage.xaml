@@ -9,18 +9,63 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:controls="using:Mirko.Controls"
     xmlns:models="using:Mirko.ViewModel"
+    xmlns:utils="using:Mirko.Utils"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
     <Page.Resources>
-        <Popup x:Key="NewEntriesPopup"
+        <DataTemplate x:DataType="models:EntryViewModel"
+                      x:Name="ListViewDesktop">
+            <controls:FullEntry Margin="-18,0,0,0" />
+        </DataTemplate>
+
+        <DataTemplate x:DataType="models:EntryViewModel"
+                      x:Name="ListViewMobile">
+            <controls:FullEntry Margin="-18,0,-11,0" />
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid x:Name="LayoutRoot"
+          Loaded="LayoutRoot_Loaded">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Desktop" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewDesktop}" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <utils:DeviceFamilyStateTrigger DeviceFamily="Mobile" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="ListView.ItemTemplate" Value="{StaticResource ListViewMobile}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Popup x:Name="NewEntriesPopup"
                IsOpen="True"
-               VerticalOffset="15">
+               VerticalOffset="30">
 
             <Popup.Resources>
-                <Storyboard x:Key="PopupFadeIn">
+                <Storyboard x:Name="PopupFadeIn">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="{StaticResource AppHeaderOpacity}"
@@ -37,7 +82,7 @@
                     </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
-                <Storyboard x:Key="PopupFadeOut">
+                <Storyboard x:Name="PopupFadeOut">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="0.0"
@@ -78,16 +123,6 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </Page.Resources>
-
-    <Grid x:Name="LayoutRoot"
-          Loaded="LayoutRoot_Loaded">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0"
@@ -143,12 +178,6 @@
                              VirtualizingStackPanel.VirtualizationMode="Recycling"
                              IncrementalLoadingThreshold="6"
                              DataFetchSize="7">
-
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:EntryViewModel">
-                    <controls:FullEntry Margin="-18,0,-18,0" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
 
             <ListView.Header>
                 <StackPanel>

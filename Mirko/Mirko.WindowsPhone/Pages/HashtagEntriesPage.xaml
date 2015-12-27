@@ -13,13 +13,20 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Page.Resources>
-        <Popup x:Key="NewEntriesPopup"
+    <Grid x:Name="LayoutRoot"
+          Loaded="LayoutRoot_Loaded">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Popup x:Name="NewEntriesPopup"
                IsOpen="True"
                VerticalOffset="15">
 
             <Popup.Resources>
-                <Storyboard x:Key="PopupFadeIn">
+                <Storyboard x:Name="PopupFadeIn">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="{StaticResource AppHeaderOpacity}"
@@ -36,7 +43,7 @@
                     </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
-                <Storyboard x:Key="PopupFadeOut">
+                <Storyboard x:Name="PopupFadeOut">
                     <DoubleAnimation Storyboard.TargetName="PopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="0.0"
@@ -77,15 +84,6 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </Page.Resources>
-    
-    <Grid x:Name="LayoutRoot"
-          Loaded="LayoutRoot_Loaded">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
         <!-- Title Panel -->
         <StackPanel Grid.Row="0"

@@ -176,17 +176,17 @@ namespace Mirko.ViewModel
             if(currentPage == "PivotPage")
             {
                 if (CurrentPivotItem == 0)
-                    await CheckNewMirkoEntries();
+                    await CheckNewMirkoEntries().ConfigureAwait(false);
             } 
             else if(currentPage == "HashtagEntriesPage")
             {
-                await CheckNewHashtagEntries();
+                await CheckNewHashtagEntries().ConfigureAwait(false);
             }
 
             if(CurrentPivotItem == 0)
-                await SaveCollection(MirkoEntries, "MirkoEntries");
+                await SaveCollection(MirkoEntries, "MirkoEntries").ConfigureAwait(false);
             else if(CurrentPivotItem == 1)
-                await SaveCollection(HotEntries, "HotEntries");
+                await SaveCollection(HotEntries, "HotEntries").ConfigureAwait(false);
         }
 
         #region Properties
@@ -338,7 +338,7 @@ namespace Mirko.ViewModel
                 var file = await folder.CreateFileAsync(filename, Windows.Storage.CreationCollisionOption.ReplaceExisting);
                 var items = col.Take(50);
 
-                using (var stream = await file.OpenStreamForWriteAsync())
+                using (var stream = await file.OpenStreamForWriteAsync().ConfigureAwait(false))
                 using (var streamWriter = new StreamWriter(stream))
                 using (var jsonWriter = new JsonTextWriter(streamWriter))
                 {
@@ -362,7 +362,7 @@ namespace Mirko.ViewModel
             {
                 var file = await folder.GetFileAsync(filename);
 
-                using (var stream = await file.OpenStreamForReadAsync())
+                using (var stream = await file.OpenStreamForReadAsync().ConfigureAwait(false))
                 using (var streamReader = new StreamReader(stream))
                 using (var jsonReader = new JsonTextReader(streamReader))
                 {
@@ -402,8 +402,7 @@ namespace Mirko.ViewModel
         private async void ExecuteRefreshMirkoEntries()
         {
             Logger.Trace("RefreshMirkoEntries");
-            await CheckNewMirkoEntries();
-            //AddNewMirkoEntries.Execute(null);
+            await CheckNewMirkoEntries().ConfigureAwait(false);
         }
 
         private RelayCommand _goToYourProfile = null;
@@ -589,7 +588,7 @@ namespace Mirko.ViewModel
 
             while (true)
             {
-                var newEntries = await App.ApiService.GetEntries(pageIndex++);
+                var newEntries = await App.ApiService.GetEntries(pageIndex++).ConfigureAwait(false);
 
                 if (newEntries == null || newEntries.First().ID <= firstEntryID)
                     break;
@@ -633,7 +632,7 @@ namespace Mirko.ViewModel
 
             while (true)
             {
-                var taggedEntries = await App.ApiService.GetTaggedEntries(SelectedHashtag.Hashtag, pageIndex++);
+                var taggedEntries = await App.ApiService.GetTaggedEntries(SelectedHashtag.Hashtag, pageIndex++).ConfigureAwait(false);
 
                 if (taggedEntries == null || taggedEntries.Entries.First().ID <= firstEntryID)
                     break;

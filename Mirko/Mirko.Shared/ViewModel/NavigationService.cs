@@ -81,10 +81,6 @@ namespace Mirko.ViewModel
                     var page = item.Value;
                     var key = item.Key;
 
-                    var dispose = page as IDisposable;
-                    if (dispose != null)
-                        dispose.Dispose();
-
                     pagesCache.Remove(key);
                 }
 

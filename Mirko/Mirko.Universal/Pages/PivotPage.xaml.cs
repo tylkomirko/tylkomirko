@@ -18,17 +18,13 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Mirko.Pages
 {
-    public sealed partial class PivotPage : Page, IDisposable
+    public sealed partial class PivotPage : Page
     {
         private AppHeader AppHeader;
 
         public ItemsPresenter ItemsPresenter;
         private Storyboard ShowPivotContent;
         private bool HasEntryAnimationPlayed = false;
-
-        private Popup NewMirkoEntriesPopup;
-        private Storyboard PopupFadeIn;
-        private Storyboard PopupFadeOut;
         private bool CanShowNewEntriesPopup = false;
 
         private double PreviousPivotOffset;
@@ -41,13 +37,6 @@ namespace Mirko.Pages
         {
             this.InitializeComponent();
 
-            NewMirkoEntriesPopup = this.Resources["NewMirkoEntriesPopup"] as Popup;
-            PopupFadeIn = NewMirkoEntriesPopup.Resources["PopupFadeIn"] as Storyboard;
-            PopupFadeOut = NewMirkoEntriesPopup.Resources["PopupFadeOut"] as Storyboard;
-
-            this.Resources.Remove("NewMirkoEntriesPopup");
-            PivotPageGrid.Children.Add(NewMirkoEntriesPopup);
-
             VM.MirkoNewEntries.CollectionChanged -= MirkoNewEntries_CollectionChanged;
             VM.MirkoNewEntries.CollectionChanged += MirkoNewEntries_CollectionChanged;
 
@@ -55,12 +44,6 @@ namespace Mirko.Pages
             AppHeader = navService.GetAppHeader();
 
             Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += (s, e) => CalculateNewMirkoEntriesPopupOffset();
-        }
-
-        public void Dispose()
-        {
-            NewMirkoEntriesPopup.IsOpen = false;
-            NewMirkoEntriesPopup = null;
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -73,14 +56,14 @@ namespace Mirko.Pages
                 var sv = MirkoListView.GetDescendant<ScrollViewer>();
 
                 if(AppBar.IsOpen || sv.VerticalOffset == 0)
-                    ShowNewEntriesPopup();
+                    NewMirkoEntriesPopupFadeIn.Begin();
 
                 CanShowNewEntriesPopup = true;
             }
             else
             {
+                NewMirkoEntriesPopupFadeOut.Begin();
                 CanShowNewEntriesPopup = false;
-                HideNewEntriesPopup();
             }
         }
 
@@ -112,7 +95,7 @@ namespace Mirko.Pages
                 CanShowNewEntriesPopup = true;
           
             if (scroll.VerticalOffset == 0 && CanShowNewEntriesPopup)
-                ShowNewEntriesPopup();
+                NewMirkoEntriesPopupFadeIn.Begin();
 
             if (ItemsPresenter == null)
             {
@@ -149,7 +132,7 @@ namespace Mirko.Pages
         {
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0)
-                HideNewEntriesPopup();
+                NewMirkoEntriesPopupFadeOut.Begin();
             else if (currentPage == 1)
                 HideTimeSpanIndicatorPopup();
             else if (currentPage == 3)
@@ -160,7 +143,7 @@ namespace Mirko.Pages
         {
             var currentPage = MainPivot.SelectedIndex;
             if (currentPage == 0 && CanShowNewEntriesPopup)
-                ShowNewEntriesPopup();
+                NewMirkoEntriesPopupFadeIn.Begin();
             else if (currentPage == 1)
                 ShowTimeSpanIndicatorPopup();
             else if (currentPage == 3)
@@ -189,7 +172,7 @@ namespace Mirko.Pages
             {
                 App.TelemetryClient.TrackPageView("PivotPage-Hot");
 
-                HideNewEntriesPopup();
+                NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 ShowTimeSpanIndicatorPopup();
@@ -204,7 +187,7 @@ namespace Mirko.Pages
             {
                 App.TelemetryClient.TrackPageView("PivotPage-Fav");
 
-                HideNewEntriesPopup();
+                NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 HideTimeSpanIndicatorPopup();
@@ -219,7 +202,7 @@ namespace Mirko.Pages
             {
                 App.TelemetryClient.TrackPageView("PivotPage-My");
 
-                HideNewEntriesPopup();
+                NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 HideTimeSpanIndicatorPopup();
@@ -460,16 +443,6 @@ namespace Mirko.Pages
 
             NewMirkoEntriesPopup.HorizontalOffset = offset;
             NewMirkoEntriesPopup.IsOpen = true;
-        }
-
-        private void ShowNewEntriesPopup()
-        {
-            PopupFadeIn.Begin();
-        }
-
-        private void HideNewEntriesPopup()
-        {
-            this.PopupFadeOut.Begin();
         }
 
         private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)

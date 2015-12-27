@@ -171,6 +171,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\DeviceFamilyStateTrigger.cs" />
     <Compile Include="Utils\StatusBarManager.cs" />
   </ItemGroup>
   <ItemGroup>

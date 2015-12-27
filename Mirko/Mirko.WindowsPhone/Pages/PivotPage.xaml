@@ -13,23 +13,28 @@
     d:DesignWidth="400"
     DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
-    <Page.Resources>        
+    <Page.Resources>
         <DataTemplate x:Name="EntryTemplate">
             <controls:FullEntry />
         </DataTemplate>
+    </Page.Resources>  
+    
+    <Grid x:Name="PivotPageGrid"
+          Loaded="PivotPageGrid_Loaded">
 
-        <Popup x:Key="NewMirkoEntriesPopup"
-               VerticalOffset="15"
+        <!-- New entries -->
+        <Popup x:Name="NewMirkoEntriesPopup"
+               VerticalOffset="25"
                IsOpen="True">
 
             <Popup.Resources>
-                <Storyboard x:Key="PopupFadeIn">
-                    <DoubleAnimation Storyboard.TargetName="PopupGrid"
+                <Storyboard x:Name="NewMirkoEntriesPopupFadeIn">
+                    <DoubleAnimation Storyboard.TargetName="NewMirkoEntriesPopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="{ThemeResource AppHeaderOpacity}"
                                      Duration="0:0:0.2" />
 
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PopupGrid"
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NewMirkoEntriesPopupGrid"
                                                    Storyboard.TargetProperty="IsHitTestVisible"
                                                    BeginTime="0:0:0.2">
                         <DiscreteObjectKeyFrame KeyTime="0">
@@ -40,13 +45,13 @@
                     </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
-                <Storyboard x:Key="PopupFadeOut">
-                    <DoubleAnimation Storyboard.TargetName="PopupGrid"
+                <Storyboard x:Name="NewMirkoEntriesPopupFadeOut">
+                    <DoubleAnimation Storyboard.TargetName="NewMirkoEntriesPopupGrid"
                                      Storyboard.TargetProperty="Opacity"
                                      To="0.0"
                                      Duration="0:0:0.2"/>
 
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PopupGrid"
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NewMirkoEntriesPopupGrid"
                                                    Storyboard.TargetProperty="IsHitTestVisible">
                         <DiscreteObjectKeyFrame KeyTime="0">
                             <DiscreteObjectKeyFrame.Value>
@@ -58,7 +63,7 @@
 
             </Popup.Resources>
 
-            <Grid x:Name="PopupGrid"
+            <Grid x:Name="NewMirkoEntriesPopupGrid"
                   Opacity="0"
                   Background="Transparent"
                   Height="55"
@@ -81,10 +86,6 @@
                            HorizontalAlignment="Center"/>
             </Grid>
         </Popup>
-    </Page.Resources>  
-    
-    <Grid x:Name="PivotPageGrid"
-          Loaded="PivotPageGrid_Loaded">
 
         <!-- Hot time span -->
         <Popup x:Name="TimeSpanIndicatorPopup"

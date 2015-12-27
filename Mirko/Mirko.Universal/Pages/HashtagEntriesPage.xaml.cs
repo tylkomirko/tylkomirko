@@ -7,20 +7,14 @@ using System;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Mirko.Pages
 {
-    public sealed partial class HashtagEntriesPage : Page, IDisposable
+    public sealed partial class HashtagEntriesPage : Page
     {
-        private Popup NewEntriesPopup;
-        private Storyboard PopupFadeIn;
-        private Storyboard PopupFadeOut;
         private bool CanShowNewEntriesPopup = false;
 
         private MainViewModel VM
@@ -33,18 +27,12 @@ namespace Mirko.Pages
             this.InitializeComponent();
             ObserveButton.Loaded += ObserveButton_Loaded;
 
-            NewEntriesPopup = this.Resources["NewEntriesPopup"] as Popup;
-            PopupFadeIn = NewEntriesPopup.Resources["PopupFadeIn"] as Storyboard;
-            PopupFadeOut = NewEntriesPopup.Resources["PopupFadeOut"] as Storyboard;
-
-            this.Resources.Remove("NewEntriesPopup");
-            LayoutRoot.Children.Add(NewEntriesPopup);
-
             var height = VM.ListViewHeaderHeight + 39.2; // adjust for header
             ListView.Margin = new Thickness(10, -height, 0, 0);
             var rect = (ListView.Header as FrameworkElement).GetDescendant<Rectangle>();
             rect.Height = height;
 
+            VM.TaggedNewEntries.CollectionChanged -= TaggedNewEntries_CollectionChanged;
             VM.TaggedNewEntries.CollectionChanged += TaggedNewEntries_CollectionChanged;
 
             Messenger.Default.Register<NotificationMessage>(this, async (m) =>
@@ -55,12 +43,6 @@ namespace Mirko.Pages
                         await ListView.LoadMoreItemsAsync(); // agrhrgrrrhhr... Satya....
                 }
             });
-        }
-
-        public void Dispose()
-        {
-            NewEntriesPopup.IsOpen = false;
-            NewEntriesPopup = null;
         }
 
         private void TaggedNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -81,7 +63,7 @@ namespace Mirko.Pages
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
             var popupGrid = NewEntriesPopup.Child as Grid;
-            var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
+            var horizontal = this.ActualWidth - popupGrid.Width - 22;
             NewEntriesPopup.HorizontalOffset = horizontal;
             NewEntriesPopup.IsOpen = true;
         }
