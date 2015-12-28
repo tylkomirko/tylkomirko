@@ -49,6 +49,16 @@ namespace Mirko.ViewModel
         MY,
     };
 
+    public enum BackgroundImage
+    {
+        [StringValue("Tapeta")]
+        WALLPAPER,
+        [StringValue("Ekran blokady")]
+        LOCKSCREEN,
+        [StringValue("Oba")]
+        BOTH
+    };
+
     public class SettingsViewModel : ViewModelBase
     {
         private UserInfo _userInfo = null;
@@ -70,8 +80,8 @@ namespace Mirko.ViewModel
 
         public bool PseudoPush
         {
-            get { return SettingsContainer.ContainsKey("PseudoPush") ? (bool)SettingsContainer["PseudoPush"] : false; }
-            set { SettingsContainer["PseudoPush"] = value; }
+            get { return LocalValues.ContainsKey("PseudoPush") ? (bool)LocalValues["PseudoPush"] : false; }
+            set { LocalValues["PseudoPush"] = value; }
         }
 
         public bool FirstRun
@@ -206,6 +216,96 @@ namespace Mirko.ViewModel
             set { LocalValues["SyncSettings"] = value; }
         }
 
+#if WINDOWS_UWP
+        public bool SetBackground
+        {
+            get { return LocalValues.ContainsKey("SetBackground") ? (bool)LocalValues["SetBackground"] : false; }
+            set { LocalValues["SetBackground"] = value; }
+        }
+
+        private RelayCommand<bool> _setBackgroundToggled = null;
+        public RelayCommand<bool> SetBackgroundToggled
+        {
+            get { return _setBackgroundToggled ?? (_setBackgroundToggled = new RelayCommand<bool>(ExecuteSetBackgroundToggled)); }
+        }
+
+        private async void ExecuteSetBackgroundToggled(bool setBackground)
+        {
+            if (setBackground)
+            {
+                await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasksUWP.BackgroundImage).FullName,
+                                           "BackgroundImage",
+                                           new TimeTrigger(60, false),
+                                           new SystemCondition(SystemConditionType.InternetAvailable));
+            }
+            else
+            {
+                BackgroundTasksUtils.UnregisterTask("BackgroundImage");
+            }
+
+            SelectedBackground = SelectedBackground; // dummy write to trigger setting LocalValues in SelectedBackground setter.
+            BackgroundHashtag = BackgroundHashtag; // - == -
+        }
+
+        private List<string> _backgroundSelections;
+        public List<string> BackgroundSelections
+        {
+            get { return _backgroundSelections; }
+        }
+
+        public BackgroundImage SelectedBackground
+        {
+            get
+            {
+                if (LocalValues.ContainsKey("BackgroundImageSelection"))
+                {
+                    BackgroundImage temp = BackgroundImage.WALLPAPER;
+                    Enum.TryParse<BackgroundImage>((string)LocalValues["BackgroundImageSelection"], false, out temp);
+                    return temp;
+                }
+                else
+                {
+                    return BackgroundImage.WALLPAPER;
+                }
+            }
+
+            set
+            {
+                LocalValues["BackgroundImageSelection"] = value.ToString();
+                
+                LocalValues["SetWallpaper"] = false;
+                LocalValues["SetLockscreen"] = false;
+                if (value == BackgroundImage.WALLPAPER)
+                    LocalValues["SetWallpaper"] = true;
+                else if (value == BackgroundImage.LOCKSCREEN)
+                    LocalValues["SetLockscreen"] = true;
+                else
+                {
+                    LocalValues["SetWallpaper"] = true;
+                    LocalValues["SetLockscreen"] = true;
+                }
+            }
+        }
+
+        private RelayCommand<int> _selectedBackgroundChanged = null;
+        public RelayCommand<int> SelectedBackgroundChanged
+        {
+            get { return _selectedBackgroundChanged ?? (_selectedBackgroundChanged = new RelayCommand<int>(ExecuteSelectedBackgroundChanged)); }
+        }
+
+        private void ExecuteSelectedBackgroundChanged(int id)
+        {
+            var values = Enum.GetValues(typeof(BackgroundImage)).Cast<BackgroundImage>();
+            SelectedBackground = (BackgroundImage)values.ElementAt(id);
+        }
+
+        public string BackgroundHashtag
+        {
+            get { return LocalValues.ContainsKey("BackgroundHashtag") ? (string)LocalValues["BackgroundHashtag"] : "#earthporn"; }
+            set { LocalValues["BackgroundHashtag"] = value; RaisePropertyChanged(); }
+        }
+#endif
+
         public SettingsViewModel()
         {
             UserInfo = App.ApiService.UserInfo;
@@ -222,13 +322,25 @@ namespace Mirko.ViewModel
             foreach (StartPage value in values)
                 _startPages.Add(value.GetStringValue());
 
+#if WINDOWS_UWP
+            values = Enum.GetValues(typeof(BackgroundImage));
+            _backgroundSelections = new List<string>(values.Length);
+            foreach (BackgroundImage value in values)
+                _backgroundSelections.Add(value.GetStringValue());
+#endif
+
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
         private void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Init")
-                PseudoPushToggled.Execute(null);
+            {
+                PseudoPushToggled.Execute(PseudoPush);
+#if WINDOWS_UWP
+                SetBackgroundToggled.Execute(SetBackground);
+#endif
+            }
         }
 
         public void Delete()
@@ -265,15 +377,15 @@ namespace Mirko.ViewModel
             SelectedStartPage = (StartPage)values.ElementAt(id);
         }
 
-        private RelayCommand _pseudoPushToggled = null;
-        public RelayCommand PseudoPushToggled
+        private RelayCommand<bool> _pseudoPushToggled = null;
+        public RelayCommand<bool> PseudoPushToggled
         {
-            get { return _pseudoPushToggled ?? (_pseudoPushToggled = new RelayCommand(ExecutePseudoPushToggled)); }
+            get { return _pseudoPushToggled ?? (_pseudoPushToggled = new RelayCommand<bool>(ExecutePseudoPushToggled)); }
         }
 
-        private async void ExecutePseudoPushToggled()
+        private async void ExecutePseudoPushToggled(bool pseudoPush)
         {
-            if (PseudoPush)
+            if (pseudoPush)
             {
                 await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.PseudoPush).FullName,
                                         "PseudoPush",
@@ -303,7 +415,11 @@ namespace Mirko.ViewModel
 
             string[] keys = new string[] { "PseudoPush", "FirstRun", "SelectedTheme", "FontScaleFactor",
                                            "ShowAvatars", "OnlyWIFIDownload", "ShowPlus18", "LiveTile",
-                                           "HotTimeSpan", "YouTubeApp", "StartPage" };
+                                           "HotTimeSpan", "YouTubeApp", "StartPage",
+#if WINDOWS_UWP
+                                           "BackgroundImageSelection", "BackgroundHashtag"
+#endif
+                                           };
 
             foreach (var key in keys)
                 output[key] = input[key];

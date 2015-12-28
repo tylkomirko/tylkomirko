@@ -31,4 +31,18 @@ namespace Mirko.Converters
             throw new NotImplementedException();
         }
     }
+
+    public class BackgroundSelection : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var img = (Mirko.ViewModel.BackgroundImage)value;
+            return img.GetStringValue();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

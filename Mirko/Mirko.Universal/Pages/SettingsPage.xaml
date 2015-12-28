@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:controls="using:Mirko.Controls"
     mc:Ignorable="d"
     d:DesignHeight="1000"
     DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}">
@@ -181,7 +182,7 @@
                         <ComboBox x:Name="YoutubeApp"
                                   Grid.Column="1"
                                   Grid.Row="0"
-                                  Margin="0,-9.6,0,0"
+                                  Margin="0,-2,0,0"
                                   ItemsSource="{x:Bind VM.YouTubeApps}"
                                   SelectedItem="{x:Bind VM.SelectedYouTubeApp, Mode=OneWay, Converter={StaticResource YouTubeApp}}">
 
@@ -204,7 +205,7 @@
                         <ComboBox x:Name="StartPage"
                                   Grid.Column="1"
                                   Grid.Row="1"
-                                  Margin="0,12,0,0"
+                                  Margin="0,15,0,0"
                                   ItemsSource="{x:Bind VM.StartPages}"
                                   SelectedItem="{x:Bind VM.SelectedStartPage, Mode=OneWay, Converter={StaticResource StartPage}}">
 
@@ -216,6 +217,84 @@
                             </i:Interaction.Behaviors>
 
                         </ComboBox>
+                    </Grid>
+
+                    <ToggleSwitch x:Name="SetBackgroundToggle"
+                                  Margin="0,20,0,0"
+                                  IsOn="{x:Bind VM.SetBackground, Mode=TwoWay}"
+                                  OffContent="Pobieraj obrazy w tle"
+                                  OnContent="Pobieraj obrazy w tle"
+                                  OnContentTemplate="{StaticResource ToggleSwitchTemplate}"
+                                  OffContentTemplate="{StaticResource ToggleSwitchTemplate}">
+
+                        <i:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Toggled">
+                                <core:InvokeCommandAction Command="{x:Bind VM.SetBackgroundToggled}"
+                                                          CommandParameter="{Binding ElementName=SetBackgroundToggle, Path=IsOn}"/>
+                            </core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
+
+                    </ToggleSwitch>
+
+                    <Grid Margin="0,20,0,0"
+                          Visibility="{Binding ElementName=SetBackgroundToggle, Path=IsOn, Converter={StaticResource BoolToVisibility}}"
+                          HorizontalAlignment="Stretch">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Text="Ustawiaj tło:"
+                                   Margin="0,0,25,0"
+                                   FontSize="16"
+                                   TextWrapping="Wrap"/>
+
+                        <ComboBox x:Name="BackgroundSelection"
+                                  Grid.Column="1"
+                                  Grid.Row="0"
+                                  Margin="0,-2,0,0"
+                                  ItemsSource="{x:Bind VM.BackgroundSelections}"
+                                  SelectedItem="{x:Bind VM.SelectedBackground, Mode=OneWay, Converter={StaticResource BackgroundSelection}}">
+
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="SelectionChanged">
+                                    <core:InvokeCommandAction Command="{Binding SelectedBackgroundChanged}"
+                                                              CommandParameter="{Binding ElementName=BackgroundSelection, Path=SelectedIndex}"/>
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
+
+                        </ComboBox>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Margin="0,20,25,0"
+                                   FontSize="16"
+                                   TextWrapping="Wrap">
+                            <Run Text="Tag:"/>
+                            <Run Text="{x:Bind VM.BackgroundHashtag, Mode=OneWay}" />
+                        </TextBlock>
+
+                        <Button Grid.Column="1"
+                                Grid.Row="1"
+                                Margin="0,16,0,0"
+                                Content="wybierz.">
+                            
+                            <Button.Flyout>
+                                <Flyout x:Name="HashtagSuggestionFlyout">
+                                    <controls:HashtagSuggestionBox HashtagSelected="HashtagSuggestionBox_HashtagSelected"
+                                                                   Width="300"/>
+                                </Flyout>                                
+                            </Button.Flyout>
+                        </Button>
+
                     </Grid>
 
                 </StackPanel>

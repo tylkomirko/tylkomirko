@@ -55,5 +55,11 @@ namespace Mirko.Pages
 
             LayoutRoot.Background = Application.Current.Resources[brushKey] as SolidColorBrush;
         }
+
+        private void HashtagSuggestionBox_HashtagSelected(object sender, StringEventArgs e)
+        {
+            VM.BackgroundHashtag = e.String;
+            HashtagSuggestionFlyout.Hide();
+        }
     }
 }
