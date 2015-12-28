@@ -23,6 +23,7 @@ namespace Mirko.Pages
             get { return DataContext as MainViewModel; }
         }
 
+        private uint previousEntryID = 0;
         private double PreRefreshOffset = 0;
 
         public EntryPage()
@@ -36,6 +37,10 @@ namespace Mirko.Pages
                 ListView.SelectionMode = ListViewSelectionMode.None;
 
                 PreRefreshOffset = ListView.GetDescendant<ScrollViewer>().VerticalOffset;
+
+                var vm = VM.SelectedEntry;
+                if (vm == null) return;
+                previousEntryID = vm.Data.ID;
             };
 
             Messenger.Default.Register<EntryViewModel>(this, "Updated", (e) =>
@@ -56,6 +61,13 @@ namespace Mirko.Pages
 
             if (VM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(VM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
+            else
+            {
+                var entryVM = VM.SelectedEntry;
+                if (entryVM == null) return;
+                if (entryVM.Data.ID != previousEntryID)
+                    ListView.GetDescendant<ScrollViewer>().ChangeView(null, 0.0f, null);
+            }
         }
 
         #region AppBar        

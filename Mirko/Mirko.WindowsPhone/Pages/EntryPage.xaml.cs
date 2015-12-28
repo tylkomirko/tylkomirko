@@ -2,14 +2,10 @@
 using GalaSoft.MvvmLight.Messaging;
 using Mirko.Utils;
 using Mirko.ViewModel;
-using QKit.Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -18,6 +14,7 @@ namespace Mirko.Pages
 {
     public sealed partial class EntryPage : Page
     {
+        private uint previousEntryID = 0;
         private double PreRefreshOffset = 0;
 
         public EntryPage()
@@ -31,6 +28,10 @@ namespace Mirko.Pages
                 ListView.SelectionMode = ListViewSelectionMode.None;
 
                 PreRefreshOffset = ListView.GetDescendant<ScrollViewer>().VerticalOffset;
+
+                var VM = (DataContext as MainViewModel)?.SelectedEntry;
+                if (VM == null) return;
+                previousEntryID = VM.Data.ID;
             };
 
             Messenger.Default.Register<EntryViewModel>(this, "Updated", (e) =>
@@ -56,6 +57,13 @@ namespace Mirko.Pages
 
             if (mainVM.CommentToScrollInto != null)
                 ListView.ScrollIntoView(mainVM.CommentToScrollInto, ScrollIntoViewAlignment.Leading);
+            else
+            {
+                var entryVM = mainVM.SelectedEntry;
+                if (entryVM == null) return;
+                if (entryVM.Data.ID != previousEntryID)
+                    ListView.GetDescendant<ScrollViewer>().ChangeView(null, 0.0f, null);
+            }
         }
 
         #region AppBar
