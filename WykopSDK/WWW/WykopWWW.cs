@@ -193,7 +193,7 @@ namespace WykopSDK.WWW
                 var mojWykop = doc.QuerySelector("div#userPanel") as IHtmlDivElement;
                 if (mojWykop != null) return true;
 
-                var form = doc.QuerySelector("form.bspace-big.login-form") as IHtmlFormElement;
+                var form = doc.QuerySelector("div.dropdown.right form") as IHtmlFormElement;
                 if (form == null) return false;
                 loginURL = form.Action;
 
