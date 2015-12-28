@@ -41,7 +41,12 @@ namespace Mirko.ViewModel
             {
                 SortConversationList();
                 SaveCommand.Execute(null);
-            } 
+            }
+            else if(obj.Notification == "Logout")
+            {
+                ConversationsList.Clear();
+                CurrentConversation = null;
+            }
         }
 
         private async void ReadMessage(NotificationMessage<string> obj)
