@@ -47,11 +47,17 @@ namespace Mirko.ViewModel
                     var tags = tuple.Item1;
                     var users = tuple.Item2;
 
-                    Tags.Clear();
-                    Tags.AddRange(tags.Select(x => "#" + x));
+                    if (tags.Count > 0)
+                    {
+                        Tags.Clear();
+                        Tags.AddRange(tags.Select(x => "#" + x));
+                    }
 
-                    People.Clear();
-                    People.AddRange(users.Select(x => "@" + x));
+                    if (users.Count > 0)
+                    {
+                        People.Clear();
+                        People.AddRange(users.Select(x => "@" + x));
+                    }
                 }
             } 
             else if(obj.Notification == "Logout")
