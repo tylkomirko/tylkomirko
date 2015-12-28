@@ -9,7 +9,6 @@
     "MvvmLight": "5.2.0",
     "MvvmLightLibs": "5.2.0",
     "Newtonsoft.Json": "7.0.1",
-    "WriteableBitmapEx": "1.5.0",
     "Xamarin.FFImageLoading.Transformations": "2.0.0"
   },
   "frameworks": {

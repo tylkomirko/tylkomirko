@@ -1654,14 +1654,6 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        }
-      },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
         "dependencies": {
           "FFImageLoading.Windows": "[2.0.0, )"
@@ -3416,14 +3408,6 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        }
-      },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
         "dependencies": {
           "FFImageLoading.Windows": "[2.0.0, )"
@@ -5148,14 +5132,6 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
-        }
-      },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
       },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
@@ -6917,14 +6893,6 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        }
-      },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
         "dependencies": {
           "FFImageLoading.Windows": "[2.0.0, )"
@@ -8649,14 +8617,6 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
-        }
-      },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
       },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
@@ -10418,14 +10378,6 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        }
-      },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
         "dependencies": {
           "FFImageLoading.Windows": "[2.0.0, )"
@@ -12150,14 +12102,6 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
-        }
-      },
-      "WriteableBitmapEx/1.5.0": {
-        "compile": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
-        },
-        "runtime": {
-          "lib/NetCore45/WriteableBitmapEx.WinRT.dll": {}
         }
       },
       "Xamarin.FFImageLoading.Transformations/2.0.0": {
@@ -15984,40 +15928,6 @@
         "System.Xml.XmlSerializer.nuspec"
       ]
     },
-    "WriteableBitmapEx/1.5.0": {
-      "sha512": "K4g5wN6y4RhDUcfLdOoNZrQQBdv6dbXycaOoeBcS3qrXMhXssECb4K/3cPXehi+hDSwNx5dYLhRilk49DXiFZQ==",
-      "type": "Package",
-      "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
-        "lib/net40/WriteableBitmapEx.Wpf.dll",
-        "lib/net40/WriteableBitmapEx.Wpf.pdb",
-        "lib/net40/WriteableBitmapEx.Wpf.XML",
-        "lib/NetCore45/WriteableBitmapEx.WinRT.dll",
-        "lib/NetCore45/WriteableBitmapEx.WinRT.pdb",
-        "lib/NetCore45/WriteableBitmapEx.WinRT.xml",
-        "lib/sl4/WriteableBitmapEx.dll",
-        "lib/sl4/WriteableBitmapEx.pdb",
-        "lib/sl4/WriteableBitmapEx.XML",
-        "lib/sl4-wp71/WriteableBitmapExWinPhone.dll",
-        "lib/sl4-wp71/WriteableBitmapExWinPhone.pdb",
-        "lib/sl4-wp71/WriteableBitmapExWinPhone.XML",
-        "lib/sl4-wp71/WriteableBitmapExWinPhoneXnaDependant.dll",
-        "lib/sl4-wp71/WriteableBitmapExWinPhoneXnaDependant.pdb",
-        "lib/sl4-wp71/WriteableBitmapExWinPhoneXnaDependant.XML",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhone.dll",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhone.pdb",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhone.XML",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhoneXnaDependant.dll",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhoneXnaDependant.pdb",
-        "lib/WindowsPhone8/WriteableBitmapExWinPhoneXnaDependant.XML",
-        "lib/wpa81/WriteableBitmapEx.WinRT.dll",
-        "lib/wpa81/WriteableBitmapEx.WinRT.pdb",
-        "lib/wpa81/WriteableBitmapEx.WinRT.xml",
-        "package/services/metadata/core-properties/23a5426dfec74835823a81716acfa9bb.psmdcp",
-        "WriteableBitmapEx.nuspec"
-      ]
-    },
     "Xamarin.FFImageLoading.Transformations/2.0.0": {
       "sha512": "214v1svEpHYz7URvF4egN/Wahg+NXjv35FDQYnm2tKCKZEiKEocmrwzlgehu6gx2HnAfhEoMrYWAD0DrOyhLWA==",
       "type": "Package",
@@ -16048,7 +15958,6 @@
       "MvvmLight >= 5.2.0",
       "MvvmLightLibs >= 5.2.0",
       "Newtonsoft.Json >= 7.0.1",
-      "WriteableBitmapEx >= 1.5.0",
       "Xamarin.FFImageLoading.Transformations >= 2.0.0"
     ],
     "UAP,Version=v10.0": []
