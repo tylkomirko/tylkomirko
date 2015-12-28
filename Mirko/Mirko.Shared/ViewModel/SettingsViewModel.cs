@@ -225,17 +225,10 @@ namespace Mirko.ViewModel
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
-        private async void ReadMessage(NotificationMessage obj)
+        private void ReadMessage(NotificationMessage obj)
         {
             if (obj.Notification == "Init")
-            {
-                await BackgroundTasksUtils.RegisterTask(typeof(BackgroundTasks.Cleaner).FullName,
-                    "Cleaner",
-                    new MaintenanceTrigger(60 * 6, false),
-                    new SystemCondition(SystemConditionType.UserNotPresent));
-
                 PseudoPushToggled.Execute(null);
-            }
         }
 
         public void Delete()

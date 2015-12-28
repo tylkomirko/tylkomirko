@@ -140,10 +140,11 @@ namespace Mirko.ViewModel
             get { return _clearCache ?? (_clearCache = new RelayCommand(ClearCacheExecute)); }
         }
 
-        private void ClearCacheExecute()
+        private async void ClearCacheExecute()
         {
-            var cleaner = new BackgroundTasks.Cleaner();
-            cleaner.Run(null);
+            StorageFolder folder = await ApplicationData.Current.TemporaryFolder.GetFolderAsync("ImageCache");
+            if(folder != null)
+                await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
         }
     }
 }
