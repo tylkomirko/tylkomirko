@@ -12,7 +12,7 @@
     d:DesignWidth="400"
     DataContext="{Binding Debug, Mode=OneWay, Source={StaticResource Locator}}">
     
-    <UserControl.Resources>
+    <Page.Resources>
         <DataTemplate x:Key="ListViewHeader">
             <TextBlock Text="{Binding}"
                        Style="{StaticResource HeaderTextBlockStyle}"
@@ -26,7 +26,7 @@
                        Style="{StaticResource BodyTextBlockStyle}"
                        FontSize="16" />
         </DataTemplate>
-    </UserControl.Resources>
+    </Page.Resources>
 
     <i:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
@@ -37,7 +37,6 @@
     <ScrollViewer>
         <Grid Margin="10,0,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -60,25 +59,6 @@
                 <Run Text="PseudoPush:" />
                 <Run Text="{Binding PseudoPushLastTime}" />
                 </TextBlock>
-
-                <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Cleaner:" />
-                <Run Text="{Binding CleanerLastTime}" />
-                </TextBlock>
-            </StackPanel>
-
-            <StackPanel Grid.Row="2">
-                <TextBlock Text="Cache obrazów:"
-                       Style="{StaticResource HeaderTextBlockStyle}"
-                       Foreground="Gray"
-                       FontSize="20" />
-
-                <TextBlock FontSize="16"
-                       Style="{StaticResource BodyTextBlockStyle}">
-                <Run Text="Trafień:" />
-                <Run Text="{Binding ImgCacheHits}" />
-                </TextBlock>
             </StackPanel>
 
         </Grid>
@@ -89,10 +69,6 @@
             <AppBarButton Icon="ReShare"
                           Label="udostępnij logi"
                           Command="{Binding ShareCommand}"/>
-
-            <AppBarButton Icon="Clear"
-                          Label="wyczyść cache"
-                          Command="{Binding ClearCache}" />
         </CommandBar>
     </Page.BottomAppBar>
     

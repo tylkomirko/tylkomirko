@@ -58,6 +58,8 @@ namespace BackgroundTasksUWP
 
                 if(setLockscreen)
                     await UserProfilePersonalizationSettings.Current.TrySetLockScreenImageAsync(file);
+
+                ApplicationData.Current.LocalSettings.Values["BackgroundImageLastTime"] = DateTime.Now.ToBinary();
             }
             catch (Exception)
             {

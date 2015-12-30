@@ -36,7 +36,6 @@
         </core:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -65,19 +64,8 @@
 
                 <TextBlock FontSize="16"
                            Style="{StaticResource BodyTextBlockStyle}">
-                    <Run Text="Cleaner:" />
-                    <Run Text="{x:Bind VM.CleanerLastTime, Mode=OneWay}" />
-                </TextBlock>
-
-                <TextBlock Text="Cache obrazów:"
-                           Style="{StaticResource HeaderTextBlockStyle}"
-                           Foreground="Gray"
-                           FontSize="20" />
-
-                <TextBlock FontSize="16"
-                           Style="{StaticResource BodyTextBlockStyle}">
-                    <Run Text="Trafień:" />
-                    <Run Text="{x:Bind VM.ImgCacheHits, Mode=OneWay}" />
+                    <Run Text="BackgroundImage:" />
+                    <Run Text="{x:Bind VM.BackgroundImageLastTime, Mode=OneWay}" />
                 </TextBlock>
 
             </StackPanel>
@@ -87,10 +75,6 @@
             <AppBarButton Icon="ReShare"
                           Label="udostępnij logi"
                           Command="{x:Bind VM.ShareCommand}"/>
-
-            <AppBarButton Icon="Clear"
-                          Label="wyczyść cache"
-                          Command="{x:Bind VM.ClearCache}" />
         </CommandBar>
     </Grid>
 </Page>

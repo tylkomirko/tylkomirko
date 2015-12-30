@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
 using System;
 using System.Globalization;
@@ -30,30 +29,18 @@ namespace Mirko.ViewModel
             set { Set(() => PseudoPushLastTime, ref _pseudoPushLastTime, value); }
         }
 
-        private string _cleanerLastTime = "nigdy";
-        public string CleanerLastTime
+#if WINDOWS_UWP
+        private string _backgroundImageLastTime = "nigdy";
+        public string BackgroundImageLastTime
         {
-            get { return _cleanerLastTime; }
-            set { Set(() => CleanerLastTime, ref _cleanerLastTime, value); }
+            get { return _backgroundImageLastTime; }
+            set { Set(() => BackgroundImageLastTime, ref _backgroundImageLastTime, value); }
         }
-
-        private int _imgCacheHits = 0;
-        public int ImgCacheHits
-        {
-            get { return _imgCacheHits; }
-            set { Set(() => ImgCacheHits, ref _imgCacheHits, value); }
-        }
+#endif
 
         public DebugViewModel()
         {
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<DebugViewModel>();
-            Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
-        }
-
-        private void ReadMessage(NotificationMessage obj)
-        {
-            if (obj.Notification == "ImgCacheHit")
-                ImgCacheHits++;
         }
 
         private RelayCommand _updateCommand = null;
@@ -76,11 +63,13 @@ namespace Mirko.ViewModel
                 PseudoPushLastTime = DateTime.FromBinary(binary).ToString("G");
             }
 
-            if (localSettings.ContainsKey("CleanerLastTime"))
+#if WINDOWS_UWP
+            if (localSettings.ContainsKey("BackgroundImageLastTime"))
             {
-                var binary = (long)localSettings["CleanerLastTime"];
-                CleanerLastTime = DateTime.FromBinary(binary).ToString("G");
+                var binary = (long)localSettings["BackgroundImageLastTime"];
+                BackgroundImageLastTime = DateTime.FromBinary(binary).ToString("G");
             }
+#endif
         }
 
         private RelayCommand _shareCommand = null;
@@ -132,19 +121,6 @@ namespace Mirko.ViewModel
             }
 
             return null;
-        }
-
-        private RelayCommand _clearCache = null;
-        public RelayCommand ClearCache
-        {
-            get { return _clearCache ?? (_clearCache = new RelayCommand(ClearCacheExecute)); }
-        }
-
-        private async void ClearCacheExecute()
-        {
-            StorageFolder folder = await ApplicationData.Current.TemporaryFolder.GetFolderAsync("ImageCache");
-            if(folder != null)
-                await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
         }
     }
 }
