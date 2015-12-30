@@ -109,7 +109,7 @@ namespace Mirko.ViewModel
                 App.TelemetryClient.TrackEvent("New PM");
 
                 await StatusBarManager.ShowTextAsync("Wiadomość została wysłana.");
-                await ExecuteUpdateMessagesCommand().ConfigureAwait(false);
+                await ExecuteUpdateMessagesCommand();
                 Messenger.Default.Send(new NotificationMessage("PM-Success"));
             }
             else
@@ -131,7 +131,7 @@ namespace Mirko.ViewModel
             DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "Pobieram...");
 
             await StatusBarManager.ShowProgressAsync();
-            var pms = await App.ApiService.GetPMs(Data.AuthorName).ConfigureAwait(false);
+            var pms = await App.ApiService.GetPMs(Data.AuthorName);
             if (pms == null || pms.Count == 0)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.LastMessage = "");
