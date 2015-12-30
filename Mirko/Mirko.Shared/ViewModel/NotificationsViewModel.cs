@@ -82,19 +82,27 @@ namespace Mirko.ViewModel
             {
                 if (e == null) return;
 
-                var oldEntries = HashtagFlipEntries.Where(x => x.Data.ID == e.Data.ID);
-                foreach (var oldEntry in oldEntries)
+                try
                 {
-                    oldEntry.Data.CommentCount = e.Data.CommentCount;
-                    oldEntry.Comments.Clear();
-                    oldEntry.Comments.AddRange(e.Comments);
-                    oldEntry.Data.Date = e.Data.Date;
-                    oldEntry.Data.Text = e.Data.Text;
-                    oldEntry.Data.VoteCount = e.Data.VoteCount;
-                    oldEntry.Data.Voters = e.Data.Voters;
-                }
+                    var oldEntries = HashtagFlipEntries.Where(x => x.Data.ID == e.Data.ID);
+                    foreach (var oldEntry in oldEntries)
+                    {
+                        oldEntry.Data.CommentCount = e.Data.CommentCount;
+                        oldEntry.Comments.Clear();
+                        oldEntry.Comments.AddRange(e.Comments);
+                        oldEntry.Data.Date = e.Data.Date;
+                        oldEntry.Data.Text = e.Data.Text;
+                        oldEntry.Data.VoteCount = e.Data.VoteCount;
+                        oldEntry.Data.Voters = e.Data.Voters;
+                    }
 
-                Messenger.Default.Send(e, "HashtagFlipEntries Updated");
+                    Messenger.Default.Send(e, "HashtagFlipEntries Updated");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn("NotificationsViewModel, message Update: ", ex);
+                    App.TelemetryClient.TrackException(ex);
+                }
             });
 
             ObservedHashtags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;

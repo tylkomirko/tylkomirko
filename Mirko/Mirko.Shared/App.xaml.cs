@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -50,18 +51,22 @@ namespace Mirko
             }
         }
 
-        static async void ApiService_MessageReceiver(object sender, MessageEventArgs e)
+        static void ApiService_MessageReceiver(object sender, MessageEventArgs e)
         {
-            if (e.Code == 61)
-                await StatusBarManager.ShowTextAsync(e.Message);
+            if (e.Code == 61 || e.Code == 102)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+                {
+                    var msg = new MessageDialog(e.Message, "Wiadomość od Macieja");
+                    await msg.ShowAsync();
+                });                
+            }
         }
 
-        static async void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
+        static void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
         {
             if(!e.IsNetworkAvailable)
-            {
-                await StatusBarManager.ShowTextAsync("Brak połączenia z Internetem.");
-            }
+                StatusBarManager.ShowText("Brak połączenia z Internetem.");
         }
 
         private static WykopWWW _wwwService = null;

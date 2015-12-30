@@ -331,7 +331,7 @@ namespace WykopSDK.API
                 {
                     fileStream.Position = 0;
 
-                    string mimeType = string.Empty;
+                    string mimeType = "text/plain";
                     if (fileName.EndsWith(".jpg") || fileName.EndsWith(".jpeg"))
                         mimeType = "image/jpeg";
                     else if (fileName.EndsWith(".png"))
@@ -342,7 +342,7 @@ namespace WykopSDK.API
                     content.Add(CreateFileContent(fileStream, fileName, mimeType));
                 }
 
-                content.Headers.Add("apisign", this.calculateMD5(url, post));
+                content.Headers.Add("apisign", this.CalculateMD5(url, post));
 
                 try
                 {
@@ -373,7 +373,7 @@ namespace WykopSDK.API
             return stream;
         }
 
-        private string calculateMD5(string url, SortedDictionary<string, string> post)
+        private string CalculateMD5(string url, SortedDictionary<string, string> post)
         {
             string str = SECRETKEY + baseURL + url;
 

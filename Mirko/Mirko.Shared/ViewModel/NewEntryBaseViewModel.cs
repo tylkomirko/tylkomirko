@@ -68,7 +68,7 @@ namespace Mirko.ViewModel
             openPicker.FileTypeFilter.Add(".jpg");
             openPicker.FileTypeFilter.Add(".jpeg");
             openPicker.FileTypeFilter.Add(".png");
-            openPicker.FileTypeFilter.Add(".bmp");
+            openPicker.FileTypeFilter.Add(".gif");
             openPicker.ViewMode = PickerViewMode.Thumbnail;
             openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
