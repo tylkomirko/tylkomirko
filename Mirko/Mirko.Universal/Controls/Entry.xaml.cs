@@ -206,8 +206,6 @@ namespace Mirko.Controls
 
         private void MenuFlyoutItem_ShowVoters_Click(object sender, RoutedEventArgs e)
         {
-            var VM = DataContext as EntryBaseViewModel;
-
             if (VM.DataBase.VoteCount != VM.DataBase.Voters.Count)
                 VM.RefreshCommand.Execute(null);
 

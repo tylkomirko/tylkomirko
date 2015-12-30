@@ -130,10 +130,10 @@
             <MenuFlyout>
                 <MenuFlyoutItem Text="daj plusa"
                                 Tag="plus"
-                                Command="{x:Bind VM.VoteCommand}" />
+                                Command="{Binding VoteCommand}" />
                 <MenuFlyoutItem Text="cofnij plusa"
                                 Tag="unplus"
-                                Command="{x:Bind VM.VoteCommand}"
+                                Command="{Binding VoteCommand}"
                                 Visibility="Collapsed"/>
 
                 <MenuFlyoutItem Text="pokaż plusujących"
@@ -142,7 +142,7 @@
 
                 <MenuFlyoutItem Text="odpowiedz"
                                 Tag="reply"
-                                Command="{x:Bind VM.ReplyCommand}"/>
+                                Command="{Binding ReplyCommand}"/>
 
                 <controls:MenuFlyoutEntryPanel>
                     <MenuFlyoutItem.Template>
