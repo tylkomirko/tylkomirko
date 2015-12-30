@@ -47,7 +47,7 @@ namespace WykopSDK.API
             get
             {
                 if (_retryHandler == null)
-                    _retryHandler = new RetryHandler(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate });
+                    _retryHandler = new RetryHandler(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate, ClientCertificateOptions = ClientCertificateOption.Automatic });
                 return _retryHandler;
             }
         }
