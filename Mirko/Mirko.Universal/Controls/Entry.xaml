@@ -200,7 +200,7 @@
                     Grid.Column="0"
                     Height="60"
                     Width="60"
-                    Margin="6,4,2,4"
+                    Margin="6,4,2,6"
                     CacheDuration="2"
                     DownsampleToViewSize="True"
                     Source="{Binding Data.AuthorAvatarURL}"
