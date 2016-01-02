@@ -11,8 +11,8 @@ namespace Mirko.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var timeSpan = (int)value;
-            string output = (timeSpan == 1) ? "z ostatniej godziny" : "z ostatnich " + timeSpan + " godzin";
-
+            //string output = (timeSpan == 1) ? "z ostatniej godziny" : "z ostatnich " + timeSpan + " godzin";
+            string output = $"{timeSpan}h";
             return output;//" \u25BE";
         }
 

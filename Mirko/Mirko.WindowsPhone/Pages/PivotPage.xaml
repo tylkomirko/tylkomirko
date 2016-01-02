@@ -89,7 +89,8 @@
 
         <!-- Hot time span -->
         <Popup x:Name="TimeSpanIndicatorPopup"
-               VerticalOffset="-22">
+               VerticalOffset="25"
+               IsOpen="True">
 
             <Popup.Resources>
                 <Storyboard x:Name="TimeSpanIndicatorFadeIn">
@@ -97,6 +98,16 @@
                                      Storyboard.TargetProperty="Opacity"
                                      To="{StaticResource AppHeaderOpacity}"
                                      Duration="0:0:0.2" />
+
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimeSpanIndicatorGrid"
+                                                   Storyboard.TargetProperty="IsHitTestVisible"
+                                                   BeginTime="0:0:0.2">
+                        <DiscreteObjectKeyFrame KeyTime="0">
+                            <DiscreteObjectKeyFrame.Value>
+                                <x:Boolean>True</x:Boolean>
+                            </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
 
                 <Storyboard x:Name="TimeSpanIndicatorFadeOut">
@@ -104,19 +115,35 @@
                                      Storyboard.TargetProperty="Opacity"
                                      To="0.0"
                                      Duration="0:0:0.2"/>
+
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimeSpanIndicatorGrid"
+                                                   Storyboard.TargetProperty="IsHitTestVisible"
+                                                   BeginTime="0:0:0.2">
+                        <DiscreteObjectKeyFrame KeyTime="0">
+                            <DiscreteObjectKeyFrame.Value>
+                                <x:Boolean>False</x:Boolean>
+                            </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
             </Popup.Resources>
 
             <Grid x:Name="TimeSpanIndicatorGrid"
+                  Opacity="0"
                   Background="Transparent"
-                  Opacity="{StaticResource AppHeaderOpacity}"
-                  Height="49"
+                  Height="55"
+                  Width="55"
                   Tapped="TimeSpanIndicatorGrid_Tapped">
-                <TextBlock Foreground="{ThemeResource HashtagForeground}"
-                           Margin="70,0,0,0"
-                           Style="{StaticResource BodyTextBlockStyle}"
-                           FontSize="18">
-                    <Run Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}" /><Run Text="&#xe011;" FontFamily="Segoe UI Symbol"/>
+
+                <Ellipse Fill="#67a7d2"
+                         Height="55"
+                         Width="55"/>
+                <TextBlock FontWeight="SemiBold"
+                           FontSize="19"                           
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="{Binding HotTimeSpan, Converter={StaticResource HotTimeSpanStringConverter}}">
                 </TextBlock>
             </Grid>
         </Popup>

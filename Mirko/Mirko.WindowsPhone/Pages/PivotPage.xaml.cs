@@ -118,7 +118,9 @@ namespace Mirko.Pages
             var popupGrid = NewMirkoEntriesPopup.Child as Grid;
             var horizontal = Window.Current.Bounds.Right - popupGrid.Width - 22;
             NewMirkoEntriesPopup.HorizontalOffset = horizontal;
+            TimeSpanIndicatorPopup.HorizontalOffset = horizontal;
             NewMirkoEntriesPopup.IsOpen = true;
+            TimeSpanIndicatorPopup.IsOpen = true;
         }
 
         private void ListView_ScrollingDown(object sender, EventArgs e)
@@ -127,7 +129,7 @@ namespace Mirko.Pages
             if (currentPage == 0)
                 NewMirkoEntriesPopupFadeOut.Begin();
             else if (currentPage == 1)
-                HideTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeOut.Begin();
             else if (currentPage == 3)
                 HideMyEntriesIndicatorPopup();
         }
@@ -138,7 +140,7 @@ namespace Mirko.Pages
             if (currentPage == 0 && CanShowNewEntriesPopup)
                 NewMirkoEntriesPopupFadeIn.Begin();
             else if (currentPage == 1)
-                ShowTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeIn.Begin();
             else if (currentPage == 3)
                 ShowMyEntriesIndicatorPopup();
         }
@@ -150,10 +152,13 @@ namespace Mirko.Pages
             {
                 App.TelemetryClient.TrackPageView("PivotPage-Mirko");
 
+                if(CanShowNewEntriesPopup)
+                    NewMirkoEntriesPopupFadeIn.Begin();
+
                 AppBar.MakeButtonVisible("refresh");
                 if (SettingsVM.UserInfo != null)
                     AppBar.MakeButtonVisible("add");
-                HideTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeOut.Begin();
                 HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.Start();
@@ -168,7 +173,7 @@ namespace Mirko.Pages
                 NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
-                ShowTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeIn.Begin();
                 HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
@@ -183,7 +188,7 @@ namespace Mirko.Pages
                 NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
-                HideTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeOut.Begin();
                 HideMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
@@ -198,7 +203,7 @@ namespace Mirko.Pages
                 NewMirkoEntriesPopupFadeOut.Begin();
                 AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
-                HideTimeSpanIndicatorPopup();
+                TimeSpanIndicatorFadeOut.Begin();
                 ShowMyEntriesIndicatorPopup();
 
                 SimpleIoc.Default.GetInstance<MainViewModel>().MirkoEntries.ForceStop();
@@ -246,20 +251,6 @@ namespace Mirko.Pages
         }
 
         #region Hot time span popups
-        private void ShowTimeSpanIndicatorPopup()
-        {
-            this.TimeSpanIndicatorGrid.Width = Window.Current.Bounds.Width;
-
-            this.TimeSpanIndicatorPopup.IsOpen = true;
-            this.TimeSpanIndicatorFadeIn.Begin();
-        }
-
-        private void HideTimeSpanIndicatorPopup()
-        {
-            this.TimeSpanIndicatorPopup.IsOpen = false;
-            this.TimeSpanIndicatorFadeOut.Begin();
-        }
-
         private void TimeSpanIndicatorGrid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             ShowTimeSpanSelectionPopup();
