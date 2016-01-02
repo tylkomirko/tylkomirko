@@ -50,8 +50,8 @@ namespace Mirko.Controls
             var isLarge = (bool)e.NewValue;
             if(isLarge)
             {
-                embed.MaxHeight = 450;
-                embed.MaxWidth = 450;
+                embed.MaxHeight = 400;
+                embed.MaxWidth = 400;
             }
             else
             {

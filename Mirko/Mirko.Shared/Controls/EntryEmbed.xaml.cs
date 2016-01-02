@@ -34,6 +34,11 @@ namespace Mirko.Controls
                 if (e.PropertyName == "OnlyWIFIDownload" || e.PropertyName == "ShowPlus18")
                     HandleImageVisibility();
             };
+
+            this.Unloaded += (s, e) =>
+            {
+                Image.Source = null;
+            };
         }
 
         private bool ShowImage(EmbedViewModel VM)
