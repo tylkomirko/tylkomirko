@@ -43,7 +43,6 @@
                 <DataTemplate>
                     <q:MultiSelectListView ItemsSource="{Binding Comments}"
                                            IsItemClickEnabled="False"
-                                           VirtualizingStackPanel.VirtualizationMode="Recycling"
                                            IncrementalLoadingThreshold="6"
                                            DataFetchSize="7"
                                            Loaded="ListView_Loaded"

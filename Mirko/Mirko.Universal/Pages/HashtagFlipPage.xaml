@@ -46,7 +46,6 @@
                                                  ItemsSource="{x:Bind Comments, Mode=OneWay}"
                                                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                                  IsItemClickEnabled="False"
-                                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                                                  IncrementalLoadingThreshold="6"
                                                  DataFetchSize="7"
                                                  IsItemLeftEdgeTapEnabled="True"

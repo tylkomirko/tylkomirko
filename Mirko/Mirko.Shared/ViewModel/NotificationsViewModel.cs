@@ -688,9 +688,16 @@ namespace Mirko.ViewModel
                     flipViewIndexZeroCounter = 0;
             }
 
-            await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpis...");
+            StatusBarManager.ShowTextAndProgress("Pobieram wpis...");
 
             var currentEntryID = HashtagFlipEntries[currentIndex].Data.ID;
+#if WINDOWS_UWP
+            /* In Windows 10, when UI thread is under heavy load while FlipView changes pages
+               it often lags and what's even worse - FlipView sometimes remains kind of inbetween pages.
+               Adding a bit of delay resolves this issue.
+               I should report it to MSFT. */
+            await Task.Delay(300);
+#endif
             var entry = await App.ApiService.GetEntry(currentEntryID);
             if (entry != null)
             {
@@ -830,9 +837,9 @@ namespace Mirko.ViewModel
             });
 
         }
-        #endregion
+#endregion
 
-        #region At
+#region At
         private uint _atNotificationsCount;
         public uint AtNotificationsCount
         {
@@ -951,9 +958,9 @@ namespace Mirko.ViewModel
 
             await StatusBarManager.ShowTextAsync("Powiadomienia zostały usunięte.");
         }
-        #endregion
+#endregion
 
-        #region PM
+#region PM
         private uint _pmNotificationsCount = 0;
         public uint PMNotificationsCount
         {
@@ -1011,7 +1018,7 @@ namespace Mirko.ViewModel
             foreach (var notification in notifications)
                 DeletePMNotification.Execute(notification.ID);
         }
-        #endregion
+#endregion
 
         private async Task CheckNotifications()
         {
