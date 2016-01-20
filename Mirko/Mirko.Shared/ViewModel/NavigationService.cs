@@ -85,7 +85,10 @@ namespace Mirko.ViewModel
                 }
 
                 cachedPage = (Page)Activator.CreateInstance(type);
-                pagesCache.Add(type, cachedPage);
+                /* Never cache EmbedPage. It holds an image that can be huge. 
+                By never caching we make sure that this image is not being held in memory all the time. */
+                if (type != typeof(EmbedPage))
+                    pagesCache.Add(type, cachedPage);
             }
             else
             {

@@ -5,10 +5,6 @@
     xmlns:local="using:Mirko.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:controls="using:Mirko.Controls"
-    xmlns:ff="using:FFImageLoading"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -20,26 +16,24 @@
                   IsDoubleTapEnabled="True"
                   ZoomMode="Enabled">
 
-        <ff:FFImage x:Name="Image"
-                    CacheDuration="2"
-                    ErrorPlaceholder="error_placeholder.png"
-                    LoadingPlaceholder="loading_placeholder.png"
-                    Source="{Binding EmbedData.URL}"
-                    Holding="Image_OpenFlyout"
-                    RightTapped="Image_OpenFlyout"
-                    IsHoldingEnabled="True"
-                    IsDoubleTapEnabled="True"
-                    Stretch="Uniform"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+        <Image x:Name="Image"
+               Source="{Binding EmbedData.URL}"
+               ImageOpened="Image_ImageOpened"
+               ImageFailed="Image_ImageFailed"
+               Holding="Image_OpenFlyout"
+               RightTapped="Image_OpenFlyout"
+               IsHoldingEnabled="True"
+               IsDoubleTapEnabled="True"
+               Stretch="Uniform">
 
             <FlyoutBase.AttachedFlyout>
                 <MenuFlyout x:Name="SaveFlyout">
                     <MenuFlyoutItem Text="zapisz" 
-                                    Command="{Binding SaveImageCommand}"/>                    
+                                    Command="{Binding SaveImageCommand}"/>
+
                 </MenuFlyout>
             </FlyoutBase.AttachedFlyout>
-            
-        </ff:FFImage>
+
+        </Image>
     </ScrollViewer>
 </Page>

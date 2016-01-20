@@ -114,9 +114,6 @@
     <Compile Include="Pages\DonationPage.xaml.cs">
       <DependentUpon>DonationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\EmbedPage.xaml.cs">
-      <DependentUpon>EmbedPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\EntryPage.xaml.cs">
       <DependentUpon>EntryPage.xaml</DependentUpon>
     </Compile>
@@ -232,10 +229,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\DonationPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\EmbedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

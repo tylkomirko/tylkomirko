@@ -75,6 +75,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)HostPage.xaml.cs">
       <DependentUpon>HostPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\EmbedPage.xaml.cs">
+      <DependentUpon>EmbedPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BackgroundTasksUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlacklistHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\BlitTransformation.cs" />
@@ -170,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)HostPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\EmbedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
