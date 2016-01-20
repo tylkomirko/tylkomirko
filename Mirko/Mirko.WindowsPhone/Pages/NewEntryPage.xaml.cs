@@ -105,18 +105,6 @@ namespace Mirko.Pages
             PageTitle.Text = title;
         }
 
-        private void HandleSendButton()
-        {
-            string txt = CurrentEditor().Text;
-            var vm = this.DataContext as NewEntryViewModel;
-            var attachmentName = vm.NewEntry.AttachmentName;
-
-            if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
-                this.SendButton.IsEnabled = true;
-            else
-                this.SendButton.IsEnabled = false;
-        }
-
         private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
         {
             var mf = this.Resources["DeleteAttachmentFlyout"] as MenuFlyout;
@@ -127,7 +115,7 @@ namespace Mirko.Pages
         {
             var vm = this.DataContext as NewEntryViewModel;
             vm.NewEntry.RemoveAttachment();
-            HandleSendButton();
+            //HandleSendButton();
         }
 
         #region AppBar
@@ -402,16 +390,6 @@ namespace Mirko.Pages
         }
 
         #endregion
-
-        private void Editor_Loaded(object sender, RoutedEventArgs e)
-        {
-            HandleSendButton();
-        }
-
-        private void Editor_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            HandleSendButton();
-        }
 
         private void Preview_TextSelectionChanged(object sender, StringEventArgs e)
         {

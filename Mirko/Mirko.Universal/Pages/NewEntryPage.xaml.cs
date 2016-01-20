@@ -113,17 +113,6 @@ namespace Mirko.Pages
             PageTitle.Text = title;
         }
 
-        private void HandleSendButton()
-        {
-            string txt = CurrentEditor().Text;
-            var attachmentName = VM.NewEntry.AttachmentName;
-
-            if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
-                this.SendButton.IsEnabled = true;
-            else
-                this.SendButton.IsEnabled = false;
-        }
-
         private void AttachmentSymbol_OpenFlyout(object sender, RoutedEventArgs e)
         {
             if (e is HoldingRoutedEventArgs || e is RightTappedRoutedEventArgs)
@@ -136,7 +125,7 @@ namespace Mirko.Pages
         private void RemoveAttachment_Click(object sender, RoutedEventArgs e)
         {
             VM.NewEntry.RemoveAttachment();
-            HandleSendButton();
+            //HandleSendButton();
         }
 
         #region Formatting
@@ -338,16 +327,6 @@ namespace Mirko.Pages
         }
 
         #endregion
-
-        private void Editor_Loaded(object sender, RoutedEventArgs e)
-        {
-            HandleSendButton();
-        }
-
-        private void Editor_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            HandleSendButton();
-        }
 
         private void Preview_TextSelectionChanged(object sender, StringEventArgs e)
         {

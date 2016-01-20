@@ -17,6 +17,7 @@ namespace Mirko.Pages
         private void HandleOKButtonVisibility()
         {
             var VM = this.DataContext as NewEntryBaseViewModel;
+            if (VM == null) return;
             var data = VM.NewEntry;
 
             if (URLTextBox.Text.Length > 0 || data.Files != null)

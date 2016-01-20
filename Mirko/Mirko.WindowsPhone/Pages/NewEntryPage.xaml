@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Mirko.Controls"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:q="using:QKit"
     mc:Ignorable="d"
     d:DesignHeight="300"
@@ -239,12 +241,10 @@
                                                                     MinHeight="200"
                                                                     Background="{ThemeResource NewContentBackground}"
                                                                     Foreground="{ThemeResource NewContentForeground}"
-                                                                    Text="{Binding Text, Mode=TwoWay}"
-                                                                    Loaded="Editor_Loaded"
-                                                                    TextChanged="Editor_TextChanged"
+                                                                    Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                     BorderThickness="0"
                                                                     Style="{StaticResource TextBoxStyle1}" />
-
+                                    
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -300,7 +300,6 @@
             <AppBarButton Label="wyślij"
                           x:Name="SendButton"
                           Icon="Send"
-                          IsEnabled="False"
                           Command="{Binding SendMessageCommand, Mode=OneWay}"/>
 
             <AppBarButton Label="lenny">

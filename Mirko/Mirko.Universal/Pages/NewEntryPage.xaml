@@ -109,9 +109,7 @@
                                                         MinHeight="200"
                                                         Background="{ThemeResource NewContentBackground}"
                                                         Foreground="{ThemeResource NewContentForeground}"
-                                                        Text="{Binding Text, Mode=TwoWay}"
-                                                        Loaded="Editor_Loaded"
-                                                        TextChanged="Editor_TextChanged"
+                                                        Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         GotFocus="Editor_GotFocus"
                                                         LostFocus="Editor_LostFocus"
                                                         BorderThickness="0"
@@ -211,9 +209,7 @@
                                                         MinHeight="200"
                                                         Background="{ThemeResource NewContentBackground}"
                                                         Foreground="{ThemeResource NewContentForeground}"
-                                                        Text="{Binding Text, Mode=TwoWay}"
-                                                        Loaded="Editor_Loaded"
-                                                        TextChanged="Editor_TextChanged"
+                                                        Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         BorderThickness="0"
                                                         Style="{StaticResource TextBoxStyle1}" />
 
@@ -412,7 +408,6 @@
             <AppBarButton Label="wyślij"
                           x:Name="SendButton"
                           Icon="Send"
-                          IsEnabled="False"
                           Command="{x:Bind VM.SendMessageCommand, Mode=OneWay}"/>
 
             <AppBarButton Label="lenny"

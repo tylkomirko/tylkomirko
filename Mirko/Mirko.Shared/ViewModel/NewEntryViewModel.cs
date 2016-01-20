@@ -130,32 +130,55 @@ namespace Mirko.ViewModel
             {
                 if (NewEntry.IsEditing)
                 {
-                    Responses.Add(new NewEntryContainer()
+                    var c = new NewEntryContainer()
                     {
                         Text = HtmlToWykop.Convert(entries.First().DataBase.Text),
-                    });
+                    };
+
+                    c.PropertyChanged += Container_PropertyChanged;
+                    Responses.Add(c);
                 }
                 else
                 {
                     foreach (var entry in entries)
-                        Responses.Add(new NewEntryContainer()
+                    {
+                        var c = new NewEntryContainer()
                         {
                             Preview = entry,
                             Text = "@" + entry.DataBase.AuthorName + ": ",
-                        });
+                        };
+
+                        c.PropertyChanged += Container_PropertyChanged;
+                        Responses.Add(c);
+                    }
                 }
 
                 usernames.AddRange(entries.Select(x => '@' + x.DataBase.AuthorName));
             }
             else
             {
-                Responses.Add(new NewEntryContainer()
+                var c = new NewEntryContainer()
                 {
                     Text = "",
-                });
+                };
+
+                c.PropertyChanged += Container_PropertyChanged;
+                Responses.Add(c);
             }
 
             NavService.NavigateTo("NewEntryPage");
+        }
+
+        private void Container_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NewEntryContainer.Text))
+                UpdateText();
+        }
+
+        private void UpdateText()
+        {
+            NewEntry.Text = string.Join("\n", Responses.Select(x => x.Text));
+            SendMessageCommand.RaiseCanExecuteChanged();
         }
 
         public void AddFiles(IReadOnlyList<IStorageItem> items) // used in share target activation
@@ -169,16 +192,13 @@ namespace Mirko.ViewModel
                 NewEntry.SetAttachmentName(items.Count);
 
             Responses.Clear();
-            Responses.Add(new NewEntryContainer());
+            var c = new NewEntryContainer();
+            c.PropertyChanged += Container_PropertyChanged;
+            Responses.Add(c);
         }
 
         public override async void ExecuteSendMessageCommand()
         {
-            var txt = string.Join("\n", Responses.Select(x => x.Text));
-            if (string.IsNullOrEmpty(txt))
-                txt = " \n ";
-            NewEntry.Text = txt;
-
             if (NewEntry.IsEditing)
                 await SendEdited();
             else
@@ -187,6 +207,8 @@ namespace Mirko.ViewModel
 
         private async Task SendNew()
         {
+            Busy = true;
+
             string suffix = NewEntry.EntryID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam" + suffix + "...");
 
@@ -204,6 +226,7 @@ namespace Mirko.ViewModel
                 if(mainEntryID == 0)
                 {
                     await StatusBarManager.ShowTextAsync("Nie udało się dodać wpisu.");
+                    Busy = false;
                     return;
                 }
 
@@ -256,6 +279,7 @@ namespace Mirko.ViewModel
                     NavService.GoBack();
                 }
 
+                Busy = false;
                 return;
             }
 
@@ -282,6 +306,7 @@ namespace Mirko.ViewModel
                     await Task.Delay(600);
                     NavService.GoBack();
 
+                    Busy = false;
                     return;
                 }
 
@@ -309,10 +334,14 @@ namespace Mirko.ViewModel
             {
                 await StatusBarManager.ShowTextAsync("Nie udało się dodać wpisu.");
             }
+
+            Busy = false;
         }
 
         private async Task SendEdited()
         {
+            Busy = true;
+
             string suffix = NewEntry.CommentID == 0 ? " wpis" : " komentarz";
             await StatusBarManager.ShowTextAndProgressAsync("Edytuje" + suffix + "...");
 
@@ -348,6 +377,8 @@ namespace Mirko.ViewModel
                 suffix = NewEntry.CommentID == 0 ? " wpisu" : " komentarza";
                 await StatusBarManager.ShowTextAsync("Nie udało się edytować" + suffix + ".");
             }
+
+            Busy = false;
         }
 
         #region IResumable

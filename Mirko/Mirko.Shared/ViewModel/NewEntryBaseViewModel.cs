@@ -19,6 +19,13 @@ namespace Mirko.ViewModel
 #endif
 
     {
+        protected bool _busy = false;
+        protected bool Busy
+        {
+            get { return _busy; }
+            set { _busy = value; SendMessageCommand.RaiseCanExecuteChanged(); }
+        }
+
         private NewEntry _newEntry = null;
         public NewEntry NewEntry
         {
@@ -116,7 +123,17 @@ namespace Mirko.ViewModel
         [JsonIgnore]
         public RelayCommand SendMessageCommand
         {
-            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand)); }
+            get { return _sendMessageCommand ?? (_sendMessageCommand = new RelayCommand(ExecuteSendMessageCommand, SendMessageCanExecute)); }
+        }
+
+        private bool SendMessageCanExecute()
+        {
+            if (Busy)
+                return false;
+            else if (!string.IsNullOrEmpty(NewEntry.Text) || !string.IsNullOrEmpty(NewEntry.AttachmentName))
+                return true;
+            else
+                return false;
         }
 
         public abstract void ExecuteSendMessageCommand();
