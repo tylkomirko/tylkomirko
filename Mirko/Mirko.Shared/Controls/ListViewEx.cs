@@ -161,5 +161,27 @@ namespace Mirko.Controls
                 return -1;
         }
         #endregion
+
+        #region Debug
+#if DEBUG
+        public int GetContainerCount { get; set; }
+        public int PrepareContainerCount { get; set; }
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            GetContainerCount++;
+            Debug.WriteLine($"PrepareContainerCount: {PrepareContainerCount}");
+            Debug.WriteLine($"GetContainerCount: {GetContainerCount}");
+            return base.GetContainerForItemOverride();
+        }
+
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            PrepareContainerCount++;
+            Debug.WriteLine($"PrepareContainerCount: {PrepareContainerCount}");
+            Debug.WriteLine($"GetContainerCount: {GetContainerCount}");
+            base.PrepareContainerForItemOverride(element, item);
+        }
+#endif
+        #endregion
     }
 }
