@@ -11,7 +11,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -1653,17 +1653,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-arm": {
@@ -1675,7 +1664,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -3407,17 +3396,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-arm-aot": {
@@ -3429,7 +3407,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -5133,17 +5111,6 @@
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-x64": {
@@ -5155,7 +5122,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -6892,17 +6859,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-x64-aot": {
@@ -6914,7 +6870,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -8618,17 +8574,6 @@
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-x86": {
@@ -8640,7 +8585,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -10377,17 +10322,6 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     },
     "UAP,Version=v10.0/win10-x86-aot": {
@@ -10399,7 +10333,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.9": {
+      "FFImageLoading.Windows/2.0.5": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -12103,17 +12037,6 @@
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "Xamarin.FFImageLoading.Transformations/2.0.0": {
-        "dependencies": {
-          "FFImageLoading.Windows": "[2.0.0, )"
-        },
-        "compile": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        },
-        "runtime": {
-          "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll": {}
-        }
       }
     }
   },
@@ -12133,8 +12056,8 @@
         "package/services/metadata/core-properties/99be0c88b2fd41c8b07c42071005ee47.psmdcp"
       ]
     },
-    "FFImageLoading.Windows/2.0.9": {
-      "sha512": "09rCQAf12NKDFc2UfcOfzSikwn6Qs5+UTRzv5ncx8obe7ZREFbRGjcvJQmVvWeHmMPVCNA1RIoNsHM29HvqHpg==",
+    "FFImageLoading.Windows/2.0.5": {
+      "sha512": "fkrV+AVf8Sgx3QH+lvWzrWOxqxGiKMoHpRXhiDAd/jnVMlX7cbOXyhKeBPs6q1/nBO53a0bTIjW9dKPeHLLyDg==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -12144,11 +12067,7 @@
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.xml",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.xml",
-        "lib/wp8/FFImageLoading.dll",
-        "lib/wp8/FFImageLoading.WinSL.dll",
-        "lib/wp8/FFImageLoading.WinSL.xml",
-        "lib/wp8/FFImageLoading.xml",
-        "package/services/metadata/core-properties/d1441846b5e0409797ee323566ef9013.psmdcp"
+        "package/services/metadata/core-properties/ce75a029efbd4cb7b1dc47c726709a46.psmdcp"
       ]
     },
     "MetroLog/0.8.9": {
@@ -15931,29 +15850,11 @@
         "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll",
         "System.Xml.XmlSerializer.nuspec"
       ]
-    },
-    "Xamarin.FFImageLoading.Transformations/2.0.0": {
-      "sha512": "214v1svEpHYz7URvF4egN/Wahg+NXjv35FDQYnm2tKCKZEiKEocmrwzlgehu6gx2HnAfhEoMrYWAD0DrOyhLWA==",
-      "type": "Package",
-      "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
-        "lib/MonoAndroid10/FFImageLoading.Transformations.dll",
-        "lib/MonoAndroid10/FFImageLoading.Transformations.xml",
-        "lib/portable-net45+netcore45+wpa81+wp8+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10/FFImageLoading.Transformations.dll",
-        "lib/portable-net45+netcore45+wpa81+wp8+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10/FFImageLoading.Transformations.xml",
-        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.dll",
-        "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Transformations.xml",
-        "lib/Xamarin.iOS10/FFImageLoading.Transformations.dll",
-        "lib/Xamarin.iOS10/FFImageLoading.Transformations.xml",
-        "package/services/metadata/core-properties/1.psmdcp",
-        "Xamarin.FFImageLoading.Transformations.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "FFImageLoading.Windows >= 2.0.9",
+      "FFImageLoading.Windows >= 2.0.5",
       "MetroLog >= 0.8.9",
       "Microsoft.ApplicationInsights >= 1.2.3",
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.2.3",
@@ -15961,8 +15862,7 @@
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "MvvmLight >= 5.2.0",
       "MvvmLightLibs >= 5.2.0",
-      "Newtonsoft.Json >= 7.0.1",
-      "Xamarin.FFImageLoading.Transformations >= 2.0.0"
+      "Newtonsoft.Json >= 7.0.1"
     ],
     "UAP,Version=v10.0": []
   }
