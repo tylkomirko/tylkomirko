@@ -103,12 +103,15 @@ namespace Mirko.Utils
                     }
 
                     return new LoadMoreItemsResult() { Count = resultCount };
-
                 }
                 catch (Exception)
                 {
                     StatusBarManager.HideProgress();
                     return new LoadMoreItemsResult() { Count = 0 };
+                }
+                finally
+                {
+                    cancelToken.Dispose();
                 }
 
             }, cancelToken.Token);

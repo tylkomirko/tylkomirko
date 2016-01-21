@@ -237,7 +237,7 @@ namespace WykopSDK.API
 
             _log.Trace(newURL);
 
-            using (var stream = await getAsync(URL, post, fileStream, fileName).ConfigureAwait(false))
+            using (var stream = await getAsync(URL, post, fileStream, fileName, ct).ConfigureAwait(false))
             {
                 if (stream == null)
                     return null;
@@ -346,7 +346,7 @@ namespace WykopSDK.API
 
                 try
                 {
-                    response = await HttpClient.PostAsync(url, content, ct).ConfigureAwait(false);
+                    response = await HttpClient.PostAsync(url, content, ct).ConfigureAwait(false);                    
                 }
                 catch (Exception e)
                 {
