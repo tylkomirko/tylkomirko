@@ -27,7 +27,8 @@ namespace Mirko.Pages
                     DisplayOrientations.LandscapeFlipped | DisplayOrientations.Portrait | 
                     DisplayOrientations.PortraitFlipped;
 
-                StatusBarManager.HideStatusBar();
+                StatusBarManager.ShowStatusBar();
+                StatusBarManager.ShowTextAndProgress("Pobieram obraz...");
 
                 if (SimpleIoc.Default.GetInstance<SettingsViewModel>().SelectedTheme == ElementTheme.Dark)
                     ImageScrollViewer.Background = new SolidColorBrush(Colors.Black);
@@ -131,10 +132,10 @@ namespace Mirko.Pages
             ImageOpened = true;
         }
 
-        private async void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            await StatusBarManager.ShowStatusBarAsync();
-            await StatusBarManager.ShowTextAsync("Nie można pobrać obrazka.");
+            StatusBarManager.ShowStatusBar();
+            StatusBarManager.ShowText("Nie można pobrać obrazka.");
         }
     }
 }
