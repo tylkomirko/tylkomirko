@@ -3,32 +3,35 @@ using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
 
 namespace Mirko.ViewModel
 {
     public class FontsViewModel : ViewModelBase
     {
-        private SettingsViewModel SettingsVM = null;
+        private static SettingsViewModel Settings = null;
 
         public FontsViewModel()
         {
-            SettingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
-            SettingsVM.PropertyChanged += (s, args) =>
+            Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            Settings.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "FontScaleFactor")
             {
-                if (args.PropertyName == "FontScaleFactor")
-                {
-                    base.RaisePropertyChanged("EntryFontSize");
-                    base.RaisePropertyChanged("AuthorFontSize");
-                    base.RaisePropertyChanged("AuthorSexFontSize");
-                    base.RaisePropertyChanged("DateFontSize");
-                    base.RaisePropertyChanged("VoteFontSize");
-                    base.RaisePropertyChanged("CommentsBarFontSize");
-                    base.RaisePropertyChanged("EmbedSymbolFontSize");
-                    base.RaisePropertyChanged("AttachmentFontSize");
-                    base.RaisePropertyChanged("PMFontSize");
-                    base.RaisePropertyChanged("PMDateFontSize");
-                }
-            };
+                base.RaisePropertyChanged("EntryFontSize");
+                base.RaisePropertyChanged("AuthorFontSize");
+                base.RaisePropertyChanged("AuthorSexFontSize");
+                base.RaisePropertyChanged("DateFontSize");
+                base.RaisePropertyChanged("VoteFontSize");
+                base.RaisePropertyChanged("CommentsBarFontSize");
+                base.RaisePropertyChanged("EmbedSymbolFontSize");
+                base.RaisePropertyChanged("AttachmentFontSize");
+                base.RaisePropertyChanged("PMFontSize");
+                base.RaisePropertyChanged("PMDateFontSize");
+            }
         }
 
 #if WINDOWS_PHONE_APP
@@ -51,57 +54,57 @@ namespace Mirko.ViewModel
 
         public double EntryFontSize
         {
-            get { return EntryBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return EntryBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double AuthorFontSize
         {
-            get { return AuthorBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return AuthorBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double AuthorSexFontSize
         {
-            get { return AuthorSexBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return AuthorSexBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double DateFontSize
         {
-            get { return DateBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return DateBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double VoteFontSize
         {
-            get { return VoteBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return VoteBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double CommentsBarFontSize
         {
-            get { return CommentsBarBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return CommentsBarBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double EmbedSymbolFontSize
         {
-            get { return EmbedSymbolBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return EmbedSymbolBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double AttachmentFontSize
         {
-            get { return AttachmentBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return AttachmentBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double PMFontSize
         {
-            get { return PMBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return PMBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double PMDateFontSize
         {
-            get { return PMDateBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return PMDateBasicFontSize * Settings.FontScaleFactor; }
         }
 
         public double SpoilerFontSize
         {
-            get { return SpoilerBasicFontSize * SettingsVM.FontScaleFactor; }
+            get { return SpoilerBasicFontSize * Settings.FontScaleFactor; }
         }
     }
 }

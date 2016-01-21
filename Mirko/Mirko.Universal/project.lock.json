@@ -11,7 +11,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -311,7 +311,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -1664,7 +1664,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -2007,7 +2007,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -3407,7 +3407,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -3736,7 +3736,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -5122,7 +5122,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -5470,7 +5470,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -6870,7 +6870,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -7199,7 +7199,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -8585,7 +8585,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -8933,7 +8933,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -10333,7 +10333,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.5": {
+      "FFImageLoading.Windows/2.0.6": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -10662,7 +10662,7 @@
           "lib/windows81/GalaSoft.MvvmLight.Platform.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1": {
+      "Newtonsoft.Json/8.0.2": {
         "compile": {
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         },
@@ -12056,8 +12056,8 @@
         "package/services/metadata/core-properties/99be0c88b2fd41c8b07c42071005ee47.psmdcp"
       ]
     },
-    "FFImageLoading.Windows/2.0.5": {
-      "sha512": "fkrV+AVf8Sgx3QH+lvWzrWOxqxGiKMoHpRXhiDAd/jnVMlX7cbOXyhKeBPs6q1/nBO53a0bTIjW9dKPeHLLyDg==",
+    "FFImageLoading.Windows/2.0.6": {
+      "sha512": "3mzvC7b3OgTey3NTmCDFxvpm0P4xbixh7Xvg25ZPy5e6SSs1eeVY2cjsaLx3XQyUENIA6WwtOZ3nGlCTqvekdA==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -12067,7 +12067,7 @@
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.xml",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.xml",
-        "package/services/metadata/core-properties/ce75a029efbd4cb7b1dc47c726709a46.psmdcp"
+        "package/services/metadata/core-properties/5a250561e7cd4eb9909008682ba62221.psmdcp"
       ]
     },
     "MetroLog/0.8.9": {
@@ -13133,8 +13133,8 @@
         "package/services/metadata/core-properties/2416d2969a834c638aba3851d652cc13.psmdcp"
       ]
     },
-    "Newtonsoft.Json/7.0.1": {
-      "sha512": "q3V4KLetMLnt1gpAVWgtXnHjKs0UG/RalBc29u2ZKxd5t5Ze4JBL5WiiYIklJyK/5CRiIiNwigVQUo0FgbsuWA==",
+    "Newtonsoft.Json/8.0.2": {
+      "sha512": "e5yWmEfu68rmtG431zl9N/7PlNKQDIuiDW5MHlEFAZcecakcxrIGnKqrPAtWNILzK2oNanRB5cD150MYhECK3g==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -13152,7 +13152,7 @@
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
         "Newtonsoft.Json.nuspec",
-        "package/services/metadata/core-properties/49e907fc018c4c7ab632e6d4ad4766f8.psmdcp",
+        "package/services/metadata/core-properties/cc8c591d554640789c6a6ef6456f7772.psmdcp",
         "tools/install.ps1"
       ]
     },
@@ -15854,7 +15854,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "FFImageLoading.Windows >= 2.0.5",
+      "FFImageLoading.Windows >= 2.0.6",
       "MetroLog >= 0.8.9",
       "Microsoft.ApplicationInsights >= 1.2.3",
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.2.3",
@@ -15862,7 +15862,7 @@
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "MvvmLight >= 5.2.0",
       "MvvmLightLibs >= 5.2.0",
-      "Newtonsoft.Json >= 7.0.1"
+      "Newtonsoft.Json >= 8.0.2"
     ],
     "UAP,Version=v10.0": []
   }

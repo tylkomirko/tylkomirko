@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
 using Mirko.Utils;
 using Mirko.ViewModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,6 +15,7 @@ namespace Mirko.Controls
     public sealed partial class Entry : UserControl, IReceiveRTBClicks
     {
         private bool singleTap;
+        private static SettingsViewModel Settings = null;
 
         #region Registered properties
         public bool IsHot
@@ -67,16 +69,30 @@ namespace Mirko.Controls
         public Entry()
         {
             this.InitializeComponent();
+            this.Loaded += Entry_Loaded;
+            this.Unloaded += Entry_Unloaded;
             this.Holding += Entry_OpenFlyout;
             this.RightTapped += Entry_OpenFlyout;
 
-            var settingsVM = SimpleIoc.Default.GetInstance<SettingsViewModel>();
-            GoToVisualState(settingsVM.ShowAvatars);
-            settingsVM.PropertyChanged += (s, args) =>
-            {
-                if (args.PropertyName == "ShowAvatars")
-                    GoToVisualState(settingsVM.ShowAvatars);
-            };
+            if (Settings == null)
+                Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
+            GoToVisualState(Settings.ShowAvatars);
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShowAvatars")
+                GoToVisualState(Settings.ShowAvatars);
+        }
+
+        private void Entry_Loaded(object sender, RoutedEventArgs e)
+        {
+            Settings.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        private void Entry_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Settings.PropertyChanged -= Settings_PropertyChanged;
         }
 
         private void GoToVisualState(bool showAvatars)

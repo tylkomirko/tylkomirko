@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Threading;
 using Mirko.Utils;
 using Mirko.ViewModel;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Popups;
@@ -24,21 +25,37 @@ namespace Mirko.Controls
         public EntryEmbed()
         {
             this.InitializeComponent();
-            
+
             if (Settings == null)
                 Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-            App.ApiService.NetworkStatusChanged += (s, e) => HandleImageVisibility();
-            Settings.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "OnlyWIFIDownload" || e.PropertyName == "ShowPlus18")
-                    HandleImageVisibility();
-            };
+            this.Loaded += EntryEmbed_Loaded;
+            this.Unloaded += EntryEmbed_Unloaded;
+        }
 
-            this.Unloaded += (s, e) =>
-            {
-                Image.Source = null;
-            };
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "OnlyWIFIDownload" || e.PropertyName == "ShowPlus18")
+                HandleImageVisibility();
+        }
+
+        private void ApiService_NetworkStatusChanged(object sender, WykopSDK.Utils.NetworkEventArgs e)
+        {
+            HandleImageVisibility();
+        }
+
+        private void EntryEmbed_Loaded(object sender, RoutedEventArgs e)
+        {
+            App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
+            Settings.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        private void EntryEmbed_Unloaded(object sender, RoutedEventArgs e)
+        {
+            App.ApiService.NetworkStatusChanged -= ApiService_NetworkStatusChanged;
+            Settings.PropertyChanged -= Settings_PropertyChanged;
+
+            Image.Source = null;
         }
 
         private bool ShowImage(EmbedViewModel VM)
