@@ -148,24 +148,24 @@ namespace Mirko.ViewModel
             });
         }
 
-        private async void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
+        private void ApiService_NetworkStatusChanged(object sender, NetworkEventArgs e)
         {
-            if(e.IsNetworkAvailable)
-            {
-                if(StartedOffline)
-                {
-                    await DispatcherHelper.RunAsync(() =>
-                    {
-                        MirkoEntries.Clear();
-                        MirkoEntries.HasMoreItems = true;
-                    });
+            if (!e.IsNetworkAvailable)
+                return;
 
-                    StartedOffline = false;
-                }
-                else
+            if (StartedOffline)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    await DispatcherHelper.RunAsync(() => MirkoEntries.HasMoreItems = true);
-                }
+                    MirkoEntries.Clear();
+                    MirkoEntries.HasMoreItems = true;
+                });
+
+                StartedOffline = false;
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() => MirkoEntries.HasMoreItems = true);
             }
         }
 

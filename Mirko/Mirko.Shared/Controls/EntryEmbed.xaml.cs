@@ -29,7 +29,8 @@ namespace Mirko.Controls
             if (Settings == null)
                 Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
 
-            this.Loaded += EntryEmbed_Loaded;
+            App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
+            Settings.PropertyChanged += Settings_PropertyChanged;
             this.Unloaded += EntryEmbed_Unloaded;
         }
 
@@ -44,17 +45,8 @@ namespace Mirko.Controls
             HandleImageVisibility();
         }
 
-        private void EntryEmbed_Loaded(object sender, RoutedEventArgs e)
-        {
-            App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
-            Settings.PropertyChanged += Settings_PropertyChanged;
-        }
-
         private void EntryEmbed_Unloaded(object sender, RoutedEventArgs e)
         {
-            App.ApiService.NetworkStatusChanged -= ApiService_NetworkStatusChanged;
-            Settings.PropertyChanged -= Settings_PropertyChanged;
-
             Image.Source = null;
         }
 
