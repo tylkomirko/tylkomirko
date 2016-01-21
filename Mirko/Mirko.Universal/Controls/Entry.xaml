@@ -204,6 +204,7 @@
                     CacheDuration="2"
                     DownsampleToViewSize="True"
                     Source="{Binding Data.AuthorAvatarURL}"
+                    LoadingPlaceholder="avatar_default.png"
                     ErrorPlaceholder="avatar_default.png" />
 
         <StackPanel Grid.Row="1"

@@ -77,30 +77,20 @@ namespace Mirko.Controls
         public Entry()
         {
             this.InitializeComponent();
-            this.Loaded += Entry_Loaded;
-            this.Unloaded += Entry_Unloaded;
             this.Holding += Entry_OpenFlyout;
             this.RightTapped += Entry_OpenFlyout;
 
             if(Settings == null)
                 Settings = SimpleIoc.Default.GetInstance<SettingsViewModel>();
             GoToVisualState(Settings.ShowAvatars);
+
+            Settings.PropertyChanged += Settings_PropertyChanged;
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ShowAvatars")
                 GoToVisualState(Settings.ShowAvatars);
-        }
-
-        private void Entry_Loaded(object sender, RoutedEventArgs e)
-        {
-            Settings.PropertyChanged += Settings_PropertyChanged;
-        }
-
-        private void Entry_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Settings.PropertyChanged -= Settings_PropertyChanged;
         }
 
         private void GoToVisualState(bool showAvatars)
