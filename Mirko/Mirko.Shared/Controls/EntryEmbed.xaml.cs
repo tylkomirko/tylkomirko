@@ -21,6 +21,7 @@ namespace Mirko.Controls
     {
         private bool singleTap;
         private static SettingsViewModel Settings = null;
+        private EmbedViewModel OldVM = null;
 
         public EntryEmbed()
         {
@@ -190,11 +191,19 @@ namespace Mirko.Controls
             if (embed == null || embed.EmbedData == null) return;
 
             HandleImageVisibility();
-            embed.PropertyChanged += (s, e) =>
-            {
-                if(e.PropertyName == "ForceShow")
-                    HandleImageVisibility();
-            };
+            if(OldVM != null)
+                OldVM.PropertyChanged -= Embed_PropertyChanged;
+
+            embed.PropertyChanged -= Embed_PropertyChanged;
+            embed.PropertyChanged += Embed_PropertyChanged;
+
+            OldVM = embed;
+        }
+
+        private void Embed_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ForceShow")
+                HandleImageVisibility();
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
