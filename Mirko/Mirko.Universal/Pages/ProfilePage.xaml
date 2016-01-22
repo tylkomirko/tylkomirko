@@ -63,7 +63,6 @@
                              Grid.Row="0"
                              ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                              ItemsSource="{x:Bind VM.CurrentProfile.Entries, Mode=OneWay}"
-                             VirtualizingStackPanel.VirtualizationMode="Recycling"
                              IncrementalLoadingThreshold="6"
                              DataFetchSize="7">
 
@@ -89,7 +88,8 @@
                                 Width="96"
                                 DownsampleToViewSize="True"
                                 CacheDuration="2"
-                                ErrorPlaceholder="avatar_default.png"
+                                LoadingPlaceholder="avatar_placeholder.png"
+                                ErrorPlaceholder="avatar_placeholder.png"
                                 Source="{x:Bind VM.CurrentProfile.Data.AvatarURL, Mode=OneWay}" />
 
                     <StackPanel Grid.Column="1"

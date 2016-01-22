@@ -16,7 +16,6 @@
                          Loaded="ListViewEx_Loaded"
                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                          ItemsSource="{Binding Entries}"
-                         VirtualizingStackPanel.VirtualizationMode="Recycling"
                          IncrementalLoadingThreshold="6"
                          DataFetchSize="7">
         
@@ -42,7 +41,8 @@
                             Width="120"
                             DownsampleToViewSize="True"
                             CacheDuration="2"
-                            ErrorPlaceholder="avatar_default.png"
+                            LoadingPlaceholder="avatar_placeholder.png"
+                            ErrorPlaceholder="avatar_placeholder.png"
                             Source="{Binding Data.AvatarURL, Mode=OneWay}" />
 
                 <StackPanel Grid.Column="1"

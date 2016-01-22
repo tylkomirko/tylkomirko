@@ -198,10 +198,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\avatar_default.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\error_placeholder.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\avatar_placeholder.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\embed_error.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\embed_loading.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\gif_icon.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\loading_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ust_l.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\video_icon.png" />
   </ItemGroup>

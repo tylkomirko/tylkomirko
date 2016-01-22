@@ -32,8 +32,8 @@
         <ff:FFImage x:Name="Image"
                     CacheDuration="2"
                     TransformPlaceholders="False"
-                    LoadingPlaceholder="loading_placeholder.png"
-                    ErrorPlaceholder="error_placeholder.png"
+                    LoadingPlaceholder="embed_loading.png"
+                    ErrorPlaceholder="embed_error.png"
                     DownsampleToViewSize="True"
                     Transformations="{Binding Converter={StaticResource EmbedTransformation}}"/>
 
