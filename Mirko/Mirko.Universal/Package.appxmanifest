@@ -37,6 +37,7 @@
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
+        <Extension Category="windows.updateTask" EntryPoint="BackgroundTasks.UpdateTask" />
         <uap:Extension Category="windows.shareTarget">
           <uap:ShareTarget>
             <uap:SupportedFileTypes>

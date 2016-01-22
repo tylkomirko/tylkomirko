@@ -53,6 +53,7 @@
             <DisplayName>Tylko Mirko</DisplayName>
           </Protocol>
         </Extension>
+        <m3:Extension Category="windows.updateTask" EntryPoint="BackgroundTasks.UpdateTask" />
       </Extensions>
     </Application>
   </Applications>
