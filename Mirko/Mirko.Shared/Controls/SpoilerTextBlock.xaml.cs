@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Mirko.Utils;
+using System.Collections.Generic;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -10,7 +11,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Mirko.Controls
 {
-    public sealed partial class SpoilerTextBlock : UserControl
+    public sealed partial class SpoilerTextBlock : UserControl, IReceiveRTBClicks
     {
         public SpoilerTextBlock()
         {
@@ -67,6 +68,18 @@ namespace Mirko.Controls
                 isTextHidden = false;
                 e.Handled = true;
             }
+        }
+
+        public void HashtagTapped(string tag, TextBlock tb)
+        {
+            var entry = this.GetAntecedent<Entry>();
+            entry?.HashtagTapped(tag, tb);
+        }
+
+        public void ProfileTapped(string username)
+        {
+            var entry = this.GetAntecedent<Entry>();
+            entry?.ProfileTapped(username);
         }
     }
 }
