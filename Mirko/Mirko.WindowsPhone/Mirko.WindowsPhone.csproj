@@ -283,11 +283,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FFImageLoading, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FFImageLoading.Windows.2.0.6\lib\portable-netcore45+wpa81\FFImageLoading.dll</HintPath>
+      <HintPath>..\..\packages\FFImageLoading.Windows.2.0.7\lib\portable-netcore45+wpa81\FFImageLoading.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FFImageLoading.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FFImageLoading.Windows.2.0.6\lib\portable-netcore45+wpa81\FFImageLoading.Windows.dll</HintPath>
+      <HintPath>..\..\packages\FFImageLoading.Windows.2.0.7\lib\portable-netcore45+wpa81\FFImageLoading.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
