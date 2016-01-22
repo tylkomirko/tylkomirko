@@ -43,6 +43,16 @@ namespace Mirko.Pages
                         await ListView.LoadMoreItemsAsync(); // agrhrgrrrhhr... Satya....
                 }
             });
+
+            Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
+        }
+
+        private void MediaElementDoubleTapped(NotificationMessage<bool> msg)
+        {
+            if (msg.Content)
+                PopupFadeOut.Begin();
+            else
+                PopupFadeIn.Begin();
         }
 
         private void TaggedNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

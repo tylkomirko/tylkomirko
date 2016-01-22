@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Mirko.Controls;
 using Mirko.Utils;
 using Mirko.ViewModel;
@@ -41,6 +42,39 @@ namespace Mirko.Pages
 
             var navService = SimpleIoc.Default.GetInstance<NavigationService>();
             AppHeader = navService.GetAppHeader();
+
+            Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
+        }
+
+        private void MediaElementDoubleTapped(NotificationMessage<bool> msg)
+        {
+            if (msg.Content)
+            {
+                // entered fullscreen
+                if (MainPivot.SelectedIndex == 0)
+                {
+                    CanShowNewEntriesPopup = false;
+                    NewMirkoEntriesPopupFadeOut.Begin();
+                }
+                else if(MainPivot.SelectedIndex == 1)
+                {
+                    TimeSpanIndicatorFadeOut.Begin();
+                }
+            }
+            else
+            {
+                // left fullscreen
+                if (MainPivot.SelectedIndex == 0)
+                {
+                    CanShowNewEntriesPopup = true;
+                    if (VM.MirkoNewEntries.Count > 0)
+                        NewMirkoEntriesPopupFadeIn.Begin();
+                }
+                else if (MainPivot.SelectedIndex == 1)
+                {
+                    TimeSpanIndicatorFadeIn.Begin();
+                }
+            }                
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

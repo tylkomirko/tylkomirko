@@ -44,6 +44,39 @@ namespace Mirko.Pages
             AppHeader = navService.GetAppHeader();
 
             Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBoundsChanged += (s, e) => CalculateNewMirkoEntriesPopupOffset();
+
+            Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
+        }
+
+        private void MediaElementDoubleTapped(NotificationMessage<bool> msg)
+        {
+            if (msg.Content)
+            {
+                // entered fullscreen
+                if (MainPivot.SelectedIndex == 0)
+                {
+                    CanShowNewEntriesPopup = false;
+                    NewMirkoEntriesPopupFadeOut.Begin();
+                }
+                else if (MainPivot.SelectedIndex == 1)
+                {
+                    TimeSpanIndicatorFadeOut.Begin();
+                }
+            }
+            else
+            {
+                // left fullscreen
+                if (MainPivot.SelectedIndex == 0)
+                {
+                    CanShowNewEntriesPopup = true;
+                    if (VM.MirkoNewEntries.Count > 0)
+                        NewMirkoEntriesPopupFadeIn.Begin();
+                }
+                else if (MainPivot.SelectedIndex == 1)
+                {
+                    TimeSpanIndicatorFadeIn.Begin();
+                }
+            }
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
