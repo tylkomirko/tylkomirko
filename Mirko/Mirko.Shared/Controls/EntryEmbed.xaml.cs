@@ -32,7 +32,6 @@ namespace Mirko.Controls
 
             App.ApiService.NetworkStatusChanged += ApiService_NetworkStatusChanged;
             Settings.PropertyChanged += Settings_PropertyChanged;
-            this.Unloaded += EntryEmbed_Unloaded;
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -44,11 +43,6 @@ namespace Mirko.Controls
         private void ApiService_NetworkStatusChanged(object sender, WykopSDK.Utils.NetworkEventArgs e)
         {
             HandleImageVisibility();
-        }
-
-        private void EntryEmbed_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Image.Source = null;
         }
 
         private bool ShowImage(EmbedViewModel VM)
