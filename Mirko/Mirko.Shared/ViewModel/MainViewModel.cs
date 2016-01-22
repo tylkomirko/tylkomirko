@@ -85,7 +85,7 @@ namespace Mirko.ViewModel
 
             Messenger.Default.Register<NotificationMessage>(this, (e) =>
             {
-                if (e.Notification == "Login")
+                if (e.Notification == "Login" || e.Notification == "Wake up")
                     TimerCallback(null);
             });
 

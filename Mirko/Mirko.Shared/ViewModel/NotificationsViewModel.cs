@@ -132,7 +132,7 @@ namespace Mirko.ViewModel
                     this.PMNotificationsCount = 0;
                 });
             }
-            else if(obj.Notification == "Login")
+            else if(obj.Notification == "Login" || obj.Notification == "Wake up")
             {
                 TimerCallback(null);
             }
@@ -177,6 +177,7 @@ namespace Mirko.ViewModel
             }
             catch (Exception) { }
 
+            // i dunno what it's for, but i'm too scared to remove it
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
             UpdateBadge();
         }

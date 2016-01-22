@@ -217,7 +217,7 @@ namespace Mirko
             var locator = this.Resources["Locator"] as ViewModelLocator;
             NavService = locator.NavService;
 
-            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
+            Window.Current.VisibilityChanged += Window_VisibilityChanged;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -344,7 +344,7 @@ namespace Mirko
 
             StatusBarManager.Init();
 
-            Window.Current.VisibilityChanged += (s, e) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = e.Visible;
+            Window.Current.VisibilityChanged += Window_VisibilityChanged;
 
             NavService = SimpleIoc.Default.GetInstance<NavigationService>();
 
@@ -443,7 +443,7 @@ namespace Mirko
             var locator = this.Resources["Locator"] as ViewModelLocator;
             NavService = locator.NavService;
 
-            Window.Current.VisibilityChanged += (s, args) => Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = args.Visible;
+            Window.Current.VisibilityChanged += Window_VisibilityChanged;
 
 #if WINDOWS_PHONE_APP
             var continuationEventArgs = e as IContinuationActivatedEventArgs;
@@ -476,6 +476,14 @@ namespace Mirko
             Window.Current.Activate();
 
             Messenger.Default.Send(new NotificationMessage("Init"));
+        }
+
+        private void Window_VisibilityChanged(object sender, Windows.UI.Core.VisibilityChangedEventArgs e)
+        {
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values["AppRunning"] = e.Visible;
+
+            if(e.Visible)
+                Messenger.Default.Send(new NotificationMessage("Wake up"));
         }
 
         private bool ProcessProtocolActivation(string uri)
