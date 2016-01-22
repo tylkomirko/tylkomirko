@@ -175,7 +175,6 @@
                              ScrollingUp="ListView_ScrollingUp"
                              ItemsSource="{x:Bind VM.TaggedEntries, Mode=OneWay}"
                              IsItemClickEnabled="False"
-                             VirtualizingStackPanel.VirtualizationMode="Recycling"
                              IncrementalLoadingThreshold="6"
                              DataFetchSize="7">
 

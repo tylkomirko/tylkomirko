@@ -471,8 +471,10 @@ namespace Mirko.ViewModel
             TaggedEntries.ClearAll();
             TaggedNewEntries.Clear();
 
-            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("HashtagEntriesPage reload"));
             NavService.NavigateTo("HashtagEntriesPage");
+#if WINDOWS_PHONE_APP
+            Messenger.Default.Send(new NotificationMessage("HashtagEntriesPage reload"));
+#endif         
         }
 
         private RelayCommand _settingsCommand;

@@ -35,16 +35,17 @@ namespace Mirko.Pages
             VM.TaggedNewEntries.CollectionChanged -= TaggedNewEntries_CollectionChanged;
             VM.TaggedNewEntries.CollectionChanged += TaggedNewEntries_CollectionChanged;
 
-            Messenger.Default.Register<NotificationMessage>(this, async (m) =>
-            {
-                if (m.Notification == "HashtagEntriesPage reload")
-                {
-                    if (ListView.ItemsSource != null)
-                        await ListView.LoadMoreItemsAsync(); // agrhrgrrrhhr... Satya....
-                }
-            });
+            // There's a bug in W10M - it doesn't load entries for some reason.
+            if (App.IsMobile)
+                ListView.Loaded += ListView_Loaded;
 
             Messenger.Default.Register<NotificationMessage<bool>>("MediaElement DoubleTapped", MediaElementDoubleTapped);
+        }
+
+        private async void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ListView.LoadMoreItemsAsync();
+            ListView.Loaded -= ListView_Loaded;
         }
 
         private void MediaElementDoubleTapped(NotificationMessage<bool> msg)
