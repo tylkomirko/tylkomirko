@@ -109,10 +109,6 @@ namespace Mirko.Utils
                     StatusBarManager.HideProgress();
                     return new LoadMoreItemsResult() { Count = 0 };
                 }
-                finally
-                {
-                    cancelToken.Dispose();
-                }
 
             }, cancelToken.Token);
 
