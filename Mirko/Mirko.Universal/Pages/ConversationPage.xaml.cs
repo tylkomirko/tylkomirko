@@ -70,9 +70,6 @@ namespace Mirko.Pages
                 }
             };
 
-            this.TextBox.Loaded += (s, e) => HandleSendButton();
-            this.TextBox.TextChanged += (s, e) => HandleSendButton();
-
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
@@ -121,18 +118,11 @@ namespace Mirko.Pages
             LennyFlyout.Hide();
         }
 
-        private void AttachmentSymbol_Holding(object sender, HoldingRoutedEventArgs e)
+        private void AttachmentSymbol_OpenFlyout(object sender, RoutedEventArgs e)
         {
             var mf = Resources["DeleteAttachmentFlyout"] as MenuFlyout;
             mf.ShowAt(AttachmentSymbol);
         }
-
-        #region AppBar
-        private void SendButton_Click(object sender, RoutedEventArgs e)
-        {
-            SendButton.IsEnabled = false;
-        }
-        #endregion
 
         private void JumpToBottom()
         {
@@ -158,24 +148,6 @@ namespace Mirko.Pages
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             VM.CurrentConversation?.NewEntry.RemoveAttachment();
-            HandleSendButton();
-        }
-
-        private void HandleSendButton()
-        {
-            if (VM.CurrentConversation == null)
-            {
-                this.SendButton.IsEnabled = true;
-                return;
-            }
-
-            var txt = TextBox.Text;
-            var attachmentName = VM.CurrentConversation.NewEntry.AttachmentName;
-
-            if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
-                this.SendButton.IsEnabled = true;
-            else
-                this.SendButton.IsEnabled = false;
         }
 
         public void HashtagTapped(string tag, TextBlock tb)

@@ -75,6 +75,8 @@ namespace Mirko.ViewModel
 
         public override async void ExecuteSendMessageCommand()
         {
+            Busy = true;
+
             await StatusBarManager.ShowTextAndProgressAsync("Wysyłam wiadomość...");
 
             if (string.IsNullOrEmpty(NewEntry.Text))
@@ -100,6 +102,7 @@ namespace Mirko.ViewModel
             {
                 App.TelemetryClient.TrackException(e);
                 StatusBarManager.HideProgress();
+                Busy = false;
                 return;
             }
 
@@ -117,6 +120,8 @@ namespace Mirko.ViewModel
                 Messenger.Default.Send(new NotificationMessage("PM-Fail"));
                 await StatusBarManager.ShowTextAsync("Wiadomość nie została wysłana.");
             }
+
+            Busy = false;
         }
 
         private RelayCommand _updateMessagesCommand = null;

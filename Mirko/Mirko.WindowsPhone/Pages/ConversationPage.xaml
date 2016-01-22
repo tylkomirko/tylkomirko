@@ -206,7 +206,6 @@
                                  ItemsSource="{Binding Messages}"
                                  ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                  ItemTemplateSelector="{StaticResource PMTemplateSelector}"
-                                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                                  IncrementalLoadingThreshold="6"
                                  DataFetchSize="7">
 
@@ -238,7 +237,7 @@
                                                             Margin="12,7,12,7"
                                                             GotFocus="TextBox_GotFocus"
                                                             LostFocus="TextBox_LostFocus"
-                                                            Text="{Binding NewEntry.Text, Mode=TwoWay}"
+                                                            Text="{Binding NewEntry.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             Style="{StaticResource TextBoxStyle2}" />
                         </Border>
 
@@ -292,7 +291,6 @@
 
             <AppBarButton x:Name="SendButton"
                           Label="wyślij"
-                          IsEnabled="False"
                           Command="{Binding CurrentConversation.SendMessageCommand, Mode=OneWay}">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="/Assets/reply.png" />

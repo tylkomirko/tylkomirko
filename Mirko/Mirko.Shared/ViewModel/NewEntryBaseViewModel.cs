@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Ioc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Windows.ApplicationModel.Activation;
@@ -31,6 +32,17 @@ namespace Mirko.ViewModel
         {
             get { return _newEntry ?? (_newEntry = new NewEntry()); }
             set { Set(() => NewEntry, ref _newEntry, value); }
+        }
+
+        public NewEntryBaseViewModel()
+        {
+            NewEntry.PropertyChanged += NewEntry_PropertyChanged;
+        }
+
+        private void NewEntry_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NewEntry.Text))
+                SendMessageCommand.RaiseCanExecuteChanged();
         }
 
         private RelayCommand _addAttachment = null;

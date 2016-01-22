@@ -239,7 +239,7 @@
                                                         AcceptsReturn="True"
                                                         FontSize="{Binding Fonts.PMFontSize, Mode=OneWay, Source={StaticResource Locator}}"
                                                         Margin="12,7,12,7"
-                                                        Text="{x:Bind VM.CurrentConversation.NewEntry.Text, Mode=TwoWay}"
+                                                        Text="{Binding NewEntry.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         Style="{StaticResource TextBoxStyle2}" />
                     </Border>
 
@@ -256,7 +256,8 @@
                                    IsColorFontEnabled="False"
                                    Foreground="Gray"
                                    TextTrimming="CharacterEllipsis"
-                                   Holding="AttachmentSymbol_Holding"
+                                   RightTapped="AttachmentSymbol_OpenFlyout"
+                                   Holding="AttachmentSymbol_OpenFlyout"
                                    Visibility="{x:Bind VM.CurrentConversation.NewEntry.AttachmentName, Mode=OneWay, Converter={StaticResource NullToVisibility}}">
                             <Run Text="&#128206;" />
                             
@@ -292,7 +293,6 @@
             <AppBarButton x:Name="SendButton"
                           Label="wyślij"
                           Icon="Send"
-                          IsEnabled="False"
                           Command="{x:Bind VM.CurrentConversation.SendMessageCommand, Mode=OneWay}" />
 
             <AppBarButton Label="odśwież"

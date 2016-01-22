@@ -51,9 +51,6 @@ namespace Mirko.Pages
                 }
             };
 
-            this.TextBox.Loaded += (s, e) => HandleSendButton();
-            this.TextBox.TextChanged += (s, e) => HandleSendButton();
-
             Messenger.Default.Register<NotificationMessage>(this, ReadMessage);
         }
 
@@ -138,25 +135,6 @@ namespace Mirko.Pages
         {
             var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
             vm.NewEntry.RemoveAttachment();
-            HandleSendButton();
-        }
-
-        private void HandleSendButton()
-        {
-            var vm = (this.DataContext as MessagesViewModel).CurrentConversation;
-            if (vm == null)
-            {
-                this.SendButton.IsEnabled = true;
-                return;
-            }
-
-            var txt = TextBox.Text;
-            var attachmentName = vm.NewEntry.AttachmentName;
-
-            if (txt.Length > 0 || !string.IsNullOrEmpty(attachmentName))
-                this.SendButton.IsEnabled = true;
-            else
-                this.SendButton.IsEnabled = false;
         }
 
         public void HashtagTapped(string tag, TextBlock tb)
