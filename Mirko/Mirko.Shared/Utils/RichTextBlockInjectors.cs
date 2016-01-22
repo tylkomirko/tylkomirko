@@ -298,8 +298,7 @@ namespace Mirko.Utils
             if (control != null)
             {
                 var casted = control as IReceiveRTBClicks;
-                if (casted != null)
-                    casted.ProfileTapped(username);
+                casted?.ProfileTapped(username);
             }
         }
 
@@ -315,8 +314,7 @@ namespace Mirko.Utils
             if(control != null)
             {
                 var casted = control as IReceiveRTBClicks;
-                if(casted != null)
-                    casted.HashtagTapped(tag, tb);
+                casted?.HashtagTapped(tag, tb);
             }
         }
         #endregion HTML
