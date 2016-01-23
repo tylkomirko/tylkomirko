@@ -52,21 +52,15 @@ namespace Mirko.Pages
             {
                 // entered fullscreen
                 if (MainPivot.SelectedIndex == 0)
-                {
-                    CanShowNewEntriesPopup = false;
                     NewMirkoEntriesPopupFadeOut.Begin();
-                }
-                else if(MainPivot.SelectedIndex == 1)
-                {
+                else if (MainPivot.SelectedIndex == 1)
                     TimeSpanIndicatorFadeOut.Begin();
-                }
             }
             else
             {
                 // left fullscreen
                 if (MainPivot.SelectedIndex == 0)
                 {
-                    CanShowNewEntriesPopup = true;
                     if (VM.MirkoNewEntries.Count > 0)
                         NewMirkoEntriesPopupFadeIn.Begin();
                 }
@@ -74,7 +68,7 @@ namespace Mirko.Pages
                 {
                     TimeSpanIndicatorFadeIn.Begin();
                 }
-            }                
+            }
         }
 
         private void MirkoNewEntries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
