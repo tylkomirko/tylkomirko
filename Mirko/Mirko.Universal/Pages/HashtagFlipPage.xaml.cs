@@ -125,10 +125,12 @@ namespace Mirko.Pages
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            var entryVM = CurrentListView().DataContext as EntryViewModel;
+            var entryVM = CurrentListView()?.DataContext as EntryViewModel;
             if (entryVM != null)
             {
-                PreRefreshOffset = CurrentListView().GetDescendant<ScrollViewer>().VerticalOffset;
+                var sv = CurrentListView()?.GetDescendant<ScrollViewer>();
+                if(sv != null)
+                    PreRefreshOffset = sv.VerticalOffset;
                 entryVM.RefreshCommand.Execute(null);
             }
         }
