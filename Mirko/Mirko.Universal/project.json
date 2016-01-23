@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "FFImageLoading.Windows": "2.0.7",
+    "FFImageLoading.Windows": "2.0.6",
     "MetroLog": "0.8.9",
     "Microsoft.ApplicationInsights": "1.2.3",
     "Microsoft.ApplicationInsights.PersistenceChannel": "1.2.3",
