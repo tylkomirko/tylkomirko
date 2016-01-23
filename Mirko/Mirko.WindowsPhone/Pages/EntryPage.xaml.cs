@@ -27,11 +27,13 @@ namespace Mirko.Pages
                 HeaderCheckBox.Visibility = Visibility.Collapsed;
                 ListView.SelectionMode = ListViewSelectionMode.None;
 
-                PreRefreshOffset = ListView.GetDescendant<ScrollViewer>().VerticalOffset;
+                var sv = ListView.GetDescendant<ScrollViewer>();
+                if(sv != null)
+                    PreRefreshOffset = sv.VerticalOffset;
 
                 var VM = (DataContext as MainViewModel)?.SelectedEntry;
-                if (VM == null) return;
-                previousEntryID = VM.Data.ID;
+                if (VM != null)
+                    previousEntryID = VM.Data.ID;
             };
 
             Messenger.Default.Register<EntryViewModel>(this, "Updated", (e) =>
