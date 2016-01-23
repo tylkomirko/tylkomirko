@@ -9,6 +9,9 @@ using System.IO;
 using Windows.Storage;
 using Windows.System;
 using WykopSDK.API.Models;
+#if WINDOWS_UWP
+using Windows.ApplicationModel.DataTransfer;
+#endif
 
 namespace Mirko.ViewModel
 {
@@ -74,6 +77,33 @@ namespace Mirko.ViewModel
                 }
             }
             catch (Exception) { }
+        }
+
+        private RelayCommand _copyURLCommand = null;
+        public RelayCommand CopyURLCommand
+        {
+            get { return _copyURLCommand ?? (_copyURLCommand = new RelayCommand(ExecuteCopyURLCommand)); }
+        }
+
+#if WINDOWS_UWP
+        private void ExecuteCopyURLCommand()
+#elif WINDOWS_PHONE_APP
+        private async void ExecuteCopyURLCommand()
+#endif
+        {
+            var url = EmbedData.URL;
+
+#if WINDOWS_UWP
+            var pkg = new DataPackage();
+            pkg.SetText(url);
+            Clipboard.SetContent(pkg);
+#elif WINDOWS_PHONE_APP
+            LauncherOptions options = new LauncherOptions();
+            options.PreferredApplicationDisplayName = "Clipboarder";
+            options.PreferredApplicationPackageFamilyName = "InTheHandLtd.Clipboarder";
+            options.DisplayApplicationPicker = false;
+            await Launcher.LaunchUriAsync(new Uri($"clipboard:Set?Text={url}"), options);
+#endif
         }
 
         private RelayCommand _openEmbedCommand = null;

@@ -23,6 +23,8 @@
         <MenuFlyout>
             <MenuFlyoutItem Text="zapisz"
                             Click="SaveImage_Click"/>
+            <MenuFlyoutItem Text="skopiuj link" 
+                            Click="CopyURL_Click"/>
         </MenuFlyout>
     </FlyoutBase.AttachedFlyout>
 

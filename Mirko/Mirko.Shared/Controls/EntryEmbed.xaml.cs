@@ -203,8 +203,13 @@ namespace Mirko.Controls
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
             var VM = this.DataContext as EmbedViewModel;
-            if(VM != null)
-                VM.SaveImageCommand.Execute(null);
+            VM?.SaveImageCommand.Execute(null);
+        }
+
+        private void CopyURL_Click(object sender, RoutedEventArgs e)
+        {
+            var VM = this.DataContext as EmbedViewModel;
+            VM?.CopyURLCommand.Execute(null);
         }
     }
 }

@@ -30,6 +30,8 @@
                 <MenuFlyout x:Name="SaveFlyout">
                     <MenuFlyoutItem Text="zapisz" 
                                     Command="{Binding SaveImageCommand}"/>
+                    <MenuFlyoutItem Text="skopiuj link" 
+                                    Command="{Binding CopyURLCommand}"/>
 
                 </MenuFlyout>
             </FlyoutBase.AttachedFlyout>
