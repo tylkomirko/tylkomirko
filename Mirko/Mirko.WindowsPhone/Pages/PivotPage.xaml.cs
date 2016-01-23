@@ -458,8 +458,12 @@ namespace Mirko.Pages
                 sv = MirkoListView.GetDescendant<ScrollViewer>();
             else if (index == 1)
                 sv = HotListView.GetDescendant<ScrollViewer>();
+            else if (index == 2)
+                sv = FavListView.GetDescendant<ScrollViewer>();
+            else if (index == 3)
+                sv = MyListView.GetDescendant<ScrollViewer>();
 
-            if(sv != null)
+            if (sv != null)
                 sv.ChangeView(null, 0.0, null);
         }
 
