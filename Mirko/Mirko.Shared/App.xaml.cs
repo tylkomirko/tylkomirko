@@ -57,8 +57,12 @@ namespace Mirko
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(async () =>
                 {
-                    var msg = new MessageDialog(e.Message, "Wiadomość od Macieja");
-                    await msg.ShowAsync();
+                    try
+                    {
+                        var msg = new MessageDialog(e.Message, "Wiadomość od Macieja");
+                        await msg.ShowAsync();
+                    }
+                    catch (Exception) { }
                 });                
             }
         }
