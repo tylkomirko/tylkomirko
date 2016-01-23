@@ -39,7 +39,7 @@ namespace Mirko.ViewModel
             }
             else if(obj.Notification == "Sort-Save")
             {
-                SortConversationList();
+                DispatcherHelper.CheckBeginInvokeOnUI(() => SortConversationList());
                 SaveCommand.Execute(null);
             }
             else if(obj.Notification == "Logout")
