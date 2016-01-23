@@ -310,7 +310,7 @@ namespace Mirko.Pages
             }
         }
 
-        private async void TimeSpanSelectionListView_ItemClick(object sender, ItemClickEventArgs e)
+        private void TimeSpanSelectionListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             HideTimeSpanSelectionPopup();
 
@@ -329,8 +329,6 @@ namespace Mirko.Pages
             {
                 VM.HotTimeSpan = newTimeSpan;
                 VM.HotEntries.ClearAll();
-                if (HotListView.ItemsSource != null) // forgive me for this dirty hack. it's Satya's fault.
-                    await HotListView.LoadMoreItemsAsync();
             }
         }
 
