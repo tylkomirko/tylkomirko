@@ -35,7 +35,7 @@ namespace Mirko.ViewModel
             {
                 await StatusBarManager.ShowTextAndProgressAsync("Pobieram wpisy...");
 
-                var newEntriesContainer = await App.ApiService.GetTaggedEntries(tag, pageIndex++);
+                var newEntriesContainer = await App.ApiService.GetTaggedEntries(tag, pageIndex++, ct);
 
                 await StatusBarManager.HideProgressAsync();
 

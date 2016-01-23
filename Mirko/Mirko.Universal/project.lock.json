@@ -11,7 +11,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -1664,7 +1664,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -3407,7 +3407,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -5122,7 +5122,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -6870,7 +6870,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -8585,7 +8585,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -10333,7 +10333,7 @@
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
         }
       },
-      "FFImageLoading.Windows/2.0.6": {
+      "FFImageLoading.Windows/2.0.7": {
         "dependencies": {
           "Microsoft.Net.Http": "[2.2.29, )"
         },
@@ -12056,8 +12056,8 @@
         "package/services/metadata/core-properties/99be0c88b2fd41c8b07c42071005ee47.psmdcp"
       ]
     },
-    "FFImageLoading.Windows/2.0.6": {
-      "sha512": "3mzvC7b3OgTey3NTmCDFxvpm0P4xbixh7Xvg25ZPy5e6SSs1eeVY2cjsaLx3XQyUENIA6WwtOZ3nGlCTqvekdA==",
+    "FFImageLoading.Windows/2.0.7": {
+      "sha512": "zX2e1qopPDSsUXobtH/HzlKe7LcHRz79yQQ/LocgsASGwN1UmygCBi8/iNruZHUrYpgDtMFV4dieLbhMGBeHZg==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -12067,7 +12067,7 @@
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.dll",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.Windows.xml",
         "lib/portable-netcore45+wpa81+wp8/FFImageLoading.xml",
-        "package/services/metadata/core-properties/5a250561e7cd4eb9909008682ba62221.psmdcp"
+        "package/services/metadata/core-properties/883f7ebdf9a54f478eba8b4a020ec829.psmdcp"
       ]
     },
     "MetroLog/0.8.9": {
@@ -15854,7 +15854,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "FFImageLoading.Windows >= 2.0.6",
+      "FFImageLoading.Windows >= 2.0.7",
       "MetroLog >= 0.8.9",
       "Microsoft.ApplicationInsights >= 1.2.3",
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.2.3",

@@ -27,8 +27,9 @@ namespace Mirko.Utils
         private int itemsPerPage;
         private bool hasMoreItems;
         private bool hasNoItems;
-        private CancellationTokenSource cancelToken;
+        private CancellationTokenSource cts;
         private bool isStopped = false;
+        private bool busy = false;
 
         public IncrementalLoadingCollection(int itemsPerPage = 10)
         {
@@ -61,8 +62,8 @@ namespace Mirko.Utils
 
         public void Cancel()
         {
-            if (cancelToken != null)
-                cancelToken.Cancel();
+            if (cts != null && busy)
+                cts.Cancel();
         }
 
         public void ForceStop()
@@ -80,18 +81,20 @@ namespace Mirko.Utils
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
             var dispatcher = Window.Current.Dispatcher;
-            cancelToken = new CancellationTokenSource();
+            cts = new CancellationTokenSource();
 
             var task = Task.Run<LoadMoreItemsResult>(async () =>
             {
                 try
                 {
+                    busy = true;
+
                     uint resultCount = 0;
-                    var result = await source.GetPagedItems(itemsPerPage, cancelToken.Token);
+                    var result = await source.GetPagedItems(itemsPerPage, cts.Token);
 
                     if (result == null || result.Count() == 0)
                     {
-                        if (!cancelToken.Token.IsCancellationRequested)
+                        if (!cts.Token.IsCancellationRequested)
                             hasMoreItems = false;
                     }
                     else
@@ -109,8 +112,13 @@ namespace Mirko.Utils
                     StatusBarManager.HideProgress();
                     return new LoadMoreItemsResult() { Count = 0 };
                 }
+                finally
+                {
+                    cts.Dispose();
+                    busy = false;
+                }
 
-            }, cancelToken.Token);
+            }, cts.Token);
 
             return task.AsAsyncOperation<LoadMoreItemsResult>();
         }
