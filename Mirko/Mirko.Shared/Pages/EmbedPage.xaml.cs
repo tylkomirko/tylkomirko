@@ -38,6 +38,12 @@ namespace Mirko.Pages
 
             this.Unloaded += (s, e) =>
             {
+                if(!ImageOpened)
+                {
+                    Image.Source = null;
+                    StatusBarManager.HideProgress();
+                }
+
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped;
                 StatusBarManager.ShowStatusBar();
                 ImageOpened = false;
