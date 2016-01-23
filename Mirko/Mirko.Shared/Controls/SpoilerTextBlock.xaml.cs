@@ -74,12 +74,18 @@ namespace Mirko.Controls
         {
             var entry = this.GetAntecedent<Entry>();
             entry?.HashtagTapped(tag, tb);
+
+            var convPage = this.GetAntecedent<Pages.ConversationPage>();
+            convPage?.HashtagTapped(tag, tb);
         }
 
         public void ProfileTapped(string username)
         {
             var entry = this.GetAntecedent<Entry>();
             entry?.ProfileTapped(username);
+
+            var convPage = this.GetAntecedent<Pages.ConversationPage>();
+            convPage?.ProfileTapped(username);
         }
     }
 }
