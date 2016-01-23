@@ -37,6 +37,7 @@ namespace Mirko.Controls
                 Cache = SimpleIoc.Default.GetInstance<CacheViewModel>();
                 if (Cache.PopularHashtags.Count == 0)
                     Cache.GetPopularHashtags();
+                Cache.GenerateSuggestions("#", hashtag: true);
             }
         }
 
