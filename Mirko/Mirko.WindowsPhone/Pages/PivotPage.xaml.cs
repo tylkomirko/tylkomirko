@@ -189,7 +189,6 @@ namespace Mirko.Pages
                 if(CanShowNewEntriesPopup)
                     NewMirkoEntriesPopupFadeIn.Begin();
 
-                AppBar.MakeButtonVisible("refresh");
                 if (SettingsVM.UserInfo != null)
                     AppBar.MakeButtonVisible("add");
                 TimeSpanIndicatorFadeOut.Begin();
@@ -205,7 +204,6 @@ namespace Mirko.Pages
                 App.TelemetryClient.TrackPageView("PivotPage-Hot");
 
                 NewMirkoEntriesPopupFadeOut.Begin();
-                AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 TimeSpanIndicatorFadeIn.Begin();
                 HideMyEntriesIndicatorPopup();
@@ -220,7 +218,6 @@ namespace Mirko.Pages
                 App.TelemetryClient.TrackPageView("PivotPage-Fav");
 
                 NewMirkoEntriesPopupFadeOut.Begin();
-                AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 TimeSpanIndicatorFadeOut.Begin();
                 HideMyEntriesIndicatorPopup();
@@ -235,7 +232,6 @@ namespace Mirko.Pages
                 App.TelemetryClient.TrackPageView("PivotPage-My");
 
                 NewMirkoEntriesPopupFadeOut.Begin();
-                AppBar.MakeButtonInvisible("refresh");
                 AppBar.MakeButtonInvisible("add");
                 TimeSpanIndicatorFadeOut.Begin();
                 ShowMyEntriesIndicatorPopup();

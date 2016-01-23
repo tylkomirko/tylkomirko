@@ -393,16 +393,22 @@ namespace Mirko.ViewModel
             vm.GoToNewEntryPage();
         }
 
-        private RelayCommand _refreshMirkoEntries = null;
-        public RelayCommand RefreshMirkoEntries
+        private RelayCommand _refreshStream = null;
+        public RelayCommand RefreshStream
         {
-            get { return _refreshMirkoEntries ?? (_refreshMirkoEntries = new RelayCommand(ExecuteRefreshMirkoEntries)); }
+            get { return _refreshStream ?? (_refreshStream = new RelayCommand(ExecuteRefreshStream)); }
         }
 
-        private async void ExecuteRefreshMirkoEntries()
+        private async void ExecuteRefreshStream()
         {
-            Logger.Trace("RefreshMirkoEntries");
-            await CheckNewMirkoEntries().ConfigureAwait(false);
+            if (CurrentPivotItem == 0)
+                await CheckNewMirkoEntries().ConfigureAwait(false);
+            else if (CurrentPivotItem == 1)
+                HotEntries.ClearAll();
+            else if (CurrentPivotItem == 2)
+                FavEntries.ClearAll();
+            else if (CurrentPivotItem == 3)
+                MyEntries.ClearAll();
         }
 
         private RelayCommand _goToYourProfile = null;

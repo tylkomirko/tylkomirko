@@ -300,7 +300,7 @@
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                                      IsItemClickEnabled="False"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     ShowsScrollingPlaceholders="False"
                                      IncrementalLoadingThreshold="6"
                                      DataFetchSize="7"
                                      Tag="LV0">
@@ -323,7 +323,7 @@
                                      Loaded="ListView_Loaded"
                                      ItemsSource="{x:Bind VM.HotEntries}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     ShowsScrollingPlaceholders="False"
                                      IncrementalLoadingThreshold="6"
                                      DataFetchSize="7"
                                      IsItemClickEnabled="False"
@@ -368,7 +368,7 @@
                                      ItemsSource="{x:Bind VM.FavEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     ShowsScrollingPlaceholders="False"
                                      IncrementalLoadingThreshold="6"
                                      DataFetchSize="7"
                                      IsItemClickEnabled="False"
@@ -399,7 +399,7 @@
                                      ItemsSource="{x:Bind VM.MyEntries}"
                                      ItemTemplate="{StaticResource EntryTemplate}"
                                      ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
-                                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                     ShowsScrollingPlaceholders="False"
                                      IncrementalLoadingThreshold="6"
                                      DataFetchSize="7"
                                      IsItemClickEnabled="False"
@@ -432,7 +432,7 @@
             <AppBarButton Label="odśwież"
                           Icon="Refresh"
                           Tag="refresh"
-                          Command="{x:Bind VM.RefreshMirkoEntries}" />
+                          Command="{x:Bind VM.RefreshStream}" />
 
             <AppBarButton Label="w górę"
                           Icon="Up"
