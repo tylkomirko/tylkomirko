@@ -489,5 +489,18 @@ namespace Mirko.Pages
                 sv.ChangeView(null, 0.0, null);
         }
         #endregion
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            CanShowNewEntriesPopup = false;
+            NewMirkoEntriesPopupFadeOut.Begin();
+            TimeSpanIndicatorFadeOut.Begin();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (MainPivot.SelectedIndex == 1)
+                TimeSpanIndicatorFadeIn.Begin();
+        }
     }
 }
