@@ -12,13 +12,11 @@ namespace Mirko.Converters
         public object Convert(object value, Type targetType, object parameter, string str)
         {
             var list = value as List<EntryComment>;
-            if (list != null)
-            {
-                if (list.Count() > 0)
-                    return Visibility.Visible;
-            }
 
-            return Visibility.Collapsed;
+            if (list?.Count() > 0)
+                return Visibility.Visible;
+            else
+                return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string str)

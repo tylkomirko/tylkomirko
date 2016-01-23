@@ -12,7 +12,7 @@ namespace Mirko.Converters
             var leftover = number % 1000;
 
             if (thousands >= 1)
-                return string.Format("{0} {1}", thousands, leftover);
+                return $"{thousands} {leftover}";
             else
                 return number.ToString();
         }

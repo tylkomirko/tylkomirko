@@ -15,7 +15,7 @@ namespace Mirko.Converters
         private string AppendIfLight(string input)
         {
             if (Settings.SelectedTheme == ElementTheme.Light)
-                return input + "Light";
+                return $"{input}Light";
             else
                 return input;
         }
@@ -28,13 +28,9 @@ namespace Mirko.Converters
             var VM = value as CommentViewModel;
             if (VM == null || targetType != typeof(Brush)) return null;
 
-            string myUsername = null;
+            string myUsername = App.ApiService.UserInfo?.UserName ?? null;
             string currentAuthor = VM.Data.AuthorName;
-
-            if(App.ApiService.UserInfo != null)
-                myUsername = App.ApiService.UserInfo.UserName;
-
-            string magicUsernameString = string.Format("@<a href=\"@{0}\">{0}</a>", myUsername);
+            string magicUsernameString = $"@<a href=\"@{myUsername}\">{myUsername}</a>";
 
             if (myUsername != null && VM.Data.Text.Contains(magicUsernameString))
                 return App.Current.Resources[AppendIfLight("CommentDirectedFill")] as Brush;
