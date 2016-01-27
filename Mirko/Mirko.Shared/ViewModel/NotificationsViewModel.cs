@@ -65,11 +65,13 @@ namespace Mirko.ViewModel
         private readonly ILogger Logger = null;
 
         private Timer Timer = null;
+        private SemaphoreSlim TimerSemaphore = null;
         private NavigationService NavService = null;
 
         public NotificationsViewModel(NavigationService nav)
         {
             Timer = new Timer(TimerCallback, null, 100, 60*1000);
+            TimerSemaphore = new SemaphoreSlim(1);
             NavService = nav;
 
             Logger = LogManagerFactory.DefaultLogManager.GetLogger<NotificationsViewModel>();
@@ -107,6 +109,12 @@ namespace Mirko.ViewModel
 
             ObservedHashtags = SimpleIoc.Default.GetInstance<CacheViewModel>().ObservedHashtags;
             ObservedHashtags.CollectionChanged += (s, e) => UpdateHashtagsCollection();
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            TimerSemaphore?.Dispose();
         }
 
         private void UpdateBadge()
@@ -167,6 +175,8 @@ namespace Mirko.ViewModel
 
         private async void TimerCallback(object state)
         {
+            await TimerSemaphore.WaitAsync();
+
             try
             {
                 await Task.Run(async () =>
@@ -180,6 +190,8 @@ namespace Mirko.ViewModel
             // i dunno what it's for, but i'm too scared to remove it
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("Update"));
             UpdateBadge();
+
+            TimerSemaphore.Release();
         }
 
         #region AppHeader commands
