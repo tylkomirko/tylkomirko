@@ -39,7 +39,8 @@ namespace Mirko.Controls
                     Cache.GetObservedUsers();
             }
 
-            base.TextChanged += AutoCompletingTextBox_TextChanged;
+            if(!App.IsMobile)
+                base.TextChanged += AutoCompletingTextBox_TextChanged;
         }
 
         private async void AutoCompletingTextBox_TextChanged(object sender, TextChangedEventArgs e)
