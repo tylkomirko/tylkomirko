@@ -153,7 +153,7 @@
                     Visibility="{Binding Data.Login, Mode=OneWay, Converter={StaticResource ProfileAppBar}}">
 
             <AppBarToggleButton Label="{Binding Data.Observed, Mode=OneWay, Converter={StaticResource ObservedToText}}"
-                                IsChecked="{Binding Data.Observed, Mode=TwoWay}"                                
+                                IsChecked="{Binding Data.Observed, Mode=OneWay}"                                
                                 Command="{Binding Observe, Mode=OneWay}">
 
                 <AppBarToggleButton.Icon>

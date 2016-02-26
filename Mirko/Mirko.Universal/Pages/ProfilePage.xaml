@@ -193,7 +193,7 @@
                     Visibility="{x:Bind VM.CurrentProfile.Data.Login, Mode=OneWay, Converter={StaticResource ProfileAppBar}}">
 
             <AppBarToggleButton Label="{x:Bind VM.CurrentProfile.Data.Observed, Mode=OneWay, Converter={StaticResource ObservedToText}}"
-                                IsChecked="{x:Bind VM.CurrentProfile.Data.Observed, Mode=TwoWay}"                                
+                                IsChecked="{x:Bind VM.CurrentProfile.Data.Observed, Mode=OneWay}"                                
                                 Command="{x:Bind VM.CurrentProfile.Observe, Mode=OneWay}">
 
                 <AppBarToggleButton.Icon>
