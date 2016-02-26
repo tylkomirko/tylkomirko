@@ -30,14 +30,8 @@
         <FlipView x:Name="FlipView"
                   Grid.Row="1"
                   ItemsSource="{Binding HashtagFlipEntries}"
-                  SelectedItem="{Binding HashtagFlipCurrentEntry, Mode=TwoWay}">
-
-            <i:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="SelectionChanged">
-                    <core:InvokeCommandAction Command="{Binding HashtagFlipSelectionChanged}"
-                                              CommandParameter="{Binding ElementName=FlipView, Path=SelectedIndex}"/>
-                </core:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
+                  SelectedItem="{Binding HashtagFlipCurrentEntry, Mode=TwoWay}"
+                  SelectionChanged="FlipView_SelectionChanged">
 
             <FlipView.ItemTemplate>
                 <DataTemplate>

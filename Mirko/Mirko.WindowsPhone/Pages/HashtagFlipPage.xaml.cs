@@ -210,5 +210,14 @@ namespace Mirko.Pages
             AppBar.MakeButtonInvisible("voteMulti");
         }
         #endregion
+
+        // I really wanted to use XAML behaviour (like in UWP), but sometimes leads to System.InvalidCastException.
+        // Maybe this will help.
+        private void FlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = FlipView?.SelectedIndex ?? 0;
+            var vm = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
+            vm.HashtagFlipSelectionChanged.Execute(index);
+        }
     }
 }
