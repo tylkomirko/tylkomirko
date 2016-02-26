@@ -52,11 +52,11 @@ namespace Mirko.ViewModel
         {
             if (CanGoBack())
             {
-                if (CurrentPageKey == "HashtagFlipPage")
+                if (!string.IsNullOrEmpty(CurrentPageKey) && CurrentPageKey == "HashtagFlipPage")
                 {
                     var VM = SimpleIoc.Default.GetInstance<NotificationsViewModel>();
-                    if (VM.CurrentHashtagNotifications.Count == 0)
-                    {                        
+                    if (VM?.CurrentHashtagNotifications?.Count == 0)
+                    {
                         var entry = backStack.First(typeof(HashtagNotificationsPage));
                         if (entry != null)
                             backStack.Remove(entry);
