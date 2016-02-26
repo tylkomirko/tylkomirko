@@ -163,7 +163,7 @@
             </AppBarToggleButton>
 
             <AppBarToggleButton Label="{Binding Data.Blacklisted, Mode=OneWay, Converter={StaticResource BlacklistToText}}"
-                                IsChecked="{Binding Data.Blacklisted, Mode=TwoWay}"
+                                IsChecked="{Binding Data.Blacklisted, Mode=OneWay}"
                                 Command="{Binding Blacklist, Mode=OneWay}">
 
                 <AppBarToggleButton.Icon>

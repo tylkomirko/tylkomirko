@@ -203,7 +203,7 @@
             </AppBarToggleButton>
 
             <AppBarToggleButton Label="{x:Bind VM.CurrentProfile.Data.Blacklisted, Mode=OneWay, Converter={StaticResource BlacklistToText}}"
-                                IsChecked="{x:Bind VM.CurrentProfile.Data.Blacklisted, Mode=TwoWay}"
+                                IsChecked="{x:Bind VM.CurrentProfile.Data.Blacklisted, Mode=OneWay}"
                                 Command="{x:Bind VM.CurrentProfile.Blacklist, Mode=OneWay}">
 
                 <AppBarToggleButton.Icon>
