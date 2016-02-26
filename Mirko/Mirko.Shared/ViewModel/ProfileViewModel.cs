@@ -58,19 +58,17 @@ namespace Mirko.ViewModel
                 string text = null;
                 if(observed)
                 {
-                    text = "Przestałeś obserwować @" + user + ".";
+                    text = $"Nie obserwujesz @{user}.";
                     Messenger.Default.Send(new NotificationMessage<string>(user, "Remove ObservedUser"));
                 }
                 else
                 {
-                    text = "Obserwujesz @" + user;
+                    text = $"Obserwujesz @{user}.";
                     Messenger.Default.Send(new NotificationMessage<string>(user, "Add ObservedUser"));
                 }
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Data.Observed = !observed);
                 await StatusBarManager.ShowTextAsync(text);
-
-
             }
             else
             {
@@ -88,7 +86,7 @@ namespace Mirko.ViewModel
         private void ExecuteBlacklist()
         {
             bool blacklisted = (bool)Data.Blacklisted;
-            var user = "@" + Data.Login;
+            var user = $"@{Data.Login}";
 
             var blacklistVM = SimpleIoc.Default.GetInstance<BlacklistViewModel>();
 
