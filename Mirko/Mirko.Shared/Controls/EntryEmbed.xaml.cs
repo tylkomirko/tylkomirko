@@ -112,7 +112,10 @@ namespace Mirko.Controls
             Image.Visibility = Visibility.Collapsed;
 
             var aspectRatio = MediaElement.AspectRatioHeight / (double)MediaElement.AspectRatioWidth;
-            MediaElement.Height = MaxHeight * aspectRatio;
+            if (aspectRatio > 1.0) // video is vertical
+                MediaElement.Width = MaxWidth / aspectRatio;
+            else
+                MediaElement.Height = MaxHeight * aspectRatio;
 
             MediaElement.Visibility = Visibility.Visible;
 
