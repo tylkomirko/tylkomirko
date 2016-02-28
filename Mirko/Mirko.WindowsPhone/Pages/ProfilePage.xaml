@@ -12,15 +12,14 @@
     d:DesignWidth="400"
     DataContext="{Binding Profiles.CurrentProfile, Mode=OneWay, Source={StaticResource Locator}}">
     
-    <controls:ListViewEx Margin="10,0,10,0"
-                         Loaded="ListViewEx_Loaded"
+    <controls:ListViewEx Loaded="ListViewEx_Loaded"
                          ItemContainerStyle="{StaticResource ListViewItemStretchNoTilt}"
                          ItemsSource="{Binding Entries}"
                          IncrementalLoadingThreshold="6"
                          DataFetchSize="7">
         
         <ListView.Header>
-            <Grid>
+            <Grid Margin="10,0,10,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -137,7 +136,7 @@
         
         <ListView.ItemTemplate>
             <DataTemplate>
-                <controls:FullEntry />
+                <controls:FullEntry Margin="4,0,0,0" />
             </DataTemplate>
         </ListView.ItemTemplate>
 
