@@ -33,7 +33,10 @@ namespace WykopSDK.WWW
             get
             {
                 if (_httpClient == null)
+                {
                     _httpClient = new HttpClient(retryHandler) { BaseAddress = new Uri(baseURL), Timeout = new TimeSpan(0, 0, 30) };
+                    _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136");
+                }
                 return _httpClient;
             }
         }
@@ -210,11 +213,24 @@ namespace WykopSDK.WWW
                 new KeyValuePair<string, string>("__token", token),
             };
 
-            using (var content = new FormUrlEncodedContent(post))
-            using (var response = await httpClient.PostAsync(loginURL, content).ConfigureAwait(false))
+            try
             {
-                var finalUrl = response.RequestMessage.RequestUri.AbsoluteUri;
-                if (finalUrl.Equals("http://www.wykop.pl/") || finalUrl.Equals("https://www.wykop.pl/"))
+                using (var content = new FormUrlEncodedContent(post))
+                using (var response = await httpClient.PostAsync(loginURL, content).ConfigureAwait(false))
+                {
+                    var finalUrl = response.RequestMessage.RequestUri.AbsoluteUri;
+                    if (finalUrl.Equals("http://www.wykop.pl/") || finalUrl.Equals("https://www.wykop.pl/"))
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch (Exception e)
+            {
+                // fuck you you dipshits at Microsoft. on w8.1 redirecting https -> http worked just fine.
+                // on uwp it generates this exception.
+                // you didn't even bother typing description for this exception, so fuck you once again.
+                if ((uint)e.HResult == 0x80072f08)
                     return true;
                 else
                     return false;
@@ -266,7 +282,7 @@ namespace WykopSDK.WWW
                     var divs = doc.QuerySelector(@"div[data-type=""users""]").QuerySelectorAll("div");
                     foreach (var item in divs)
                     {
-                        var ahref = item.Children[1] as IHtmlAnchorElement;
+                        var ahref = item.Children[0] as IHtmlAnchorElement;
                         var url = ahref.Href;
 
                         var splitUrl = url.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
